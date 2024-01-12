@@ -29,7 +29,7 @@ export default class BpmnFilesController extends Controller {
           throw new Error('File upload failed');
         }
 
-        // Handle success
+        window.location.reload(); // temp
       } catch (error) {
         // Handle errors
       }

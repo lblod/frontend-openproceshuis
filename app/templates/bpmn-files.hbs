@@ -6,3 +6,34 @@
   <input type="file" id="file-upload" {{on "change" this.fileSelected}} />
   <button type="submit">Upload</button>
 </form>
+
+{{#if this.model.length}}
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Format</th>
+        <th>Size (bytes)</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each this.model as |file|}}
+        <tr>
+          <td>{{file.attributes.name}}</td>
+          <td>{{file.attributes.format}}</td>
+          <td>{{file.attributes.size}}</td>
+          <td>
+            <a
+              href="http://localhost/bpmn-files/{{file.id}}/download"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Download</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <p>No files found.</p>
+{{/if}}
