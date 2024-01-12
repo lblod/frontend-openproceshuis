@@ -1,0 +1,8 @@
+{{page-title "BPMN-bestanden"}}
+
+<h2>BPMN-bestanden</h2>
+
+<form {{on "submit" this.submitFile}}>
+  <input type="file" id="file-upload" {{on "change" this.fileSelected}} />
+  <button type="submit">Upload</button>
+</form>
