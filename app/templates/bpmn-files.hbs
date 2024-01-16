@@ -12,6 +12,7 @@
     <thead>
       <tr>
         <th>Naam</th>
+        <th>Extensie</th>
         <th>Formaat</th>
         <th>Grootte (bytes)</th>
         <th>Download</th>
@@ -20,9 +21,10 @@
     <tbody>
       {{#each this.model as |file|}}
         <tr>
-          <td>{{file.attributes.name}}</td>
-          <td>{{file.attributes.format}}</td>
-          <td>{{file.attributes.size}}</td>
+          <td>{{file.name}}</td>
+          <td>{{file.extension}}</td>
+          <td>{{file.format}}</td>
+          <td>{{file.size}}</td>
           <td>
             <a
               href="http://localhost/bpmn-files/{{file.id}}/download"
