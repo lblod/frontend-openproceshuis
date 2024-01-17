@@ -1,7 +1,9 @@
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
+import { service } from '@ember/service';
 
 export default class BpmnFilesController extends Controller {
+  @service bpmnFileUpload;
   selectedFile = null;
 
   @action
@@ -16,22 +18,13 @@ export default class BpmnFilesController extends Controller {
   async submitFile(event) {
     event.preventDefault();
     if (this.selectedFile) {
-      let formData = new FormData();
-      formData.append('file', this.selectedFile);
-
       try {
-        const response = await fetch('http://localhost/bpmn-files', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('File upload failed');
-        }
-
-        window.location.reload(); // temp
+        const response = await this.bpmnFileUpload.uploadFile(
+          this.selectedFile,
+        );
+        console.log(response);
       } catch (error) {
-        // Handle errors
+        console.error(error);
       }
     }
   }
