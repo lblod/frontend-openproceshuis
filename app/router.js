@@ -7,5 +7,9 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
+  this.route('index', { path: '' });
   this.route('bpmn-files');
+  this.route('route-not-found', {
+    path: '/*wildcard',
+  });
 });
