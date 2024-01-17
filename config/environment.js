@@ -20,6 +20,8 @@ module.exports = function (environment) {
 
       apiHost: 'http://localhost:80',
     },
+
+    appName: 'ProcessenDatabank',
   };
 
   if (environment === 'development') {

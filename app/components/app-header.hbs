@@ -1,0 +1,20 @@
+<AuMainHeader
+  @brandLink="https://www.vlaanderen.be/nl"
+  @homeRoute="index"
+  @appTitle={{config "appName"}}
+>
+  <AuDropdown
+    @title={{this.currentSession.title}}
+    @buttonLabel="Account settings"
+    @alignment="right"
+    role="menu"
+  >
+    <AuLink @icon="switch" role="menuitem">
+      Wissel van bestuurseenheid
+    </AuLink>
+
+    <AuLink @icon="logout" role="menuitem">
+      Afmelden
+    </AuLink>
+  </AuDropdown>
+</AuMainHeader>

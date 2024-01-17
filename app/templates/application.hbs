@@ -1,6 +1,24 @@
-<div class="container">
-  <h1>OPH processendatabank demo</h1>
-  <div class="body">
-    {{outlet}}
-  </div>
-</div>
+{{page-title
+  (concat
+    "Organisatie Portaal"
+    (if this.showEnvironment (concat " - " this.environmentName))
+  )
+}}
+
+<AuApp
+  class="{{(if
+      this.showEnvironment
+      (concat 'au-c-app--environment au-c-environment--' this.environmentName)
+    )}}"
+>
+  <AppHeader />
+  <main id="main" class="au-c-main-container">
+    <div
+      class="au-c-main-container__content au-c-main-container__content--scroll"
+      id="content"
+      tabindex="-1"
+    >
+      {{outlet}}
+    </div>
+  </main>
+</AuApp>
