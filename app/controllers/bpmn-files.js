@@ -4,6 +4,8 @@ import { service } from '@ember/service';
 
 export default class BpmnFilesController extends Controller {
   @service bpmnFileUpload;
+  @service store;
+
   selectedFile = null;
 
   @action
@@ -22,7 +24,7 @@ export default class BpmnFilesController extends Controller {
         const response = await this.bpmnFileUpload.uploadFile(
           this.selectedFile,
         );
-        console.log(response);
+        this.store.push(response);
       } catch (error) {
         console.error(error);
       }
