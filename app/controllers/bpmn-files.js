@@ -22,7 +22,7 @@ export default class BpmnFilesController extends Controller {
     if (this.selectedFile) {
       try {
         const response = await this.bpmnFileUpload.uploadFile(
-          this.selectedFile,
+          this.selectedFile
         );
         this.store.push(response);
       } catch (error) {
