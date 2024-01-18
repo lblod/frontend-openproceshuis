@@ -1,1 +1,78 @@
-<h2>Index</h2>
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <div class="au-c-sidebar__header">
+          <h6 class="au-u-h6 au-u-medium">Menu modules</h6>
+        </div>
+        <ul class="au-c-list-navigation">
+          <li class="au-c-list-navigation__item">
+            <AuNavigationLink @route="bpmn-files">
+              BPMN-bestanden
+            </AuNavigationLink>
+          </li>
+        </ul>
+      </div>
+      <div class="au-c-sidebar__footer">
+        <a
+          href={{config "userManual.general"}}
+          class="au-c-link au-c-link--secondary au-c-link--icon"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <AuIcon @icon="manual" @alignment="left" />
+          Handleiding (externe link)
+        </a>
+        <AuHelpText @skin="secondary">
+          {{config "appName"}}
+          {{#if (config "showAppVersionHash")}}
+            (<a
+              class="au-c-link"
+              href="https://github.com/MartijnBogaert/frontend-processendatabank/commit/{{app-version
+                shaOnly=true
+              }}"
+            >{{app-version shaOnly=true}}</a>)
+          {{else}}
+            v{{app-version versionOnly=true}}
+          {{/if}}
+        </AuHelpText>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <div class="au-o-box">
+      <AuHeading @skin="2" class="au-u-margin-bottom-large">
+        {{this.currentSession.user.fullName}}
+      </AuHeading>
+
+      <AuHeading @level="2" @skin="3" class="au-u-margin-bottom">
+        Beschikbare module
+      </AuHeading>
+
+      <ul class="au-o-grid au-o-grid">
+        <li class="au-o-grid__item au-u-1-2@medium au-u-2-5@large">
+          <AuCard @flex={{true}} as |c|>
+            <c.header @badgeSkin="brand" @badgeIcon="sitemap">
+              <AuHeading @level="3" @skin="4">
+                BPMN-bestanden
+              </AuHeading>
+            </c.header>
+            <c.content>
+              <ul>
+                <li>Raadpleeg processen</li>
+                <li>Voeg processen toe</li>
+              </ul>
+            </c.content>
+            <c.footer>
+              <AuButtonGroup class="au-c-button-group--wrap">
+                <LinkTo class="au-c-button" @route="bpmn-files">
+                  Ga naar BPMN-bestanden
+                </LinkTo>
+              </AuButtonGroup>
+            </c.footer>
+          </AuCard>
+        </li>
+      </ul>
+    </div>
+  </:content>
+</SidebarContainer>
