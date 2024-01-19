@@ -1,0 +1,68 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content au-o-box">
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-grid au-o-grid--small"
+        >
+          <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
+            <AuLabel for="filter-name">Naam</AuLabel>
+            <BpmnFileSelectByName
+              @id="filter-name"
+              @selected={{this.name}}
+              @onChange={{this.setName}}
+              class="grow"
+            />
+          </div>
+          <div class="au-o-grid__item">
+            <AuButton @skin="link" type="reset">
+              <AuIcon @icon="cross" @alignment="left" />
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <AuDataTable
+      @content={{this.bpmnFiles}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable @field="name" @label="Naam" />
+          <AuDataTableThSortable @field="extension" @label="Extensie" />
+          <AuDataTableThSortable @field="format" @label="Formaat" />
+          <AuDataTableThSortable @field="size" @label="Grootte" />
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden. Kijk na op spelfouten, of
+              probeer een andere zoekopdracht. Indien een organisatie ontbreekt,
+              meldt dit aan
+              <a
+                class="au-c-link"
+                href="mailto:{{config 'contactEmail'}}"
+              >{{config "contactEmail"}}</a>
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |file|>
+            <td>{{file.name}}</td>
+            <td>{{file.extension}}</td>
+            <td>{{file.format}}</td>
+            <td>{{file.size}}</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

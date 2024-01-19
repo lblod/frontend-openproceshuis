@@ -1,41 +1,7 @@
 {{page-title "BPMN-bestanden"}}
+{{breadcrumb "BPMN-bestanden" route="bpmn-files"}}
 
-<h2>BPMN-bestanden</h2>
-
-<form {{on "submit" this.submitFile}}>
-  <input type="file" id="file-upload" {{on "change" this.fileSelected}} />
-  <button type="submit">Upload</button>
-</form>
-
-{{#if this.model.length}}
-  <table>
-    <thead>
-      <tr>
-        <th>Naam</th>
-        <th>Extensie</th>
-        <th>Formaat</th>
-        <th>Grootte (bytes)</th>
-        <th>Download</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each this.model as |file|}}
-        <tr>
-          <td>{{file.name}}</td>
-          <td>{{file.extension}}</td>
-          <td>{{file.format}}</td>
-          <td>{{file.size}}</td>
-          <td>
-            <a
-              href="http://localhost/bpmn-files/{{file.id}}/download"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Download</a>
-          </td>
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
-{{else}}
-  <p>Geen bestanden gevonden.</p>
-{{/if}}
+<div class="au-c-body-container au-c-body-container--scroll">
+  <NavigationBar />
+  {{outlet}}
+</div>
