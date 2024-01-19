@@ -9,4 +9,8 @@ export default class CurrentSessionService extends Service {
     this.user = { fullName: 'Demogebruiker' };
     this.title = `${this.user.fullName} - Demo`;
   }
+
+  get canOnlyRead() {
+    return true;
+  }
 }

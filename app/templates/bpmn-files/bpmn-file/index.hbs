@@ -1,1 +1,65 @@
-<p>{{@model.name}}</p>
+<div class="au-c-body-container au-c-body-container--scroll">
+  <div class="au-o-box au-o-flow au-o-flow--large">
+    <PageHeader>
+      <:title>
+        BPMN-bestand:
+        {{@model.name}}
+      </:title>
+      <:action>
+        <SecuredArea>
+          <:readOnly>
+            <ReportWrongData />
+          </:readOnly>
+        </SecuredArea>
+      </:action>
+    </PageHeader>
+
+    <DataCard>
+      <:title>Metadata</:title>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Bestandsnaam</:label>
+              <:content>
+                {{@model.name}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Aangemaakt op</:label>
+              <:content>
+                {{date-format @model.created}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Laatst aangepast op</:label>
+              <:content>
+                {{date-format @model.modified}}
+              </:content>
+            </Item>
+          </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Extensie</:label>
+              <:content>
+                {{@model.extension}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Formaat</:label>
+              <:content>
+                {{@model.format}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Grootte</:label>
+              <:content>
+                {{file-size-format @model.size}}
+              </:content>
+            </Item>
+          </:right>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  </div>
+</div>
