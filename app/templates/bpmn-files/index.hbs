@@ -56,7 +56,15 @@
           </TableMessage>
         {{else}}
           <c.body as |file|>
-            <td>{{file.name}}</td>
+            <td>
+              <LinkTo
+                class="au-c-link"
+                @model={{file.id}}
+                @route="bpmn-files.bpmn-file"
+              >
+                {{file.name}}
+              </LinkTo>
+            </td>
             <td>{{file.extension}}</td>
             <td>{{file.format}}</td>
             <td>{{file.size}}</td>

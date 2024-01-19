@@ -1,1 +1,20 @@
-BPMN FILE ID INDEX
+{{page-title this.model.name}}
+
+{{breadcrumb this.model.name route="bpmn-files.bpmn-file" models=this.model.id}}
+
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <ul class="au-c-list-navigation">
+        <li class="au-c-list-navigation__item">
+          <AuNavigationNestedLink @route="bpmn-files">
+            BPMN-bestanden
+          </AuNavigationNestedLink>
+        </li>
+      </ul>
+    </div>
+  </:sidebar>
+  <:content>
+    {{outlet}}
+  </:content>
+</SidebarContainer>

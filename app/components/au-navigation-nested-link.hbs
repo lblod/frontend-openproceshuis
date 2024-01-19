@@ -1,0 +1,10 @@
+<AuLink
+  @route={{this.route}}
+  @model={{@model}}
+  @models={{@models}}
+  @query={{this.queryParams}}
+  class="au-c-list-navigation__link" ...attributes
+  {{on "click" this.linkFocus}}
+>
+  {{yield}}
+</AuLink>

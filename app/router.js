@@ -10,7 +10,9 @@ Router.map(function () {
   this.route('index', { path: '' });
 
   this.route('bpmn-files', { path: 'bpmn-bestanden' }, function () {
-    this.route('bpmn-file', { path: '/:id/' });
+    this.route('bpmn-file', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+    });
   });
 
   this.route('route-not-found', {
