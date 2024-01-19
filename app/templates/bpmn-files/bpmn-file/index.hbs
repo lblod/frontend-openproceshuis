@@ -6,11 +6,17 @@
         {{@model.name}}
       </:title>
       <:action>
-        <SecuredArea>
-          <:readOnly>
-            <ReportWrongData />
-          </:readOnly>
-        </SecuredArea>
+        <AuButton @skin="secondary">Wijzig</AuButton>
+        <a
+          class="au-c-button"
+          href="http://localhost/bpmn-files/{{@model.id}}/download"
+          download="{{@model.name}}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download
+        </a>
+
       </:action>
     </PageHeader>
 
