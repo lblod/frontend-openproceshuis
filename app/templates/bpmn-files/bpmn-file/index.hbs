@@ -3,14 +3,14 @@
     <PageHeader>
       <:title>
         BPMN-bestand:
-        {{@model.name}}
+        {{@model.metadata.name}}
       </:title>
       <:action>
         <AuButton @skin="secondary">Wijzig</AuButton>
         <a
           class="au-c-button"
-          href="http://localhost/bpmn-files/{{@model.id}}/download"
-          download="{{@model.name}}"
+          href="{{bpmn-download-url @model.metadata.id}}"
+          download="{{@model.metadata.name}}"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -28,19 +28,19 @@
             <Item>
               <:label>Bestandsnaam</:label>
               <:content>
-                {{@model.name}}
+                {{@model.metadata.name}}
               </:content>
             </Item>
             <Item>
               <:label>Aangemaakt op</:label>
               <:content>
-                {{date-format @model.created}}
+                {{date-format @model.metadata.created}}
               </:content>
             </Item>
             <Item>
               <:label>Laatst aangepast op</:label>
               <:content>
-                {{date-format @model.modified}}
+                {{date-format @model.metadata.modified}}
               </:content>
             </Item>
           </:left>
@@ -48,24 +48,32 @@
             <Item>
               <:label>Extensie</:label>
               <:content>
-                {{@model.extension}}
+                {{@model.metadata.extension}}
               </:content>
             </Item>
             <Item>
               <:label>Formaat</:label>
               <:content>
-                {{@model.format}}
+                {{@model.metadata.format}}
               </:content>
             </Item>
             <Item>
               <:label>Grootte</:label>
               <:content>
-                {{file-size-format @model.size}}
+                {{file-size-format @model.metadata.size}}
               </:content>
             </Item>
           </:right>
         </Card.Columns>
       </:card>
     </DataCard>
+
+    <AuHeading
+      @level="3"
+      @skin="5"
+      class="au-u-margin-bottom-tiny"
+    >Diagram</AuHeading>
+    <BpmnViewer @bpmnXml={{@model.diagram}} />
+
   </div>
 </div>

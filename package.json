@@ -110,5 +110,8 @@
   "volta": {
     "node": "16.13.2",
     "npm": "8.3.1"
+  },
+  "dependencies": {
+    "bpmn-js": "^16.3.2"
   }
 }
