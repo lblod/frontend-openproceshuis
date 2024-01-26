@@ -72,6 +72,28 @@
             </c.footer>
           </AuCard>
         </li>
+        <li class="au-o-grid__item au-u-1-2@medium au-u-2-5@large">
+          <AuCard @flex={{true}} as |c|>
+            <c.header @badgeSkin="brand" @badgeIcon="unordered-list">
+              <AuHeading @level="3" @skin="4">
+                Processtappen
+              </AuHeading>
+            </c.header>
+            <c.content>
+              <ul>
+                <li>Doorzoek bouwblokken van processen</li>
+                <li>Raadpleeg originele BPMN-bestanden</li>
+              </ul>
+            </c.content>
+            <c.footer>
+              <AuButtonGroup class="au-c-button-group--wrap">
+                <LinkTo class="au-c-button" @route="process-steps">
+                  Ga naar processtappen
+                </LinkTo>
+              </AuButtonGroup>
+            </c.footer>
+          </AuCard>
+        </li>
       </ul>
     </div>
   </:content>
