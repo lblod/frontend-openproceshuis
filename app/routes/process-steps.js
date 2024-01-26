@@ -5,6 +5,10 @@ export default class ProcessStepsRoute extends Route {
   @service store;
 
   model() {
-    this.store.findAll('task');
+    let query = {
+      include: 'processes.derivations',
+    };
+
+    return this.store.query('task', query);
   }
 }
