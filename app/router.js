@@ -15,6 +15,8 @@ Router.map(function () {
     });
   });
 
+  this.route('process-steps', { path: 'processtappen' });
+
   this.route('route-not-found', {
     path: '/*wildcard',
   });
