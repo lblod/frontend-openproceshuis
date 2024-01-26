@@ -1,5 +1,3 @@
-import Model, { attr } from '@ember-data/model';
+import ThingModel from './thing';
 
-export default class TaskModel extends Model {
-  @attr('string') name;
-}
+export default class TaskModel extends ThingModel {}

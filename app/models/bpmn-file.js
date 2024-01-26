@@ -1,7 +1,7 @@
-import Model, { attr } from '@ember-data/model';
+import { attr } from '@ember-data/model';
+import ThingModel from './thing';
 
-export default class BpmnFileModel extends Model {
-  @attr('string') name;
+export default class BpmnFileModel extends ThingModel {
   @attr('string') format;
   @attr('number') size;
   @attr('string') extension;
