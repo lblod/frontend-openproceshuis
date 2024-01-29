@@ -28,7 +28,7 @@ export default class BpmnElementsIndexRoute extends Route {
     };
 
     if (params.name) {
-      query.name = params.name;
+      query['filter[name]'] = params.name;
     }
 
     return yield this.store.query('bpmn-element', query);
