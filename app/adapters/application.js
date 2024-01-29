@@ -7,7 +7,8 @@ export default class ApplicationAdapter extends JSONAPIAdapter {
   pathForType(type) {
     let path = super.pathForType(type);
 
-    if (type !== 'bpmn-file') path = `process-steps/${path}`;
+    if (!['bpmn-file', 'bpmn-element'].includes(type))
+      path = `bpmn-elements/${path}`;
 
     return path;
   }

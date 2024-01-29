@@ -15,7 +15,9 @@ Router.map(function () {
     });
   });
 
-  this.route('process-steps', { path: 'processtappen' });
+  this.route('bpmn-elements', { path: 'processtappen' }, function () {
+    this.route('index', { path: '' });
+  });
 
   this.route('route-not-found', {
     path: '/*wildcard',

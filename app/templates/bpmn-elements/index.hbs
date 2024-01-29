@@ -1,0 +1,64 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content au-o-box">
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-grid au-o-grid--small"
+        >
+          <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
+            <AuLabel for="filter-name">Naam</AuLabel>
+            <BpmnFileSelectByName
+              @id="filter-name"
+              @selected={{this.name}}
+              @onChange={{this.setName}}
+              class="grow"
+            />
+          </div>
+          <div class="au-o-grid__item">
+            <AuButton @skin="link" type="reset">
+              <AuIcon @icon="cross" @alignment="left" />
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+
+    <PageHeader class="au-o-box">
+      <:title>Processtappen</:title>
+      <:subtitle>Processen bestaan uit verschillende bouwblokken</:subtitle>
+    </PageHeader>
+
+    <AuDataTable
+      @content={{this.bpmnElements}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable @field="name" @label="Naam" />
+          <AuDataTableThSortable @field="bpmn-file" @label="BPMN-bestand" />
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |step|>
+            <td>{{step.name}}</td>
+            <td>Link</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

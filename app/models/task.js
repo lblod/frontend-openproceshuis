@@ -1,6 +1,3 @@
-import ThingModel from './thing';
-import { hasMany } from '@ember-data/model';
+import BpmnElementModel from './bpmn-element';
 
-export default class TaskModel extends ThingModel {
-  @hasMany('process', { inverse: null, async: true }) processes;
-}
+export default class TaskModel extends BpmnElementModel {}
