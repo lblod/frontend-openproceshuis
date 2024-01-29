@@ -42,6 +42,7 @@
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable @field="name" @label="Naam" />
+          <AuDataTableThSortable @field="type" @label="Type" />
           <AuDataTableThSortable @field="bpmn-file" @label="BPMN-bestand" />
         </c.header>
         {{#if this.hasErrored}}
@@ -53,8 +54,9 @@
             </p>
           </TableMessage>
         {{else}}
-          <c.body as |step|>
-            <td>{{step.name}}</td>
+          <c.body as |element|>
+            <td>{{element.name}}</td>
+            <td>{{element.type}}</td>
             <td>Link</td>
           </c.body>
         {{/if}}

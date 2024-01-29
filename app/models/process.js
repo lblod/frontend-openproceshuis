@@ -1,6 +1,5 @@
-import BpmnElementModel from './bpmn-element';
-import { hasMany } from '@ember-data/model';
+import Model, { hasMany } from '@ember-data/model';
 
-export default class ProcessModel extends BpmnElementModel {
+export default class ProcessModel extends Model {
   @hasMany('bpmn-file', { inverse: null, async: true }) derivations;
 }
