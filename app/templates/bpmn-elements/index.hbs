@@ -15,6 +15,15 @@
               class="grow"
             />
           </div>
+          <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
+            <AuLabel for="filter-type">Type</AuLabel>
+            <BpmnFileSelectByType
+              @id="filter-type"
+              @selected={{this.type}}
+              @onChange={{this.setType}}
+              class="grow"
+            />
+          </div>
           <div class="au-o-grid__item">
             <AuButton @skin="link" type="reset">
               <AuIcon @icon="cross" @alignment="left" />
@@ -60,7 +69,7 @@
         {{else}}
           <c.body as |element|>
             <td>{{element.name}}</td>
-            <td>{{element.type.description}}</td>
+            <td>{{element.type}}</td>
             <td>Link</td>
           </c.body>
         {{/if}}
