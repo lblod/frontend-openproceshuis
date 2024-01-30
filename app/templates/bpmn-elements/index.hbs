@@ -70,7 +70,15 @@
           <c.body as |element|>
             <td>{{element.name}}</td>
             <td>{{element.type}}</td>
-            <td>Link</td>
+            <td>
+              <LinkTo
+                class="au-c-link"
+                @model={{element.process.derivation.id}}
+                @route="bpmn-files.bpmn-file"
+              >
+                {{element.process.derivation.name}}
+              </LinkTo>
+            </td>
           </c.body>
         {{/if}}
       </t.content>

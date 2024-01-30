@@ -3,7 +3,11 @@ import { BpmnElementTypes } from '../utils/bpmn-element-types';
 
 export default class BpmnElementModel extends Model {
   @attr('string') name;
-  @hasMany('process', { inverse: null, async: true }) processes;
+  @hasMany('process', { inverse: null, async: false }) processes;
 
   type = BpmnElementTypes.BpmnElement;
+
+  get process() {
+    return this.processes[0];
+  }
 }
