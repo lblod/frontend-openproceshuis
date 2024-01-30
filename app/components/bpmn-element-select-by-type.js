@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { BpmnElementTypes } from '../utils/bpmn-element-types';
 
-export default class BpmnFileSelectByTypeComponent extends Component {
+export default class BpmnElementSelectByTypeComponent extends Component {
   types = [
     BpmnElementTypes.BusinessRuleTask,
     BpmnElementTypes.ManualTask,
