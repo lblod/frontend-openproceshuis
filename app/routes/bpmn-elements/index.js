@@ -7,6 +7,7 @@ export default class BpmnElementsIndexRoute extends Route {
 
   queryParams = {
     page: { refreshModel: true },
+    sort: { refreshModel: true },
     name: { refreshModel: true, replace: true },
   };
 
@@ -23,8 +24,9 @@ export default class BpmnElementsIndexRoute extends Route {
       page: {
         number: params.page,
         size: params.size,
-        include: 'processes.derivations',
       },
+      sort: params.sort,
+      include: 'processes.derivations',
     };
 
     if (params.name) {

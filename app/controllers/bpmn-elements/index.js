@@ -3,10 +3,11 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
 export default class BpmnElementsIndexController extends Controller {
-  queryParams = ['page', 'name'];
+  queryParams = ['page', 'size', 'sort', 'name'];
 
   @tracked page = 0;
   size = 20;
+  @tracked sort = 'name';
   @tracked name = '';
 
   get bpmnElements() {
@@ -17,6 +18,10 @@ export default class BpmnElementsIndexController extends Controller {
 
   get isLoading() {
     return this.model.loadBpmnFilesTaskInstance.isRunning;
+  }
+
+  get hasPreviousData() {
+    return this.model.loadedBpmnFiles && this.model.loadedBpmnFiles.length > 0;
   }
 
   get hasNoResults() {
@@ -40,6 +45,7 @@ export default class BpmnElementsIndexController extends Controller {
   resetFilters() {
     this.name = '';
     this.page = 0;
+    this.sort = 'name';
 
     // Triggers a refresh of the model
     this.page = null;

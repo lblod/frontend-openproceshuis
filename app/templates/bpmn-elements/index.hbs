@@ -41,7 +41,11 @@
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <AuDataTableThSortable @field="name" @label="Naam" />
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sort}}
+            @label="Naam"
+          />
           <AuDataTableThSortable @field="type" @label="Type" />
           <AuDataTableThSortable @field="bpmn-file" @label="BPMN-bestand" />
         </c.header>
