@@ -56,6 +56,9 @@ export default class BpmnElementsIndexRoute extends Route {
       case BpmnElementTypes.SendTask:
         queryType = 'send-task';
         break;
+      case BpmnElementTypes.ServiceTask:
+        queryType = 'service-task';
+        break;
       case BpmnElementTypes.Task:
         queryType = 'task';
         break;

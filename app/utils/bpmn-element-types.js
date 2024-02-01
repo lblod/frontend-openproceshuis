@@ -5,6 +5,7 @@ export const BpmnElementTypes = Object.freeze({
   ReceiveTask: 'Ontvangsttaak',
   ScriptTask: 'Scripttaak',
   SendTask: 'Verzendtaak',
+  ServiceTask: 'Servicetaak',
   Task: 'Taak',
   UserTask: 'Gebruikerstaak',
 });
