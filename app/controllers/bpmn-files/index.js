@@ -1,7 +1,6 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import config from 'frontend-processendatabank/config/environment';
 
 export default class BpmnFilesIndexController extends Controller {
   queryParams = ['page', 'name'];
@@ -34,7 +33,7 @@ export default class BpmnFilesIndexController extends Controller {
   }
 
   get postEndpoint() {
-    return `${config.APP.apiHost}/bpmn-files`;
+    return `/bpmn-files`;
   }
 
   @action
