@@ -1,5 +1,5 @@
-import Application from 'frontend-processendatabank/app';
-import config from 'frontend-processendatabank/config/environment';
+import Application from 'frontend-openproceshuis/app';
+import config from 'frontend-openproceshuis/config/environment';
 import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
