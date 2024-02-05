@@ -37,6 +37,6 @@ export default class BpmnFilesIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
 
-    return yield this.store.query('bpmn-file', query);
+    return yield this.store.query('file', query);
   }
 }

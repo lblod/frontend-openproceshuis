@@ -33,7 +33,7 @@ export default class BpmnFilesIndexController extends Controller {
   }
 
   get postEndpoint() {
-    return `/bpmn-files`;
+    return `/files`;
   }
 
   @action
@@ -63,7 +63,14 @@ export default class BpmnFilesIndexController extends Controller {
   }
 
   @action
-  fileUploaded(newFileId) {
+  async fileUploaded(newFileId) {
+    await fetch(`/bpmn?id=${newFileId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+
     this.closeFileModal();
     this.resetFilters();
     this.newFileId = newFileId;
