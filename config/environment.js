@@ -2,7 +2,7 @@
 
 module.exports = function (environment) {
   const ENV = {
-    modulePrefix: 'frontend-processendatabank',
+    modulePrefix: 'frontend-openproceshuis',
     environment,
     rootURL: '/',
     locationType: 'history',

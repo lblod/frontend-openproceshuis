@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import generateBpmnDownloadUrl from 'frontend-processendatabank/utils/bpmn-download-url';
+import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 
 export default class BpmnFilesBpmnFileIndexRoute extends Route {
   async model() {

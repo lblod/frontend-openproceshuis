@@ -1,11 +1,11 @@
 {
-  "name": "frontend-processendatabank",
+  "name": "frontend-openproceshuis",
   "version": "0.0.0",
   "private": true,
   "description": "Frontend for processes",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MartijnBogaert/frontend-processendatabank.git"
+    "url": "git+https://github.com/MartijnBogaert/frontend-openproceshuis.git"
   },
   "license": "MIT",
   "author": "Martijn Bogaert",
