@@ -1,4 +1,4 @@
-<SidebarContainer>
+{{!-- <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
       <div class="au-c-sidebar__content">
@@ -102,4 +102,74 @@
       </ul>
     </div>
   </:content>
-</SidebarContainer>
+</SidebarContainer> --}}
+
+<LayoutHome>
+  <AuBodyContainer class="au-u-background-gray-100">
+    <section class="c-home">
+      <div class="au-o-flow">
+        <AuContent>
+          <AuHeading @level="1" @skin="2">Welkom bij Open Proces huis, jouw
+            centrale bron voor het ontdekken en delen van processen.</AuHeading>
+          <div class="c-home__visual">
+            <img
+              src="/assets/images/homepage-visual.svg"
+              class="c-home-visual"
+              alt=""
+              {{!template-lint-disable require-valid-alt-text}}
+            />
+          </div>
+          <AuList @divider={{true}} as |Item|>
+            <Item>Raadpleeg processen</Item>
+            <Item>Doorzoek bouwblokken van processen</Item>
+          </AuList>
+          <div class="au-u-h-functional au-o-flow au-o-flow--small">
+            <AuLink
+                @skin="button"
+                @route="bpmn-files"
+                @width="block"
+              >Ontdek processen</AuLink>
+            <AuLink
+                @skin="button-secondary"
+                @route="bpmn-files"
+                @width="block"
+              >Deel jouw processen</AuLink>
+          </div>
+          {{!-- <div class="au-o-flow au-o-flow--small">
+            <AuCard @textCenter={{true}} as |c|>
+              <c.header>
+                <AuHeading @level="2" @skin="4">
+                  Processen bibliotheek
+                </AuHeading>
+              </c.header>
+              <c.content>
+                <AuList @divider={{true}} as |Item|>
+                  <Item>Raadpleeg processen</Item>
+                  <Item>Doorzoek bouwblokken van processen</Item>
+                </AuList>
+              </c.content>
+              <c.footer>
+                <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                  <AuLink
+                      @skin="button"
+                      @route="bpmn-files"
+                    >Ontdek processen</AuLink>
+                  <AuLink
+                      @skin="button-secondary"
+                      @route="bpmn-files"
+                    >Deel jouw processen</AuLink>
+                </div>
+              </c.footer>
+            </AuCard>
+          </div> --}}
+        </AuContent>
+        <div class="au-c-home__form au-o-flow">
+          <p class="au-u-text-center">
+            <AuLink @route="help">Meer informatie over processen en
+              BPMN bestanden</AuLink>
+          </p>
+        </div>
+      </div>
+    </section>
+  </AuBodyContainer>
+</LayoutHome>

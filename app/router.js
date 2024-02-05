@@ -22,4 +22,8 @@ Router.map(function () {
   this.route('route-not-found', {
     path: '/*wildcard',
   });
+  this.route('accessibility-statement');
+  this.route('help');
+  this.route('cookie-notice');
+  this.route('disclaimer');
 });

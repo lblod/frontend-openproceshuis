@@ -19,7 +19,7 @@ module.exports = function (environment) {
       // when it is created
     },
 
-    appName: 'ProcessenDatabank',
+    appName: 'Open Proces Huis',
   };
 
   if (environment === 'development') {
