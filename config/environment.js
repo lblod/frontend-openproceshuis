@@ -2,7 +2,7 @@
 
 module.exports = function (environment) {
   const ENV = {
-    modulePrefix: 'frontend-processendatabank',
+    modulePrefix: 'frontend-openproceshuis',
     environment,
     rootURL: '/',
     locationType: 'history',
@@ -19,7 +19,7 @@ module.exports = function (environment) {
       // when it is created
     },
 
-    appName: 'ProcessenDatabank',
+    appName: 'Open Proces Huis',
   };
 
   if (environment === 'development') {
