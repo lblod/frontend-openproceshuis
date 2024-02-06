@@ -7,7 +7,7 @@
     <AuButton @skin="secondary">Wijzig</AuButton>
     <a
       class="au-c-button"
-      href="{{bpmn-download-url @model.metadata.id}}"
+      href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
       download="{{@model.metadata.name}}"
       target="_blank"
       rel="noopener noreferrer"
