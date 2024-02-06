@@ -13,7 +13,7 @@ export default class AuFileUpload extends Component {
 
   get uploadingMsg() {
     if (!this.queue.files.length && this.args.onFileId?.isRunning) {
-      return `BBO Extraction...`; // FIXME provide a better uploadingMsg in Dutch
+      return `Processtappen extraheren ...`;
     }
     return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
   }
