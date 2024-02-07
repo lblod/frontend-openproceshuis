@@ -39,36 +39,39 @@ export default class BpmnElementsIndexRoute extends Route {
       return yield this.store.query('bpmn-element', query);
     }
 
-    let queryType;
+    let elementType = undefined;
     switch (params.type) {
       case BpmnElementTypes.BusinessRuleTask:
-        queryType = 'business-rule-task';
+        elementType = 'BusinessRuleTask';
         break;
       case BpmnElementTypes.ManualTask:
-        queryType = 'manual-task';
+        elementType = 'ManualTask';
         break;
       case BpmnElementTypes.ReceiveTask:
-        queryType = 'receive-task';
+        elementType = 'ReceiveTask';
         break;
       case BpmnElementTypes.ScriptTask:
-        queryType = 'script-task';
+        elementType = 'ScriptTask';
         break;
       case BpmnElementTypes.SendTask:
-        queryType = 'send-task';
+        elementType = 'SendTask';
         break;
       case BpmnElementTypes.ServiceTask:
-        queryType = 'service-task';
+        elementType = 'ServiceTask';
         break;
       case BpmnElementTypes.Task:
-        queryType = 'task';
+        elementType = 'Task';
         break;
       case BpmnElementTypes.UserTask:
-        queryType = 'user-task';
+        elementType = 'UserTask';
         break;
-      default:
-        queryType = 'bpmn-element';
     }
 
-    return yield this.store.query(queryType, query);
+    if (elementType)
+      query[
+        'filter[classification]'
+      ] = `https://www.irit.fr/recherches/MELODI/ontologies/BBO#${elementType}`;
+
+    return yield this.store.query(elementType, query);
   }
 }
