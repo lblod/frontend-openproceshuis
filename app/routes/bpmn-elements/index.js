@@ -72,6 +72,6 @@ export default class BpmnElementsIndexRoute extends Route {
         'filter[classification]'
       ] = `https://www.irit.fr/recherches/MELODI/ontologies/BBO#${elementType}`;
 
-    return yield this.store.query(elementType, query);
+    return yield this.store.query('bpmn-element', query);
   }
 }
