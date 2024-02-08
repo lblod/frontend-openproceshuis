@@ -2,16 +2,16 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
-export default class BpmnFilesIndexController extends Controller {
-  queryParams = ['page', 'name'];
+export default class BpmnElementsIndexController extends Controller {
+  queryParams = ['page', 'size', 'sort', 'name', 'type'];
 
   @tracked page = 0;
   size = 20;
+  @tracked sort = 'name';
   @tracked name = '';
-  @tracked fileModalOpened = false;
-  @tracked newFileId = undefined;
+  @tracked type = '';
 
-  get bpmnFiles() {
+  get bpmnElements() {
     return this.model.loadBpmnFilesTaskInstance.isFinished
       ? this.model.loadBpmnFilesTaskInstance.value
       : this.model.loadedBpmnFiles;
@@ -21,19 +21,19 @@ export default class BpmnFilesIndexController extends Controller {
     return this.model.loadBpmnFilesTaskInstance.isRunning;
   }
 
+  get hasPreviousData() {
+    return this.model.loadedBpmnFiles && this.model.loadedBpmnFiles.length > 0;
+  }
+
   get hasNoResults() {
     return (
       this.model.loadBpmnFilesTaskInstance.isFinished &&
-      this.bpmnFiles.length === 0
+      this.bpmnElements.length === 0
     );
   }
 
   get hasErrored() {
     return this.model.loadBpmnFilesTaskInstance.isError;
-  }
-
-  get postEndpoint() {
-    return `/processen`;
   }
 
   @action
@@ -43,34 +43,19 @@ export default class BpmnFilesIndexController extends Controller {
   }
 
   @action
+  setType(selection) {
+    this.page = null;
+    this.type = selection;
+  }
+
+  @action
   resetFilters() {
     this.name = '';
+    this.type = '';
     this.page = 0;
+    this.sort = 'name';
 
     // Triggers a refresh of the model
     this.page = null;
-  }
-
-  @action
-  openFileModal() {
-    this.newFileId = undefined;
-    this.fileModalOpened = true;
-  }
-
-  @action
-  closeFileModal() {
-    this.fileModalOpened = false;
-  }
-
-  @action
-  fileUploaded(newFileId) {
-    this.closeFileModal();
-    this.resetFilters();
-    this.newFileId = newFileId;
-  }
-
-  @action
-  closeAlert() {
-    this.newFileId = undefined;
   }
 }

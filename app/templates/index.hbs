@@ -119,51 +119,66 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <AuList @divider={{true}} as |Item|>
+          <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek bouwblokken van processen.</p>
+          {{!-- <AuList @divider={{true}} as |Item|>
             <Item>Raadpleeg processen</Item>
             <Item>Doorzoek bouwblokken van processen</Item>
-          </AuList>
-          <div class="au-u-h-functional au-o-flow au-o-flow--small">
-            <AuLink
-                @skin="button"
-                @route="bpmn-files"
-                @width="block"
-              >Ontdek processen</AuLink>
-            <AuLink
-                @skin="button-secondary"
-                @route="bpmn-files"
-                @width="block"
-              >Deel jouw processen</AuLink>
-          </div>
-          {{!-- <div class="au-o-flow au-o-flow--small">
-            <AuCard @textCenter={{true}} as |c|>
-              <c.header>
-                <AuHeading @level="2" @skin="4">
-                  Processen bibliotheek
-                </AuHeading>
-              </c.header>
-              <c.content>
-                <AuList @divider={{true}} as |Item|>
-                  <Item>Raadpleeg processen</Item>
-                  <Item>Doorzoek bouwblokken van processen</Item>
-                </AuList>
-              </c.content>
-              <c.footer>
-                <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                  <AuLink
-                      @skin="button"
-                      @route="bpmn-files"
-                    >Ontdek processen</AuLink>
-                  <AuLink
-                      @skin="button-secondary"
-                      @route="bpmn-files"
-                    >Deel jouw processen</AuLink>
-                </div>
-              </c.footer>
-            </AuCard>
-          </div> --}}
+            <Item>Deel jouw processen</Item>
+          </AuList> --}}
         </AuContent>
         <div class="au-c-home__form au-o-flow">
+          <div class="au-o-grid au-o-grid--small">
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header @badgeSkin="brand" @badgeIcon="sitemap" @badgeSize="small">
+                  <AuHeading @level="2" @skin="4">
+                    Processen bibliotheek
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Raadpleeg processen</Item>
+                    <Item>Doorzoek bouwblokken van processen</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink
+                        @skin="button"
+                        @route="bpmn-files"
+                      >Processen</AuLink>
+                      <AuLink
+                        @skin="button-secondary"
+                        @route="bpmn-elements"
+                      >Bouwblokken</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header @badgeSkin="brand" @badgeIcon="upload" @badgeSize="small">
+                  <AuHeading @level="2" @skin="4">
+                    Deel jouw processen
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Raadpleeg processen</Item>
+                    <Item>Doorzoek bouwblokken van processen</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink
+                      @skin="button"
+                      @route="bpmn-uploads"
+                    >Deel jouw processen</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+          </div>
           <p class="au-u-text-center">
             <AuLink @route="help">Meer informatie over processen en
               BPMN bestanden</AuLink>

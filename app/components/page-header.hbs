@@ -1,17 +1,41 @@
 <header ...attributes>
   {{#if (has-block "action")}}
-    <AuToolbar as |Group|>
+    <AuToolbar @border="bottom" @size="medium" as |Group|>
       <Group>
-        <AuHeading>
-          {{yield to="title"}}
-        </AuHeading>
+        <div>
+          {{#each (breadcrumbs) as |breadcrumb|}}
+            <p class="au-u-h-functional">
+              {{#if (is-last breadcrumb (breadcrumbs))}}
+                {{!-- {{breadcrumb.title}} --}}
+              {{else}}
+                <AuLink
+                  @icon="arrow-left"
+                  @skin="secondary"
+                  @route={{breadcrumb.data.route}}
+                  @model={{breadcrumb.data.model}}
+                  @models={{breadcrumb.data.models}}
+                >
+                  {{breadcrumb.title}}
+                </AuLink>
+              {{/if}}
+            </p>
+          {{/each}}
+          <AuHeading>
+            {{yield to="title"}}
+          </AuHeading>
+          {{#if (has-block "subtitle")}}
+          <AuHeading @level="3" @skin="6" class="au-u-margin-top-tiny">
+            {{yield to="subtitle"}}
+          </AuHeading>
+          {{/if}}
+        </div>
       </Group>
       <Group>
         {{yield to="action"}}
       </Group>
     </AuToolbar>
   {{else if (has-block "alert")}}
-    <AuToolbar as |Group|>
+    <AuToolbar @size="large" as |Group|>
       <Group>
         <AuHeading class="au-u-margin-right">
           {{yield to="title"}}
@@ -26,10 +50,5 @@
       {{yield to="title"}}
     </AuHeading>
   {{/if}}
-  {{#if (has-block "subtitle")}}
-    <AuHeading @level="2" @skin="3" class="au-u-margin-top-tiny">
-      {{yield to="subtitle"}}
-    </AuHeading>
-  {{/if}}
-
+  
 </header>

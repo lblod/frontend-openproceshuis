@@ -1,0 +1,42 @@
+.au-c-navigation {
+  padding-right: $au-unit-small;
+  padding-bottom: 0;
+
+  .au-c-tabs {
+    border-bottom: 0;
+  }
+
+  @include mq($until: small) {
+    align-items: flex-start;
+
+    .au-c-toolbar__group:last-child {
+      margin-top: $au-unit-small;
+    }
+
+    .au-c-tabs {
+      padding-left: 0;
+    }
+
+    .au-c-tabs-list {
+      padding: 0;
+      flex-wrap: wrap;
+      flex-direction: column;
+      border-right: 1px solid var(--au-gray-200);
+    }
+
+    .au-c-tabs-list__item + .au-c-tabs-list__item {
+      margin: 0;
+      border-top: 1px solid var(--au-gray-200);
+    }
+
+    .au-c-tabs-list .au-c-link {
+      width: 100%;
+      padding-left: $au-unit-small;
+      padding-right: $au-unit-small;
+    }
+
+    .au-c-tabs-list .au-c-link.active {
+      box-shadow: -3px 0 0 0 inset var(--au-gray-900);
+    }
+  }
+}

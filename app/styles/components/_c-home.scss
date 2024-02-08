@@ -12,15 +12,15 @@
   }
 
   @include mq(small) {
-    margin-left: 50%;
-    width: 50%;
+    margin-left: 25%;
+    width: 75%;
     height: 100%;
   }
 
   @include mq(medium) {
     > * {
       padding: $au-unit-large;
-      max-width: 600px;
+      max-width: 1024px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -44,6 +44,7 @@
       margin-right: -$au-unit;
       margin-left: -$au-unit;
       padding-bottom: $au-unit-large;
+      border-bottom: 1px solid var(--au-gray-200);
     }
   }
 }
@@ -55,10 +56,11 @@
     top: -$au-unit;
     display: flex;
     justify-content: center;
-    width: 50%;
+    width: 25%;
     height: 100%;
     padding: $au-unit-large;
     background-color: $au-white;
+    border-right: 1px solid var(--au-gray-200);
 
     > img {
       max-width: 465px;

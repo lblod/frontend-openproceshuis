@@ -4,7 +4,7 @@ import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { BpmnElementTypes } from '../../../utils/bpmn-element-types';
 
-export default class BpmnFilesBpmnFileIndexRoute extends Route {
+export default class BpmnUploadsBpmnFileIndexRoute extends Route {
   @service store;
 
   queryParams = {
@@ -16,7 +16,7 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
 
   async model(params) {
     // Fetching metadata and diagram for a specific BPMN file
-    let metadata = this.modelFor('bpmn-files.bpmn-file');
+    let metadata = this.modelFor('bpmn-uploads.bpmn-file');
     let diagram = await this.fetchBpmnXml(metadata.id);
 
     // Performing the task to load BPMN elements based on parameters

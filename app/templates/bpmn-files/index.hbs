@@ -1,12 +1,12 @@
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
-      <div class="au-c-sidebar__content au-o-box">
+      <div class="au-c-sidebar__content">
         <form
           {{on "reset" this.resetFilters}}
-          class="au-o-grid au-o-grid--small"
+          class="au-o-flow au-o-flow--small"
         >
-          <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
+          <div>
             <AuLabel for="filter-name">Naam</AuLabel>
             <BpmnFileSelectByName
               @id="filter-name"
@@ -15,9 +15,8 @@
               class="grow"
             />
           </div>
-          <div class="au-o-grid__item">
-            <AuButton @skin="link" type="reset">
-              <AuIcon @icon="cross" @alignment="left" />
+          <div>
+            <AuButton @icon="cross" @skin="link" type="reset" class="au-u-padding-none">
               Herstel alle filters
             </AuButton>
           </div>
@@ -46,11 +45,13 @@
       </AuAlert>
     {{/if}}
 
-    <PageHeader class="au-o-box">
-      <:title>BPMN-bestanden</:title>
-      <:subtitle>BPMN-bestanden beschrijven processen</:subtitle>
+    <PageHeader>
+      <:title>Processen</:title>
+      <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
+          Over BPMN bestanden
+        </AuLink></:subtitle>
       <:action>
-        <AuButton {{on "click" this.openFileModal}}>Voeg toe</AuButton>
+        {{!-- <AuButton {{on "click" this.openFileModal}}>Voeg toe</AuButton> --}}
       </:action>
     </PageHeader>
 

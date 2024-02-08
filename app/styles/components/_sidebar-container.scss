@@ -8,12 +8,16 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
 .au-c-sidebar-container {
   display: flex;
   flex-wrap: wrap;
-  height: 100%;
   overflow: hidden;
+
+  @include mq(medium) {
+    height: 100%;
+  }
 }
 
 .au-c-sidebar-container__sidebar {
   flex-basis: 100%;
+  padding: $au-unit-small;
 
   @include mq(medium) {
     height: 100%;
@@ -38,4 +42,13 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
     flex-basis: 0;
     flex-grow: 1;
   }
+}
+
+.au-c-sidebar {
+  border: 1px solid var(--au-gray-200);
+  border-radius: $au-radius;
+}
+
+.au-c-sidebar__content {
+  padding: $au-unit-small;
 }

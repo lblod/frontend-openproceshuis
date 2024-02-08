@@ -1,0 +1,95 @@
+
+{{#if this.newFileId}}
+  <AuAlert
+    @title="Gelukt!"
+    @skin="success"
+    @icon="check"
+    @size="small"
+    @closable="true"
+    @onClose={{this.closeAlert}}
+    class="au-u-margin au-u-margin-bottom-none"
+  >
+    <p>
+      <LinkTo
+        class="au-c-link"
+        @model={{this.newFileId}}
+        @route="bpmn-files.bpmn-file"
+      >Raadpleeg nieuw BPMN-bestand
+      </LinkTo></p>
+  </AuAlert>
+{{/if}}
+
+<PageHeader>
+  <:title>Mijn processen</:title>
+  <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
+      Over BPMN bestanden
+    </AuLink></:subtitle>
+  <:action>
+    <AuButton {{on "click" this.openFileModal}}>Voeg proces toe</AuButton>
+  </:action>
+</PageHeader>
+
+<AuDataTable
+  @content={{this.bpmnFiles}}
+  @isLoading={{this.isLoading}}
+  @page={{this.page}}
+  @size={{this.size}}
+  as |t|
+>
+  <t.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <AuDataTableThSortable @field="name" @label="Naam" />
+      <AuDataTableThSortable @field="extension" @label="Extensie" />
+      <AuDataTableThSortable @field="format" @label="Formaat" />
+      <AuDataTableThSortable @field="size" @label="Grootte" />
+    </c.header>
+    {{#if this.hasErrored}}
+      <TableMessage::Error />
+    {{else if this.hasNoResults}}
+      <TableMessage>
+        <p>
+          Er werden geen zoekresultaten gevonden.
+        </p>
+      </TableMessage>
+    {{else}}
+      <c.body as |file|>
+        <td>
+          <LinkTo
+            class="au-c-link"
+            @model={{file.id}}
+            @route="bpmn-uploads.bpmn-file"
+          >
+            {{file.name}}
+          </LinkTo>
+        </td>
+        <td>{{file.extension}}</td>
+        <td>{{file.format}}</td>
+        <td>{{file-size-format file.size}}</td>
+      </c.body>
+    {{/if}}
+  </t.content>
+</AuDataTable>
+
+<AuModal
+  @modalOpen={{this.fileModalOpened}}
+  @closeModal={{this.closeFileModal}}
+>
+  <:title>Voeg BPMN-bestand toe</:title>
+  <:body>
+    <AuFileUpload
+      @accept=".bpmn,.xml"
+      @endPoint={{this.postEndpoint}}
+      @title="Bestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+      @onFinishUpload={{this.fileUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeFileModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

@@ -1,0 +1,22 @@
+.au-c-card--flex .au-c-card__header {
+  gap: $au-unit-small;
+}
+
+.au-c-boxed-table {
+  border: 1px solid var(--au-gray-200);
+  border-radius: $au-radius;
+  min-height: 700px;
+
+  .au-c-data-table__wrapper {
+    border-top: 0;
+  }
+
+  .au-c-data-table__actions {
+    display: none;
+  }
+
+  tbody tr:last-child,
+  .au-c-data-table__message {
+    border-bottom: 0;
+  }
+}

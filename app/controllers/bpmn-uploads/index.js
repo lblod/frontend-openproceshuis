@@ -2,7 +2,7 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
-export default class BpmnFilesIndexController extends Controller {
+export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'name'];
 
   @tracked page = 0;
@@ -33,7 +33,7 @@ export default class BpmnFilesIndexController extends Controller {
   }
 
   get postEndpoint() {
-    return `/processen`;
+    return `/mijn-processen`;
   }
 
   @action
