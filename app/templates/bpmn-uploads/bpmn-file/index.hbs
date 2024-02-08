@@ -21,6 +21,7 @@
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   {{#if this.edit}}
   <DataCard>
+    <:header></:header>
     <:title>
       Metadata
     </:title>
@@ -30,9 +31,17 @@
           <Item>
             <:label>Bestandsnaam</:label>
             <:content>
-              {{@model.metadata.name}}
+              <AuInput @value={{@model.metadata.name}} @width="block" />
             </:content>
           </Item>
+          <Item>
+            <:label>Beschrijving</:label>
+            <:content>
+              <AuTextarea rows="7" @value="" @width="block" />
+            </:content>
+          </Item>
+        </:left>
+        <:right as |Item|>
           <Item>
             <:label>Aangemaakt op</:label>
             <:content>
@@ -45,8 +54,6 @@
               {{date-format @model.metadata.modified}}
             </:content>
           </Item>
-        </:left>
-        <:right as |Item|>
           <Item>
             <:label>Extensie</:label>
             <:content>
@@ -93,6 +100,15 @@
             </:content>
           </Item>
           <Item>
+            <:label>Beschrijving</:label>
+            <:content>
+              ...
+            </:content>
+          </Item>
+          
+        </:left>
+        <:right as |Item|>
+          <Item>
             <:label>Aangemaakt op</:label>
             <:content>
               {{date-format @model.metadata.created}}
@@ -104,8 +120,6 @@
               {{date-format @model.metadata.modified}}
             </:content>
           </Item>
-        </:left>
-        <:right as |Item|>
           <Item>
             <:label>Extensie</:label>
             <:content>

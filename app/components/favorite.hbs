@@ -1,0 +1,4 @@
+<AuButton @skin="naked" class="c-favorite {{if this.favorite 'is-active'}}" {{on 'click' this.toggleFavorite}}>
+  <AuIcon @icon={{if this.favorite 'star-filled' 'star-outline'}} />
+  <span class="au-u-hidden-visually">Favoriet</span>
+</AuButton>

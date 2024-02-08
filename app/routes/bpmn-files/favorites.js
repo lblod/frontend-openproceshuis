@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 
-export default class BpmnUploadIndexRoute extends Route {
+export default class BpmnFilesFavoritesRoute extends Route {
   @service store;
 
   queryParams = {

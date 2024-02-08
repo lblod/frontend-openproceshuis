@@ -2,12 +2,28 @@
   <:sidebar>
     <div class="au-c-sidebar">
       <div class="au-c-sidebar__content">
+        <ul class="au-c-list-navigation">
+          <li class="au-c-list-navigation__item">
+            <AuNavigationLink
+              @route="bpmn-files.index"
+            >
+              Alle processen
+            </AuNavigationLink>
+          </li>
+          <li class="au-c-list-navigation__item">
+            <AuNavigationLink
+              @route="bpmn-files.favorites"
+            >
+              Favorieten
+            </AuNavigationLink>
+          </li>
+        </ul>
         <form
           {{on "reset" this.resetFilters}}
-          class="au-o-flow au-o-flow--small"
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
         >
           <div>
-            <AuLabel for="filter-name">Naam</AuLabel>
+            <AuLabel for="filter-name">Filter op naam of beschrijving</AuLabel>
             <BpmnFileSelectByName
               @id="filter-name"
               @selected={{this.name}}
@@ -16,7 +32,7 @@
             />
           </div>
           <div>
-            <AuButton @icon="cross" @skin="link" type="reset" class="au-u-padding-none">
+            <AuButton @icon="undo" @skin="link" type="reset" class="au-u-padding-none">
               Herstel alle filters
             </AuButton>
           </div>
@@ -64,10 +80,13 @@
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
+          <th></th>
           <AuDataTableThSortable @field="name" @label="Naam" />
-          <AuDataTableThSortable @field="extension" @label="Extensie" />
-          <AuDataTableThSortable @field="format" @label="Formaat" />
-          <AuDataTableThSortable @field="size" @label="Grootte" />
+          <AuDataTableThSortable @field="name" @label="Beschrijving" />
+          <AuDataTableThSortable @field="modified" @label="Laatst aangepast op" />
+          <AuDataTableThSortable @field="name" @label="Bestuur" />
+          {{!-- <AuDataTableThSortable @field="format" @label="Formaat" /> --}}
+          {{!-- <AuDataTableThSortable @field="size" @label="Grootte" /> --}}
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -79,6 +98,7 @@
           </TableMessage>
         {{else}}
           <c.body as |file|>
+            <td class="c-favorite-cell"><Favorite @active={{false}} /></td>
             <td>
               <LinkTo
                 class="au-c-link"
@@ -88,9 +108,11 @@
                 {{file.name}}
               </LinkTo>
             </td>
-            <td>{{file.extension}}</td>
-            <td>{{file.format}}</td>
-            <td>{{file-size-format file.size}}</td>
+            <td>...</td>
+            <td>{{date-format file.modified}}</td>
+            <td>Demo bestuur</td>
+            {{!-- <td>{{file.format}}</td> --}}
+            {{!-- <td>{{file-size-format file.size}}</td> --}}
           </c.body>
         {{/if}}
       </t.content>
@@ -104,12 +126,13 @@
 >
   <:title>Voeg BPMN-bestand toe</:title>
   <:body>
-    <AuFileUpload
+    <CustomFileUpload
       @accept=".bpmn,.xml"
       @endPoint={{this.postEndpoint}}
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @onFinishUpload={{this.fileUploaded}}
+      @onFileId={{this.extractBpmn}}
     />
   </:body>
   <:footer>

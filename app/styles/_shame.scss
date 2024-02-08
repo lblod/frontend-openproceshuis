@@ -5,7 +5,6 @@
 .au-c-boxed-table {
   border: 1px solid var(--au-gray-200);
   border-radius: $au-radius;
-  min-height: 700px;
 
   .au-c-data-table__wrapper {
     border-top: 0;
@@ -18,5 +17,25 @@
   tbody tr:last-child,
   .au-c-data-table__message {
     border-bottom: 0;
+  }
+}
+
+.au-c-toolbar--nowrap {
+  position: relative;
+  align-items: stretch;
+
+  @include mq($until: small) {
+    flex-wrap: wrap;
+  }
+}
+
+.au-c-toolbar__action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding-bottom: $au-unit-small;
+
+  .au-c-button-group {
+    justify-content: flex-end;
   }
 }

@@ -23,6 +23,7 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
     height: 100%;
     flex-basis: 25rem;
     flex-shrink: 0;
+    padding-right: 0;
   }
 }
 
@@ -50,5 +51,19 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
 }
 
 .au-c-sidebar__content {
+  // padding: $au-unit-small;
+}
+
+.au-c-list-navigation {
+  border-bottom: 1px solid var(--au-gray-200);
+}
+
+.au-c-list-navigation__item {
+  & + & {
+    border-top: 1px solid var(--au-gray-200);
+  }
+}
+
+.au-c-list-navigation__link {
   padding: $au-unit-small;
 }

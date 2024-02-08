@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { task } from 'ember-concurrency';
 
 export default class BpmnFilesIndexController extends Controller {
   queryParams = ['page', 'name'];
@@ -62,6 +63,15 @@ export default class BpmnFilesIndexController extends Controller {
     this.fileModalOpened = false;
   }
 
+  @task({ enqueue: true, maxConcurrency: 3 })
+  *extractBpmn(newFileId) {
+    yield fetch(`/bpmn?id=${newFileId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+  }
   @action
   fileUploaded(newFileId) {
     this.closeFileModal();

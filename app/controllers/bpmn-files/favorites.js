@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 
-export default class BpmnUploadIndexController extends Controller {
+export default class BpmnFilesFavoritesController extends Controller {
   queryParams = ['page', 'name'];
 
   @tracked page = 0;
@@ -34,7 +34,7 @@ export default class BpmnUploadIndexController extends Controller {
   }
 
   get postEndpoint() {
-    return `/mijn-processen`;
+    return `/processen`;
   }
 
   @action

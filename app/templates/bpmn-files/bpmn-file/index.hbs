@@ -5,7 +5,7 @@
   <:action>
     <a
       class="au-c-button"
-      href="{{bpmn-download-url @model.metadata.id}}"
+      href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
       download="{{@model.metadata.name}}"
       target="_blank"
       rel="noopener noreferrer"
@@ -17,7 +17,8 @@
 
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   <DataCard>
-    {{!-- <:title>Metadata</:title> --}}
+    <:header></:header>
+    <:title>Metadata</:title>
     <:card as |Card|>
       <Card.Columns>
         <:left as |Item|>
@@ -27,6 +28,21 @@
               {{@model.metadata.name}}
             </:content>
           </Item>
+          <Item>
+            <:label>Bestuur</:label>
+            <:content>
+              Demo bestuur
+            </:content>
+          </Item>
+          <Item>
+            <:label>Beschrijving</:label>
+            <:content>
+              ...
+            </:content>
+          </Item>
+
+        </:left>
+        <:right as |Item|>
           <Item>
             <:label>Aangemaakt op</:label>
             <:content>
@@ -39,8 +55,6 @@
               {{date-format @model.metadata.modified}}
             </:content>
           </Item>
-        </:left>
-        <:right as |Item|>
           <Item>
             <:label>Extensie</:label>
             <:content>

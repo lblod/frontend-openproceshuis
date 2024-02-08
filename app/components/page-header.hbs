@@ -1,6 +1,6 @@
 <header ...attributes>
   {{#if (has-block "action")}}
-    <AuToolbar @border="bottom" @size="medium" as |Group|>
+    <AuToolbar @border="bottom" @size="medium" @nowrap={{true}} as |Group|>
       <Group>
         <div>
           {{#each (breadcrumbs) as |breadcrumb|}}
@@ -30,7 +30,7 @@
           {{/if}}
         </div>
       </Group>
-      <Group>
+      <Group class="au-c-toolbar__action">
         {{yield to="action"}}
       </Group>
     </AuToolbar>

@@ -1,4 +1,5 @@
-export default function generateBpmnDownloadUrl(fileId) {
-  const baseUrl = '/bpmn-files';
-  return `${baseUrl}/${fileId}/download`;
+export default function generateBpmnDownloadUrl(fileId, fileName) {
+  let url = `/files/${fileId}/download`;
+  if (fileName) url += `?name=${fileName}`;
+  return url;
 }

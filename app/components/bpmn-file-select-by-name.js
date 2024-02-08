@@ -12,7 +12,7 @@ export default class BpmnFileSelectByNameComponent extends Component {
       query['filter[name]'] = searchParams;
     }
 
-    const result = yield this.store.query('bpmn-file', query);
+    const result = yield this.store.query('file', query);
 
     if (result) {
       return [...[searchParams], ...new Set(result.map((r) => r.name))];

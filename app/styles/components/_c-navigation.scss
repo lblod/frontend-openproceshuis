@@ -6,7 +6,7 @@
     border-bottom: 0;
   }
 
-  @include mq($until: small) {
+  @include mq($until: 400px) {
     align-items: flex-start;
 
     .au-c-toolbar__group:last-child {
