@@ -19,8 +19,7 @@
 
     .au-c-tabs-list {
       padding: 0;
-      flex-wrap: wrap;
-      flex-direction: column;
+      flex-flow: column wrap;
       border-right: 1px solid var(--au-gray-200);
     }
 
