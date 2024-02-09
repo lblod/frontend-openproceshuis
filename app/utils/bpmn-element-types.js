@@ -34,3 +34,11 @@ export const BpmnElementTypes = Object.freeze({
   TextAnnotation: 'Tekstannotatie',
   UserTask: 'Gebruikerstaak',
 });
+
+export const InvertedBpmnElementTypes = Object.entries(BpmnElementTypes).reduce(
+  (acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  },
+  {}
+);
