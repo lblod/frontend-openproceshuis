@@ -27,9 +27,20 @@ export default class BpmnElementsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      sort: params.sort,
       include: 'processes.derivations',
     };
+
+    if (params.sort) {
+      let sortValue = params.sort;
+
+      if (params.sort === 'file') {
+        sortValue = 'processes.derivations.name';
+      } else if (params.sort === '-file') {
+        sortValue = '-processes.derivations.name';
+      }
+
+      query.sort = sortValue;
+    }
 
     if (params.name) {
       query['filter[name]'] = params.name;
