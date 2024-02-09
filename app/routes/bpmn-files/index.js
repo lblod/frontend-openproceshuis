@@ -7,6 +7,7 @@ export default class BpmnFilesIndexRoute extends Route {
 
   queryParams = {
     page: { refreshModel: true },
+    sort: { refreshModel: true },
     name: { refreshModel: true, replace: true },
   };
 
@@ -31,6 +32,7 @@ export default class BpmnFilesIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      sort: params.sort,
     };
 
     if (params.name) {
