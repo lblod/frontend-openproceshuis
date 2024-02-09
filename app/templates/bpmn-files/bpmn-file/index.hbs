@@ -133,4 +133,28 @@
       </div>
     </div>
   </div>
+
+  <AuCard
+      @textCenter={{true}}
+      as |c|
+    >
+      <c.header
+        @badgeIcon="circle-question"
+        @badgeSkin="brand"
+        @badgeSize="default"
+      >
+        <AuHeading @level="2" @skin="4">
+          Help ons de kwaliteit van het Open Proces Huis te verbeteren.
+        </AuHeading>
+        <p>
+          {{this.subtitle}}
+        </p>
+      </c.header>
+      <c.content>
+        <p>Laat ons weten of dit proces bruikbaar was voor jouw organisatie.</p>
+      </c.content>
+      <c.footer>
+        <AuButton @skin="secondary"><AuIcon @icon="like" />Ja, dit is een goed proces</AuButton>
+      </c.footer>
+    </AuCard>
 </AuBodyContainer>
