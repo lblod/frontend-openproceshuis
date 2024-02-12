@@ -63,10 +63,26 @@
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <AuDataTableThSortable @field="name" @label="Naam" />
-          <AuDataTableThSortable @field="extension" @label="Extensie" />
-          <AuDataTableThSortable @field="format" @label="Formaat" />
-          <AuDataTableThSortable @field="size" @label="Grootte" />
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sort}}
+            @label="Naam"
+          />
+          <AuDataTableThSortable
+            @field="extension"
+            @currentSorting={{this.sort}}
+            @label="Extensie"
+          />
+          <AuDataTableThSortable
+            @field="format"
+            @currentSorting={{this.sort}}
+            @label="Formaat"
+          />
+          <AuDataTableThSortable
+            @field="size"
+            @currentSorting={{this.sort}}
+            @label="Grootte"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />

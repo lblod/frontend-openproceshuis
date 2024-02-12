@@ -7,6 +7,7 @@ export default class BpmnFilesIndexRoute extends Route {
 
   queryParams = {
     page: { refreshModel: true },
+    sort: { refreshModel: true },
     name: { refreshModel: true, replace: true },
   };
 
@@ -32,6 +33,18 @@ export default class BpmnFilesIndexRoute extends Route {
         size: params.size,
       },
     };
+
+    if (params.sort) {
+      const isDescending = params.sort.startsWith('-');
+
+      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+
+      let sortValue =
+        fieldName === 'size' ? fieldName : `:no-case:${fieldName}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
 
     if (params.name) {
       query['filter[name]'] = params.name;
