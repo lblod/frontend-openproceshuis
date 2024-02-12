@@ -16,13 +16,13 @@ Router.map(function () {
     this.route('favorites', { path: 'favorieten' });
   });
 
-  this.route('bpmn-uploads', { path: 'mijn-processen' }, function () {
+  this.route('bpmn-uploads', { path: 'gedeelde-processen' }, function () {
     this.route('bpmn-file', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
     });
   });
 
-  this.route('bpmn-elements', { path: 'bouwblokken' }, function () {
+  this.route('bpmn-elements', { path: 'processtappen' }, function () {
     this.route('index', { path: '' });
   });
 

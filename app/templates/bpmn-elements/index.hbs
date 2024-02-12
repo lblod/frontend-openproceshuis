@@ -35,9 +35,12 @@
   </:sidebar>
   <:content>
 
-    <PageHeader class="au-o-box">
+    <PageHeader>
       <:title>Processtappen</:title>
-      <:subtitle>Processen bestaan uit verschillende bouwblokken</:subtitle>
+      <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
+          Over BPMN bestanden
+        </AuLink></:subtitle>
+      <:action></:action>
     </PageHeader>
 
     <AuDataTable
