@@ -6,7 +6,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name', 'type'];
 
   @tracked page = 0;
-  size = 20;
+  size = 100;
   @tracked sort = 'name';
   @tracked name = '';
   @tracked type = '';
@@ -14,9 +14,20 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked edit = false;
 
   get bpmnElements() {
-    return this.model.loadBpmnFilesTaskInstance.isFinished
+    let elements = this.model.loadBpmnFilesTaskInstance.isFinished
       ? this.model.loadBpmnFilesTaskInstance.value
       : this.model.loadedBpmnFiles;
+
+    // Use the current process ID from @model.metadata
+    let currentProcessId = this.model.id;
+
+    // Filter elements to only include those with a name length greater than 0 and belong to the current process
+    return elements.filter(
+      (element) =>
+        element.name &&
+        element.name.length > 0 &&
+        element.processId === currentProcessId
+    );
   }
 
   get isLoading() {
