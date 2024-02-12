@@ -31,13 +31,13 @@ export default class BpmnElementsIndexRoute extends Route {
     };
 
     if (params.sort) {
-      let sortValue = params.sort;
+      const isDescending = params.sort.startsWith('-');
 
-      if (params.sort === 'file') {
-        sortValue = 'processes.derivations.name';
-      } else if (params.sort === '-file') {
-        sortValue = '-processes.derivations.name';
-      }
+      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      if (fieldName === 'file') fieldName = 'processes.derivations.name';
+
+      let sortValue = `:no-case:${fieldName}`;
+      if (isDescending) sortValue = `-${sortValue}`;
 
       query.sort = sortValue;
     }
