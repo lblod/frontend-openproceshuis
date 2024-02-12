@@ -7,7 +7,7 @@ export default class BpmnElementsIndexController extends Controller {
 
   @tracked page = 0;
   size = 20;
-  @tracked sort = 'name';
+  @tracked sort = '';
   @tracked name = '';
   @tracked type = '';
 
@@ -53,7 +53,7 @@ export default class BpmnElementsIndexController extends Controller {
     this.name = '';
     this.type = '';
     this.page = 0;
-    this.sort = 'name';
+    this.sort = '';
 
     // Triggers a refresh of the model
     this.page = null;

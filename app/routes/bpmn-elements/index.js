@@ -35,6 +35,7 @@ export default class BpmnElementsIndexRoute extends Route {
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
       if (fieldName === 'file') fieldName = 'processes.derivations.name';
+      else if (fieldName === 'name') query['filter[:has:name]'] = 'true'; // Filtering with non-existent names, behaves unexpectedly
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
