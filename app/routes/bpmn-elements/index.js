@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import { BpmnElementTypes } from '../../utils/bpmn-element-types';
+import { InvertedBpmnElementTypes } from '../../utils/bpmn-element-types';
 
 export default class BpmnElementsIndexRoute extends Route {
   @service store;
@@ -39,34 +39,7 @@ export default class BpmnElementsIndexRoute extends Route {
       return yield this.store.query('bpmn-element', query);
     }
 
-    let elementType = undefined;
-    switch (params.type) {
-      case BpmnElementTypes.BusinessRuleTask:
-        elementType = 'BusinessRuleTask';
-        break;
-      case BpmnElementTypes.ManualTask:
-        elementType = 'ManualTask';
-        break;
-      case BpmnElementTypes.ReceiveTask:
-        elementType = 'ReceiveTask';
-        break;
-      case BpmnElementTypes.ScriptTask:
-        elementType = 'ScriptTask';
-        break;
-      case BpmnElementTypes.SendTask:
-        elementType = 'SendTask';
-        break;
-      case BpmnElementTypes.ServiceTask:
-        elementType = 'ServiceTask';
-        break;
-      case BpmnElementTypes.Task:
-        elementType = 'Task';
-        break;
-      case BpmnElementTypes.UserTask:
-        elementType = 'UserTask';
-        break;
-    }
-
+    const elementType = InvertedBpmnElementTypes[params.type] || undefined;
     if (elementType)
       query[
         'filter[classification]'
