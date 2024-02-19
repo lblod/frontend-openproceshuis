@@ -9,7 +9,7 @@ export default class AuthLogoutRoute extends Route {
     if (this.session.requireAuthentication(transition, 'mock-login')) {
       try {
         await this.session.invalidate();
-        let logoutUrl = this.router.urlFor('mock-login');
+        let logoutUrl = this.router.urlFor('index');
         window.location.replace(logoutUrl);
       } catch (error) {
         throw new Error(
