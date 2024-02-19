@@ -11,6 +11,7 @@ export default class CurrentSessionService extends Service {
 
   @tracked account;
   @tracked user;
+  @tracked title;
   @tracked group;
   @tracked roles;
 
@@ -29,6 +30,8 @@ export default class CurrentSessionService extends Service {
 
       let groupId = sessionData?.group?.data?.id;
       this.group = await this.store.findRecord('group', groupId);
+
+      this.title = `${this.user.firstName} ${this.user.familyName} - ${this.group.name}`;
     }
   }
 

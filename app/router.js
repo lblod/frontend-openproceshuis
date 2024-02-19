@@ -11,6 +11,7 @@ Router.map(function () {
 
   this.route('auth', { path: '/authorization' }, function () {
     this.route('logout');
+    this.route('switch');
   });
 
   this.route('index', { path: '' });
