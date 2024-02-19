@@ -2,7 +2,8 @@ import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 const EDITOR_ROLES = [
-  'ABBOpenProcesHuisAntwerp-editor, ABBOpenProcesHuisLeuven-editor',
+  'ABBOpenProcesHuisAntwerp-editor',
+  'ABBOpenProcesHuisLeuven-editor',
 ];
 
 export default class CurrentSessionService extends Service {
@@ -36,6 +37,7 @@ export default class CurrentSessionService extends Service {
   }
 
   get canEdit() {
+    if (!this.session.isAuthenticated) return false;
     return this.roles.some((role) => EDITOR_ROLES.includes(role));
   }
 
