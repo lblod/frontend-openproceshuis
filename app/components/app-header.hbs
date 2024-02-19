@@ -10,12 +10,9 @@
       @alignment="right"
       role="menu"
     >
-      {{#unless this.session.isControllerLoginSession}}
-        <AuLink @route="auth.switch" @icon="switch" role="menuitem">
-          Wissel van bestuurseenheid
-        </AuLink>
-      {{/unless}}
-
+      <AuLink @route="auth.switch" @icon="switch" role="menuitem">
+        Wissel van bestuurseenheid
+      </AuLink>
       <AuLink @route="auth.logout" @icon="logout" role="menuitem">
         Afmelden
       </AuLink>
