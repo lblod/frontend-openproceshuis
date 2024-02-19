@@ -7,6 +7,12 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
+  this.route('mock-login');
+
+  this.route('auth', { path: '/authorization' }, function () {
+    this.route('logout');
+  });
+
   this.route('index', { path: '' });
 
   this.route('bpmn-files', { path: 'bpmn-bestanden' }, function () {
@@ -17,6 +23,14 @@ Router.map(function () {
 
   this.route('bpmn-elements', { path: 'processtappen' }, function () {
     this.route('index', { path: '' });
+  });
+
+  this.route('legal', { path: '/legaal' }, function () {
+    this.route('disclaimer');
+    this.route('cookiestatement', { path: '/cookieverklaring' });
+    this.route('accessibilitystatement', {
+      path: '/toegankelijkheidsverklaring',
+    });
   });
 
   this.route('route-not-found', {
