@@ -4,7 +4,10 @@
     {{@model.metadata.name}}
   </:title>
   <:action>
-    <AuButton @skin="secondary">Wijzig</AuButton>
+
+    {{#if this.session.isAuthenticated}}
+      <AuButton @skin="secondary">Wijzig</AuButton>
+    {{/if}}
     <a
       class="au-c-button"
       href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
@@ -14,7 +17,6 @@
     >
       Download
     </a>
-
   </:action>
 </PageHeader>
 
