@@ -5,7 +5,7 @@
   </:title>
   <:action>
 
-    {{#if this.session.isAuthenticated}}
+    {{#if this.currentSession.canEdit}}
       <AuButton @skin="secondary">Wijzig</AuButton>
     {{/if}}
     <a

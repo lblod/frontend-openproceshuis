@@ -50,7 +50,7 @@
       <:title>BPMN-bestanden</:title>
       <:subtitle>BPMN-bestanden beschrijven processen</:subtitle>
       <:action>
-        {{#if this.session.isAuthenticated}}
+        {{#if this.currentSession.canEdit}}
           <AuButton {{on "click" this.openFileModal}}>Voeg toe</AuButton>
         {{/if}}
       </:action>

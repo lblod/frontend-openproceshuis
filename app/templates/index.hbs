@@ -65,7 +65,7 @@
             <c.content>
               <ul>
                 <li>Raadpleeg processen</li>
-                {{#if this.session.isAuthenticated}}
+                {{#if this.currentSession.canEdit}}
                   <li>Voeg processen toe</li>
                 {{/if}}
               </ul>

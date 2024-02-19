@@ -5,7 +5,7 @@ import { service } from '@ember/service';
 import { task } from 'ember-concurrency';
 
 export default class BpmnFilesIndexController extends Controller {
-  @service session;
+  @service currentSession;
 
   queryParams = ['page', 'size', 'sort', 'name'];
 
