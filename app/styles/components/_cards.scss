@@ -23,7 +23,7 @@ $card-label-whitespace: $au-unit-small;
 
 .au-c-card-columns__column {
   @include mq(1279px) {
-    width: calc(50% - #{$au-unit/2});
+    width: calc(50% - calc($au-unit / 2));
   }
 }
 
