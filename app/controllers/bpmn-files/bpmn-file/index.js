@@ -1,12 +1,9 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { service } from '@ember/service';
 
 export default class BpmnFilesBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
-
-  @service currentSession;
 
   @tracked page = 0;
   size = 20;
