@@ -42,33 +42,12 @@
     </div>
   </:sidebar>
   <:content>
-    {{#if this.newFileId}}
-      <AuAlert
-        @title="Gelukt!"
-        @skin="success"
-        @icon="check"
-        @size="small"
-        @closable="true"
-        @onClose={{this.closeAlert}}
-        class="au-u-margin au-u-margin-bottom-none"
-      >
-        <p>
-          <LinkTo
-            class="au-c-link"
-            @model={{this.newFileId}}
-            @route="bpmn-files.bpmn-file"
-          >Raadpleeg nieuw BPMN-bestand
-          </LinkTo></p>
-      </AuAlert>
-    {{/if}}
-
     <PageHeader>
       <:title>Processen</:title>
       <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
           Over BPMN bestanden
         </AuLink></:subtitle>
       <:action>
-        {{!-- <AuButton {{on "click" this.openFileModal}}>Voeg toe</AuButton> --}}
       </:action>
     </PageHeader>
 
@@ -125,28 +104,3 @@
     </AuDataTable>
   </:content>
 </SidebarContainer>
-
-<AuModal
-  @modalOpen={{this.fileModalOpened}}
-  @closeModal={{this.closeFileModal}}
->
-  <:title>Voeg BPMN-bestand toe</:title>
-  <:body>
-    <CustomFileUpload
-      @accept=".bpmn,.xml"
-      @endPoint={{this.postEndpoint}}
-      @title="Bestand selecteren"
-      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @onFinishUpload={{this.fileUploaded}}
-      @onFileId={{this.extractBpmn}}
-    />
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="naked"
-        {{on "click" this.closeFileModal}}
-      >Annuleer</AuButton>
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
