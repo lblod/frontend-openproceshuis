@@ -4,10 +4,11 @@ import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 
 export default class BpmnUploadIndexController extends Controller {
-  queryParams = ['page', 'name'];
+  queryParams = ['page', 'size', 'sort', 'name'];
 
   @tracked page = 0;
   size = 20;
+  @tracked sort = 'name';
   @tracked name = '';
   @tracked fileModalOpened = false;
   @tracked newFileId = undefined;
@@ -47,6 +48,7 @@ export default class BpmnUploadIndexController extends Controller {
   resetFilters() {
     this.name = '';
     this.page = 0;
+    this.sort = 'name';
 
     // Triggers a refresh of the model
     this.page = null;

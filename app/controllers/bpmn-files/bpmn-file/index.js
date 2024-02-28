@@ -4,68 +4,43 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 export default class BpmnElementsIndexController extends Controller {
-  queryParams = ['page', 'size', 'sort', 'name', 'type'];
+  queryParams = ['page', 'size', 'sort'];
 
   @service currentSession;
 
   @tracked page = 0;
-  size = 100;
+  size = 20;
   @tracked sort = 'name';
-  @tracked name = '';
-  @tracked type = '';
 
   get bpmnElements() {
-    let elements = this.model.loadBpmnFilesTaskInstance.isFinished
-      ? this.model.loadBpmnFilesTaskInstance.value
-      : this.model.loadedBpmnFiles;
-
-    // Use the current process ID from @model.metadata
-    let currentProcessId = this.model.id;
-
-    // Filter elements to only include those with a name length greater than 0 and belong to the current process
-    return elements.filter(
-      (element) =>
-        element.name &&
-        element.name.length > 0 &&
-        element.processId === currentProcessId
-    );
+    return this.model.loadBpmnElementsTaskInstance.isFinished
+      ? this.model.loadBpmnElementsTaskInstance.value
+      : this.model.loadedBpmnElements;
   }
 
   get isLoading() {
-    return this.model.loadBpmnFilesTaskInstance.isRunning;
+    return this.model.loadBpmnElementsTaskInstance.isRunning;
   }
 
   get hasPreviousData() {
-    return this.model.loadedBpmnFiles && this.model.loadedBpmnFiles.length > 0;
+    return (
+      this.model.loadedBpmnElements && this.model.loadedBpmnElements.length > 0
+    );
   }
 
   get hasNoResults() {
     return (
-      this.model.loadBpmnFilesTaskInstance.isFinished &&
+      this.model.loadBpmnElementsTaskInstance.isFinished &&
       this.bpmnElements.length === 0
     );
   }
 
   get hasErrored() {
-    return this.model.loadBpmnFilesTaskInstance.isError;
-  }
-
-  @action
-  setName(selection) {
-    this.page = null;
-    this.name = selection;
-  }
-
-  @action
-  setType(selection) {
-    this.page = null;
-    this.type = selection;
+    return this.model.loadBpmnElementsTaskInstance.isError;
   }
 
   @action
   resetFilters() {
-    this.name = '';
-    this.type = '';
     this.page = 0;
     this.sort = 'name';
 

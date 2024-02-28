@@ -3,10 +3,11 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
 export default class BpmnFilesFavoritesController extends Controller {
-  queryParams = ['page', 'name'];
+  queryParams = ['page', 'size', 'sort', 'name'];
 
   @tracked page = 0;
   size = 20;
+  @tracked sort = 'name';
   @tracked name = '';
 
   get bpmnFiles() {
@@ -40,6 +41,7 @@ export default class BpmnFilesFavoritesController extends Controller {
   resetFilters() {
     this.name = '';
     this.page = 0;
+    this.sort = 'name';
 
     // Triggers a refresh of the model
     this.page = null;

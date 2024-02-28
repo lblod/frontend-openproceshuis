@@ -76,9 +76,14 @@
             @label="Naam"
           />
           <AuDataTableThSortable @field="name" @label="Beschrijving" />
-          <AuDataTableThSortable @field="created" @label="Aangemaakt op" />
+          <AuDataTableThSortable
+            @field="created"
+            @currentSorting={{this.sort}}
+            @label="Aangemaakt op"
+          />
           <AuDataTableThSortable
             @field="modified"
+            @currentSorting={{this.sort}}
             @label="Laatst aangepast op"
           />
         </c.header>
