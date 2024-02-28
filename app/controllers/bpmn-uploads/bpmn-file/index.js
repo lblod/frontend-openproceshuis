@@ -74,7 +74,6 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   @action
   openFileModal() {
-    this.newFileId = undefined;
     this.fileModalOpened = true;
   }
 
@@ -84,15 +83,9 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   }
 
   @action
-  fileUploaded(newFileId) {
+  fileUploaded() {
     this.closeFileModal();
     this.resetFilters();
-    this.newFileId = newFileId;
-  }
-
-  @action
-  closeAlert() {
-    this.newFileId = undefined;
   }
 
   @action

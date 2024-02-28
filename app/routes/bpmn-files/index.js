@@ -11,13 +11,6 @@ export default class BpmnFilesIndexRoute extends Route {
     name: { refreshModel: true, replace: true },
   };
 
-  resetController(controller, isExiting, transition) {
-    if (isExiting) {
-      controller.newFileId = undefined;
-    }
-    super.resetController(controller, isExiting, transition);
-  }
-
   async model(params) {
     return {
       loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(params),
@@ -39,8 +32,7 @@ export default class BpmnFilesIndexRoute extends Route {
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
 
-      let sortValue =
-        fieldName === 'size' ? fieldName : `:no-case:${fieldName}`;
+      let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
 
       query.sort = sortValue;
