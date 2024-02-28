@@ -25,7 +25,12 @@
             />
           </div>
           <div class="au-o-grid__item">
-            <AuButton @icon="undo" @skin="link" type="reset" class="au-u-padding-none">
+            <AuButton
+              @icon="undo"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none"
+            >
               Herstel alle filters
             </AuButton>
           </div>
@@ -37,9 +42,10 @@
 
     <PageHeader>
       <:title>Processtappen</:title>
-      <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
-          Over BPMN bestanden
-        </AuLink></:subtitle>
+      <:subtitle>
+        <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
+          bestanden</AuLink>
+      </:subtitle>
       <:action></:action>
     </PageHeader>
 
