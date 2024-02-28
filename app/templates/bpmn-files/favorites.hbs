@@ -4,16 +4,12 @@
       <div class="au-c-sidebar__content">
         <ul class="au-c-list-navigation">
           <li class="au-c-list-navigation__item">
-            <AuNavigationLink
-              @route="bpmn-files.index"
-            >
+            <AuNavigationLink @route="bpmn-files.index">
               Alle processen
             </AuNavigationLink>
           </li>
           <li class="au-c-list-navigation__item">
-            <AuNavigationLink
-              @route="bpmn-files.favorites"
-            >
+            <AuNavigationLink @route="bpmn-files.favorites">
               Favorieten
             </AuNavigationLink>
           </li>
@@ -32,7 +28,12 @@
             />
           </div>
           <div>
-            <AuButton @icon="undo" @skin="link" type="reset" class="au-u-padding-none">
+            <AuButton
+              @icon="undo"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none"
+            >
               Herstel alle filters
             </AuButton>
           </div>
@@ -81,12 +82,17 @@
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <th></th>
-          <AuDataTableThSortable @field="name" @label="Naam" />
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sort}}
+            @label="Naam"
+          />
           <AuDataTableThSortable @field="name" @label="Beschrijving" />
-          <AuDataTableThSortable @field="modified" @label="Laatst aangepast op" />
+          <AuDataTableThSortable
+            @field="modified"
+            @label="Laatst aangepast op"
+          />
           <AuDataTableThSortable @field="name" @label="Bestuur" />
-          {{!-- <AuDataTableThSortable @field="format" @label="Formaat" /> --}}
-          {{!-- <AuDataTableThSortable @field="size" @label="Grootte" /> --}}
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
