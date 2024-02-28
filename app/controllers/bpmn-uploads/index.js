@@ -34,7 +34,7 @@ export default class BpmnUploadIndexController extends Controller {
   }
 
   get postEndpoint() {
-    return `/mijn-processen`;
+    return `/files`;
   }
 
   @action
