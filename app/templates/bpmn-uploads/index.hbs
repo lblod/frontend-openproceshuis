@@ -16,7 +16,12 @@
             />
           </div>
           <div>
-            <AuButton @icon="undo" @skin="link" type="reset" class="au-u-padding-none">
+            <AuButton
+              @icon="undo"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none"
+            >
               Herstel alle filters
             </AuButton>
           </div>
@@ -47,9 +52,10 @@
 
     <PageHeader>
       <:title>Gedeelde processen</:title>
-      <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
-          Over BPMN bestanden
-        </AuLink></:subtitle>
+      <:subtitle>
+        <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
+          bestanden</AuLink>
+      </:subtitle>
       <:action>
         <AuButton {{on "click" this.openFileModal}}>Voeg proces toe</AuButton>
       </:action>
@@ -64,10 +70,17 @@
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <AuDataTableThSortable @field="name" @label="Naam" />
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sort}}
+            @label="Naam"
+          />
           <AuDataTableThSortable @field="name" @label="Beschrijving" />
           <AuDataTableThSortable @field="created" @label="Aangemaakt op" />
-          <AuDataTableThSortable @field="modified" @label="Laatst aangepast op" />
+          <AuDataTableThSortable
+            @field="modified"
+            @label="Laatst aangepast op"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
