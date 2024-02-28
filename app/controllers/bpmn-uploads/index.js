@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 
-export default class BpmnUploadIndexController extends Controller {
+export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
 
   @tracked page = 0;
