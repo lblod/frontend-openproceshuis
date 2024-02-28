@@ -11,7 +11,7 @@
 
 import Component from '@glimmer/component';
 
-export default class AuIcon extends Component {
+export default class CustomIcon extends Component {
   get size() {
     if (this.args.size == 'large') return 'au-c-icon--large';
     else return '';
