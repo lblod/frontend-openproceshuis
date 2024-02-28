@@ -13,13 +13,18 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek processtappen en upload processen.</p>
+          <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek
+            processtappen en upload processen.</p>
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
             <div class="au-o-grid__item au-u-1-2@medium">
               <AuCard @flex={{true}} as |c|>
-                <c.header @badgeSkin="brand" @badgeIcon="sitemap" @badgeSize="small">
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="sitemap"
+                  @badgeSize="small"
+                >
                   <AuHeading @level="2" @skin="4">
                     Processenbibliotheek
                   </AuHeading>
@@ -33,20 +38,24 @@
                 <c.footer>
                   <div class="au-u-h-functional au-o-flow au-o-flow--small">
                     <AuLink
-                        @skin="button"
-                        @route="bpmn-files"
-                      >Processen</AuLink>
-                      <AuLink
-                        @skin="button-secondary"
-                        @route="bpmn-elements"
-                      >Processtappen</AuLink>
+                      @skin="button"
+                      @route="bpmn-files"
+                    >Processen</AuLink>
+                    <AuLink
+                      @skin="button-secondary"
+                      @route="bpmn-elements"
+                    >Processtappen</AuLink>
                   </div>
                 </c.footer>
               </AuCard>
             </div>
             <div class="au-o-grid__item au-u-1-2@medium">
               <AuCard @flex={{true}} as |c|>
-                <c.header @badgeSkin="brand" @badgeIcon="upload" @badgeSize="small">
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="upload"
+                  @badgeSize="small"
+                >
                   <AuHeading @level="2" @skin="4">
                     Deel jouw processen
                   </AuHeading>
@@ -59,18 +68,16 @@
                 </c.content>
                 <c.footer>
                   <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                    <AuLink
-                      @skin="button"
-                      @route="bpmn-uploads"
-                    >Deel jouw processen</AuLink>
+                    <AuLink @skin="button" @route="bpmn-uploads">Deel jouw
+                      processen</AuLink>
                   </div>
                 </c.footer>
               </AuCard>
             </div>
           </div>
           <p class="au-u-text-center">
-            <AuLink @route="help">Meer informatie over processen en
-              BPMN bestanden</AuLink>
+            <AuLink @route="help">Meer informatie over processen en BPMN
+              bestanden</AuLink>
           </p>
         </div>
       </div>

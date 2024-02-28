@@ -58,7 +58,11 @@
             @label="Naam"
           />
           <AuDataTableThSortable @field="type" @label="Type" />
-          <AuDataTableThSortable @field="bpmn-file" @label="BPMN-bestand" />
+          <AuDataTableThSortable
+            @field="file"
+            @currentSorting={{this.sort}}
+            @label="BPMN-bestand"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />

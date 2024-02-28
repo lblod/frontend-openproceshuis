@@ -27,9 +27,21 @@ export default class BpmnElementsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      sort: params.sort,
       include: 'processes.derivations',
     };
+
+    if (params.sort) {
+      const isDescending = params.sort.startsWith('-');
+
+      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      if (fieldName === 'file') fieldName = 'processes.derivations.name';
+      else if (fieldName === 'name') query['filter[:has:name]'] = 'true'; // Filtering with non-existent names, behaves unexpectedly
+
+      let sortValue = `:no-case:${fieldName}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
 
     if (params.name) {
       query['filter[name]'] = params.name;

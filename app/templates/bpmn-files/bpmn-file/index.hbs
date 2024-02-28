@@ -86,8 +86,8 @@
         class="au-u-margin-bottom-none"
       >Diagram</AuHeading>
       <p class="au-u-margin-top-none">
-        <AuHelpText @skin="secondary">Klik en hou vast om diagram te
-        bewegen. Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
+        <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
+          Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
       </p>
       <BpmnViewer @bpmnXml={{@model.diagram}} />
     </div>
@@ -134,27 +134,25 @@
     </div>
   </div>
 
-  <AuCard
-      @textCenter={{true}}
-      as |c|
+  <AuCard @textCenter={{true}} as |c|>
+    <c.header
+      @badgeIcon="circle-question"
+      @badgeSkin="brand"
+      @badgeSize="default"
     >
-      <c.header
-        @badgeIcon="circle-question"
-        @badgeSkin="brand"
-        @badgeSize="default"
-      >
-        <AuHeading @level="2" @skin="4">
-          Help ons de kwaliteit van het Open Proces Huis te verbeteren.
-        </AuHeading>
-        <p>
-          {{this.subtitle}}
-        </p>
-      </c.header>
-      <c.content>
-        <p>Laat ons weten of dit proces bruikbaar was voor jouw organisatie.</p>
-      </c.content>
-      <c.footer>
-        <AuButton @skin="secondary"><AuIcon @icon="like" />Ja, dit is een goed proces</AuButton>
-      </c.footer>
-    </AuCard>
+      <AuHeading @level="2" @skin="4">
+        Help ons de kwaliteit van het Open Proces Huis te verbeteren.
+      </AuHeading>
+      <p>
+        {{this.subtitle}}
+      </p>
+    </c.header>
+    <c.content>
+      <p>Laat ons weten of dit proces bruikbaar was voor jouw organisatie.</p>
+    </c.content>
+    <c.footer>
+      <AuButton @skin="secondary"><AuIcon @icon="like" />Ja, dit is een goed
+        proces</AuButton>
+    </c.footer>
+  </AuCard>
 </AuBodyContainer>
