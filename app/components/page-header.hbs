@@ -5,9 +5,7 @@
         <div>
           {{#each (breadcrumbs) as |breadcrumb|}}
             <p class="au-u-h-functional">
-              {{#if (is-last breadcrumb (breadcrumbs))}}
-                {{!-- {{breadcrumb.title}} --}}
-              {{else}}
+              {{#if (not (is-last breadcrumb (breadcrumbs)))}}
                 <AuLink
                   @icon="arrow-left"
                   @skin="secondary"
@@ -24,9 +22,9 @@
             {{yield to="title"}}
           </AuHeading>
           {{#if (has-block "subtitle")}}
-          <AuHeading @level="3" @skin="6" class="au-u-margin-top-tiny">
-            {{yield to="subtitle"}}
-          </AuHeading>
+            <AuHeading @level="3" @skin="6" class="au-u-margin-top-tiny">
+              {{yield to="subtitle"}}
+            </AuHeading>
           {{/if}}
         </div>
       </Group>
@@ -50,5 +48,5 @@
       {{yield to="title"}}
     </AuHeading>
   {{/if}}
-  
+
 </header>

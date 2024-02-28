@@ -1,7 +1,8 @@
 <AuMainFooter>
   <AuContent @skin="tiny">
     <AuHeading @level="2" @skin="6">
-      openproceshuis.vlaanderen.be is een officiële website van de Vlaamse overheid
+      openproceshuis.vlaanderen.be is een officiële website van de Vlaamse
+      overheid
     </AuHeading>
     <p class="au-u-margin-top-none">Uitgegeven door
       <a
@@ -13,15 +14,19 @@
   <AuContent @skin="tiny">
     <ul class="au-c-list-horizontal">
       <li class="au-c-list-horizontal__item">
-        <FooterLink @route="disclaimer">Disclaimer</FooterLink>
+        <AuLink @route="disclaimer" @skin="secondary">Disclaimer</AuLink>
       </li>
       <li class="au-c-list-horizontal__item">
-        <FooterLink @route="cookie-notice">Cookieverklaring</FooterLink>
+        <AuLink
+          @route="cookie-notice"
+          @skin="secondary"
+        >Cookieverklaring</AuLink>
       </li>
       <li class="au-c-list-horizontal__item">
-        <FooterLink
+        <AuLink
           @route="accessibility-statement"
-        >Toegankelijkheidsverklaring</FooterLink>
+          @skin="secondary"
+        >Toegankelijkheidsverklaring</AuLink>
       </li>
     </ul>
   </AuContent>
