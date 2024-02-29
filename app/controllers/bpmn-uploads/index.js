@@ -74,6 +74,7 @@ export default class BpmnUploadsIndexController extends Controller {
       },
     });
   }
+
   @action
   fileUploaded(newFileId) {
     this.closeFileModal();
