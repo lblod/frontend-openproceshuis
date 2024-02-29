@@ -1,13 +1,8 @@
 <PageHeader>
   <:title>
-    BPMN-bestand:
     {{@model.metadata.name}}
   </:title>
   <:action>
-
-    {{#if this.currentSession.canEdit}}
-      <AuButton @skin="secondary">Wijzig</AuButton>
-    {{/if}}
     <a
       class="au-c-button"
       href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
@@ -15,64 +10,149 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      Download
+      Download BPMN bestand
     </a>
   </:action>
 </PageHeader>
 
-<DataCard>
-  <:title>Metadata</:title>
-  <:card as |Card|>
-    <Card.Columns>
-      <:left as |Item|>
-        <Item>
-          <:label>Bestandsnaam</:label>
-          <:content>
-            {{@model.metadata.name}}
-          </:content>
-        </Item>
-        <Item>
-          <:label>Aangemaakt op</:label>
-          <:content>
-            {{date-format @model.metadata.created}}
-          </:content>
-        </Item>
-        <Item>
-          <:label>Laatst aangepast op</:label>
-          <:content>
-            {{date-format @model.metadata.modified}}
-          </:content>
-        </Item>
-      </:left>
-      <:right as |Item|>
-        <Item>
-          <:label>Extensie</:label>
-          <:content>
-            {{@model.metadata.extension}}
-          </:content>
-        </Item>
-        <Item>
-          <:label>Formaat</:label>
-          <:content>
-            {{@model.metadata.format}}
-          </:content>
-        </Item>
-        <Item>
-          <:label>Grootte</:label>
-          <:content>
-            {{file-size-format @model.metadata.size}}
-          </:content>
-        </Item>
-      </:right>
-    </Card.Columns>
-  </:card>
-</DataCard>
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+  <DataCard>
+    <:header></:header>
+    <:title>Metadata</:title>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Bestandsnaam</:label>
+            <:content>
+              {{@model.metadata.name}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Bestuur</:label>
+            <:content>
+              Demo bestuur
+            </:content>
+          </Item>
+          <Item>
+            <:label>Beschrijving</:label>
+            <:content>
+              ...
+            </:content>
+          </Item>
 
-<AuHeading
-  @level="3"
-  @skin="5"
-  class="au-u-margin-bottom-tiny"
->Diagram</AuHeading>
-<p class="au-u-para-small au-u-margin-top-none">Klik en hou vast om diagram te
-  bewegen. Gebruik ctrl en scrollwiel om in en uit te zoomen.</p>
-<BpmnViewer @bpmnXml={{@model.diagram}} />
+        </:left>
+        <:right as |Item|>
+          <Item>
+            <:label>Aangemaakt op</:label>
+            <:content>
+              {{date-format @model.metadata.created}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Laatst aangepast op</:label>
+            <:content>
+              {{date-format @model.metadata.modified}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Extensie</:label>
+            <:content>
+              {{@model.metadata.extension}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Formaat</:label>
+            <:content>
+              {{@model.metadata.format}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Grootte</:label>
+            <:content>
+              {{file-size-format @model.metadata.size}}
+            </:content>
+          </Item>
+        </:right>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+
+  <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
+    <div class="au-o-grid__item">
+      <AuHeading
+        @level="2"
+        @skin="4"
+        class="au-u-margin-bottom-none"
+      >Diagram</AuHeading>
+      <p class="au-u-margin-top-none">
+        <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
+          Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
+      </p>
+      <BpmnViewer @bpmnXml={{@model.diagram}} />
+    </div>
+    <div class="au-o-grid__item">
+      <AuHeading
+        @level="2"
+        @skin="4"
+        class="au-u-margin-bottom-small au-u-margin-top"
+      >Processtappen</AuHeading>
+      <div class="au-c-boxed-table">
+        <AuDataTable
+          @content={{this.bpmnElements}}
+          @isLoading={{this.isLoading}}
+          @page={{this.page}}
+          @size={{this.size}}
+          as |t|
+        >
+          <t.content class="au-c-data-table__table--small" as |c|>
+            <c.header>
+              <AuDataTableThSortable
+                @field="name"
+                @currentSorting={{this.sort}}
+                @label="Naam"
+              />
+              <AuDataTableThSortable @field="type" @label="Type" />
+            </c.header>
+            {{#if this.hasErrored}}
+              <TableMessage::Error />
+            {{else if this.hasNoResults}}
+              <TableMessage>
+                <p>
+                  Er werden geen zoekresultaten gevonden.
+                </p>
+              </TableMessage>
+            {{else}}
+              <c.body as |element|>
+                <td>{{element.name}}</td>
+                <td>{{element.type}}</td>
+              </c.body>
+            {{/if}}
+          </t.content>
+        </AuDataTable>
+      </div>
+    </div>
+  </div>
+
+  <AuCard @textCenter={{true}} as |c|>
+    <c.header
+      @badgeIcon="circle-question"
+      @badgeSkin="brand"
+      @badgeSize="default"
+    >
+      <AuHeading @level="2" @skin="4">
+        Help ons de kwaliteit van het Open Proces Huis te verbeteren.
+      </AuHeading>
+      <p>
+        {{this.subtitle}}
+      </p>
+    </c.header>
+    <c.content>
+      <p>Laat ons weten of dit proces bruikbaar was voor jouw organisatie.</p>
+    </c.content>
+    <c.footer>
+      <AuButton @skin="secondary"><CustomIcon @icon="like" />Ja, dit is een goed
+        proces</AuButton>
+    </c.footer>
+  </AuCard>
+</AuBodyContainer>

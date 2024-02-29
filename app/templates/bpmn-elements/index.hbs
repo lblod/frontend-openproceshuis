@@ -1,13 +1,13 @@
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
-      <div class="au-c-sidebar__content au-o-box">
+      <div class="au-c-sidebar__content au-o-box au-o-box--small">
         <form
           {{on "reset" this.resetFilters}}
           class="au-o-grid au-o-grid--small"
         >
           <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
-            <AuLabel for="filter-name">Naam</AuLabel>
+            <AuLabel for="filter-name">Filter op naam</AuLabel>
             <BpmnElementSelectByName
               @id="filter-name"
               @selected={{this.name}}
@@ -16,7 +16,7 @@
             />
           </div>
           <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
-            <AuLabel for="filter-type">Type</AuLabel>
+            <AuLabel for="filter-type">Filter op type</AuLabel>
             <BpmnElementSelectByType
               @id="filter-type"
               @selected={{this.type}}
@@ -25,8 +25,12 @@
             />
           </div>
           <div class="au-o-grid__item">
-            <AuButton @skin="link" type="reset">
-              <AuIcon @icon="cross" @alignment="left" />
+            <AuButton
+              @icon="undo"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none"
+            >
               Herstel alle filters
             </AuButton>
           </div>
@@ -36,9 +40,13 @@
   </:sidebar>
   <:content>
 
-    <PageHeader class="au-o-box">
+    <PageHeader>
       <:title>Processtappen</:title>
-      <:subtitle>Processen bestaan uit verschillende bouwblokken</:subtitle>
+      <:subtitle>
+        <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
+          bestanden</AuLink>
+      </:subtitle>
+      <:action></:action>
     </PageHeader>
 
     <AuDataTable

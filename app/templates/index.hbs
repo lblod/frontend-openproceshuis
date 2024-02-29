@@ -1,107 +1,88 @@
-<SidebarContainer>
-  <:sidebar>
-    <div class="au-c-sidebar">
-      <div class="au-c-sidebar__content">
-        <div class="au-c-sidebar__header">
-          <h6 class="au-u-h6 au-u-medium">Menu modules</h6>
+<LayoutHome>
+  <AuBodyContainer class="au-u-background-gray-100">
+    <section class="c-home">
+      <div class="au-o-flow">
+        <AuContent>
+          <AuHeading @level="1" @skin="2">Welkom bij Open Proces huis, jouw
+            centrale bron voor het ontdekken en delen van processen.</AuHeading>
+          <div class="c-home__visual">
+            <img
+              src="/assets/images/homepage-visual.svg"
+              class="c-home-visual"
+              alt=""
+              {{!template-lint-disable require-valid-alt-text}}
+            />
+          </div>
+          <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek
+            processtappen en upload processen.</p>
+        </AuContent>
+        <div class="au-c-home__form au-o-flow">
+          <div class="au-o-grid au-o-grid--small">
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="sitemap"
+                  @badgeSize="small"
+                >
+                  <AuHeading @level="2" @skin="4">
+                    Processenbibliotheek
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Raadpleeg processen</Item>
+                    <Item>Doorzoek processtappen</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink
+                      @skin="button"
+                      @route="bpmn-files"
+                    >Processen</AuLink>
+                    <AuLink
+                      @skin="button-secondary"
+                      @route="bpmn-elements"
+                    >Processtappen</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+            {{#if this.currentSession.canEdit}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="upload"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Deel jouw processen
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Upload processen</Item>
+                      <Item>Beheer gedeelde processen</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink @skin="button" @route="bpmn-uploads">Deel jouw
+                        processen</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
+          </div>
+          <p class="au-u-text-center">
+            <AuLink @route="help">Meer informatie over processen en BPMN
+              bestanden</AuLink>
+          </p>
         </div>
-        <ul class="au-c-list-navigation">
-          <li class="au-c-list-navigation__item">
-            <AuNavigationLink @route="bpmn-files">
-              BPMN-bestanden
-            </AuNavigationLink>
-          </li>
-          <li class="au-c-list-navigation__item">
-            <AuNavigationLink @route="bpmn-elements">
-              Processtappen
-            </AuNavigationLink>
-          </li>
-        </ul>
       </div>
-      <div class="au-c-sidebar__footer">
-        <a
-          href={{config "userManual.general"}}
-          class="au-c-link au-c-link--secondary au-c-link--icon"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <AuIcon @icon="manual" @alignment="left" />
-          Handleiding (externe link)
-        </a>
-        <AuHelpText @skin="secondary">
-          {{config "appName"}}
-          {{#if (config "showAppVersionHash")}}
-            (<a
-              class="au-c-link"
-              href="https://github.com/MartijnBogaert/frontend-openproceshuis/commit/{{app-version
-                shaOnly=true
-              }}"
-            >{{app-version shaOnly=true}}</a>)
-          {{else}}
-            v{{app-version versionOnly=true}}
-          {{/if}}
-        </AuHelpText>
-      </div>
-    </div>
-  </:sidebar>
-  <:content>
-    <div class="au-o-box">
-      <AuHeading @skin="2" class="au-u-margin-bottom-large">
-        {{this.currentSession.user.fullName}}
-      </AuHeading>
-
-      <AuHeading @level="2" @skin="3" class="au-u-margin-bottom">
-        Beschikbare module
-      </AuHeading>
-
-      <ul class="au-o-grid au-o-grid">
-        <li class="au-o-grid__item au-u-1-2@medium au-u-2-5@large">
-          <AuCard @flex={{true}} as |c|>
-            <c.header @badgeSkin="brand" @badgeIcon="sitemap">
-              <AuHeading @level="3" @skin="4">
-                BPMN-bestanden
-              </AuHeading>
-            </c.header>
-            <c.content>
-              <ul>
-                <li>Raadpleeg processen</li>
-                {{#if this.currentSession.canEdit}}
-                  <li>Voeg processen toe</li>
-                {{/if}}
-              </ul>
-            </c.content>
-            <c.footer>
-              <AuButtonGroup class="au-c-button-group--wrap">
-                <LinkTo class="au-c-button" @route="bpmn-files">
-                  Ga naar BPMN-bestanden
-                </LinkTo>
-              </AuButtonGroup>
-            </c.footer>
-          </AuCard>
-        </li>
-        <li class="au-o-grid__item au-u-1-2@medium au-u-2-5@large">
-          <AuCard @flex={{true}} as |c|>
-            <c.header @badgeSkin="brand" @badgeIcon="unordered-list">
-              <AuHeading @level="3" @skin="4">
-                Processtappen
-              </AuHeading>
-            </c.header>
-            <c.content>
-              <ul>
-                <li>Doorzoek bouwblokken van processen</li>
-                <li>Raadpleeg originele BPMN-bestanden</li>
-              </ul>
-            </c.content>
-            <c.footer>
-              <AuButtonGroup class="au-c-button-group--wrap">
-                <LinkTo class="au-c-button" @route="bpmn-elements">
-                  Ga naar processtappen
-                </LinkTo>
-              </AuButtonGroup>
-            </c.footer>
-          </AuCard>
-        </li>
-      </ul>
-    </div>
-  </:content>
-</SidebarContainer>
+    </section>
+  </AuBodyContainer>
+</LayoutHome>

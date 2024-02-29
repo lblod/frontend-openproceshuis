@@ -1,0 +1,32 @@
+.c-favorite {
+  flex: none;
+  position: relative;
+  z-index: 1;
+  padding-left: 0;
+  padding-right: 0;
+  color: var(--au-gray-500);
+  bottom: -0.2ex;
+
+  &:hover {
+    color: var(--au-blue-700);
+  }
+
+  .au-c-icon {
+    width: 1.1em;
+    height: 1.1em;
+    bottom: 0;
+  }
+
+  &.is-active,
+  &:focus {
+    color: var(--au-blue-500);
+    background-color: transparent !important;
+    border-color: transparent !important;
+  }
+}
+
+.c-favorite-cell {
+  width: 40px;
+  padding-left: $au-unit-small !important;
+  padding-right: $au-unit-small !important;
+}

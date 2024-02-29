@@ -1,5 +1,10 @@
 .bpmn-container {
-  height: 700px;
+  flex: none;
+  height: 500px;
+  border: 1px solid var(--au-gray-200);
+  border-radius: $au-radius;
+  overflow: hidden;
+  background-color: var(--au-gray-100);
 }
 
 .bjs-powered-by {

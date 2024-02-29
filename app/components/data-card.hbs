@@ -1,8 +1,21 @@
-<div class="au-u-max-width-large" ...attributes>
-  {{#if (has-block "title")}}
-    <AuHeading @level={{or @headingLevel "3"}} @skin={{or @headingSkin "5"}} class="au-u-margin-bottom-tiny">
-      {{yield to="title"}}
-    </AuHeading>
+<div ...attributes>
+  {{#if (has-block "header")}}
+    <div class="au-o-box au-o-box--small au-c-card au-c-card--data">
+      <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+        {{#if (has-block "title")}}
+          <AuHeading @level={{or @headingLevel "3"}} @skin={{or @headingSkin "4"}} class="au-u-margin-bottom-tiny">
+            {{yield to="title"}}
+          </AuHeading>
+        {{/if}}
+        {{yield to="header"}}
+      </div>
+    </div>
+  {{else}}
+    {{#if (has-block "title")}}
+      <AuHeading @level={{or @headingLevel "3"}} @skin={{or @headingSkin "5"}} class="au-u-margin-bottom-tiny">
+        {{yield to="title"}}
+      </AuHeading>
+    {{/if}}
   {{/if}}
 
   <dl class="au-o-box au-o-box--small au-c-card au-c-card--data">
@@ -16,4 +29,9 @@
       }}
     </div>
   </dl>
+  {{#if (has-block "action")}}
+  <div class="au-o-box au-o-box--small au-c-card au-c-card--data">
+    {{yield to="action"}}
+  </div>
+  {{/if}}
 </div>

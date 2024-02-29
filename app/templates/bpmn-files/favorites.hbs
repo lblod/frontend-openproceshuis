@@ -1,0 +1,105 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <ul class="au-c-list-navigation">
+          <li class="au-c-list-navigation__item">
+            <AuNavigationLink @route="bpmn-files.index">
+              Alle processen
+            </AuNavigationLink>
+          </li>
+          <li class="au-c-list-navigation__item">
+            <AuNavigationLink @route="bpmn-files.favorites">
+              Favorieten
+            </AuNavigationLink>
+          </li>
+        </ul>
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
+        >
+          <div>
+            <AuLabel for="filter-name">Filter op naam of beschrijving</AuLabel>
+            <BpmnFileSelectByName
+              @id="filter-name"
+              @selected={{this.name}}
+              @onChange={{this.setName}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuButton
+              @icon="undo"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <PageHeader>
+      <:title>Processen</:title>
+      <:subtitle><AuLink @route="help" @skin="secondary" @icon="circle-info">
+          Over BPMN bestanden
+        </AuLink></:subtitle>
+      <:action>
+      </:action>
+    </PageHeader>
+
+    <AuDataTable
+      @content={{this.bpmnFiles}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <th></th>
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sort}}
+            @label="Naam"
+          />
+          <AuDataTableThSortable @field="name" @label="Beschrijving" />
+          <AuDataTableThSortable
+            @field="modified"
+            @currentSorting={{this.sort}}
+            @label="Laatst aangepast op"
+          />
+          <AuDataTableThSortable @field="name" @label="Bestuur" />
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |file|>
+            <td class="c-favorite-cell"><Favorite @active={{true}} /></td>
+            <td>
+              <LinkTo
+                class="au-c-link"
+                @model={{file.id}}
+                @route="bpmn-files.bpmn-file"
+              >
+                {{file.name}}
+              </LinkTo>
+            </td>
+            <td>...</td>
+            <td>{{date-format file.modified}}</td>
+            <td>Demo bestuur</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

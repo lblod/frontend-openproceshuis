@@ -12,28 +12,30 @@ export default class BpmnElementsIndexController extends Controller {
   @tracked type = '';
 
   get bpmnElements() {
-    return this.model.loadBpmnFilesTaskInstance.isFinished
-      ? this.model.loadBpmnFilesTaskInstance.value
-      : this.model.loadedBpmnFiles;
+    return this.model.loadBpmnElementsTaskInstance.isFinished
+      ? this.model.loadBpmnElementsTaskInstance.value
+      : this.model.loadedBpmnElements;
   }
 
   get isLoading() {
-    return this.model.loadBpmnFilesTaskInstance.isRunning;
+    return this.model.loadBpmnElementsTaskInstance.isRunning;
   }
 
   get hasPreviousData() {
-    return this.model.loadedBpmnFiles && this.model.loadedBpmnFiles.length > 0;
+    return (
+      this.model.loadedBpmnElements && this.model.loadedBpmnElements.length > 0
+    );
   }
 
   get hasNoResults() {
     return (
-      this.model.loadBpmnFilesTaskInstance.isFinished &&
+      this.model.loadBpmnElementsTaskInstance.isFinished &&
       this.bpmnElements.length === 0
     );
   }
 
   get hasErrored() {
-    return this.model.loadBpmnFilesTaskInstance.isError;
+    return this.model.loadBpmnElementsTaskInstance.isError;
   }
 
   @action

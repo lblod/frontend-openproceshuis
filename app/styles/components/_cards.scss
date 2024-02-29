@@ -17,15 +17,13 @@ $card-label-whitespace: $au-unit-small;
   @include mq(1279px) {
     display: flex;
     flex-wrap: wrap;
+    gap: $au-unit;
   }
 }
 
 .au-c-card-columns__column {
-  padding: $au-unit-tiny $au-unit;
-
   @include mq(1279px) {
-    padding: $au-unit-small $au-unit;
-    width: 50%;
+    width: calc(50% - calc($au-unit / 2));
   }
 }
 

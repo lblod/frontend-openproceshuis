@@ -1,20 +1,14 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { service } from '@ember/service';
-import { task } from 'ember-concurrency';
 
 export default class BpmnFilesIndexController extends Controller {
-  @service currentSession;
-
   queryParams = ['page', 'size', 'sort', 'name'];
 
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
   @tracked name = '';
-  @tracked fileModalOpened = false;
-  @tracked newFileId = undefined;
 
   get bpmnFiles() {
     return this.model.loadBpmnFilesTaskInstance.isFinished
@@ -37,10 +31,6 @@ export default class BpmnFilesIndexController extends Controller {
     return this.model.loadBpmnFilesTaskInstance.isError;
   }
 
-  get postEndpoint() {
-    return `/files`;
-  }
-
   @action
   setName(selection) {
     this.page = null;
@@ -55,37 +45,5 @@ export default class BpmnFilesIndexController extends Controller {
 
     // Triggers a refresh of the model
     this.page = null;
-  }
-
-  @action
-  openFileModal() {
-    this.newFileId = undefined;
-    this.fileModalOpened = true;
-  }
-
-  @action
-  closeFileModal() {
-    this.fileModalOpened = false;
-  }
-
-  @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmn(newFileId) {
-    yield fetch(`/bpmn?id=${newFileId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
-  }
-  @action
-  fileUploaded(newFileId) {
-    this.closeFileModal();
-    this.resetFilters();
-    this.newFileId = newFileId;
-  }
-
-  @action
-  closeAlert() {
-    this.newFileId = undefined;
   }
 }

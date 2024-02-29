@@ -16,7 +16,14 @@ Router.map(function () {
 
   this.route('index', { path: '' });
 
-  this.route('bpmn-files', { path: 'bpmn-bestanden' }, function () {
+  this.route('bpmn-files', { path: 'processen' }, function () {
+    this.route('bpmn-file', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+    });
+    this.route('favorites', { path: 'favorieten' });
+  });
+
+  this.route('bpmn-uploads', { path: 'gedeelde-processen' }, function () {
     this.route('bpmn-file', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
     });
@@ -37,4 +44,8 @@ Router.map(function () {
   this.route('route-not-found', {
     path: '/*wildcard',
   });
+  this.route('accessibility-statement');
+  this.route('help');
+  this.route('cookie-notice');
+  this.route('disclaimer');
 });

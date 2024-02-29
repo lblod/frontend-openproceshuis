@@ -2,23 +2,4 @@
 
 {{breadcrumb this.model.name route="bpmn-files.bpmn-file" models=this.model.id}}
 
-<SidebarContainer>
-  <:sidebar>
-    <div class="au-c-sidebar">
-      <ul class="au-c-list-navigation">
-        <li class="au-c-list-navigation__item">
-          <AuNavigationNestedLink @route="bpmn-files">
-            BPMN-bestanden
-          </AuNavigationNestedLink>
-        </li>
-      </ul>
-    </div>
-  </:sidebar>
-  <:content>
-    <div class="au-c-body-container au-c-body-container--scroll">
-      <div class="au-o-box au-o-flow au-o-flow--large">
-        {{outlet}}
-      </div>
-    </div>
-  </:content>
-</SidebarContainer>
+{{outlet}}

@@ -1,28 +1,22 @@
-<AuToolbar @border="bottom" @size="small" @skin="tint" as |Group|>
+<AuToolbar @border="bottom" @skin="tint" class="au-c-navigation" as |Group|>
   <Group>
-    <nav aria-label="breadcrumbs">
-      <ol class="au-c-list-horizontal au-c-list-horizontal--breadcrumbs">
-        <li class="au-c-list-horizontal__item">
-          <AuLink @route="index" @icon="arrow-left" @iconAlignment="left">
-            Overzicht
-          </AuLink>
-        </li>
-        {{#each (breadcrumbs) as |breadcrumb|}}
-          <li class="au-c-list-horizontal__item">
-            {{#if (is-last breadcrumb (breadcrumbs))}}
-              {{breadcrumb.title}}
-            {{else}}
-              <AuLink
-                @route={{breadcrumb.data.route}}
-                @model={{breadcrumb.data.model}}
-                @models={{breadcrumb.data.models}}
-              >
-                {{breadcrumb.title}}
-              </AuLink>
-            {{/if}}
-          </li>
-        {{/each}}
-      </ol>
-    </nav>
+    <AuTabs @reversed={{this.reversed}} as |Tab|>
+      <Tab>
+        <AuLink @route="bpmn-files" @icon="sitemap">
+          Processen
+        </AuLink>
+      </Tab>
+      <Tab>
+        <AuLink @route="bpmn-elements" @icon="unordered-list">
+          Processtappen
+        </AuLink>
+      </Tab>
+    </AuTabs>
+
+  </Group>
+  <Group>
+    <AuLink @route="bpmn-uploads" @skin="button-secondary">
+      Gedeelde processen
+    </AuLink>
   </Group>
 </AuToolbar>
