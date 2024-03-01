@@ -3,6 +3,9 @@ import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class BpmnUploadsIndexRoute extends Route {
+  @service router;
+  @service session;
+  @service currentSession;
   @service store;
 
   queryParams = {
@@ -16,6 +19,13 @@ export default class BpmnUploadsIndexRoute extends Route {
       controller.newFileId = undefined;
     }
     super.resetController(controller, isExiting, transition);
+  }
+
+  async beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'mock-login');
+
+    if (this.currentSession.canOnlyRead)
+      this.router.transitionTo('unauthorized');
   }
 
   async model(params) {

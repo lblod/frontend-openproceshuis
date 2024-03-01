@@ -12,11 +12,12 @@
         </AuLink>
       </Tab>
     </AuTabs>
-
   </Group>
-  <Group>
-    <AuLink @route="bpmn-uploads" @skin="button-secondary">
-      Gedeelde processen
-    </AuLink>
-  </Group>
+  {{#if this.currentSession.canEdit}}
+    <Group>
+      <AuLink @route="bpmn-uploads" @skin="button-secondary">
+        Gedeelde processen
+      </AuLink>
+    </Group>
+  {{/if}}
 </AuToolbar>
