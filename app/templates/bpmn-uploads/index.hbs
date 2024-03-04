@@ -106,7 +106,7 @@
                 {{file.name}}
               </LinkTo>
             </td>
-            <td>...</td>
+            <td>{{or @model.metadata.description "/"}}</td>
             <td>{{date-format file.created}}</td>
             <td>{{date-format file.modified}}</td>
           </c.body>

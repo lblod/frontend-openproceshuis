@@ -37,7 +37,7 @@
           <Item>
             <:label>Beschrijving</:label>
             <:content>
-              ...
+              {{or @model.metadata.description "/"}}
             </:content>
           </Item>
 
