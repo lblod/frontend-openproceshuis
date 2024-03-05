@@ -81,6 +81,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
     const file = this.model.metadata;
     if (file.hasDirtyAttributes) {
+      file.modified = new Date();
       yield file.save();
     }
 
