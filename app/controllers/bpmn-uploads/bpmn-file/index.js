@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { dropTask } from 'ember-concurrency';
 
 export default class BpmnUploadsBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -66,5 +67,37 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @action
   toggleEdit() {
     this.edit = !this.edit;
+  }
+
+  @action
+  cancelEdit() {
+    this.resetModel();
+    this.toggleEdit();
+  }
+
+  @dropTask
+  *updateModel(event) {
+    event.preventDefault();
+
+    const file = this.model.metadata;
+    if (file.hasDirtyAttributes) {
+      yield file.save();
+    }
+
+    this.toggleEdit();
+  }
+
+  resetModel() {
+    this.model.metadata.rollbackAttributes();
+  }
+
+  @action
+  setFileName(event) {
+    this.model.metadata.name = event.target.value;
+  }
+
+  @action
+  setFileDescription(event) {
+    this.model.metadata.description = event.target.value;
   }
 }
