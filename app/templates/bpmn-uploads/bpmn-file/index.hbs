@@ -65,7 +65,7 @@
               <Item>
                 <:label>Aangemaakt op</:label>
                 <:content>
-                  {{date-format @model.metadata.created}}
+                  {{date-format @model.metadata.created true}}
                 </:content>
               </Item>
               <Item>
@@ -144,13 +144,13 @@
             <Item>
               <:label>Aangemaakt op</:label>
               <:content>
-                {{date-format @model.metadata.created}}
+                {{date-format @model.metadata.created true}}
               </:content>
             </Item>
             <Item>
               <:label>Laatst aangepast op</:label>
               <:content>
-                {{date-format @model.metadata.modified}}
+                {{date-format @model.metadata.modified true}}
               </:content>
             </Item>
             <Item>
