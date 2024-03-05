@@ -5,6 +5,6 @@ export default class FileModel extends Model {
   @attr('string') format;
   @attr('number') size;
   @attr('string') extension;
-  @attr('date') created;
-  @attr('date') modified;
+  @attr('iso-date') created;
+  @attr('iso-date') modified;
 }
