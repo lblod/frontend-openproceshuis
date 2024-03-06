@@ -34,10 +34,6 @@ export default class BpmnUploadsIndexController extends Controller {
     return this.model.loadBpmnFilesTaskInstance.isError;
   }
 
-  get postEndpoint() {
-    return `/files`;
-  }
-
   @action
   setName(selection) {
     this.page = null;
