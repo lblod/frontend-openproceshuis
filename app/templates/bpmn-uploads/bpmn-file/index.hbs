@@ -20,9 +20,9 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          Download BPMN bestand
+          Download BPMN-bestand
         </a>
-        <AuButton {{on "click" this.openFileModal}}>Vervang BPMN bestand</AuButton>
+        <AuButton {{on "click" this.openFileModal}}>Vervang BPMN-bestand</AuButton>
       </AuButtonGroup>
     </:action>
   </PageHeader>
@@ -240,11 +240,12 @@
 >
   <:title>Vervang BPMN-bestand</:title>
   <:body>
-    <AuFileUpload
+    <CustomFileUpload
       @accept=".bpmn,.xml"
       @endPoint={{this.postEndpoint}}
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+      @onFileId={{this.extractBpmn}}
       @onFinishUpload={{this.fileUploaded}}
     />
   </:body>
