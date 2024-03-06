@@ -1,16 +1,21 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask } from 'ember-concurrency';
+import { task, dropTask } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
 
 export default class BpmnUploadsBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
+
+  @service store;
+  @service router;
 
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
   @tracked fileModalOpened = false;
   @tracked edit = false;
+  @tracked newFileId = undefined;
 
   get bpmnElements() {
     return this.model.loadBpmnElementsTaskInstance.isFinished
@@ -50,6 +55,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   @action
   openFileModal() {
+    this.newFileId = undefined;
     this.fileModalOpened = true;
   }
 
@@ -58,10 +64,36 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     this.fileModalOpened = false;
   }
 
+  @task({ enqueue: true, maxConcurrency: 3 })
+  *extractBpmn(newFileId) {
+    yield fetch(`/bpmn?id=${newFileId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+  }
+
+  @dropTask
+  *replaceFile() {
+    const oldFile = this.model.metadata;
+    const newFile = yield this.store.findRecord('file', this.newFileId);
+
+    newFile.name = oldFile.name;
+    newFile.description = oldFile.description;
+    newFile.created = oldFile.created;
+    yield newFile.save();
+
+    yield oldFile.destroyRecord();
+  }
+
   @action
-  fileUploaded() {
-    this.closeFileModal();
-    this.resetFilters();
+  async fileUploaded(newFileId) {
+    this.newFileId = newFileId;
+    await this.replaceFile.perform();
+
+    let url = this.router.urlFor('bpmn-uploads.bpmn-file', newFileId);
+    window.location.replace(url);
   }
 
   @action
