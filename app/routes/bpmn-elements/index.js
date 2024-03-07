@@ -42,7 +42,7 @@ export default class BpmnElementsIndexRoute extends Route {
       const isDescending = params.sort.startsWith('-');
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-      if (fieldName === 'file') fieldName = 'processes.derivations.name';
+      if (fieldName === 'file') fieldName = 'processes.name';
       else if (fieldName === 'name') filter[':has:name'] = 't'; // Filtering with non-existent names, behaves unexpectedly
 
       sort = `${fieldName}`;
@@ -85,7 +85,6 @@ export default class BpmnElementsIndexRoute extends Route {
           },
         };
 
-        console.log(entry);
         return obj;
       },
     });
