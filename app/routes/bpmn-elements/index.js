@@ -14,10 +14,8 @@ export default class BpmnElementsIndexRoute extends Route {
 
   async model(params) {
     return {
-      loadBpmnElementsTaskInstance:
-        this.loadbpmnElementsTask.perform(params),
-      loadedBpmnElements:
-        this.loadbpmnElementsTask.lastSuccesful?.value,
+      loadBpmnElementsTaskInstance: this.loadbpmnElementsTask.perform(params),
+      loadedBpmnElements: this.loadbpmnElementsTask.lastSuccesful?.value,
     };
   }
 
