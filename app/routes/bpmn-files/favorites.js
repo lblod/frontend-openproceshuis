@@ -25,6 +25,7 @@ export default class BpmnFilesFavoritesRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      include: 'publisher',
     };
 
     if (params.sort) {
