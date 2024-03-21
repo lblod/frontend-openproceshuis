@@ -59,6 +59,7 @@ export default class BpmnUploadsIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
     query['filter[:has:download]'] = 'true';
+    query['filter[publisher][id]'] = this.currentSession.group.id; // FIXME: should be handled by backend instead of frontend
 
     return yield this.store.query('file', query);
   }

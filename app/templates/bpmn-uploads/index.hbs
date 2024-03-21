@@ -75,7 +75,11 @@
             @currentSorting={{this.sort}}
             @label="Naam"
           />
-          <AuDataTableThSortable @field="name" @label="Beschrijving" />
+          <AuDataTableThSortable
+            @field="description"
+            @currentSorting={{this.sort}}
+            @label="Beschrijving"
+          />
           <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sort}}
@@ -106,7 +110,7 @@
                 {{file.name}}
               </LinkTo>
             </td>
-            <td>...</td>
+            <td>{{or file.description "/"}}</td>
             <td>{{date-format file.created}}</td>
             <td>{{date-format file.modified}}</td>
           </c.body>
@@ -124,11 +128,10 @@
   <:body>
     <CustomFileUpload
       @accept=".bpmn,.xml"
-      @endPoint={{this.postEndpoint}}
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @onFinishUpload={{this.fileUploaded}}
       @onFileId={{this.extractBpmn}}
+      @onFinishUpload={{this.fileUploaded}}
     />
   </:body>
   <:footer>

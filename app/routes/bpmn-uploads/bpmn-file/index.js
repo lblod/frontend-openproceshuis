@@ -59,4 +59,9 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
 
     return yield this.store.query('bpmn-element', query);
   }
+
+  resetController(controller) {
+    super.resetController(...arguments);
+    controller.resetModel();
+  }
 }

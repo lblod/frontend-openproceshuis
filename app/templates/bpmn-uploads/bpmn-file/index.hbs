@@ -1,101 +1,128 @@
-<PageHeader>
-  <:title>
-    {{@model.metadata.name}}
-  </:title>
-  <:action>
-    <AuButtonGroup>
-      <a
-        class="au-c-button au-c-button--secondary"
-        href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
-        download="{{@model.metadata.name}}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Download BPMN bestand
-      </a>
-      <AuButton {{on "click" this.openFileModal}}>Vervang BPMN bestand</AuButton>
-    </AuButtonGroup>
-  </:action>
-</PageHeader>
+{{#if this.edit}}
+  <PageHeader>
+    <:title>
+      Wijzig metadata
+    </:title>
+    <:action>
+    </:action>
+  </PageHeader>
+{{else}}
+  <PageHeader>
+    <:title>
+      {{@model.metadata.name}}
+    </:title>
+    <:action>
+      <AuButtonGroup>
+        <a
+          class="au-c-button au-c-button--secondary"
+          href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
+          download="{{@model.metadata.name}}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download BPMN-bestand
+        </a>
+        {{#if this.wasPublishedByCurrentOrganization}}
+          <AuButton {{on "click" this.openFileModal}}>Vervang BPMN-bestand</AuButton>
+        {{/if}}
+      </AuButtonGroup>
+    </:action>
+  </PageHeader>
+{{/if}}
 
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   {{#if this.edit}}
-    <DataCard>
-      <:header></:header>
-      <:title>
-        Metadata
-      </:title>
-      <:card as |Card|>
-        <Card.Columns>
-          <:left as |Item|>
-            <Item>
-              <:label>Bestandsnaam</:label>
-              <:content>
-                <AuInput value={{@model.metadata.name}} @width="block" />
-              </:content>
-            </Item>
-            <Item>
-              <:label>Beschrijving</:label>
-              <:content>
-                <AuTextarea rows="7" value="" @width="block" />
-              </:content>
-            </Item>
-          </:left>
-          <:right as |Item|>
-            <Item>
-              <:label>Aangemaakt op</:label>
-              <:content>
-                {{date-format @model.metadata.created}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Laatst aangepast op</:label>
-              <:content>
-                {{date-format @model.metadata.modified}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Extensie</:label>
-              <:content>
-                {{@model.metadata.extension}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Formaat</:label>
-              <:content>
-                {{@model.metadata.format}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Grootte</:label>
-              <:content>
-                {{file-size-format @model.metadata.size}}
-              </:content>
-            </Item>
-          </:right>
-        </Card.Columns>
-      </:card>
-      <:action>
-        <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
-          <AuButton
-            @skin="secondary"
-            {{on "click" this.toggleEdit}}
-          >Annuleer</AuButton>
-          <AuButton
-            @skin="primary"
-            {{on "click" this.toggleEdit}}
-          >Bewaar</AuButton>
-        </div>
-      </:action>
-    </DataCard>
+    <form {{on "submit" (perform this.updateModel)}}>
+      <DataCard>
+        <:header></:header>
+        <:title>
+          Metadata
+        </:title>
+        <:card as |Card|>
+          <Card.Columns>
+            <:left as |Item|>
+              <Item>
+                <:label>Bestandsnaam</:label>
+                <:content>
+                  <AuInput
+                    value={{@model.metadata.name}}
+                    {{on "input" this.setFileName}}
+                    @width="block"
+                  />
+                </:content>
+              </Item>
+              <Item>
+                <:label>Beschrijving</:label>
+                <:content>
+                  <AuTextarea
+                    value={{@model.metadata.description}}
+                    {{on "input" this.setFileDescription}}
+                    rows="7"
+                    @width="block"
+                  />
+                </:content>
+              </Item>
+            </:left>
+            <:right as |Item|>
+              <Item>
+                <:label>Aangemaakt op</:label>
+                <:content>
+                  {{date-format @model.metadata.created true}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Laatst aangepast op</:label>
+                <:content>
+                  <span class="au-u-italic">Nu</span>
+                </:content>
+              </Item>
+              <Item>
+                <:label>Extensie</:label>
+                <:content>
+                  {{@model.metadata.extension}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Formaat</:label>
+                <:content>
+                  {{@model.metadata.format}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Grootte</:label>
+                <:content>
+                  {{file-size-format @model.metadata.size}}
+                </:content>
+              </Item>
+            </:right>
+          </Card.Columns>
+        </:card>
+        <:action>
+          <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+            <AuButton
+              @skin="secondary"
+              {{on "click" this.cancelEdit}}
+            >Annuleer</AuButton>
+            <AuButton
+              @skin="primary"
+              type="submit"
+              @loading={{this.updateModel.isRunning}}
+              @disabled={{this.updateModel.isRunning}}
+            >Bewaar</AuButton>
+          </div>
+        </:action>
+      </DataCard>
+    </form>
   {{else}}
     <DataCard>
       <:header>
-        <AuButton
-          @skin="naked"
-          @icon="pencil"
-          {{on "click" this.toggleEdit}}
-        >Wijzig</AuButton>
+        {{#if this.wasPublishedByCurrentOrganization}}
+          <AuButton
+            @skin="naked"
+            @icon="pencil"
+            {{on "click" this.toggleEdit}}
+          >Wijzig</AuButton>
+        {{/if}}
       </:header>
       <:title>
         Metadata
@@ -112,7 +139,7 @@
             <Item>
               <:label>Beschrijving</:label>
               <:content>
-                ...
+                {{or @model.metadata.description "/"}}
               </:content>
             </Item>
 
@@ -121,13 +148,13 @@
             <Item>
               <:label>Aangemaakt op</:label>
               <:content>
-                {{date-format @model.metadata.created}}
+                {{date-format @model.metadata.created true}}
               </:content>
             </Item>
             <Item>
               <:label>Laatst aangepast op</:label>
               <:content>
-                {{date-format @model.metadata.modified}}
+                {{date-format @model.metadata.modified true}}
               </:content>
             </Item>
             <Item>
@@ -217,11 +244,11 @@
 >
   <:title>Vervang BPMN-bestand</:title>
   <:body>
-    <AuFileUpload
+    <CustomFileUpload
       @accept=".bpmn,.xml"
-      @endPoint={{this.postEndpoint}}
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+      @onFileId={{this.extractBpmn}}
       @onFinishUpload={{this.fileUploaded}}
     />
   </:body>

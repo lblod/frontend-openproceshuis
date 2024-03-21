@@ -25,12 +25,15 @@ export default class BpmnFilesFavoritesRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      include: 'publisher',
     };
 
     if (params.sort) {
       const isDescending = params.sort.startsWith('-');
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+
+      if (fieldName === 'organization') fieldName = 'publisher.name';
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;

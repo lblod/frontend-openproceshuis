@@ -17,6 +17,8 @@ export default class BpmnUploadsBpmnFileRoute extends Route {
   async model() {
     let { id: fileId } = this.paramsFor('bpmn-uploads.bpmn-file');
 
-    return await this.store.findRecord('file', fileId);
+    return await this.store.findRecord('file', fileId, {
+      include: 'publisher',
+    });
   }
 }
