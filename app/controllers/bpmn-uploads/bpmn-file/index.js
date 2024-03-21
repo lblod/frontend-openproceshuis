@@ -18,6 +18,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked edit = false;
   @tracked newFileId = undefined;
 
+  // FIXME: should be shielded by backend instead of frontend
   get wasPublishedByCurrentOrganization() {
     return this.model.metadata.publisher.id === this.currentSession.group.id;
   }
