@@ -22,7 +22,9 @@
         >
           Download BPMN-bestand
         </a>
-        <AuButton {{on "click" this.openFileModal}}>Vervang BPMN-bestand</AuButton>
+        {{#if this.wasPublishedByCurrentOrganization}}
+          <AuButton {{on "click" this.openFileModal}}>Vervang BPMN-bestand</AuButton>
+        {{/if}}
       </AuButtonGroup>
     </:action>
   </PageHeader>
@@ -114,11 +116,13 @@
   {{else}}
     <DataCard>
       <:header>
-        <AuButton
-          @skin="naked"
-          @icon="pencil"
-          {{on "click" this.toggleEdit}}
-        >Wijzig</AuButton>
+        {{#if this.wasPublishedByCurrentOrganization}}
+          <AuButton
+            @skin="naked"
+            @icon="pencil"
+            {{on "click" this.toggleEdit}}
+          >Wijzig</AuButton>
+        {{/if}}
       </:header>
       <:title>
         Metadata

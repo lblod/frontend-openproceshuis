@@ -9,6 +9,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   @service store;
   @service router;
+  @service currentSession;
 
   @tracked page = 0;
   size = 20;
@@ -16,6 +17,10 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked fileModalOpened = false;
   @tracked edit = false;
   @tracked newFileId = undefined;
+
+  get wasPublishedByCurrentOrganization() {
+    return this.model.metadata.publisher.id === this.currentSession.group.id;
+  }
 
   get bpmnElements() {
     return this.model.loadBpmnElementsTaskInstance.isFinished
