@@ -72,7 +72,11 @@
             @currentSorting={{this.sort}}
             @label="Laatst aangepast op"
           />
-          <AuDataTableThSortable @field="name" @label="Bestuur" />
+          <AuDataTableThSortable
+            @field="organization"
+            @currentSorting={{this.sort}}
+            @label="Bestuur"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />

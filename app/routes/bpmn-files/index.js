@@ -33,6 +33,8 @@ export default class BpmnFilesIndexRoute extends Route {
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
 
+      if (fieldName === 'organization') fieldName = 'publisher.name';
+
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
 
