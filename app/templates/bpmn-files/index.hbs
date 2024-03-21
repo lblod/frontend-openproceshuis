@@ -94,9 +94,9 @@
                 {{file.name}}
               </LinkTo>
             </td>
-            <td>{{or @model.metadata.description "/"}}</td>
+            <td>{{or file.description "/"}}</td>
             <td>{{date-format file.modified}}</td>
-            <td>Demo bestuur</td>
+            <td>{{file.publisher.name}}</td>
           </c.body>
         {{/if}}
       </t.content>
