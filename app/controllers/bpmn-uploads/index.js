@@ -10,7 +10,7 @@ export default class BpmnUploadsIndexController extends Controller {
   size = 20;
   @tracked sort = 'name';
   @tracked name = '';
-  @tracked fileModalOpened = false;
+  @tracked uploadModalOpened = false;
   @tracked newFileId = undefined;
 
   get bpmnFiles() {
@@ -51,14 +51,14 @@ export default class BpmnUploadsIndexController extends Controller {
   }
 
   @action
-  openFileModal() {
+  openUploadModal() {
     this.newFileId = undefined;
-    this.fileModalOpened = true;
+    this.uploadModalOpened = true;
   }
 
   @action
-  closeFileModal() {
-    this.fileModalOpened = false;
+  closeUploadModal() {
+    this.uploadModalOpened = false;
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
@@ -73,7 +73,7 @@ export default class BpmnUploadsIndexController extends Controller {
 
   @action
   fileUploaded(newFileId) {
-    this.closeFileModal();
+    this.closeUploadModal();
     this.resetFilters();
     this.newFileId = newFileId;
   }

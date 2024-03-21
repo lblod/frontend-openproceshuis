@@ -57,7 +57,7 @@
           bestanden</AuLink>
       </:subtitle>
       <:action>
-        <AuButton {{on "click" this.openFileModal}}>Voeg proces toe</AuButton>
+        <AuButton {{on "click" this.openUploadModal}}>Voeg proces toe</AuButton>
       </:action>
     </PageHeader>
 
@@ -121,8 +121,8 @@
 </SidebarContainer>
 
 <AuModal
-  @modalOpen={{this.fileModalOpened}}
-  @closeModal={{this.closeFileModal}}
+  @modalOpen={{this.uploadModalOpened}}
+  @closeModal={{this.closeUploadModal}}
 >
   <:title>Voeg BPMN-bestand toe</:title>
   <:body>
@@ -138,7 +138,7 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="naked"
-        {{on "click" this.closeFileModal}}
+        {{on "click" this.closeUploadModal}}
       >Annuleer</AuButton>
     </AuButtonGroup>
   </:footer>

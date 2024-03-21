@@ -14,7 +14,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
-  @tracked fileModalOpened = false;
+  @tracked replaceModalOpened = false;
   @tracked edit = false;
   @tracked newFileId = undefined;
 
@@ -60,14 +60,14 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   }
 
   @action
-  openFileModal() {
+  openReplaceModal() {
     this.newFileId = undefined;
-    this.fileModalOpened = true;
+    this.replaceModalOpened = true;
   }
 
   @action
-  closeFileModal() {
-    this.fileModalOpened = false;
+  closeReplaceModal() {
+    this.replaceModalOpened = false;
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
