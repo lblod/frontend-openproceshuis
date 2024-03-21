@@ -75,7 +75,11 @@
             @currentSorting={{this.sort}}
             @label="Naam"
           />
-          <AuDataTableThSortable @field="name" @label="Beschrijving" />
+          <AuDataTableThSortable
+            @field="description"
+            @currentSorting={{this.sort}}
+            @label="Beschrijving"
+          />
           <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sort}}
@@ -106,7 +110,7 @@
                 {{file.name}}
               </LinkTo>
             </td>
-            <td>{{or @model.metadata.description "/"}}</td>
+            <td>{{or file.description "/"}}</td>
             <td>{{date-format file.created}}</td>
             <td>{{date-format file.modified}}</td>
           </c.body>

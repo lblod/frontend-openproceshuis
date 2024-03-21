@@ -66,7 +66,11 @@
             @currentSorting={{this.sort}}
             @label="Naam"
           />
-          <AuDataTableThSortable @field="name" @label="Beschrijving" />
+          <AuDataTableThSortable
+            @field="description"
+            @currentSorting={{this.sort}}
+            @label="Beschrijving"
+          />
           <AuDataTableThSortable
             @field="modified"
             @currentSorting={{this.sort}}
