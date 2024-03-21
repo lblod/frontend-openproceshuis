@@ -42,6 +42,7 @@ export default class BpmnUploadsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      include: 'publisher',
     };
 
     if (params.sort) {

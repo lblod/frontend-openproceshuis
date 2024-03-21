@@ -90,6 +90,7 @@
             @currentSorting={{this.sort}}
             @label="Laatst aangepast op"
           />
+          <th></th>
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -113,6 +114,15 @@
             <td>{{or file.description "/"}}</td>
             <td>{{date-format file.created}}</td>
             <td>{{date-format file.modified}}</td>
+            <td>
+              <AuButton
+                @icon="bin"
+                @skin="naked"
+                @alert="true"
+                @width="block"
+                {{on "click" (fn this.openDeleteModal file)}}
+              />
+            </td>
           </c.body>
         {{/if}}
       </t.content>
@@ -137,9 +147,32 @@
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
-        @skin="naked"
+        @skin="secondary"
         {{on "click" this.closeUploadModal}}
       >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.deleteModalOpened}}
+  @closeModal={{this.closeDeleteModal}}
+>
+  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit BPMN-bestand en al haar processtappen uit de
+    bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" (perform this.deleteFile)}}
+      >Verwijder</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>
