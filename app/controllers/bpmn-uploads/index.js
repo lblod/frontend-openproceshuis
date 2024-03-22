@@ -15,6 +15,7 @@ export default class BpmnUploadsIndexController extends Controller {
   @tracked name = '';
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
+  @tracked fileDeleted = false;
   @tracked uploadModalOpened = false;
   @tracked newFileId = undefined;
 
@@ -72,16 +73,21 @@ export default class BpmnUploadsIndexController extends Controller {
   *deleteFile() {
     this.fileToDelete.archived = true;
     yield this.fileToDelete.save();
-    this.fileToDelete = undefined;
     this.deleteModalOpened = false;
+    this.fileDeleted = true;
 
     this.router.refresh();
   }
 
   @action
+  closeDeletedAlert() {
+    this.fileDeleted = false;
+  }
+
+  @action
   openUploadModal() {
     this.deleteModalOpened = false;
-    this.newFileId = undefined;
+    this.closeAddedAlert();
     this.uploadModalOpened = true;
   }
 
@@ -108,7 +114,7 @@ export default class BpmnUploadsIndexController extends Controller {
   }
 
   @action
-  closeAlert() {
+  closeAddedAlert() {
     this.newFileId = undefined;
   }
 }

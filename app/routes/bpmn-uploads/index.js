@@ -16,7 +16,8 @@ export default class BpmnUploadsIndexRoute extends Route {
 
   resetController(controller, isExiting, transition) {
     if (isExiting) {
-      controller.newFileId = undefined;
+      controller.closeDeletedAlert();
+      controller.closeAddedAlert();
     }
     super.resetController(controller, isExiting, transition);
   }
