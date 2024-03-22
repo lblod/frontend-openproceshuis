@@ -8,6 +8,7 @@ export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
 
   @service router;
+  @service toaster;
 
   @tracked page = 0;
   size = 20;
@@ -15,9 +16,7 @@ export default class BpmnUploadsIndexController extends Controller {
   @tracked name = '';
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
-  @tracked fileDeleted = false;
   @tracked uploadModalOpened = false;
-  @tracked newFileId = undefined;
 
   get bpmnFiles() {
     return this.model.loadBpmnFilesTaskInstance.isFinished
@@ -73,21 +72,16 @@ export default class BpmnUploadsIndexController extends Controller {
   *deleteFile() {
     this.fileToDelete.archived = true;
     yield this.fileToDelete.save();
-    this.deleteModalOpened = false;
-    this.fileDeleted = true;
-
+    this.closeDeleteModal();
+    this.toaster.success('BPMN-bestand succesvol verwijderd', 'Gelukt!', {
+      timeOut: 5000,
+    });
     this.router.refresh();
-  }
-
-  @action
-  closeDeletedAlert() {
-    this.fileDeleted = false;
   }
 
   @action
   openUploadModal() {
     this.deleteModalOpened = false;
-    this.closeAddedAlert();
     this.uploadModalOpened = true;
   }
 
@@ -107,14 +101,11 @@ export default class BpmnUploadsIndexController extends Controller {
   }
 
   @action
-  fileUploaded(newFileId) {
+  fileUploaded() {
     this.closeUploadModal();
-    this.resetFilters();
-    this.newFileId = newFileId;
-  }
-
-  @action
-  closeAddedAlert() {
-    this.newFileId = undefined;
+    this.toaster.success('BPMN-bestand succesvol toegevoegd', 'Gelukt!', {
+      timeOut: 5000,
+    });
+    this.router.refresh();
   }
 }

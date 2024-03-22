@@ -30,40 +30,6 @@
     </div>
   </:sidebar>
   <:content>
-    {{#if this.newFileId}}
-      <AuAlert
-        @title="Gelukt!"
-        @skin="success"
-        @icon="check"
-        @size="small"
-        @closable="true"
-        @onClose={{this.closeAddedAlert}}
-        class="au-u-margin au-u-margin-bottom-none"
-      >
-        <p>
-          <LinkTo
-            class="au-c-link"
-            @model={{this.newFileId}}
-            @route="bpmn-uploads.bpmn-file"
-          >Raadpleeg nieuw BPMN-bestand
-          </LinkTo>
-        </p>
-      </AuAlert>
-    {{/if}}
-    {{#if this.fileDeleted}}
-      <AuAlert
-        @title="Gelukt!"
-        @skin="success"
-        @icon="check"
-        @size="small"
-        @closable="true"
-        @onClose={{this.closeDeletedAlert}}
-        class="au-u-margin au-u-margin-bottom-none"
-      >
-        <p>BPMN-bestand succesvol verwijderd</p>
-      </AuAlert>
-    {{/if}}
-
     <PageHeader>
       <:title>Gedeelde processen</:title>
       <:subtitle>
