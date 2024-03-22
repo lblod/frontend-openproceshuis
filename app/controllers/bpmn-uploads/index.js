@@ -2,9 +2,12 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
+import { service } from '@ember/service';
 
 export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
+
+  @service router;
 
   @tracked page = 0;
   size = 20;
@@ -71,6 +74,8 @@ export default class BpmnUploadsIndexController extends Controller {
     yield this.fileToDelete.save();
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
+
+    this.router.refresh();
   }
 
   @action
