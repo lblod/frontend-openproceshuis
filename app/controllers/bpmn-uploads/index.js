@@ -72,11 +72,19 @@ export default class BpmnUploadsIndexController extends Controller {
   @task
   *deleteFile() {
     this.fileToDelete.archived = true;
-    yield this.fileToDelete.save();
+
+    try {
+      yield this.fileToDelete.save();
+      this.toaster.success('BPMN-bestand succesvol verwijderd', 'Gelukt!', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('BPMN-bestand kon niet worden verwijderd', 'Fout');
+      this.fileToDelete.rollbackAttributes();
+    }
+
     this.closeDeleteModal();
-    this.toaster.success('BPMN-bestand succesvol verwijderd', 'Gelukt!', {
-      timeOut: 5000,
-    });
     this.router.refresh();
   }
 
