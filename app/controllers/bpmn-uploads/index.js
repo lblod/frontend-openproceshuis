@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
+import FileAddedToast from 'frontend-openproceshuis/components/file-added-toast';
 
 export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
@@ -14,8 +15,8 @@ export default class BpmnUploadsIndexController extends Controller {
   size = 20;
   @tracked sort = 'name';
   @tracked name = '';
-  @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
+  @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
 
   get bpmnFiles() {
@@ -101,9 +102,10 @@ export default class BpmnUploadsIndexController extends Controller {
   }
 
   @action
-  fileUploaded() {
+  fileUploaded(newFileId) {
     this.closeUploadModal();
-    this.toaster.success('BPMN-bestand succesvol toegevoegd', 'Gelukt!', {
+    this.toaster.show(FileAddedToast, {
+      newFileId,
       timeOut: 5000,
     });
     this.router.refresh();
