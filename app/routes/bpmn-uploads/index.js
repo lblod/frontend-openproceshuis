@@ -14,13 +14,6 @@ export default class BpmnUploadsIndexRoute extends Route {
     name: { refreshModel: true, replace: true },
   };
 
-  resetController(controller, isExiting, transition) {
-    if (isExiting) {
-      controller.newFileId = undefined;
-    }
-    super.resetController(controller, isExiting, transition);
-  }
-
   async beforeModel(transition) {
     this.session.requireAuthentication(transition, 'mock-login');
 

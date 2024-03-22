@@ -10,6 +10,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @service store;
   @service router;
   @service currentSession;
+  @service toaster;
 
   @tracked page = 0;
   size = 20;
@@ -126,7 +127,24 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     const file = this.model.metadata;
     if (file.hasDirtyAttributes) {
       file.modified = new Date();
-      yield file.save();
+
+      try {
+        yield file.save();
+        this.toaster.success(
+          'Metadata van BPMN-bestand succesvol bijgewerkt',
+          'Gelukt!',
+          {
+            timeOut: 5000,
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        this.toaster.error(
+          'Metadata van BPMN-bestand kon niet worden bijgewerkt',
+          'Fout'
+        );
+        this.file.rollbackAttributes();
+      }
     }
 
     this.toggleEdit();

@@ -3,20 +3,21 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
+import FileAddedToast from 'frontend-openproceshuis/components/file-added-toast';
 
 export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
 
   @service router;
+  @service toaster;
 
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
   @tracked name = '';
-  @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
+  @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
-  @tracked newFileId = undefined;
 
   get bpmnFiles() {
     return this.model.loadBpmnFilesTaskInstance.isFinished
@@ -71,17 +72,25 @@ export default class BpmnUploadsIndexController extends Controller {
   @task
   *deleteFile() {
     this.fileToDelete.archived = true;
-    yield this.fileToDelete.save();
-    this.fileToDelete = undefined;
-    this.deleteModalOpened = false;
 
+    try {
+      yield this.fileToDelete.save();
+      this.toaster.success('BPMN-bestand succesvol verwijderd', 'Gelukt!', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('BPMN-bestand kon niet worden verwijderd', 'Fout');
+      this.fileToDelete.rollbackAttributes();
+    }
+
+    this.closeDeleteModal();
     this.router.refresh();
   }
 
   @action
   openUploadModal() {
     this.deleteModalOpened = false;
-    this.newFileId = undefined;
     this.uploadModalOpened = true;
   }
 
@@ -103,12 +112,10 @@ export default class BpmnUploadsIndexController extends Controller {
   @action
   fileUploaded(newFileId) {
     this.closeUploadModal();
-    this.resetFilters();
-    this.newFileId = newFileId;
-  }
-
-  @action
-  closeAlert() {
-    this.newFileId = undefined;
+    this.toaster.show(FileAddedToast, {
+      newFileId,
+      timeOut: 5000,
+    });
+    this.router.refresh();
   }
 }
