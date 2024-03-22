@@ -93,6 +93,29 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     yield oldFile.destroyRecord();
   }
 
+  @task({ enqueue: true, maxConcurrency: 3 })
+  *extractBpmn(newFileId) {
+    yield fetch(`/bpmn?id=${newFileId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+  }
+
+  @dropTask
+  *replaceFile() {
+    const oldFile = this.model.metadata;
+    const newFile = yield this.store.findRecord('file', this.newFileId);
+
+    newFile.name = oldFile.name;
+    newFile.description = oldFile.description;
+    newFile.created = oldFile.created;
+    yield newFile.save();
+
+    yield oldFile.destroyRecord();
+  }
+
   @action
   async fileUploaded(newFileId) {
     this.newFileId = newFileId;
