@@ -20,7 +20,11 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   // FIXME: should be shielded by backend instead of frontend
   get wasPublishedByCurrentOrganization() {
-    return this.model.metadata.publisher.id === this.currentSession.group.id;
+    return (
+      this.model.metadata.publisher &&
+      this.currentSession.group &&
+      this.model.metadata.publisher.id === this.currentSession.group.id
+    );
   }
 
   get bpmnElements() {
@@ -83,7 +87,9 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @dropTask
   *replaceFile() {
     const oldFile = this.model.metadata;
-    const newFile = yield this.store.findRecord('file', this.newFileId);
+    const newFile = yield this.store.findRecord('file', this.newFileId, {
+      include: 'publisher',
+    });
 
     newFile.name = oldFile.name;
     newFile.description = oldFile.description;
