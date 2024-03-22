@@ -45,6 +45,8 @@ export default class BpmnFilesIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
     query['filter[:has:download]'] = 'true';
+    query['filter[:or:][archived]'] = false;
+    query['filter[:or:][:has-no:archived]'] = true; // No explicit archived property means not archived
 
     return yield this.store.query('file', query);
   }

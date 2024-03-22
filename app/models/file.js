@@ -7,6 +7,7 @@ export default class FileModel extends Model {
   @attr('string') extension;
   @attr('iso-date') created;
   @attr('iso-date') modified;
+  @attr('boolean') archived;
 
   @belongsTo('group', {
     inverse: null,

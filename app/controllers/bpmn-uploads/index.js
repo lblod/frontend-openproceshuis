@@ -2,15 +2,20 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
+import { service } from '@ember/service';
 
 export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
+
+  @service router;
 
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
   @tracked name = '';
-  @tracked fileModalOpened = false;
+  @tracked deleteModalOpened = false;
+  @tracked fileToDelete = undefined;
+  @tracked uploadModalOpened = false;
   @tracked newFileId = undefined;
 
   get bpmnFiles() {
@@ -51,14 +56,38 @@ export default class BpmnUploadsIndexController extends Controller {
   }
 
   @action
-  openFileModal() {
-    this.newFileId = undefined;
-    this.fileModalOpened = true;
+  openDeleteModal(fileToDelete) {
+    this.uploadModalOpened = false;
+    this.fileToDelete = fileToDelete;
+    this.deleteModalOpened = true;
   }
 
   @action
-  closeFileModal() {
-    this.fileModalOpened = false;
+  closeDeleteModal() {
+    this.fileToDelete = undefined;
+    this.deleteModalOpened = false;
+  }
+
+  @task
+  *deleteFile() {
+    this.fileToDelete.archived = true;
+    yield this.fileToDelete.save();
+    this.fileToDelete = undefined;
+    this.deleteModalOpened = false;
+
+    this.router.refresh();
+  }
+
+  @action
+  openUploadModal() {
+    this.deleteModalOpened = false;
+    this.newFileId = undefined;
+    this.uploadModalOpened = true;
+  }
+
+  @action
+  closeUploadModal() {
+    this.uploadModalOpened = false;
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
@@ -73,7 +102,7 @@ export default class BpmnUploadsIndexController extends Controller {
 
   @action
   fileUploaded(newFileId) {
-    this.closeFileModal();
+    this.closeUploadModal();
     this.resetFilters();
     this.newFileId = newFileId;
   }

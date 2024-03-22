@@ -14,13 +14,17 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
-  @tracked fileModalOpened = false;
+  @tracked replaceModalOpened = false;
   @tracked edit = false;
   @tracked newFileId = undefined;
 
   // FIXME: should be shielded by backend instead of frontend
   get wasPublishedByCurrentOrganization() {
-    return this.model.metadata.publisher.id === this.currentSession.group.id;
+    return (
+      this.model.metadata.publisher &&
+      this.currentSession.group &&
+      this.model.metadata.publisher.id === this.currentSession.group.id
+    );
   }
 
   get bpmnElements() {
@@ -60,14 +64,14 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   }
 
   @action
-  openFileModal() {
+  openReplaceModal() {
     this.newFileId = undefined;
-    this.fileModalOpened = true;
+    this.replaceModalOpened = true;
   }
 
   @action
-  closeFileModal() {
-    this.fileModalOpened = false;
+  closeReplaceModal() {
+    this.replaceModalOpened = false;
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
@@ -83,7 +87,9 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @dropTask
   *replaceFile() {
     const oldFile = this.model.metadata;
-    const newFile = yield this.store.findRecord('file', this.newFileId);
+    const newFile = yield this.store.findRecord('file', this.newFileId, {
+      include: 'publisher',
+    });
 
     newFile.name = oldFile.name;
     newFile.description = oldFile.description;

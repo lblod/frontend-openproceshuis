@@ -42,6 +42,7 @@ export default class BpmnUploadsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      include: 'publisher',
     };
 
     if (params.sort) {
@@ -60,6 +61,8 @@ export default class BpmnUploadsIndexRoute extends Route {
     }
     query['filter[:has:download]'] = 'true';
     query['filter[publisher][id]'] = this.currentSession.group.id; // FIXME: should be handled by backend instead of frontend
+    query['filter[:or:][archived]'] = false;
+    query['filter[:or:][:has-no:archived]'] = true; // No explicit archived property means not archived
 
     return yield this.store.query('file', query);
   }

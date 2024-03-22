@@ -23,7 +23,7 @@
           Download BPMN-bestand
         </a>
         {{#if this.wasPublishedByCurrentOrganization}}
-          <AuButton {{on "click" this.openFileModal}}>Vervang BPMN-bestand</AuButton>
+          <AuButton {{on "click" this.openReplaceModal}}>Vervang BPMN-bestand</AuButton>
         {{/if}}
       </AuButtonGroup>
     </:action>
@@ -239,8 +239,8 @@
 </AuBodyContainer>
 
 <AuModal
-  @modalOpen={{this.fileModalOpened}}
-  @closeModal={{this.closeFileModal}}
+  @modalOpen={{this.replaceModalOpened}}
+  @closeModal={{this.closeReplaceModal}}
 >
   <:title>Vervang BPMN-bestand</:title>
   <:body>
@@ -256,7 +256,7 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="naked"
-        {{on "click" this.closeFileModal}}
+        {{on "click" this.closeReplaceModal}}
       >Annuleer</AuButton>
     </AuButtonGroup>
   </:footer>
