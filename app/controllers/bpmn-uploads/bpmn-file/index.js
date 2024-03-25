@@ -18,6 +18,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked replaceModalOpened = false;
   @tracked edit = false;
   @tracked newFileId = undefined;
+  @tracked formIsValid = false;
 
   // FIXME: should be shielded by backend instead of frontend
   get wasPublishedByCurrentOrganization() {
@@ -112,6 +113,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @action
   toggleEdit() {
     this.edit = !this.edit;
+    this.validateForm();
   }
 
   @action
@@ -125,7 +127,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     event.preventDefault();
 
     const file = this.model.metadata;
-    if (file.hasDirtyAttributes) {
+    if (file.validate() && file.hasDirtyAttributes) {
       file.modified = new Date();
 
       try {
@@ -143,8 +145,10 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
           'Metadata van BPMN-bestand kon niet worden bijgewerkt',
           'Fout'
         );
-        this.file.rollbackAttributes();
+        this.resetModel();
       }
+    } else {
+      this.resetModel();
     }
 
     this.toggleEdit();
@@ -157,10 +161,17 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @action
   setFileName(event) {
     this.model.metadata.name = event.target.value;
+    this.validateForm();
   }
 
   @action
   setFileDescription(event) {
     this.model.metadata.description = event.target.value;
+    this.validateForm();
+  }
+
+  validateForm() {
+    this.formIsValid =
+      this.model.metadata.validate() && this.model.metadata.hasDirtyAttributes;
   }
 }

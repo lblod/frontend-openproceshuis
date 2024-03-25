@@ -107,7 +107,7 @@
               @skin="primary"
               type="submit"
               @loading={{this.updateModel.isRunning}}
-              @disabled={{this.updateModel.isRunning}}
+              @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
             >Bewaar</AuButton>
           </div>
         </:action>

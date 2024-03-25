@@ -1,4 +1,7 @@
 import Model, { attr, belongsTo } from '@ember-data/model';
+import { modelValidator } from 'ember-model-validator';
+
+@modelValidator
 export default class FileModel extends Model {
   @attr('string') name;
   @attr('string') description;
@@ -14,4 +17,10 @@ export default class FileModel extends Model {
     async: false,
   })
   publisher;
+
+  validations = {
+    name: {
+      presence: true,
+    },
+  };
 }
