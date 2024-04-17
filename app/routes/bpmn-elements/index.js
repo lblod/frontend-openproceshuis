@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import { InvertedBpmnElementTypes } from '../../utils/bpmn-element-types';
 export default class BpmnElementsIndexRoute extends Route {
   @service store;
   @service muSearch;
@@ -29,11 +28,7 @@ export default class BpmnElementsIndexRoute extends Route {
       filter[`:${filterType}:name`] = name;
     }
     if (params.type) {
-      const elementType = InvertedBpmnElementTypes[params.type] || undefined;
-      if (elementType)
-        filter[
-          'classification'
-        ] = `https://www.irit.fr/recherches/MELODI/ontologies/BBO#${elementType}`;
+      filter['type']['key'] = params.type; // TODO: Check whether this is correct
     }
     let sort = null;
     if (params.sort) {
@@ -95,7 +90,7 @@ export default class BpmnElementsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      include: 'processes.derivations',
+      include: 'type,processes.derivations',
     };
 
     if (params.sort) {
@@ -115,21 +110,15 @@ export default class BpmnElementsIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
 
+    if (params.type) {
+      query['filter[type][key]'] = params.type;
+    }
+
     query['filter[:has:processes]'] = true;
     query['filter[processes][:has:derivations]'] = true;
 
     query['filter[:or:][processes][derivations][archived]'] = false;
     query['filter[:or:][processes][derivations][:has-no:archived]'] = true; // No explicit archived property means not archived
-
-    if (!params.type) {
-      return yield this.store.query('bpmn-element', query);
-    }
-
-    const elementType = InvertedBpmnElementTypes[params.type] || undefined;
-    if (elementType)
-      query[
-        'filter[classification]'
-      ] = `https://www.irit.fr/recherches/MELODI/ontologies/BBO#${elementType}`;
 
     return yield this.store.query('bpmn-element', query);
   }
