@@ -42,6 +42,7 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      include: 'type',
       'filter[:has:name]': true,
       'filter[processes][derivations][id]': fileId,
     };
