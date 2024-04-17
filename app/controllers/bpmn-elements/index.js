@@ -3,13 +3,14 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
 export default class BpmnElementsIndexController extends Controller {
-  queryParams = ['page', 'size', 'sort', 'name', 'type'];
+  queryParams = ['page', 'size', 'sort', 'name', { typeQueryValue: 'type' }];
 
   @tracked page = 0;
   size = 20;
   @tracked sort = '';
   @tracked name = '';
-  @tracked type = '';
+  @tracked type = null;
+  @tracked typeQueryValue = '';
 
   get bpmnElements() {
     return this.model.loadBpmnElementsTaskInstance.isFinished
@@ -48,12 +49,14 @@ export default class BpmnElementsIndexController extends Controller {
   setType(selection) {
     this.page = null;
     this.type = selection;
+    this.typeQueryValue = this.type?.queryValue ?? '';
   }
 
   @action
   resetFilters() {
     this.name = '';
-    this.type = '';
+    this.type = null;
+    this.typeQueryValue = '';
     this.page = 0;
     this.sort = '';
 
