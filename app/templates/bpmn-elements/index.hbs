@@ -80,8 +80,8 @@
           </TableMessage>
         {{else}}
           <c.body as |element|>
-            <td>{{element.name}}</td>
-            <td>{{capitalize-first element.type.labelNl}}</td>
+            <td>{{or element.name "/"}}</td>
+            <td>{{capitalize-first (or element.type.labelNl "/")}}</td>
             <td>
               <LinkTo
                 class="au-c-link"
