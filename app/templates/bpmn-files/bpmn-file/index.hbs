@@ -112,7 +112,11 @@
                 @currentSorting={{this.sort}}
                 @label="Naam"
               />
-              <AuDataTableThSortable @field="type" @label="Type" />
+              <AuDataTableThSortable
+                @field="type"
+                @currentSorting={{this.sort}}
+                @label="Type"
+              />
             </c.header>
             {{#if this.hasErrored}}
               <TableMessage::Error />

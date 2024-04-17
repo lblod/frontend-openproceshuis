@@ -51,6 +51,7 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
       const isDescending = params.sort.startsWith('-');
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      if (fieldName === 'type') fieldName = 'type.label';
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
