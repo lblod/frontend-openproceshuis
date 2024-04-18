@@ -14,6 +14,8 @@ export default class BpmnElementSelectByTypeComponent extends Component {
   }
 
   @restartableTask *loadBpmnElementTypesTask() {
-    this.types = yield this.store.findAll('bpmn-element-type');
+    this.types = yield this.store.query('bpmn-element-type', {
+      sort: ':no-case:label',
+    });
   }
 }
