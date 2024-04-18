@@ -121,6 +121,11 @@ export default class BpmnElementsIndexRoute extends Route {
     query['filter[:or:][processes][derivations][archived]'] = false;
     query['filter[:or:][processes][derivations][:has-no:archived]'] = true; // No explicit archived property means not archived
 
-    return yield this.store.query('bpmn-element', query);
+    const results = yield this.store.query('bpmn-element', query);
+    return !params.typeQueryValue
+      ? results
+      : results.filter(
+          (element) => element.type.queryValue === params.typeQueryValue // TODO: Move exact matching to backend
+        );
   }
 }
