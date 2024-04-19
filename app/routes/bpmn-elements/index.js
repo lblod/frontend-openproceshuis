@@ -8,7 +8,7 @@ export default class BpmnElementsIndexRoute extends Route {
     page: { refreshModel: true },
     sort: { refreshModel: true },
     name: { refreshModel: true, replace: true },
-    typeQueryValue: { refreshModel: true, replace: true },
+    type: { refreshModel: true, replace: true },
   };
 
   async model(params) {
@@ -27,8 +27,8 @@ export default class BpmnElementsIndexRoute extends Route {
 
       filter[`:${filterType}:name`] = name;
     }
-    if (params.typeQueryValue) {
-      filter['type']['key'] = params.typeQueryValue; // TODO: Check whether this is correct
+    if (params.type) {
+      filter['type']['key'] = params.type; // TODO: Check whether this is correct
     }
     let sort = null;
     if (params.sort) {
@@ -111,8 +111,8 @@ export default class BpmnElementsIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
 
-    if (params.typeQueryValue) {
-      query['filter[type][key]'] = params.typeQueryValue;
+    if (params.type) {
+      query['filter[type][key]'] = params.type;
     }
 
     query['filter[:has:processes]'] = true;
@@ -122,10 +122,10 @@ export default class BpmnElementsIndexRoute extends Route {
     query['filter[:or:][processes][derivations][:has-no:archived]'] = true; // No explicit archived property means not archived
 
     const results = yield this.store.query('bpmn-element', query);
-    return !params.typeQueryValue
+    return !params.type
       ? results
       : results.filter(
-          (element) => element.type.queryValue === params.typeQueryValue // TODO: Move exact matching to backend
+          (element) => element.type.queryValue === params.type // TODO: Move exact matching to backend
         );
   }
 }
