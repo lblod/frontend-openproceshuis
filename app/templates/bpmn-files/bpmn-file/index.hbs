@@ -112,7 +112,11 @@
                 @currentSorting={{this.sort}}
                 @label="Naam"
               />
-              <AuDataTableThSortable @field="type" @label="Type" />
+              <AuDataTableThSortable
+                @field="type"
+                @currentSorting={{this.sort}}
+                @label="Type"
+              />
             </c.header>
             {{#if this.hasErrored}}
               <TableMessage::Error />
@@ -124,8 +128,8 @@
               </TableMessage>
             {{else}}
               <c.body as |element|>
-                <td>{{element.name}}</td>
-                <td>{{element.type}}</td>
+                <td>{{or element.name "/"}}</td>
+                <td>{{capitalize-first (or element.type.name "/")}}</td>
               </c.body>
             {{/if}}
           </t.content>

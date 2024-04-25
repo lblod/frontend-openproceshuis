@@ -42,6 +42,7 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
+      include: 'type',
       'filter[:has:name]': true,
       'filter[processes][derivations][id]': fileId,
     };
@@ -50,6 +51,7 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
       const isDescending = params.sort.startsWith('-');
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      if (fieldName === 'type') fieldName = 'type.label';
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;

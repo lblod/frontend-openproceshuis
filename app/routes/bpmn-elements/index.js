@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import { InvertedBpmnElementTypes } from '../../utils/bpmn-element-types';
 import { ARCHIVED_STATUS } from '../../models/file';
 
 export default class BpmnElementsIndexRoute extends Route {
@@ -31,11 +30,7 @@ export default class BpmnElementsIndexRoute extends Route {
       filter[`:${filterType}:name`] = name;
     }
     if (params.type) {
-      const elementType = InvertedBpmnElementTypes[params.type] || undefined;
-      if (elementType)
-        filter[
-          'classification'
-        ] = `https://www.irit.fr/recherches/MELODI/ontologies/BBO#${elementType}`;
+      filter['type']['key'] = params.type; // TODO: Check whether this is correct
     }
     let sort = null;
     if (params.sort) {
@@ -97,7 +92,7 @@ export default class BpmnElementsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      include: 'processes.derivations',
+      include: 'type,processes.derivations',
     };
 
     if (params.sort) {
@@ -105,6 +100,7 @@ export default class BpmnElementsIndexRoute extends Route {
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
       if (fieldName === 'file') fieldName = 'processes.derivations.name';
+      else if (fieldName === 'type') fieldName = 'type.label';
       else if (fieldName === 'name') query['filter[:has:name]'] = true; // Filtering with non-existent names, behaves unexpectedly
 
       let sortValue = `:no-case:${fieldName}`;
@@ -117,20 +113,19 @@ export default class BpmnElementsIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
 
+    if (params.type) {
+      query['filter[type][key]'] = params.type;
+    }
+
     query['filter[:has:processes]'] = true;
     query['filter[processes][:has:derivations]'] = true;
     query['filter[processes][derivations][:not:status]'] = ARCHIVED_STATUS;
 
-    if (!params.type) {
-      return yield this.store.query('bpmn-element', query);
-    }
-
-    const elementType = InvertedBpmnElementTypes[params.type] || undefined;
-    if (elementType)
-      query[
-        'filter[classification]'
-      ] = `https://www.irit.fr/recherches/MELODI/ontologies/BBO#${elementType}`;
-
-    return yield this.store.query('bpmn-element', query);
+    const results = yield this.store.query('bpmn-element', query);
+    return !params.type
+      ? results
+      : results.filter(
+          (element) => element.type.queryValue === params.type // TODO: Move exact matching to backend
+        );
   }
 }
