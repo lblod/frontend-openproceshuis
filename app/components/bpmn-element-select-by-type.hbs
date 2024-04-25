@@ -1,16 +1,15 @@
 <div class={{if @error "ember-power-select--error"}} ...attributes>
   <PowerSelect
+    {{did-insert this.loadBpmnElementTypesTask.perform}}
     @allowClear={{true}}
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
-    @searchMessage="Typ om te zoeken"
-    @searchField="type"
     @options={{this.types}}
-    @selected={{@selected}}
-    @onChange={{@onChange}}
+    @selected={{this.type}}
+    @onChange={{this.setType}}
     @triggerId={{@id}}
     as |type|
   >
-    {{type}}
+    {{capitalize-first type.name}}
   </PowerSelect>
 </div>

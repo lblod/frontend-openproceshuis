@@ -63,7 +63,11 @@
             @currentSorting={{this.sort}}
             @label="Naam"
           />
-          <AuDataTableThSortable @field="type" @label="Type" />
+          <AuDataTableThSortable
+            @field="type"
+            @currentSorting={{this.sort}}
+            @label="Type"
+          />
           <AuDataTableThSortable
             @field="file"
             @currentSorting={{this.sort}}
@@ -80,8 +84,8 @@
           </TableMessage>
         {{else}}
           <c.body as |element|>
-            <td>{{element.name}}</td>
-            <td>{{element.type}}</td>
+            <td>{{or element.name "/"}}</td>
+            <td>{{capitalize-first (or element.type.name "/")}}</td>
             <td>
               <LinkTo
                 class="au-c-link"
