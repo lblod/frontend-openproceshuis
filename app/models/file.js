@@ -1,6 +1,9 @@
 import Model, { attr, belongsTo } from '@ember-data/model';
 import { modelValidator } from 'ember-model-validator';
 
+export const ARCHIVED_STATUS =
+  'http://lblod.data.gift/concepts/concept-status/gearchiveerd';
+
 @modelValidator
 export default class FileModel extends Model {
   @attr('string') name;
@@ -10,7 +13,7 @@ export default class FileModel extends Model {
   @attr('string') extension;
   @attr('iso-date') created;
   @attr('iso-date') modified;
-  @attr('boolean') archived;
+  @attr('string') status;
 
   @belongsTo('group', {
     inverse: null,
@@ -23,4 +26,12 @@ export default class FileModel extends Model {
       presence: true,
     },
   };
+
+  get isArchived() {
+    return this.status === ARCHIVED_STATUS;
+  }
+
+  archive() {
+    this.status = ARCHIVED_STATUS;
+  }
 }

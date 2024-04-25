@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
+import { ARCHIVED_STATUS } from '../../models/file';
 
 export default class BpmnFilesFavoritesRoute extends Route {
   @service store;
@@ -44,9 +45,8 @@ export default class BpmnFilesFavoritesRoute extends Route {
     if (params.name) {
       query['filter[name]'] = params.name;
     }
-    query['filter[:has:download]'] = 'true';
-    query['filter[:or:][archived]'] = false;
-    query['filter[:or:][:has-no:archived]'] = true; // No explicit archived property means not archived
+    query['filter[:has:download]'] = true;
+    query['filter[:not:status]'] = ARCHIVED_STATUS;
 
     return yield this.store.query('file', query);
   }
