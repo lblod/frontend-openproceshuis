@@ -71,7 +71,7 @@ export default class BpmnUploadsIndexController extends Controller {
 
   @task
   *deleteFile() {
-    this.fileToDelete.archived = true;
+    this.fileToDelete.archive();
 
     try {
       yield this.fileToDelete.save();

@@ -23,8 +23,6 @@ export default class BpmnElementSelectByTypeComponent extends Component {
     });
     this.types = result;
 
-    console.log('selected type:', this.args.selected);
-
     if (this.args.selected) {
       this.type = result.find((type) => type.queryValue === this.args.selected);
     }
