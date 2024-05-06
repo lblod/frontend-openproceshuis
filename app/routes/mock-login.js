@@ -1,9 +1,10 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-
+import ENV from 'frontend-contactgegevens-loket/config/environment';
 export default class MockLoginRoute extends Route {
-  @service session;
-  @service store;
+  @service() session;
+  @service() store;
+  @service() currentSession;
 
   queryParams = {
     page: {
@@ -11,17 +12,27 @@ export default class MockLoginRoute extends Route {
     },
   };
 
-  beforeModel() {
-    this.session.prohibitAuthentication('index');
+  async beforeModel() {
+    if (this.session.isAuthenticated) {
+      await this.currentSession.load();
+      if (
+        ENV.controllerLogin === 'true' &&
+        !this.currentSession.roles?.includes(ENV.roleClaim)
+      ) {
+        this.session.prohibitAuthentication('index');
+      }
+    }
   }
 
   async model(params) {
-    let accounts = await this.store.query('account', {
-      include: 'user.groups',
-      filter: { provider: 'https://github.com/lblod/mock-login-service' },
+    const filter = { provider: 'https://github.com/lblod/mock-login-service' };
+    if (params.gemeente) filter.user = { groups: params.gemeente };
+    const accounts = await this.store.query('account', {
+      include: 'user,user.groups',
+      filter: filter,
       page: { size: 10, number: params.page },
+      sort: 'user.first-name',
     });
-
-    return { accounts };
+    return accounts;
   }
 }
