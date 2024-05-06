@@ -1,6 +1,5 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import ENV from 'frontend-contactgegevens-loket/config/environment';
 export default class MockLoginRoute extends Route {
   @service() session;
   @service() store;
@@ -13,15 +12,7 @@ export default class MockLoginRoute extends Route {
   };
 
   async beforeModel() {
-    if (this.session.isAuthenticated) {
-      await this.currentSession.load();
-      if (
-        ENV.controllerLogin === 'true' &&
-        !this.currentSession.roles?.includes(ENV.roleClaim)
-      ) {
-        this.session.prohibitAuthentication('index');
-      }
-    }
+    this.session.prohibitAuthentication('index');
   }
 
   async model(params) {
