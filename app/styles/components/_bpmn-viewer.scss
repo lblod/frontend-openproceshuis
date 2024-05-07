@@ -5,6 +5,11 @@
   border-radius: $au-radius;
   overflow: hidden;
   background-color: var(--au-gray-100);
+  outline: none;
+}
+
+.bpmn-container:focus {
+  outline: 0.2rem solid var(--au-blue-700);
 }
 
 .bjs-powered-by {
