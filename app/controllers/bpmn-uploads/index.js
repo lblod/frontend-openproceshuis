@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
-import FileAddedToast from 'frontend-openproceshuis/components/file-added-toast';
 
 export default class BpmnUploadsIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
@@ -111,11 +110,11 @@ export default class BpmnUploadsIndexController extends Controller {
 
   @action
   fileUploaded(newFileId) {
+    console.log('uploaded');
     this.closeUploadModal();
-    this.toaster.show(FileAddedToast, {
-      newFileId,
+    this.toaster.success('BPMN-bestand succesvol toegevoegd', 'Gelukt!', {
       timeOut: 5000,
     });
-    this.router.refresh();
+    this.router.transitionTo('bpmn-uploads.bpmn-file', newFileId);
   }
 }
