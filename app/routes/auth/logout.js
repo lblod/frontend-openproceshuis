@@ -1,13 +1,13 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import ENV from 'frontend-contactgegevens-loket/config/environment';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class AuthLogoutRoute extends Route {
   @service router;
   @service session;
 
   async beforeModel(transition) {
-    if (this.session.requireAuthentication(transition, 'login')) {
+    if (this.session.requireAuthentication(transition, 'index')) {
       try {
         let wasMockLoginSession = this.session.isMockLoginSession;
         await this.session.invalidate();
