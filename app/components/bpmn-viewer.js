@@ -16,6 +16,14 @@ export default class BpmnViewerComponent extends Component {
     await this.viewer.importXML(bpmnXml);
     this.viewer.get('canvas').zoom('fit-viewport');
     this.enableZoomScroll(false);
+
+    element.addEventListener('focus', () => {
+      this.enableZoomScroll(true);
+    });
+
+    element.addEventListener('blur', () => {
+      this.enableZoomScroll(false);
+    });
   }
 
   enableZoomScroll(value) {
