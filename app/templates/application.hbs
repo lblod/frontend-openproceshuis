@@ -8,12 +8,15 @@
 <AuModalContainer />
 <AuToaster />
 
-<AuApp
-  class="{{(if
-      this.showEnvironment
-      (concat 'au-c-app--environment au-c-environment--' this.environmentName)
-    )}}"
->
+<AuApp>
   <AppHeader />
-  {{outlet}}
+  <main id="main" class="au-c-main-container">
+    <div
+      class="au-c-main-container__content au-c-main-container__content--scroll"
+      id="content"
+      tabindex="-1"
+    >
+      {{outlet}}
+    </div>
+  </main>
 </AuApp>
