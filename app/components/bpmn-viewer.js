@@ -5,6 +5,8 @@ import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer';
 export default class BpmnViewerComponent extends Component {
   @action
   async setupViewer(element) {
+    element.tabIndex = 0; // Make element focusable
+
     const viewer = new NavigatedViewer({ container: element });
 
     const bpmnXml = this.args.bpmnXml;
