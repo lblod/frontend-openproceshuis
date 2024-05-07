@@ -15,21 +15,26 @@ export default class BpmnViewerComponent extends Component {
 
     await this.viewer.importXML(bpmnXml);
     this.viewer.get('canvas').zoom('fit-viewport');
-    this.enableZoomScroll(false);
+    this.disableZoomScroll();
 
     element.addEventListener('focus', () => {
-      this.enableZoomScroll(true);
+      this.enableZoomScroll();
     });
 
     element.addEventListener('blur', () => {
-      this.enableZoomScroll(false);
+      this.disableZoomScroll();
     });
   }
 
-  enableZoomScroll(value) {
+  enableZoomScroll() {
     if (!this.viewer) return;
-
     const zoomScroll = this.viewer.get('zoomScroll');
-    zoomScroll.toggle(value);
+    zoomScroll.toggle(true);
+  }
+
+  disableZoomScroll() {
+    if (!this.viewer) return;
+    const zoomScroll = this.viewer.get('zoomScroll');
+    zoomScroll.toggle(false);
   }
 }
