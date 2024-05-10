@@ -29,6 +29,20 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     );
   }
 
+  get diagram() {
+    return this.model.loadDiagramTaskInstance.isFinished
+      ? this.model.loadDiagramTaskInstance.value
+      : this.model.loadedDiagram;
+  }
+
+  get diagramIsLoading() {
+    return this.model.loadDiagramTaskInstance.isRunning;
+  }
+
+  get diagramHasErrored() {
+    return this.model.loadDiagramTaskInstance.isError;
+  }
+
   get bpmnElements() {
     return this.model.loadBpmnElementsTaskInstance.isFinished
       ? this.model.loadBpmnElementsTaskInstance.value

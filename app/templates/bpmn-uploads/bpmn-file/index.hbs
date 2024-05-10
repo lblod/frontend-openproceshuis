@@ -188,11 +188,18 @@
         @skin="4"
         class="au-u-margin-bottom-none"
       >Diagram</AuHeading>
-      <p class="au-u-margin-top-none">
-        <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
-          Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
-      </p>
-      <BpmnViewer @bpmnXml={{@model.diagram}} />
+      {{#if this.diagramIsLoading}}
+        <AuLoader />
+      {{else if this.diagramHasErrored}}
+        <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer later
+          opnieuw.</p>
+      {{else}}
+        <p class="au-u-margin-top-none">
+          <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
+            Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
+        </p>
+        <BpmnViewer @bpmnXml={{this.diagram}} />
+      {{/if}}
     </div>
     <div class="au-o-grid__item">
       <AuHeading

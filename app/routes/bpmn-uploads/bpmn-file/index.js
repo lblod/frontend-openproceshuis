@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
-import { keepLatestTask } from 'ember-concurrency';
+import { keepLatestTask, task } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class BpmnUploadsBpmnFileIndexRoute extends Route {
@@ -13,30 +13,35 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
 
   async model(params) {
     let metadata = this.modelFor('bpmn-uploads.bpmn-file');
-    let diagram = await this.fetchBpmnXml(metadata.id);
 
-    let loadBpmnElementsTaskInstance = this.loadbpmnElementsTask.perform(
+    let loadDiagramTaskInstance = this.loadDiagramTask.perform(metadata.id);
+    let loadedDiagram = this.loadDiagramTask.lastSuccessful?.value;
+
+    let loadBpmnElementsTaskInstance = this.loadBpmnElementsTask.perform(
       params,
       metadata.id
     );
-    let loadedBpmnElements = this.loadbpmnElementsTask.lastSuccessful?.value;
+    let loadedBpmnElements = this.loadBpmnElementsTask.lastSuccessful?.value;
 
     return {
       metadata,
-      diagram,
+      loadDiagramTaskInstance,
+      loadedDiagram,
       loadBpmnElementsTaskInstance,
       loadedBpmnElements,
     };
   }
 
-  async fetchBpmnXml(id) {
+  @task
+  *loadDiagramTask(id) {
     const url = generateBpmnDownloadUrl(id);
-    const response = await fetch(url);
-    return await response.text();
+    const response = yield fetch(url);
+    if (!response.ok) throw Error(response.status);
+    return yield response.text();
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadbpmnElementsTask(params, fileId) {
+  *loadBpmnElementsTask(params, fileId) {
     let query = {
       page: {
         number: params.page,
