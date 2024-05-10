@@ -49,24 +49,18 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
       : this.model.loadedBpmnElements;
   }
 
-  get isLoading() {
+  get bpmnElementsBatchIsLoading() {
     return this.model.loadBpmnElementsTaskInstance.isRunning;
   }
 
-  get hasPreviousData() {
-    return (
-      this.model.loadedBpmnElements && this.model.loadedBpmnElements.length > 0
-    );
-  }
-
-  get hasNoResults() {
+  get bpmnElementsBatchHasNoResults() {
     return (
       this.model.loadBpmnElementsTaskInstance.isFinished &&
       this.bpmnElements.length === 0
     );
   }
 
-  get hasErrored() {
+  get bpmnElementsBatchHasErrored() {
     return this.model.loadBpmnElementsTaskInstance.isError;
   }
 
