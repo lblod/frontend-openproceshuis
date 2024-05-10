@@ -15,7 +15,7 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
     let metadata = this.modelFor('bpmn-uploads.bpmn-file');
     let diagram = await this.fetchBpmnXml(metadata.id);
 
-    let loadBpmnElementsTaskInstance = await this.loadbpmnElementsTask.perform(
+    let loadBpmnElementsTaskInstance = this.loadbpmnElementsTask.perform(
       params,
       metadata.id
     );
