@@ -21,12 +21,6 @@ export default class BpmnElementsIndexController extends Controller {
     return this.model.loadBpmnElementsTaskInstance.isRunning;
   }
 
-  get hasPreviousData() {
-    return (
-      this.model.loadedBpmnElements && this.model.loadedBpmnElements.length > 0
-    );
-  }
-
   get hasNoResults() {
     return (
       this.model.loadBpmnElementsTaskInstance.isFinished &&
