@@ -9,14 +9,14 @@
 {{else}}
   <PageHeader>
     <:title>
-      {{@model.metadata.name}}
+      {{this.metadata.name}}
     </:title>
     <:action>
       <AuButtonGroup>
         <a
           class="au-c-button au-c-button--secondary"
-          href="{{bpmn-download-url @model.metadata.id @model.metadata.name}}"
-          download="{{@model.metadata.name}}"
+          href="{{bpmn-download-url this.metadata.id this.metadata.name}}"
+          download="{{this.metadata.name}}"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -45,7 +45,7 @@
                 <:label>Bestandsnaam</:label>
                 <:content>
                   <AuInput
-                    value={{@model.metadata.name}}
+                    value={{this.metadata.name}}
                     {{on "input" this.setFileName}}
                     @width="block"
                   />
@@ -55,7 +55,7 @@
                 <:label>Beschrijving</:label>
                 <:content>
                   <AuTextarea
-                    value={{@model.metadata.description}}
+                    value={{this.metadata.description}}
                     {{on "input" this.setFileDescription}}
                     rows="7"
                     @width="block"
@@ -67,7 +67,7 @@
               <Item>
                 <:label>Aangemaakt op</:label>
                 <:content>
-                  {{date-format @model.metadata.created true}}
+                  {{date-format this.metadata.created true}}
                 </:content>
               </Item>
               <Item>
@@ -79,19 +79,19 @@
               <Item>
                 <:label>Extensie</:label>
                 <:content>
-                  {{@model.metadata.extension}}
+                  {{this.metadata.extension}}
                 </:content>
               </Item>
               <Item>
                 <:label>Formaat</:label>
                 <:content>
-                  {{@model.metadata.format}}
+                  {{this.metadata.format}}
                 </:content>
               </Item>
               <Item>
                 <:label>Grootte</:label>
                 <:content>
-                  {{file-size-format @model.metadata.size}}
+                  {{file-size-format this.metadata.size}}
                 </:content>
               </Item>
             </:right>
@@ -133,13 +133,13 @@
             <Item>
               <:label>Bestandsnaam</:label>
               <:content>
-                {{@model.metadata.name}}
+                {{this.metadata.name}}
               </:content>
             </Item>
             <Item>
               <:label>Beschrijving</:label>
               <:content>
-                {{or @model.metadata.description "/"}}
+                {{or this.metadata.description "/"}}
               </:content>
             </Item>
 
@@ -148,31 +148,31 @@
             <Item>
               <:label>Aangemaakt op</:label>
               <:content>
-                {{date-format @model.metadata.created true}}
+                {{date-format this.metadata.created true}}
               </:content>
             </Item>
             <Item>
               <:label>Laatst aangepast op</:label>
               <:content>
-                {{date-format @model.metadata.modified true}}
+                {{date-format this.metadata.modified true}}
               </:content>
             </Item>
             <Item>
               <:label>Extensie</:label>
               <:content>
-                {{@model.metadata.extension}}
+                {{this.metadata.extension}}
               </:content>
             </Item>
             <Item>
               <:label>Formaat</:label>
               <:content>
-                {{@model.metadata.format}}
+                {{this.metadata.format}}
               </:content>
             </Item>
             <Item>
               <:label>Grootte</:label>
               <:content>
-                {{file-size-format @model.metadata.size}}
+                {{file-size-format this.metadata.size}}
               </:content>
             </Item>
           </:right>

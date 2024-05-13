@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
-import { keepLatestTask, task } from 'ember-concurrency';
+import { keepLatestTask, task, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class BpmnUploadsBpmnFileIndexRoute extends Route {
@@ -12,19 +12,24 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
   };
 
   async model(params) {
-    let metadata = this.modelFor('bpmn-uploads.bpmn-file');
+    let { loadMetadataTaskInstance, loadedMetadata } = this.modelFor(
+      'bpmn-uploads.bpmn-file'
+    );
 
-    let loadDiagramTaskInstance = this.loadDiagramTask.perform(metadata.id);
+    let loadDiagramTaskInstance = this.loadDiagramTask.perform(
+      loadMetadataTaskInstance
+    );
     let loadedDiagram = this.loadDiagramTask.lastSuccessful?.value;
 
     let loadBpmnElementsTaskInstance = this.loadBpmnElementsTask.perform(
-      params,
-      metadata.id
+      loadMetadataTaskInstance,
+      params
     );
     let loadedBpmnElements = this.loadBpmnElementsTask.lastSuccessful?.value;
 
     return {
-      metadata,
+      loadMetadataTaskInstance,
+      loadedMetadata,
       loadDiagramTaskInstance,
       loadedDiagram,
       loadBpmnElementsTaskInstance,
@@ -33,15 +38,21 @@ export default class BpmnUploadsBpmnFileIndexRoute extends Route {
   }
 
   @task
-  *loadDiagramTask(id) {
-    const url = generateBpmnDownloadUrl(id);
+  *loadDiagramTask(loadMetadataTaskInstance) {
+    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
+    const fileId = loadMetadataTaskInstance.value.id;
+
+    const url = generateBpmnDownloadUrl(fileId);
     const response = yield fetch(url);
     if (!response.ok) throw Error(response.status);
     return yield response.text();
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnElementsTask(params, fileId) {
+  *loadBpmnElementsTask(loadMetadataTaskInstance, params) {
+    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
+    const fileId = loadMetadataTaskInstance.value.id;
+
     let query = {
       page: {
         number: params.page,

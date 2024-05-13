@@ -110,7 +110,6 @@ export default class BpmnUploadsIndexController extends Controller {
 
   @action
   fileUploaded(newFileId) {
-    console.log('uploaded');
     this.closeUploadModal();
     this.toaster.success('BPMN-bestand succesvol toegevoegd', 'Gelukt!', {
       timeOut: 5000,

@@ -20,13 +20,18 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked newFileId = undefined;
   @tracked formIsValid = false;
 
-  // FIXME: should be shielded by backend instead of frontend
-  get wasPublishedByCurrentOrganization() {
-    return (
-      this.model.metadata.publisher &&
-      this.currentSession.group &&
-      this.model.metadata.publisher.id === this.currentSession.group.id
-    );
+  get metadata() {
+    return this.model.loadMetadataTaskInstance.isFinished
+      ? this.model.loadMetadataTaskInstance.value
+      : this.model.loadedMetadata;
+  }
+
+  get metadataIsLoading() {
+    return this.model.loadMetadataTaskInstance.isRunning;
+  }
+
+  get metadataHasErrored() {
+    return this.model.loadMetadataTaskInstance.isError;
   }
 
   get diagram() {
@@ -64,6 +69,15 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     return this.model.loadBpmnElementsTaskInstance.isError;
   }
 
+  // FIXME: should be shielded by backend instead of frontend
+  get wasPublishedByCurrentOrganization() {
+    return (
+      this.metadata?.publisher &&
+      this.currentSession.group &&
+      this.metadata.publisher.id === this.currentSession.group.id
+    );
+  }
+
   @action
   resetFilters() {
     this.page = 0;
@@ -96,17 +110,18 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   @dropTask
   *replaceFile() {
-    const oldFile = this.model.metadata;
+    if (!this.metadata) return;
+
     const newFile = yield this.store.findRecord('file', this.newFileId, {
       include: 'publisher',
     });
 
-    newFile.name = oldFile.name;
-    newFile.description = oldFile.description;
-    newFile.created = oldFile.created;
+    newFile.name = this.metadata.name;
+    newFile.description = this.metadata.description;
+    newFile.created = this.metadata.created;
     yield newFile.save();
 
-    yield oldFile.destroyRecord();
+    yield this.metadata.destroyRecord();
   }
 
   @action
@@ -134,12 +149,13 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   *updateModel(event) {
     event.preventDefault();
 
-    const file = this.model.metadata;
-    if (file.validate() && file.hasDirtyAttributes) {
-      file.modified = new Date();
+    if (!this.metadata) return;
+
+    if (this.metadata.validate() && this.metadata.hasDirtyAttributes) {
+      this.metadata.modified = new Date();
 
       try {
-        yield file.save();
+        yield this.metadata.save();
         this.toaster.success(
           'Metadata van BPMN-bestand succesvol bijgewerkt',
           'Gelukt!',
@@ -163,23 +179,25 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   }
 
   resetModel() {
-    this.model.metadata.rollbackAttributes();
+    this.metadata?.rollbackAttributes();
   }
 
   @action
   setFileName(event) {
-    this.model.metadata.name = event.target.value;
+    if (!this.metadata) return;
+    this.metadata.name = event.target.value;
     this.validateForm();
   }
 
   @action
   setFileDescription(event) {
-    this.model.metadata.description = event.target.value;
+    if (!this.metadata) return;
+    this.metadata.description = event.target.value;
     this.validateForm();
   }
 
   validateForm() {
     this.formIsValid =
-      this.model.metadata.validate() && this.model.metadata.hasDirtyAttributes;
+      this.metadata?.validate() && this.metadata?.hasDirtyAttributes;
   }
 }
