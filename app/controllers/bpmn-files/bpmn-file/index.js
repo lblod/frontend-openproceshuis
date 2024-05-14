@@ -129,7 +129,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     this.newFileId = newFileId;
     await this.replaceFile.perform();
 
-    let url = this.router.urlFor('bpmn-uploads.bpmn-file', newFileId);
+    let url = this.router.urlFor('bpmn-files.bpmn-file', newFileId);
     window.location.replace(url);
   }
 

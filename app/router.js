@@ -24,9 +24,7 @@ Router.map(function () {
   });
 
   this.route('bpmn-uploads', { path: 'gedeelde-processen' }, function () {
-    this.route('bpmn-file', { path: '/:id/' }, function () {
-      this.route('index', { path: '' });
-    });
+    this.route('index', { path: '' });
   });
 
   this.route('bpmn-elements', { path: 'processtappen' }, function () {
