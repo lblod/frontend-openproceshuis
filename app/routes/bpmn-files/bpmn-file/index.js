@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
-import { keepLatestTask } from 'ember-concurrency';
+import { keepLatestTask, task, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class BpmnFilesBpmnFileIndexRoute extends Route {
@@ -12,31 +12,47 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
   };
 
   async model(params) {
-    let metadata = this.modelFor('bpmn-files.bpmn-file');
-    let diagram = await this.fetchBpmnXml(metadata.id);
-
-    let loadBpmnElementsTaskInstance = await this.loadbpmnElementsTask.perform(
-      params,
-      metadata.id
+    let { loadMetadataTaskInstance, loadedMetadata } = this.modelFor(
+      'bpmn-files.bpmn-file'
     );
-    let loadedBpmnElements = this.loadbpmnElementsTask.lastSuccessful?.value;
+
+    let loadDiagramTaskInstance = this.loadDiagramTask.perform(
+      loadMetadataTaskInstance
+    );
+    let loadedDiagram = this.loadDiagramTask.lastSuccessful?.value;
+
+    let loadBpmnElementsTaskInstance = this.loadBpmnElementsTask.perform(
+      loadMetadataTaskInstance,
+      params
+    );
+    let loadedBpmnElements = this.loadBpmnElementsTask.lastSuccessful?.value;
 
     return {
-      metadata,
-      diagram,
+      loadMetadataTaskInstance,
+      loadedMetadata,
+      loadDiagramTaskInstance,
+      loadedDiagram,
       loadBpmnElementsTaskInstance,
       loadedBpmnElements,
     };
   }
 
-  async fetchBpmnXml(id) {
-    const url = generateBpmnDownloadUrl(id);
-    const response = await fetch(url);
-    return await response.text();
+  @task
+  *loadDiagramTask(loadMetadataTaskInstance) {
+    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
+    const fileId = loadMetadataTaskInstance.value.id;
+
+    const url = generateBpmnDownloadUrl(fileId);
+    const response = yield fetch(url);
+    if (!response.ok) throw Error(response.status);
+    return yield response.text();
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadbpmnElementsTask(params, fileId) {
+  *loadBpmnElementsTask(loadMetadataTaskInstance, params) {
+    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
+    const fileId = loadMetadataTaskInstance.value.id;
+
     let query = {
       page: {
         number: params.page,
@@ -60,5 +76,10 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
     }
 
     return yield this.store.query('bpmn-element', query);
+  }
+
+  resetController(controller) {
+    super.resetController(...arguments);
+    controller.resetModel();
   }
 }
