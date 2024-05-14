@@ -22,7 +22,7 @@
         >
           Download BPMN-bestand
         </a>
-        {{#if this.wasPublishedByCurrentOrganization}}
+        {{#if this.canEdit}}
           <AuButton {{on "click" this.openReplaceModal}}>Vervang BPMN-bestand</AuButton>
         {{/if}}
       </AuButtonGroup>
@@ -116,7 +116,7 @@
   {{else}}
     <DataCard>
       <:header>
-        {{#if this.wasPublishedByCurrentOrganization}}
+        {{#if this.canEdit}}
           <AuButton
             @skin="naked"
             @icon="pencil"

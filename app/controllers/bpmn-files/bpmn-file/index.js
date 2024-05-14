@@ -69,11 +69,11 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     return this.model.loadBpmnElementsTaskInstance.isError;
   }
 
-  // FIXME: should be shielded by backend instead of frontend
-  get wasPublishedByCurrentOrganization() {
+  get canEdit() {
     return (
-      this.metadata?.publisher &&
+      this.currentSession.canEdit &&
       this.currentSession.group &&
+      this.metadata?.publisher &&
       this.metadata.publisher.id === this.currentSession.group.id
     );
   }
