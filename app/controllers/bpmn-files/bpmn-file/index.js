@@ -180,6 +180,9 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   resetModel() {
     this.metadata?.rollbackAttributes();
+    this.replaceModalOpened = false;
+    this.edit = false;
+    this.newFileId = undefined;
   }
 
   @action
