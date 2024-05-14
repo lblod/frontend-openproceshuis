@@ -2,6 +2,10 @@
   gap: $au-unit-small;
 }
 
+.au-c-card--data .au-u-flex--between button.au-u-flex--spaced-tiny {
+  border: none;
+}
+
 .au-c-boxed-table {
   border: 1px solid var(--au-gray-200);
   border-radius: $au-radius;

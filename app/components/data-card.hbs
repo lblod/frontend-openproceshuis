@@ -2,7 +2,11 @@
   {{#if (has-block "header")}}
     <div class="au-o-box au-o-box--small au-c-card au-c-card--data">
       <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
-        <div class="au-u-flex au-u-flex--spaced-tiny">
+        <button
+          type="button"
+          class="au-u-flex au-u-flex--spaced-tiny"
+          {{on "click" this.toggleCollapse}}
+        >
           <AuIcon
             @icon={{if this.isCollapsed "chevron-up" "chevron-down"}}
             @size="large"
@@ -17,7 +21,7 @@
               {{yield to="title"}}
             </AuHeading>
           {{/if}}
-        </div>
+        </button>
         {{#unless this.isCollapsed}}
           {{yield to="header"}}
         {{/unless}}
