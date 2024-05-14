@@ -4,7 +4,7 @@
       <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
         <div class="au-u-flex au-u-flex--spaced-tiny">
           <AuIcon
-            @icon="chevron-down"
+            @icon={{if this.isCollapsed "chevron-up" "chevron-down"}}
             @size="large"
             class="au-u-margin-top-tiny"
           />
@@ -18,7 +18,9 @@
             </AuHeading>
           {{/if}}
         </div>
-        {{yield to="header"}}
+        {{#unless this.isCollapsed}}
+          {{yield to="header"}}
+        {{/unless}}
       </div>
     </div>
   {{else}}
@@ -33,24 +35,26 @@
     {{/if}}
   {{/if}}
 
-  <dl class="au-o-box au-o-box--small au-c-card au-c-card--data">
-    <div class="au-c-card__content">
-      {{yield
-        (hash
-          Grid=(component
-            "card-grid" itemComponent=(component "data-card/item" isGrid=true)
+  {{#unless this.isCollapsed}}
+    <dl class="au-o-box au-o-box--small au-c-card au-c-card--data">
+      <div class="au-c-card__content">
+        {{yield
+          (hash
+            Grid=(component
+              "card-grid" itemComponent=(component "data-card/item" isGrid=true)
+            )
+            Columns=(component
+              "card-columns" itemComponent=(component "data-card/item")
+            )
           )
-          Columns=(component
-            "card-columns" itemComponent=(component "data-card/item")
-          )
-        )
-        to="card"
-      }}
-    </div>
-  </dl>
-  {{#if (has-block "action")}}
-    <div class="au-o-box au-o-box--small au-c-card au-c-card--data">
-      {{yield to="action"}}
-    </div>
-  {{/if}}
+          to="card"
+        }}
+      </div>
+    </dl>
+    {{#if (has-block "action")}}
+      <div class="au-o-box au-o-box--small au-c-card au-c-card--data">
+        {{yield to="action"}}
+      </div>
+    {{/if}}
+  {{/unless}}
 </div>
