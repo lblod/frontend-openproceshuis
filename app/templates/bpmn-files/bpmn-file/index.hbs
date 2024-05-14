@@ -13,8 +13,14 @@
     </:title>
     <:action>
       <AuButtonGroup>
+        {{#if this.canEdit}}
+          <AuButton
+            @skin="secondary"
+            {{on "click" this.openReplaceModal}}
+          >Vervang BPMN-bestand</AuButton>
+        {{/if}}
         <a
-          class="au-c-button au-c-button--secondary"
+          class="au-c-button au-c-button--primary"
           href="{{bpmn-download-url this.metadata.id this.metadata.name}}"
           download="{{this.metadata.name}}"
           target="_blank"
@@ -22,9 +28,6 @@
         >
           Download BPMN-bestand
         </a>
-        {{#if this.canEdit}}
-          <AuButton {{on "click" this.openReplaceModal}}>Vervang BPMN-bestand</AuButton>
-        {{/if}}
       </AuButtonGroup>
     </:action>
   </PageHeader>
