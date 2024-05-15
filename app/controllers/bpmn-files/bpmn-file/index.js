@@ -139,11 +139,6 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     this.validateForm();
   }
 
-  @action
-  cancelEdit() {
-    this.resetModel();
-  }
-
   @dropTask
   *updateModel(event) {
     event.preventDefault();
@@ -176,6 +171,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     }
   }
 
+  @action
   resetModel() {
     this.metadata?.rollbackAttributes();
     this.replaceModalOpened = false;
