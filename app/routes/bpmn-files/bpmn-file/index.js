@@ -1,6 +1,5 @@
 import Route from '@ember/routing/route';
-import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
-import { keepLatestTask } from 'ember-concurrency';
+import { keepLatestTask, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class BpmnFilesBpmnFileIndexRoute extends Route {
@@ -12,31 +11,34 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
   };
 
   async model(params) {
-    let metadata = this.modelFor('bpmn-files.bpmn-file');
-    let diagram = await this.fetchBpmnXml(metadata.id);
+    let {
+      loadMetadataTaskInstance,
+      loadedMetadata,
+      loadDiagramTaskInstance,
+      loadedDiagram,
+    } = this.modelFor('bpmn-files.bpmn-file');
 
-    let loadBpmnElementsTaskInstance = await this.loadbpmnElementsTask.perform(
-      params,
-      metadata.id
+    let loadBpmnElementsTaskInstance = this.loadBpmnElementsTask.perform(
+      loadMetadataTaskInstance,
+      params
     );
-    let loadedBpmnElements = this.loadbpmnElementsTask.lastSuccessful?.value;
+    let loadedBpmnElements = this.loadBpmnElementsTask.lastSuccessful?.value;
 
     return {
-      metadata,
-      diagram,
+      loadMetadataTaskInstance,
+      loadedMetadata,
+      loadDiagramTaskInstance,
+      loadedDiagram,
       loadBpmnElementsTaskInstance,
       loadedBpmnElements,
     };
   }
 
-  async fetchBpmnXml(id) {
-    const url = generateBpmnDownloadUrl(id);
-    const response = await fetch(url);
-    return await response.text();
-  }
-
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadbpmnElementsTask(params, fileId) {
+  *loadBpmnElementsTask(loadMetadataTaskInstance, params) {
+    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
+    const fileId = loadMetadataTaskInstance.value.id;
+
     let query = {
       page: {
         number: params.page,
@@ -60,5 +62,10 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
     }
 
     return yield this.store.query('bpmn-element', query);
+  }
+
+  resetController(controller) {
+    super.resetController(...arguments);
+    controller.resetModel();
   }
 }
