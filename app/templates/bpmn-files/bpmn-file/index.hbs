@@ -55,12 +55,18 @@
                 </:content>
               </Item>
               <Item>
+                <:label>Bestuur</:label>
+                <:content>
+                  {{this.metadata.publisher.name}}
+                </:content>
+              </Item>
+              <Item>
                 <:label>Beschrijving</:label>
                 <:content>
                   <AuTextarea
                     value={{this.metadata.description}}
                     {{on "input" this.setFileDescription}}
-                    rows="7"
+                    rows="4"
                     @width="block"
                   />
                 </:content>
@@ -137,6 +143,12 @@
               <:label>Bestandsnaam</:label>
               <:content>
                 {{this.metadata.name}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Bestuur</:label>
+              <:content>
+                {{this.metadata.publisher.name}}
               </:content>
             </Item>
             <Item>
