@@ -142,7 +142,6 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @action
   cancelEdit() {
     this.resetModel();
-    this.toggleEdit();
   }
 
   @dropTask
@@ -156,6 +155,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
       try {
         yield this.metadata.save();
+        this.edit = false;
         this.toaster.success(
           'Metadata van BPMN-bestand succesvol bijgewerkt',
           'Gelukt!',
@@ -174,8 +174,6 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     } else {
       this.resetModel();
     }
-
-    this.toggleEdit();
   }
 
   resetModel() {
