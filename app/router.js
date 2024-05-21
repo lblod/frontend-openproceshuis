@@ -24,7 +24,6 @@ Router.map(function () {
     this.route('bpmn-file', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
     });
-    this.route('favorites', { path: 'favorieten' });
   });
 
   this.route('bpmn-uploads', { path: 'gedeelde-processen' }, function () {
