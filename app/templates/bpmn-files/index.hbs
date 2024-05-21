@@ -55,7 +55,6 @@
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <th></th>
           <AuDataTableThSortable
             @field="name"
             @currentSorting={{this.sort}}
@@ -87,7 +86,6 @@
           </TableMessage>
         {{else}}
           <c.body as |file|>
-            <td class="c-favorite-cell"><Favorite @active={{false}} /></td>
             <td>
               <LinkTo
                 class="au-c-link"
