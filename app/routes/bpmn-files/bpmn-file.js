@@ -27,7 +27,8 @@ export default class BpmnFilesBpmnFileRoute extends Route {
   @keepLatestTask({ cancelOn: 'deactivate' })
   *loadBpmnFileTask(fileId) {
     return yield this.store.findRecord('file', fileId, {
-      include: 'publisher',
+      include:
+        'publisher,publisher.primary-site,publisher.primary-site.contacts',
     });
   }
 
