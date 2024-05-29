@@ -2,7 +2,6 @@ import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { ARCHIVED_STATUS } from '../../models/file';
-
 export default class BpmnFilesIndexRoute extends Route {
   @service store;
 
@@ -26,7 +25,8 @@ export default class BpmnFilesIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      include: 'publisher',
+      include:
+        'publisher,publisher.primary-site,publisher.primary-site.contacts',
     };
 
     if (params.sort) {
@@ -48,6 +48,8 @@ export default class BpmnFilesIndexRoute extends Route {
     query['filter[:has:download]'] = true;
     query['filter[:not:status]'] = ARCHIVED_STATUS;
 
-    return yield this.store.query('file', query);
+    const files = yield this.store.query('file', query);
+
+    return files;
   }
 }

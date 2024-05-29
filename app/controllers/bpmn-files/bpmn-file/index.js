@@ -113,7 +113,8 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     if (!this.metadata) return;
 
     const newFile = yield this.store.findRecord('file', this.newFileId, {
-      include: 'publisher',
+      include:
+        'publisher,publisher.primary-site,publisher.primary-site.contacts',
     });
 
     newFile.name = this.metadata.name;

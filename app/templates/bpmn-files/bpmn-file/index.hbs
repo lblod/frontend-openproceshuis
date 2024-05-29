@@ -60,6 +60,13 @@
                   {{this.metadata.publisher.name}}
                 </:content>
               </Item>
+
+              <Item>
+                <:label>Contact</:label>
+                <:content>
+                  {{contact-email this.metadata.publisher.primarySite.contacts}}
+                </:content>
+              </Item>
               <Item>
                 <:label>Beschrijving</:label>
                 <:content>
@@ -151,6 +158,13 @@
                 {{this.metadata.publisher.name}}
               </:content>
             </Item>
+
+            <Item>
+              <:label>Contact</:label>
+              <:content>
+                {{contact-email this.metadata.publisher.primarySite.contacts}}
+              </:content>
+            </Item>
             <Item>
               <:label>Beschrijving</:label>
               <:content>
@@ -178,6 +192,7 @@
                 {{this.metadata.extension}}
               </:content>
             </Item>
+
             <Item>
               <:label>Formaat</:label>
               <:content>
