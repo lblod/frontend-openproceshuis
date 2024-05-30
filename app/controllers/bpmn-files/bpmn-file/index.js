@@ -99,6 +99,11 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   }
 
   @action
+  downloadFile(type) {
+    console.log('Download', type);
+  }
+
+  @action
   openReplaceModal() {
     this.newFileId = undefined;
     this.replaceModalOpened = true;
