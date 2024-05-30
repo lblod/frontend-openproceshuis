@@ -307,23 +307,19 @@
       <p>Het geselecteerde BPMN-bestand is beschikbaar in verschillende
         formaten:</p>
       <AuButtonGroup class="au-u-flex au-u-flex--around">
-        <AuButton {{on "click" (fn this.downloadFile "text/xml")}}>Origineel
-          <span class="au-u-para-tiny au-u-regular">(.bpmn)</span></AuButton>
-        <AuButton
-          @skin="secondary"
-          {{on "click" (fn this.downloadFile "image/png")}}
-        >Afbeelding
-          <span class="au-u-para-tiny au-u-regular">(.png)</span></AuButton>
-        <AuButton
-          @skin="secondary"
-          {{on "click" (fn this.downloadFile "image/svg+xml")}}
-        >Vectorafbeelding
-          <span class="au-u-para-tiny au-u-regular">(.svg)</span></AuButton>
-        <AuButton
-          @skin="secondary"
-          {{on "click" (fn this.downloadFile "application/pdf")}}
-        >PDF
-          <span class="au-u-para-tiny au-u-regular">(.pdf)</span></AuButton>
+        {{#each this.downloadTypes as |downloadType|}}
+          <AuButton
+            @skin={{if
+              (eq downloadType.extension "bpmn")
+              "primary"
+              "secondary"
+            }}
+            {{on "click" (fn this.downloadFile downloadType)}}
+          >{{capitalize-first downloadType.label}}
+            <span
+              class="au-u-para-tiny au-u-regular"
+            >(.{{downloadType.extension}})</span></AuButton>
+        {{/each}}
       </AuButtonGroup>
     </div>
   </:body>

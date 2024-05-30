@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 
 export default class BpmnUploadsBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -20,6 +21,29 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked edit = false;
   @tracked newFileId = undefined;
   @tracked formIsValid = false;
+
+  downloadTypes = [
+    {
+      extension: 'bpmn',
+      mime: 'text/xml',
+      label: 'origineel',
+    },
+    {
+      extension: 'png',
+      mime: 'image/png',
+      label: 'afbeelding',
+    },
+    {
+      extension: 'svg',
+      mime: 'image/svg+xml',
+      label: 'vectorafbeelding',
+    },
+    {
+      extension: 'pdf',
+      mime: 'application/pdf',
+      label: 'PDF',
+    },
+  ];
 
   get metadata() {
     return this.model.loadMetadataTaskInstance.isFinished
@@ -99,8 +123,27 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   }
 
   @action
-  downloadFile(type) {
-    console.log('Download', type);
+  async downloadFile(downloadType) {
+    console.log('Download', downloadType);
+
+    const url = generateBpmnDownloadUrl(this.metadata.id);
+    const response = await fetch(url, {
+      headers: {
+        Accept: downloadType.mime,
+      },
+    });
+    if (!response.ok) throw Error(response.status);
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = downloadUrl;
+    a.download = `${this.metadata.name}.${downloadType.extension}`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(downloadUrl);
+    a.remove();
   }
 
   @action
