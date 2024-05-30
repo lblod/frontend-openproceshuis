@@ -19,15 +19,9 @@
             {{on "click" this.openReplaceModal}}
           >Vervang BPMN-bestand</AuButton>
         {{/if}}
-        <a
-          class="au-c-button au-c-button--primary"
-          href="{{bpmn-download-url this.metadata.id this.metadata.name}}"
-          download="{{this.metadata.name}}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <AuButton {{on "click" this.openDownloadModal}}>
           Download BPMN-bestand
-        </a>
+        </AuButton>
       </AuButtonGroup>
     </:action>
   </PageHeader>
@@ -298,6 +292,37 @@
       <AuButton
         @skin="naked"
         {{on "click" this.closeReplaceModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.downloadModalOpened}}
+  @closeModal={{this.closeDownloadModal}}
+>
+  <:title>Download BPMN-bestand</:title>
+  <:body>
+    <div class="au-o-flow">
+      <p>Het geselecteerde BPMN-bestand is beschikbaar in verschillende
+        formaten:</p>
+      <AuButtonGroup class="au-u-flex au-u-flex--around">
+        <AuButton>Origineel
+          <span class="au-u-para-tiny au-u-regular">(.bpmn)</span></AuButton>
+        <AuButton @skin="secondary">Afbeelding
+          <span class="au-u-para-tiny au-u-regular">(.png)</span></AuButton>
+        <AuButton @skin="secondary">Vectorafbeelding
+          <span class="au-u-para-tiny au-u-regular">(.svg)</span></AuButton>
+        <AuButton @skin="secondary">PDF
+          <span class="au-u-para-tiny au-u-regular">(.pdf)</span></AuButton>
+      </AuButtonGroup>
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeDownloadModal}}
       >Annuleer</AuButton>
     </AuButtonGroup>
   </:footer>

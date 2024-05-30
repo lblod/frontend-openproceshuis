@@ -15,6 +15,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
+  @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked edit = false;
   @tracked newFileId = undefined;
@@ -85,6 +86,16 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
     // Triggers a refresh of the model
     this.page = null;
+  }
+
+  @action
+  openDownloadModal() {
+    this.downloadModalOpened = true;
+  }
+
+  @action
+  closeDownloadModal() {
+    this.downloadModalOpened = false;
   }
 
   @action
