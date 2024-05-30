@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class BpmnUploadsBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -124,26 +125,12 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
   @action
   async downloadFile(downloadType) {
-    console.log('Download', downloadType);
-
     const url = generateBpmnDownloadUrl(this.metadata.id);
-    const response = await fetch(url, {
-      headers: {
-        Accept: downloadType.mime,
-      },
-    });
-    if (!response.ok) throw Error(response.status);
-
-    const blob = await response.blob();
-    const downloadUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = downloadUrl;
-    a.download = `${this.metadata.name}.${downloadType.extension}`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(downloadUrl);
-    a.remove();
+    const headers = {
+      Accept: downloadType.mime,
+    };
+    const fileName = `${this.metadata.name}.${downloadType.extension}`;
+    await downloadFileByUrl(url, headers, fileName);
   }
 
   @action
