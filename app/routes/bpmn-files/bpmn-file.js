@@ -38,7 +38,11 @@ export default class BpmnFilesBpmnFileRoute extends Route {
     const fileId = loadMetadataTaskInstance.value.id;
 
     const url = generateBpmnDownloadUrl(fileId);
-    const response = yield fetch(url);
+    const response = yield fetch(url, {
+      headers: {
+        Accept: 'text/xml',
+      },
+    });
     if (!response.ok) throw Error(response.status);
     return yield response.text();
   }

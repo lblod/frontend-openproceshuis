@@ -3,6 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class BpmnUploadsBpmnFileIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -15,10 +17,34 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
   @tracked page = 0;
   size = 20;
   @tracked sort = 'name';
+  @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked edit = false;
   @tracked newFileId = undefined;
   @tracked formIsValid = false;
+
+  downloadTypes = [
+    {
+      extension: 'bpmn',
+      mime: 'text/xml',
+      label: 'origineel',
+    },
+    {
+      extension: 'png',
+      mime: 'image/png',
+      label: 'afbeelding',
+    },
+    {
+      extension: 'svg',
+      mime: 'image/svg+xml',
+      label: 'vectorafbeelding',
+    },
+    {
+      extension: 'pdf',
+      mime: 'application/pdf',
+      label: 'PDF',
+    },
+  ];
 
   get metadata() {
     return this.model.loadMetadataTaskInstance.isFinished
@@ -85,6 +111,26 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
 
     // Triggers a refresh of the model
     this.page = null;
+  }
+
+  @action
+  openDownloadModal() {
+    this.downloadModalOpened = true;
+  }
+
+  @action
+  closeDownloadModal() {
+    this.downloadModalOpened = false;
+  }
+
+  @action
+  async downloadFile(downloadType) {
+    const url = generateBpmnDownloadUrl(this.metadata.id);
+    const headers = {
+      Accept: downloadType.mime,
+    };
+    const fileName = `${this.metadata.name}.${downloadType.extension}`;
+    await downloadFileByUrl(url, headers, fileName);
   }
 
   @action
