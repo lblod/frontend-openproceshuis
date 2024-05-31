@@ -40,3 +40,12 @@
     justify-content: flex-end;
   }
 }
+
+.yasgui .controlbar {
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.yasgui .autocompleteWrapper {
+  display: none !important;
+}
