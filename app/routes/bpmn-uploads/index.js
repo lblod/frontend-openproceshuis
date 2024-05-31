@@ -16,7 +16,7 @@ export default class BpmnUploadsIndexRoute extends Route {
   };
 
   async beforeModel(transition) {
-    this.session.requireAuthentication(transition, 'mock-login');
+    this.session.requireAuthentication(transition, 'index');
 
     if (this.currentSession.canOnlyRead)
       this.router.transitionTo('unauthorized');

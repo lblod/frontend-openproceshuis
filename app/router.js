@@ -43,6 +43,8 @@ Router.map(function () {
   });
 
   this.route('unauthorized', { path: 'niet-toegestaan' });
+  this.route('sparql');
+
   this.route('route-not-found', {
     path: '/*wildcard',
   });

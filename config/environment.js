@@ -21,6 +21,11 @@ module.exports = function (environment) {
 
     appName: 'Open Proces Huis',
 
+    yasgui: {
+      defaultQuery: '{{YASGUI_DEFAULT_QUERY}}',
+      extraPrefixes: '{{YASGUI_EXTRA_PREFIXES}}',
+    },
+
     acmidm: {
       clientId: '{{OAUTH_API_KEY}}',
       scope: '{{OAUTH_API_SCOPE}}',
