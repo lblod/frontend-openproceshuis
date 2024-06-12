@@ -1,4 +1,19 @@
 
+
+## 0.2.0 (2024-06-12)
+
+#### :rocket: Enhancement
+* [#32](https://github.com/lblod/frontend-openproceshuis/pull/32) yasgui ([@nbittich](https://github.com/nbittich))
+* [#29](https://github.com/lblod/frontend-openproceshuis/pull/29) Download bpmn files as images ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#30](https://github.com/lblod/frontend-openproceshuis/pull/30) enable switch login ([@nbittich](https://github.com/nbittich))
+* [#28](https://github.com/lblod/frontend-openproceshuis/pull/28) contact email ([@nbittich](https://github.com/nbittich))
+* [#27](https://github.com/lblod/frontend-openproceshuis/pull/27) Feature/hide-favorites ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 2
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+- Nordine Bittich ([@nbittich](https://github.com/nbittich))
+
+
 ## 0.1.0 (2024-05-16)
 
 #### :rocket: Enhancement
