@@ -1,49 +1,23 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
-import { keepLatestTask, task, waitForProperty } from 'ember-concurrency';
-import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import { keepLatestTask } from 'ember-concurrency';
 
 export default class ProcessesProcessRoute extends Route {
   @service store;
 
   async model() {
-    let { id: fileId } = this.paramsFor('processes.process');
-
-    const loadMetadataTaskInstance = this.loadProcessTask.perform(fileId);
-    const loadedMetadata = this.loadProcessTask.lastSuccesful?.value;
-    const loadDiagramTaskInstance = this.loadDiagramTask.perform(
-      loadMetadataTaskInstance
-    );
-    const loadedDiagram = this.loadDiagramTask.lastSuccessful?.value;
-
+    const { id } = this.paramsFor('processes.process');
     return {
-      loadMetadataTaskInstance,
-      loadedMetadata,
-      loadDiagramTaskInstance,
-      loadedDiagram,
+      loadProcessTaskInstance: this.loadProcessTask.perform(id),
+      loadedProcess: this.loadProcessTask.lastSuccesful?.value,
     };
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessTask(fileId) {
-    return yield this.store.findRecord('file', fileId, {
+  *loadProcessTask(processId) {
+    return yield this.store.findRecord('process', processId, {
       include:
-        'publisher,publisher.primary-site,publisher.primary-site.contacts',
+        'files,publisher,publisher.primary-site,publisher.primary-site.contacts',
     });
-  }
-
-  @task
-  *loadDiagramTask(loadMetadataTaskInstance) {
-    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
-    const fileId = loadMetadataTaskInstance.value.id;
-
-    const url = generateBpmnDownloadUrl(fileId);
-    const response = yield fetch(url, {
-      headers: {
-        Accept: 'text/xml',
-      },
-    });
-    if (!response.ok) throw Error(response.status);
-    return yield response.text();
   }
 }

@@ -74,7 +74,6 @@ export default class SharedProcessesIndexController extends Controller {
   @task
   *deleteProcess() {
     this.processToDelete.archive();
-    console.log(this.processToDelete);
 
     try {
       yield this.processToDelete.save();

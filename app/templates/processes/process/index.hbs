@@ -9,7 +9,7 @@
 {{else}}
   <PageHeader>
     <:title>
-      {{this.metadata.name}}
+      {{this.process.title}}
     </:title>
     <:action>
       <AuButtonGroup>
@@ -39,33 +39,20 @@
           <Card.Columns>
             <:left as |Item|>
               <Item>
-                <:label>Bestandsnaam</:label>
+                <:label>Titel</:label>
                 <:content>
                   <AuInput
-                    value={{this.metadata.name}}
+                    value={{this.process.title}}
                     {{on "input" this.setFileName}}
                     @width="block"
                   />
                 </:content>
               </Item>
               <Item>
-                <:label>Bestuur</:label>
-                <:content>
-                  {{this.metadata.publisher.name}}
-                </:content>
-              </Item>
-
-              <Item>
-                <:label>Contact</:label>
-                <:content>
-                  {{contact-email this.metadata.publisher.primarySite.contacts}}
-                </:content>
-              </Item>
-              <Item>
                 <:label>Beschrijving</:label>
                 <:content>
                   <AuTextarea
-                    value={{this.metadata.description}}
+                    value={{this.process.description}}
                     {{on "input" this.setFileDescription}}
                     rows="4"
                     @width="block"
@@ -75,33 +62,31 @@
             </:left>
             <:right as |Item|>
               <Item>
+                <:label>Bestuur</:label>
+                <:content>
+                  {{this.process.publisher.name}}
+                </:content>
+              </Item>
+
+              <Item>
+                <:label>Contact</:label>
+                <:content>
+                  {{or
+                    (contact-email this.process.publisher.primarySite.contacts)
+                    "/"
+                  }}
+                </:content>
+              </Item>
+              <Item>
                 <:label>Aangemaakt op</:label>
                 <:content>
-                  {{date-format this.metadata.created true}}
+                  {{date-format this.process.created true}}
                 </:content>
               </Item>
               <Item>
                 <:label>Laatst aangepast op</:label>
                 <:content>
                   <span class="au-u-italic">Nu</span>
-                </:content>
-              </Item>
-              <Item>
-                <:label>Extensie</:label>
-                <:content>
-                  {{this.metadata.extension}}
-                </:content>
-              </Item>
-              <Item>
-                <:label>Formaat</:label>
-                <:content>
-                  {{this.metadata.format}}
-                </:content>
-              </Item>
-              <Item>
-                <:label>Grootte</:label>
-                <:content>
-                  {{file-size-format this.metadata.size}}
                 </:content>
               </Item>
             </:right>
@@ -141,62 +126,46 @@
         <Card.Columns>
           <:left as |Item|>
             <Item>
-              <:label>Bestandsnaam</:label>
+              <:label>Titel</:label>
               <:content>
-                {{this.metadata.name}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Bestuur</:label>
-              <:content>
-                {{this.metadata.publisher.name}}
-              </:content>
-            </Item>
-
-            <Item>
-              <:label>Contact</:label>
-              <:content>
-                {{contact-email this.metadata.publisher.primarySite.contacts}}
+                {{this.process.title}}
               </:content>
             </Item>
             <Item>
               <:label>Beschrijving</:label>
               <:content>
-                {{or this.metadata.description "/"}}
+                {{or this.process.description "/"}}
               </:content>
             </Item>
 
           </:left>
           <:right as |Item|>
             <Item>
+              <:label>Bestuur</:label>
+              <:content>
+                {{this.process.publisher.name}}
+              </:content>
+            </Item>
+
+            <Item>
+              <:label>Contact</:label>
+              <:content>
+                {{or
+                  (contact-email this.process.publisher.primarySite.contacts)
+                  "/"
+                }}
+              </:content>
+            </Item>
+            <Item>
               <:label>Aangemaakt op</:label>
               <:content>
-                {{date-format this.metadata.created true}}
+                {{date-format this.process.created true}}
               </:content>
             </Item>
             <Item>
               <:label>Laatst aangepast op</:label>
               <:content>
-                {{date-format this.metadata.modified true}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Extensie</:label>
-              <:content>
-                {{this.metadata.extension}}
-              </:content>
-            </Item>
-
-            <Item>
-              <:label>Formaat</:label>
-              <:content>
-                {{this.metadata.format}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Grootte</:label>
-              <:content>
-                {{file-size-format this.metadata.size}}
+                {{date-format this.process.modified true}}
               </:content>
             </Item>
           </:right>
@@ -212,17 +181,19 @@
         @skin="4"
         class="au-u-margin-bottom-none"
       >Diagram</AuHeading>
-      {{#if this.diagramIsLoading}}
+      {{#if this.bpmnFileIsLoading}}
         <AuLoader />
-      {{else if this.diagramHasErrored}}
+      {{else if this.bpmnFileHasErrored}}
         <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer later
           opnieuw.</p>
-      {{else}}
+      {{else if this.bpmnFile}}
         <p class="au-u-margin-top-none">
           <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
             Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
         </p>
-        <BpmnViewer @bpmnXml={{this.diagram}} />
+        <BpmnViewer @bpmnXml={{this.bpmnFile}} />
+      {{else}}
+        <p>Dit proces heeft geen diagram.</p>
       {{/if}}
     </div>
     <div class="au-o-grid__item">

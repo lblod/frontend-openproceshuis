@@ -69,7 +69,7 @@ export default class ProcessStepsIndexRoute extends Route {
                 ''
               ),
           process: {
-            derivation: {
+            bpmnFile: {
               name: entry.processes?.name,
               created: entry.processes?.created,
               modified: Array.isArray(entry.processes?.modified)
@@ -92,14 +92,14 @@ export default class ProcessStepsIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      include: 'type,processes.derivations',
+      include: 'type,process.bpmn-file',
     };
 
     if (params.sort) {
       const isDescending = params.sort.startsWith('-');
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-      if (fieldName === 'file') fieldName = 'processes.derivations.name';
+      if (fieldName === 'file') fieldName = 'process.bpmn-file.name';
       else if (fieldName === 'type') fieldName = 'type.label';
       else if (fieldName === 'name') query['filter[:has:name]'] = true; // Filtering with non-existent names, behaves unexpectedly
 
@@ -118,8 +118,8 @@ export default class ProcessStepsIndexRoute extends Route {
     }
 
     query['filter[:has:processes]'] = true;
-    query['filter[processes][:has:derivations]'] = true;
-    query['filter[processes][derivations][:not:status]'] =
+    query['filter[process][:has:bpmn-file]'] = true;
+    query['filter[process][bpmn-file][:not:status]'] =
       ENV.resourceStates.archived;
 
     const results = yield this.store.query('bpmn-element', query);

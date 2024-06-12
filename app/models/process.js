@@ -17,4 +17,15 @@ export default class ProcessModel extends Model {
   archive() {
     this.status = ENV.resourceStates.archived;
   }
+
+  get bpmnFile() {
+    const bpmnFiles = this.files.filter(
+      (file) =>
+        file.extension === 'bpmn' && file.status !== ENV.resourceStates.archived
+    );
+
+    if (bpmnFiles.length === 0) return undefined;
+
+    return bpmnFiles[0];
+  }
 }

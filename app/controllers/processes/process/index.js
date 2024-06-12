@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
-import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import generateBpmnFileDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessesProcessIndexController extends Controller {
@@ -46,32 +46,32 @@ export default class ProcessesProcessIndexController extends Controller {
     },
   ];
 
-  get metadata() {
-    return this.model.loadMetadataTaskInstance.isFinished
-      ? this.model.loadMetadataTaskInstance.value
-      : this.model.loadedMetadata;
+  get process() {
+    return this.model.loadProcessTaskInstance.isFinished
+      ? this.model.loadProcessTaskInstance.value
+      : this.model.loadedProcess;
   }
 
-  get metadataIsLoading() {
-    return this.model.loadMetadataTaskInstance.isRunning;
+  get processIsLoading() {
+    return this.model.loadProcessTaskInstance.isRunning;
   }
 
-  get metadataHasErrored() {
-    return this.model.loadMetadataTaskInstance.isError;
+  get processHasErrored() {
+    return this.model.loadProcessTaskInstance.isError;
   }
 
-  get diagram() {
-    return this.model.loadDiagramTaskInstance.isFinished
-      ? this.model.loadDiagramTaskInstance.value
-      : this.model.loadedDiagram;
+  get bpmnFile() {
+    return this.model.loadBpmnFileTaskInstance.isFinished
+      ? this.model.loadBpmnFileTaskInstance.value
+      : this.model.loadedBpmnFile;
   }
 
-  get diagramIsLoading() {
-    return this.model.loadDiagramTaskInstance.isRunning;
+  get bpmnFileIsLoading() {
+    return this.model.loadBpmnFileTaskInstance.isRunning;
   }
 
-  get diagramHasErrored() {
-    return this.model.loadDiagramTaskInstance.isError;
+  get bpmnFileHasErrored() {
+    return this.model.loadBpmnFileTaskInstance.isError;
   }
 
   get processSteps() {
@@ -99,8 +99,8 @@ export default class ProcessesProcessIndexController extends Controller {
     return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
-      this.metadata?.publisher &&
-      this.metadata.publisher.id === this.currentSession.group.id
+      this.process?.publisher &&
+      this.process.publisher.id === this.currentSession.group.id
     );
   }
 
@@ -124,12 +124,15 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  async downloadFile(downloadType) {
-    const url = generateBpmnDownloadUrl(this.metadata.id);
+  async downloadBpmnFile(downloadType) {
+    const bpmnFile = this.process.bpmnFile;
+    if (!bpmnFile) return;
+
+    const url = generateBpmnFileDownloadUrl(bpmnFile.id);
     const headers = {
       Accept: downloadType.mime,
     };
-    const fileName = `${this.metadata.name}.${downloadType.extension}`;
+    const fileName = `${bpmnFile.name}.${downloadType.extension}`;
     await downloadFileByUrl(url, headers, fileName);
   }
 
@@ -156,19 +159,19 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @dropTask
   *replaceFile() {
-    if (!this.metadata) return;
+    if (!this.process) return;
 
     const newFile = yield this.store.findRecord('file', this.newFileId, {
       include:
         'publisher,publisher.primary-site,publisher.primary-site.contacts',
     });
 
-    newFile.name = this.metadata.name;
-    newFile.description = this.metadata.description;
-    newFile.created = this.metadata.created;
+    newFile.name = this.process.name;
+    newFile.description = this.process.description;
+    newFile.created = this.process.created;
     yield newFile.save();
 
-    yield this.metadata.destroyRecord();
+    yield this.process.destroyRecord();
   }
 
   @action
@@ -190,13 +193,13 @@ export default class ProcessesProcessIndexController extends Controller {
   *updateModel(event) {
     event.preventDefault();
 
-    if (!this.metadata) return;
+    if (!this.process) return;
 
-    if (this.metadata.validate() && this.metadata.hasDirtyAttributes) {
-      this.metadata.modified = new Date();
+    if (this.process.validate() && this.process.hasDirtyAttributes) {
+      this.process.modified = new Date();
 
       try {
-        yield this.metadata.save();
+        yield this.process.save();
         this.edit = false;
         this.toaster.success(
           'Metadata van BPMN-bestand succesvol bijgewerkt',
@@ -220,7 +223,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   resetModel() {
-    this.metadata?.rollbackAttributes();
+    this.process?.rollbackAttributes();
     this.replaceModalOpened = false;
     this.edit = false;
     this.newFileId = undefined;
@@ -228,20 +231,20 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   setFileName(event) {
-    if (!this.metadata) return;
-    this.metadata.name = event.target.value;
+    if (!this.process) return;
+    this.process.name = event.target.value;
     this.validateForm();
   }
 
   @action
   setFileDescription(event) {
-    if (!this.metadata) return;
-    this.metadata.description = event.target.value;
+    if (!this.process) return;
+    this.process.description = event.target.value;
     this.validateForm();
   }
 
   validateForm() {
     this.formIsValid =
-      this.metadata?.validate() && this.metadata?.hasDirtyAttributes;
+      this.process?.validate() && this.process?.hasDirtyAttributes;
   }
 }

@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
-import { keepLatestTask, waitForProperty } from 'ember-concurrency';
+import { task, keepLatestTask, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
+import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service store;
@@ -11,33 +12,53 @@ export default class ProcessesProcessIndexRoute extends Route {
   };
 
   async model(params) {
-    let {
-      loadMetadataTaskInstance,
-      loadedMetadata,
-      loadDiagramTaskInstance,
-      loadedDiagram,
-    } = this.modelFor('processes.process');
+    const { loadProcessTaskInstance, loadedProcess } =
+      this.modelFor('processes.process');
 
-    let loadProcessStepsTaskInstance = this.loadProcessStepsTask.perform(
-      loadMetadataTaskInstance,
+    const loadBpmnFileTaskInstance = this.loadBpmnFileTask.perform(
+      loadProcessTaskInstance
+    );
+    const loadedBpmnFile = this.loadBpmnFileTask.lastSuccessful?.value;
+
+    const loadProcessStepsTaskInstance = this.loadProcessStepsTask.perform(
+      loadProcessTaskInstance,
       params
     );
-    let loadedProcessSteps = this.loadProcessStepsTask.lastSuccessful?.value;
+    const loadedProcessSteps = this.loadProcessStepsTask.lastSuccessful?.value;
 
     return {
-      loadMetadataTaskInstance,
-      loadedMetadata,
-      loadDiagramTaskInstance,
-      loadedDiagram,
+      loadProcessTaskInstance,
+      loadedProcess,
+      loadBpmnFileTaskInstance,
+      loadedBpmnFile,
       loadProcessStepsTaskInstance,
       loadedProcessSteps,
     };
   }
 
+  @task
+  *loadBpmnFileTask(loadProcessTaskInstance) {
+    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
+
+    const bpmnFileId = loadProcessTaskInstance.value.bpmnFile?.id;
+    if (!bpmnFileId) return;
+
+    const url = generateBpmnDownloadUrl(bpmnFileId);
+    const response = yield fetch(url, {
+      headers: {
+        Accept: 'text/xml',
+      },
+    });
+    if (!response.ok) throw Error(response.status);
+    return yield response.text();
+  }
+
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessStepsTask(loadMetadataTaskInstance, params) {
-    yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
-    const fileId = loadMetadataTaskInstance.value.id;
+  *loadProcessStepsTask(loadProcessTaskInstance, params) {
+    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
+
+    const bpmnFileId = loadProcessTaskInstance.value.bpmnFile?.id;
+    if (!bpmnFileId) return;
 
     let query = {
       page: {
@@ -46,7 +67,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       },
       include: 'type',
       'filter[:has:name]': true,
-      'filter[processes][derivations][id]': fileId,
+      'filter[process][bpmn-file][id]': bpmnFileId,
     };
 
     if (params.sort) {

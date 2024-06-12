@@ -48,8 +48,6 @@ export default class ProcessesIndexRoute extends Route {
     }
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
-    const files = yield this.store.query('process', query);
-
-    return files;
+    return yield this.store.query('process', query);
   }
 }

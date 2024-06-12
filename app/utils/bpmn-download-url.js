@@ -1,3 +1,3 @@
-export default function generateBpmnDownloadUrl(fileId) {
+export default function generateBpmnFileDownloadUrl(fileId) {
   return `/files/${fileId}/download`;
 }
