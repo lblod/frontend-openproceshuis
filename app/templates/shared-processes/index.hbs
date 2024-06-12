@@ -120,7 +120,8 @@
       @accept=".bpmn,.xml"
       @title="BPMN-bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @onFileId={{this.extractBpmn}}
+      @createProcess={{this.createProcess}}
+      @extractBpmnElements={{this.extractBpmnElements}}
       @onFinishUpload={{this.fileUploaded}}
     />
   </:body>

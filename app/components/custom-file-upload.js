@@ -12,10 +12,16 @@ export default class AuFileUpload extends Component {
   @tracked uploadErrorData = [];
 
   get uploadingMsg() {
-    if (!this.queue.files.length && this.args.onFileId?.isRunning) {
-      return `Processtappen extraheren ...`;
+    if (this.queue.files.length)
+      return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
+
+    if (this.args.createProcess?.isRunning) return 'Proces aanmaken ...';
+
+    if (this.args.extractBpmnElements?.isRunning) {
+      return 'Processtappen extraheren ...';
     }
-    return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
+
+    return 'Laden ...';
   }
 
   get title() {
@@ -56,19 +62,23 @@ export default class AuFileUpload extends Component {
     return this.uploadErrorData.length > 0;
   }
 
-  get showProgress() {
-    return this.args.onFileId?.isRunning;
+  get isBusy() {
+    return (
+      this.queue.files.length ||
+      this.args.createProcess?.isRunning ||
+      this.args.extractBpmnElements?.isRunning
+    );
   }
 
   @task
   *upload(file) {
     this.resetErrors();
-    let uploadedFile = yield this.uploadFileTask.perform(file);
+    let uploadedFileId = yield this.uploadFileTask.perform(file);
 
     this.notifyQueueUpdate();
 
-    if (uploadedFile && this.args.onFinishUpload)
-      this.args.onFinishUpload(uploadedFile, this.calculateQueueInfo());
+    if (uploadedFileId && this.args.onFinishUpload)
+      this.args.onFinishUpload(uploadedFileId, this.calculateQueueInfo());
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
@@ -79,10 +89,16 @@ export default class AuFileUpload extends Component {
         'Content-Type': 'multipart/form-data',
       });
       const body = yield response.json();
-      const fileId = body?.data?.id;
-      if (this.args.onFileId) {
-        yield this.args.onFileId.perform(fileId);
+      const fileId = yield body?.data?.id;
+
+      if (this.args.createProcess) {
+        yield this.args.createProcess.perform(fileId);
       }
+
+      if (this.args.extractBpmnElements) {
+        yield this.args.extractBpmnElements.perform(fileId);
+      }
+
       return fileId;
     } catch (e) {
       this.addError(file);

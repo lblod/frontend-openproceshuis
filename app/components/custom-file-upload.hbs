@@ -14,7 +14,7 @@
         <AuIcon @icon="attachment" @alignment="left" />
         <AuHelpText @skin="secondary">{{this.helpTextDragDrop}}</AuHelpText>
       </p>
-    {{else if (or queue.files.length this.showProgress)}}
+    {{else if this.isBusy}}
       <p class="au-c-file-upload-message">
         <small class="au-c-small-text">{{this.uploadingMsg}}</small>
       </p>

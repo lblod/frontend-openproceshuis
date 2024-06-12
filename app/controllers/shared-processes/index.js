@@ -9,6 +9,8 @@ export default class SharedProcessesIndexController extends Controller {
 
   @service router;
   @service toaster;
+  @service store;
+  @service currentSession;
 
   @tracked page = 0;
   size = 20;
@@ -17,6 +19,7 @@ export default class SharedProcessesIndexController extends Controller {
   @tracked fileToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
+  newProcess = undefined;
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished
@@ -98,9 +101,27 @@ export default class SharedProcessesIndexController extends Controller {
     this.uploadModalOpened = false;
   }
 
+  @task
+  *createProcess(fileId) {
+    const file = yield this.store.findRecord('file', fileId);
+
+    const created = new Date();
+    const process = this.store.createRecord('process', {
+      title: file.name,
+      description: 'Dit is een test',
+      created: created,
+      modified: created,
+      publisher: this.currentSession.group,
+      files: [file],
+    });
+    yield process.save();
+
+    this.newProcess = process.id;
+  }
+
   @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmn(newFileId) {
-    yield fetch(`/bpmn?id=${newFileId}`, {
+  *extractBpmnElements(fileId) {
+    yield fetch(`/bpmn?id=${fileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -109,11 +130,11 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  fileUploaded(newFileId) {
+  fileUploaded() {
     this.closeUploadModal();
-    this.toaster.success('BPMN-bestand succesvol toegevoegd', 'Gelukt!', {
+    this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
       timeOut: 5000,
     });
-    this.router.transitionTo('processes.process', newFileId);
+    this.router.transitionTo('processes.process', this.newProcess.id);
   }
 }

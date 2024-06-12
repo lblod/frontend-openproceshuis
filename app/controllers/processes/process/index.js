@@ -145,7 +145,7 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmn(newFileId) {
+  *extractBpmnElements(newFileId) {
     yield fetch(`/bpmn?id=${newFileId}`, {
       method: 'POST',
       headers: {
