@@ -1,6 +1,8 @@
 import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import { modelValidator } from 'ember-model-validator';
 import ENV from 'frontend-openproceshuis/config/environment';
 
+@modelValidator
 export default class ProcessModel extends Model {
   @attr('string') title;
   @attr('string') description;
@@ -9,6 +11,12 @@ export default class ProcessModel extends Model {
   @attr('string') status;
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @hasMany('file', { inverse: 'process', async: false }) files;
+
+  validations = {
+    title: {
+      presence: true,
+    },
+  };
 
   get isArchived() {
     return this.status === ENV.resourceStates.archived;

@@ -230,14 +230,14 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  setFileName(event) {
+  setProcessTitle(event) {
     if (!this.process) return;
-    this.process.name = event.target.value;
+    this.process.title = event.target.value;
     this.validateForm();
   }
 
   @action
-  setFileDescription(event) {
+  setProcessDescription(event) {
     if (!this.process) return;
     this.process.description = event.target.value;
     this.validateForm();

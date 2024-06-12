@@ -43,7 +43,7 @@
                 <:content>
                   <AuInput
                     value={{this.process.title}}
-                    {{on "input" this.setFileName}}
+                    {{on "input" this.setProcessTitle}}
                     @width="block"
                   />
                 </:content>
@@ -53,7 +53,7 @@
                 <:content>
                   <AuTextarea
                     value={{this.process.description}}
-                    {{on "input" this.setFileDescription}}
+                    {{on "input" this.setProcessDescription}}
                     rows="4"
                     @width="block"
                   />
