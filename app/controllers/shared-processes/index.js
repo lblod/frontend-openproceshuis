@@ -5,15 +5,15 @@ import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class SharedProcessesIndexController extends Controller {
-  queryParams = ['page', 'size', 'sort', 'name'];
+  queryParams = ['page', 'size', 'sort', 'title'];
 
   @service router;
   @service toaster;
 
   @tracked page = 0;
   size = 20;
-  @tracked sort = 'name';
-  @tracked name = '';
+  @tracked sort = 'title';
+  @tracked title = '';
   @tracked fileToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
@@ -40,16 +40,16 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  setName(selection) {
+  setTitle(selection) {
     this.page = null;
-    this.name = selection;
+    this.title = selection;
   }
 
   @action
   resetFilters() {
-    this.name = '';
+    this.title = '';
     this.page = 0;
-    this.sort = 'name';
+    this.sort = 'title';
 
     // Triggers a refresh of the model
     this.page = null;

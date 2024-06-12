@@ -12,7 +12,7 @@ export default class SharedProcessesIndexRoute extends Route {
   queryParams = {
     page: { refreshModel: true },
     sort: { refreshModel: true },
-    name: { refreshModel: true, replace: true },
+    title: { refreshModel: true, replace: true },
   };
 
   async beforeModel(transition) {
@@ -51,13 +51,12 @@ export default class SharedProcessesIndexRoute extends Route {
       query.sort = sortValue;
     }
 
-    if (params.name) {
-      query['filter[name]'] = params.name;
+    if (params.title) {
+      query['filter[title]'] = params.title;
     }
-    query['filter[:has:download]'] = true;
     query['filter[publisher][id]'] = this.currentSession.group.id; // FIXME: should be handled by backend instead of frontend
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
-    return yield this.store.query('file', query);
+    return yield this.store.query('process', query);
   }
 }

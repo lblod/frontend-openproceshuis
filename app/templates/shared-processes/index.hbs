@@ -7,11 +7,11 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
         >
           <div>
-            <AuLabel for="filter-name">Filter op naam of beschrijving</AuLabel>
+            <AuLabel for="filter-title">Filter op titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
-              @id="filter-name"
-              @selected={{this.name}}
-              @onChange={{this.setName}}
+              @id="filter-title"
+              @selected={{this.title}}
+              @onChange={{this.setTitle}}
               class="grow"
             />
           </div>
@@ -51,9 +51,9 @@
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable
-            @field="name"
+            @field="title"
             @currentSorting={{this.sort}}
-            @label="Naam"
+            @label="Titel"
           />
           <AuDataTableThSortable
             @field="description"
@@ -81,26 +81,26 @@
             </p>
           </TableMessage>
         {{else}}
-          <c.body as |file|>
+          <c.body as |process|>
             <td>
               <LinkTo
                 class="au-c-link"
-                @model={{file.id}}
+                @model={{process.id}}
                 @route="processes.process"
               >
-                {{file.name}}
+                {{process.title}}
               </LinkTo>
             </td>
-            <td>{{or file.description "/"}}</td>
-            <td>{{date-format file.created}}</td>
-            <td>{{date-format file.modified}}</td>
+            <td>{{or process.description "/"}}</td>
+            <td>{{date-format process.created}}</td>
+            <td>{{date-format process.modified}}</td>
             <td>
               <AuButton
                 @icon="bin"
                 @skin="naked"
                 @alert="true"
                 @width="block"
-                {{on "click" (fn this.openDeleteModal file)}}
+                {{on "click" (fn this.openDeleteModal process)}}
               />
             </td>
           </c.body>
@@ -114,11 +114,11 @@
   @modalOpen={{this.uploadModalOpened}}
   @closeModal={{this.closeUploadModal}}
 >
-  <:title>Voeg BPMN-bestand toe</:title>
+  <:title>Voeg proces toe</:title>
   <:body>
     <CustomFileUpload
       @accept=".bpmn,.xml"
-      @title="Bestand selecteren"
+      @title="BPMN-bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @onFileId={{this.extractBpmn}}
       @onFinishUpload={{this.fileUploaded}}
@@ -139,7 +139,7 @@
   @closeModal={{this.closeDeleteModal}}
 >
   <:title>Verwijder {{this.fileToDelete.name}}</:title>
-  <:body>Ben je zeker dat je dit BPMN-bestand en al haar processtappen uit de
+  <:body>Ben je zeker dat je dit proces en al haar processtappen uit de
     bibliotheek wil verwijderen?</:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">

@@ -14,11 +14,11 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
         >
           <div>
-            <AuLabel for="filter-name">Zoek op naam of beschrijving</AuLabel>
+            <AuLabel for="filter-title">Zoek op titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
-              @id="filter-name"
-              @selected={{this.name}}
-              @onChange={{this.setName}}
+              @id="filter-title"
+              @selected={{this.title}}
+              @onChange={{this.setTitle}}
               class="grow"
             />
           </div>
@@ -56,9 +56,9 @@
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable
-            @field="name"
+            @field="title"
             @currentSorting={{this.sort}}
-            @label="Naam"
+            @label="Titel"
           />
           <AuDataTableThSortable
             @field="description"
@@ -85,19 +85,19 @@
             </p>
           </TableMessage>
         {{else}}
-          <c.body as |file|>
+          <c.body as |process|>
             <td>
               <LinkTo
                 class="au-c-link"
-                @model={{file.id}}
+                @model={{process.id}}
                 @route="processes.process"
               >
-                {{file.name}}
+                {{process.title}}
               </LinkTo>
             </td>
-            <td>{{or file.description "/"}}</td>
-            <td>{{date-format file.modified}}</td>
-            <td>{{file.publisher.name}}</td>
+            <td>{{or process.description "/"}}</td>
+            <td>{{date-format process.modified}}</td>
+            <td>{{process.publisher.name}}</td>
           </c.body>
         {{/if}}
       </t.content>
