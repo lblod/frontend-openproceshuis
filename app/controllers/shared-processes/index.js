@@ -16,10 +16,10 @@ export default class SharedProcessesIndexController extends Controller {
   size = 20;
   @tracked sort = 'title';
   @tracked title = '';
-  @tracked fileToDelete = undefined;
+  @tracked processToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
-  newProcess = undefined;
+  newProcessId = undefined;
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished
@@ -59,31 +59,32 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  openDeleteModal(fileToDelete) {
+  openDeleteModal(processToDelete) {
     this.uploadModalOpened = false;
-    this.fileToDelete = fileToDelete;
+    this.processToDelete = processToDelete;
     this.deleteModalOpened = true;
   }
 
   @action
   closeDeleteModal() {
-    this.fileToDelete = undefined;
+    this.processToDelete = undefined;
     this.deleteModalOpened = false;
   }
 
   @task
-  *deleteFile() {
-    this.fileToDelete.archive();
+  *deleteProcess() {
+    this.processToDelete.archive();
+    console.log(this.processToDelete);
 
     try {
-      yield this.fileToDelete.save();
-      this.toaster.success('BPMN-bestand succesvol verwijderd', 'Gelukt!', {
+      yield this.processToDelete.save();
+      this.toaster.success('Proces succesvol verwijderd', 'Gelukt!', {
         timeOut: 5000,
       });
     } catch (error) {
       console.error(error);
-      this.toaster.error('BPMN-bestand kon niet worden verwijderd', 'Fout');
-      this.fileToDelete.rollbackAttributes();
+      this.toaster.error('Proces kon niet worden verwijderd', 'Fout');
+      this.processToDelete.rollbackAttributes();
     }
 
     this.closeDeleteModal();
@@ -102,26 +103,25 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @task
-  *createProcess(fileId) {
-    const file = yield this.store.findRecord('file', fileId);
+  *createProcess(bpmnFileId) {
+    const bpmnFile = yield this.store.findRecord('file', bpmnFileId);
 
     const created = new Date();
     const process = this.store.createRecord('process', {
-      title: file.name,
+      title: bpmnFile.name,
       description: 'Dit is een test',
       created: created,
       modified: created,
       publisher: this.currentSession.group,
-      files: [file],
+      files: [bpmnFile],
     });
     yield process.save();
-
-    this.newProcess = process.id;
+    this.newProcessId = process.id;
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmnElements(fileId) {
-    yield fetch(`/bpmn?id=${fileId}`, {
+  *extractBpmnElements(bpmnFileId) {
+    yield fetch(`/bpmn?id=${bpmnFileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -130,11 +130,11 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  fileUploaded() {
+  bpmnFileUploaded() {
     this.closeUploadModal();
     this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
       timeOut: 5000,
     });
-    this.router.transitionTo('processes.process', this.newProcess.id);
+    this.router.transitionTo('processes.process', this.newProcessId);
   }
 }

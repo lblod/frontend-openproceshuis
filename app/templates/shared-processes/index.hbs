@@ -122,7 +122,7 @@
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @createProcess={{this.createProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.fileUploaded}}
+      @onFinishUpload={{this.bpmnFileUploaded}}
     />
   </:body>
   <:footer>
@@ -139,7 +139,7 @@
   @modalOpen={{this.deleteModalOpened}}
   @closeModal={{this.closeDeleteModal}}
 >
-  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:title>Verwijder {{this.processToDelete.title}}</:title>
   <:body>Ben je zeker dat je dit proces en al haar processtappen uit de
     bibliotheek wil verwijderen?</:body>
   <:footer>
@@ -152,7 +152,7 @@
         @skin="primary"
         @icon="bin"
         @alert="true"
-        {{on "click" (perform this.deleteFile)}}
+        {{on "click" (perform this.deleteProcess)}}
       >Verwijder</AuButton>
     </AuButtonGroup>
   </:footer>
