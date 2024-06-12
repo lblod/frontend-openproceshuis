@@ -1,7 +1,8 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import { ARCHIVED_STATUS } from '../../models/file';
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class ProcessesIndexRoute extends Route {
   @service store;
 
@@ -46,7 +47,7 @@ export default class ProcessesIndexRoute extends Route {
       query['filter[name]'] = params.name;
     }
     query['filter[:has:download]'] = true;
-    query['filter[:not:status]'] = ARCHIVED_STATUS;
+    query['filter[:not:status]'] = ENV.resourceStates.archived;
 
     const files = yield this.store.query('file', query);
 

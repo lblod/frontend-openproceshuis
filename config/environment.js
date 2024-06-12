@@ -21,6 +21,10 @@ module.exports = function (environment) {
 
     appName: 'Open Proces Huis',
 
+    resourceStates: {
+      archived: 'http://lblod.data.gift/concepts/concept-status/gearchiveerd',
+    },
+
     yasgui: {
       defaultQuery: '{{YASGUI_DEFAULT_QUERY}}',
       extraPrefixes: '{{YASGUI_EXTRA_PREFIXES}}',

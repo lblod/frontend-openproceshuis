@@ -1,8 +1,6 @@
 import Model, { attr, hasMany } from '@ember-data/model';
 import { modelValidator } from 'ember-model-validator';
-
-export const ARCHIVED_STATUS =
-  'http://lblod.data.gift/concepts/concept-status/gearchiveerd';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 @modelValidator
 export default class FileModel extends Model {
@@ -22,10 +20,10 @@ export default class FileModel extends Model {
   };
 
   get isArchived() {
-    return this.status === ARCHIVED_STATUS;
+    return this.status === ENV.resourceStates.archived;
   }
 
   archive() {
-    this.status = ARCHIVED_STATUS;
+    this.status = ENV.resourceStates.archived;
   }
 }

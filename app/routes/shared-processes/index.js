@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import { ARCHIVED_STATUS } from '../../models/file';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class SharedProcessesIndexRoute extends Route {
   @service router;
@@ -56,7 +56,7 @@ export default class SharedProcessesIndexRoute extends Route {
     }
     query['filter[:has:download]'] = true;
     query['filter[publisher][id]'] = this.currentSession.group.id; // FIXME: should be handled by backend instead of frontend
-    query['filter[:not:status]'] = ARCHIVED_STATUS;
+    query['filter[:not:status]'] = ENV.resourceStates.archived;
 
     return yield this.store.query('file', query);
   }
