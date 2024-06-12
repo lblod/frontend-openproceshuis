@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 
-export default class BpmnUploadsBpmnFileIndexController extends Controller {
+export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
 
   @service store;
@@ -176,7 +176,7 @@ export default class BpmnUploadsBpmnFileIndexController extends Controller {
     this.newFileId = newFileId;
     await this.replaceFile.perform();
 
-    let url = this.router.urlFor('bpmn-files.bpmn-file', newFileId);
+    let url = this.router.urlFor('processes.process', newFileId);
     window.location.replace(url);
   }
 

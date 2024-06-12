@@ -2,12 +2,12 @@
   <Group>
     <AuTabs @reversed={{this.reversed}} as |Tab|>
       <Tab>
-        <AuLink @route="bpmn-files" @icon="sitemap">
+        <AuLink @route="processes" @icon="sitemap">
           Processen
         </AuLink>
       </Tab>
       <Tab>
-        <AuLink @route="bpmn-elements" @icon="unordered-list">
+        <AuLink @route="process-steps" @icon="unordered-list">
           Processtappen
         </AuLink>
       </Tab>
@@ -15,7 +15,7 @@
   </Group>
   {{#if this.currentSession.canEdit}}
     <Group>
-      <AuLink @route="bpmn-uploads" @skin="button-secondary">
+      <AuLink @route="shared-processes" @skin="button-secondary">
         Gedeelde processen
       </AuLink>
     </Group>

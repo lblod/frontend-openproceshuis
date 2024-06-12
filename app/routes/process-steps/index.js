@@ -3,7 +3,7 @@ import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { ARCHIVED_STATUS } from '../../models/file';
 
-export default class BpmnElementsIndexRoute extends Route {
+export default class ProcessStepsIndexRoute extends Route {
   @service store;
   @service muSearch;
   queryParams = {
@@ -45,7 +45,7 @@ export default class BpmnElementsIndexRoute extends Route {
     }
 
     return yield this.muSearch.search({
-      index: 'bpmn-elements',
+      index: 'process-steps',
       page: params.page,
       size: params.size,
       sort,

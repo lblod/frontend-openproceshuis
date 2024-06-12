@@ -4,7 +4,7 @@
       <div class="au-c-sidebar__content">
         <ul class="au-c-list-navigation">
           <li class="au-c-list-navigation__item">
-            <AuNavigationLink @route="bpmn-files.index">
+            <AuNavigationLink @route="processes.index">
               Alle processen
             </AuNavigationLink>
           </li>
@@ -90,7 +90,7 @@
               <LinkTo
                 class="au-c-link"
                 @model={{file.id}}
-                @route="bpmn-files.bpmn-file"
+                @route="processes.process"
               >
                 {{file.name}}
               </LinkTo>

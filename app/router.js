@@ -20,17 +20,17 @@ Router.map(function () {
 
   this.route('index', { path: '' });
 
-  this.route('bpmn-files', { path: 'processen' }, function () {
-    this.route('bpmn-file', { path: '/:id/' }, function () {
+  this.route('processes', { path: 'processen' }, function () {
+    this.route('process', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
     });
   });
 
-  this.route('bpmn-uploads', { path: 'gedeelde-processen' }, function () {
+  this.route('shared-processes', { path: 'gedeelde-processen' }, function () {
     this.route('index', { path: '' });
   });
 
-  this.route('bpmn-elements', { path: 'processtappen' }, function () {
+  this.route('process-steps', { path: 'processtappen' }, function () {
     this.route('index', { path: '' });
   });
 

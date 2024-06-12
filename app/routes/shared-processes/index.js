@@ -3,7 +3,7 @@ import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { ARCHIVED_STATUS } from '../../models/file';
 
-export default class BpmnUploadsIndexRoute extends Route {
+export default class SharedProcessesIndexRoute extends Route {
   @service router;
   @service session;
   @service currentSession;

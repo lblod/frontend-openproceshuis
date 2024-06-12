@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 
-export default class BpmnUploadsIndexController extends Controller {
+export default class SharedProcessesIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'name'];
 
   @service router;
@@ -114,6 +114,6 @@ export default class BpmnUploadsIndexController extends Controller {
     this.toaster.success('BPMN-bestand succesvol toegevoegd', 'Gelukt!', {
       timeOut: 5000,
     });
-    this.router.transitionTo('bpmn-files.bpmn-file', newFileId);
+    this.router.transitionTo('processes.process', newFileId);
   }
 }

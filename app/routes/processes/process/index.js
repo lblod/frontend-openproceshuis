@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 import { keepLatestTask, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
 
-export default class BpmnFilesBpmnFileIndexRoute extends Route {
+export default class ProcessesProcessIndexRoute extends Route {
   @service store;
 
   queryParams = {
@@ -16,7 +16,7 @@ export default class BpmnFilesBpmnFileIndexRoute extends Route {
       loadedMetadata,
       loadDiagramTaskInstance,
       loadedDiagram,
-    } = this.modelFor('bpmn-files.bpmn-file');
+    } = this.modelFor('processes.process');
 
     let loadBpmnElementsTaskInstance = this.loadBpmnElementsTask.perform(
       loadMetadataTaskInstance,

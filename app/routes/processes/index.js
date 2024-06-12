@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { ARCHIVED_STATUS } from '../../models/file';
-export default class BpmnFilesIndexRoute extends Route {
+export default class ProcessesIndexRoute extends Route {
   @service store;
 
   queryParams = {

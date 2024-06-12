@@ -3,11 +3,11 @@ import { service } from '@ember/service';
 import { keepLatestTask, task, waitForProperty } from 'ember-concurrency';
 import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 
-export default class BpmnFilesBpmnFileRoute extends Route {
+export default class ProcessesProcessRoute extends Route {
   @service store;
 
   async model() {
-    let { id: fileId } = this.paramsFor('bpmn-files.bpmn-file');
+    let { id: fileId } = this.paramsFor('processes.process');
 
     const loadMetadataTaskInstance = this.loadBpmnFileTask.perform(fileId);
     const loadedMetadata = this.loadBpmnFileTask.lastSuccesful?.value;
