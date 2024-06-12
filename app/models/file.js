@@ -1,4 +1,4 @@
-import Model, { attr, belongsTo } from '@ember-data/model';
+import Model, { attr, hasMany } from '@ember-data/model';
 import { modelValidator } from 'ember-model-validator';
 
 export const ARCHIVED_STATUS =
@@ -7,19 +7,13 @@ export const ARCHIVED_STATUS =
 @modelValidator
 export default class FileModel extends Model {
   @attr('string') name;
-  @attr('string') description;
   @attr('string') format;
   @attr('number') size;
   @attr('string') extension;
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
-
-  @belongsTo('group', {
-    inverse: null,
-    async: false,
-  })
-  publisher;
+  @hasMany('process', { inverse: 'files', async: false }) process;
 
   validations = {
     name: {

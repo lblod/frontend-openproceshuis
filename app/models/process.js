@@ -1,9 +1,8 @@
-import Model, { hasMany } from '@ember-data/model';
+import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 
 export default class ProcessModel extends Model {
-  @hasMany('file', { inverse: null, async: false }) derivations;
-
-  get derivation() {
-    return this.derivations[0];
-  }
+  @attr('string') title;
+  @attr('string') description;
+  @belongsTo('group', { inverse: null, async: false }) publisher;
+  @hasMany('file', { inverse: 'process', async: false }) files;
 }
