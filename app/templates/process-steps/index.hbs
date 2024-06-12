@@ -8,7 +8,7 @@
         >
           <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
             <AuLabel for="filter-name">Filter op naam</AuLabel>
-            <BpmnElementSelectByName
+            <ProcessStepSelectByName
               @id="filter-name"
               @selected={{this.name}}
               @onChange={{this.setName}}
@@ -17,7 +17,7 @@
           </div>
           <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
             <AuLabel for="filter-type">Filter op type</AuLabel>
-            <BpmnElementSelectByType
+            <ProcessStepSelectByType
               @id="filter-type"
               @selected={{this.type}}
               @onChange={{this.setType}}
@@ -50,7 +50,7 @@
     </PageHeader>
 
     <AuDataTable
-      @content={{this.bpmnElements}}
+      @content={{this.processSteps}}
       @isLoading={{this.isLoading}}
       @page={{this.page}}
       @size={{this.size}}

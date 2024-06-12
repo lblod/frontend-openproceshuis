@@ -4,7 +4,7 @@ import { restartableTask } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
-export default class BpmnElementSelectByTypeComponent extends Component {
+export default class ProcessStepSelectByTypeComponent extends Component {
   @service store;
 
   @tracked types = [];
@@ -17,7 +17,7 @@ export default class BpmnElementSelectByTypeComponent extends Component {
   }
 
   @restartableTask
-  *loadBpmnElementTypesTask() {
+  *loadProcessStepTypesTask() {
     const result = yield this.store.query('bpmn-element-type', {
       sort: ':no-case:label',
     });

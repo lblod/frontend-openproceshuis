@@ -18,25 +18,25 @@ export default class SharedProcessesIndexController extends Controller {
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
 
-  get bpmnFiles() {
-    return this.model.loadBpmnFilesTaskInstance.isFinished
-      ? this.model.loadBpmnFilesTaskInstance.value
-      : this.model.loadedBpmnFiles;
+  get processes() {
+    return this.model.loadProcessesTaskInstance.isFinished
+      ? this.model.loadProcessesTaskInstance.value
+      : this.model.loadedProcesses;
   }
 
   get isLoading() {
-    return this.model.loadBpmnFilesTaskInstance.isRunning;
+    return this.model.loadProcessesTaskInstance.isRunning;
   }
 
   get hasNoResults() {
     return (
-      this.model.loadBpmnFilesTaskInstance.isFinished &&
-      this.bpmnFiles.length === 0
+      this.model.loadProcessesTaskInstance.isFinished &&
+      this.processes.length === 0
     );
   }
 
   get hasErrored() {
-    return this.model.loadBpmnFilesTaskInstance.isError;
+    return this.model.loadProcessesTaskInstance.isError;
   }
 
   @action

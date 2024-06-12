@@ -8,7 +8,7 @@
         >
           <div>
             <AuLabel for="filter-name">Filter op naam of beschrijving</AuLabel>
-            <BpmnFileSelectByName
+            <ProcessSelectByTitle
               @id="filter-name"
               @selected={{this.name}}
               @onChange={{this.setName}}
@@ -42,7 +42,7 @@
     </PageHeader>
 
     <AuDataTable
-      @content={{this.bpmnFiles}}
+      @content={{this.processes}}
       @isLoading={{this.isLoading}}
       @page={{this.page}}
       @size={{this.size}}

@@ -15,13 +15,13 @@ export default class ProcessStepsIndexRoute extends Route {
 
   async model(params) {
     return {
-      loadBpmnElementsTaskInstance: this.loadbpmnElementsTask.perform(params),
-      loadedBpmnElements: this.loadbpmnElementsTask.lastSuccesful?.value,
+      loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(params),
+      loadedProcessSteps: this.loadProcessStepsTask.lastSuccesful?.value,
     };
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadbpmnElementsTaskMuSearch(params) {
+  *loadProcessStepsTaskMuSearch(params) {
     const filter = {};
     if (params.name) {
       let filterType = 'phrase_prefix';
@@ -86,7 +86,7 @@ export default class ProcessStepsIndexRoute extends Route {
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadbpmnElementsTask(params) {
+  *loadProcessStepsTask(params) {
     let query = {
       page: {
         number: params.page,

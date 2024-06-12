@@ -11,25 +11,25 @@ export default class ProcessStepsIndexController extends Controller {
   @tracked name = '';
   @tracked type = '';
 
-  get bpmnElements() {
-    return this.model.loadBpmnElementsTaskInstance.isFinished
-      ? this.model.loadBpmnElementsTaskInstance.value
-      : this.model.loadedBpmnElements;
+  get processSteps() {
+    return this.model.loadProcessStepsTaskInstance.isFinished
+      ? this.model.loadProcessStepsTaskInstance.value
+      : this.model.loadedProcessSteps;
   }
 
   get isLoading() {
-    return this.model.loadBpmnElementsTaskInstance.isRunning;
+    return this.model.loadProcessStepsTaskInstance.isRunning;
   }
 
   get hasNoResults() {
     return (
-      this.model.loadBpmnElementsTaskInstance.isFinished &&
-      this.bpmnElements.length === 0
+      this.model.loadProcessStepsTaskInstance.isFinished &&
+      this.processSteps.length === 0
     );
   }
 
   get hasErrored() {
-    return this.model.loadBpmnElementsTaskInstance.isError;
+    return this.model.loadProcessStepsTaskInstance.isError;
   }
 
   @action

@@ -233,8 +233,8 @@
       >Processtappen</AuHeading>
       <div class="au-c-boxed-table">
         <AuDataTable
-          @content={{this.bpmnElements}}
-          @isLoading={{this.bpmnElementsBatchIsLoading}}
+          @content={{this.processSteps}}
+          @isLoading={{this.processStepsBatchIsLoading}}
           @page={{this.page}}
           @size={{this.size}}
           as |t|
@@ -252,9 +252,9 @@
                 @label="Type"
               />
             </c.header>
-            {{#if this.bpmnElementsBatchHasErrored}}
+            {{#if this.processStepsBatchHasErrored}}
               <TableMessage::Error />
-            {{else if this.bpmnElementsBatchHasNoResults}}
+            {{else if this.processStepsBatchHasNoResults}}
               <TableMessage>
                 <p>
                   Er werden geen zoekresultaten gevonden.

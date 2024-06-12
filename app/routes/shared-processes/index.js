@@ -24,13 +24,13 @@ export default class SharedProcessesIndexRoute extends Route {
 
   async model(params) {
     return {
-      loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(params),
-      loadedBpmnFiles: this.loadBpmnFilesTask.lastSuccesful?.value,
+      loadProcessesTaskInstance: this.loadProcessesTask.perform(params),
+      loadedProcesses: this.loadProcessesTask.lastSuccesful?.value,
     };
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnFilesTask(params) {
+  *loadProcessesTask(params) {
     let query = {
       page: {
         number: params.page,

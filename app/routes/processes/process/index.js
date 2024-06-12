@@ -18,24 +18,24 @@ export default class ProcessesProcessIndexRoute extends Route {
       loadedDiagram,
     } = this.modelFor('processes.process');
 
-    let loadBpmnElementsTaskInstance = this.loadBpmnElementsTask.perform(
+    let loadProcessStepsTaskInstance = this.loadProcessStepsTask.perform(
       loadMetadataTaskInstance,
       params
     );
-    let loadedBpmnElements = this.loadBpmnElementsTask.lastSuccessful?.value;
+    let loadedProcessSteps = this.loadProcessStepsTask.lastSuccessful?.value;
 
     return {
       loadMetadataTaskInstance,
       loadedMetadata,
       loadDiagramTaskInstance,
       loadedDiagram,
-      loadBpmnElementsTaskInstance,
-      loadedBpmnElements,
+      loadProcessStepsTaskInstance,
+      loadedProcessSteps,
     };
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnElementsTask(loadMetadataTaskInstance, params) {
+  *loadProcessStepsTask(loadMetadataTaskInstance, params) {
     yield waitForProperty(loadMetadataTaskInstance, 'isFinished');
     const fileId = loadMetadataTaskInstance.value.id;
 

@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
 
-export default class BpmnFileSelectByNameComponent extends Component {
+export default class ProcessSelectByTitleComponent extends Component {
   @service store;
 
   @restartableTask *loadBpmnFilesTask(searchParams = '') {

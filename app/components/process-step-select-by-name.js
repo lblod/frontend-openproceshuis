@@ -2,10 +2,10 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
 
-export default class BpmnElementSelectByNameComponent extends Component {
+export default class ProcessStepSelectByNameComponent extends Component {
   @service store;
 
-  @restartableTask *loadBpmnElementsTask(searchParams = '') {
+  @restartableTask *loadProcessStepsTask(searchParams = '') {
     const query = {};
 
     if (searchParams.trim() !== '') {

@@ -9,8 +9,8 @@ export default class ProcessesProcessRoute extends Route {
   async model() {
     let { id: fileId } = this.paramsFor('processes.process');
 
-    const loadMetadataTaskInstance = this.loadBpmnFileTask.perform(fileId);
-    const loadedMetadata = this.loadBpmnFileTask.lastSuccesful?.value;
+    const loadMetadataTaskInstance = this.loadProcessTask.perform(fileId);
+    const loadedMetadata = this.loadProcessTask.lastSuccesful?.value;
     const loadDiagramTaskInstance = this.loadDiagramTask.perform(
       loadMetadataTaskInstance
     );
@@ -25,7 +25,7 @@ export default class ProcessesProcessRoute extends Route {
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnFileTask(fileId) {
+  *loadProcessTask(fileId) {
     return yield this.store.findRecord('file', fileId, {
       include:
         'publisher,publisher.primary-site,publisher.primary-site.contacts',

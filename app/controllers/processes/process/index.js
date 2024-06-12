@@ -74,25 +74,25 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadDiagramTaskInstance.isError;
   }
 
-  get bpmnElements() {
-    return this.model.loadBpmnElementsTaskInstance.isFinished
-      ? this.model.loadBpmnElementsTaskInstance.value
-      : this.model.loadedBpmnElements;
+  get processSteps() {
+    return this.model.loadProcessStepsTaskInstance.isFinished
+      ? this.model.loadProcessStepsTaskInstance.value
+      : this.model.loadedProcessSteps;
   }
 
-  get bpmnElementsBatchIsLoading() {
-    return this.model.loadBpmnElementsTaskInstance.isRunning;
+  get processStepsBatchIsLoading() {
+    return this.model.loadProcessStepsTaskInstance.isRunning;
   }
 
-  get bpmnElementsBatchHasNoResults() {
+  get processStepsBatchHasNoResults() {
     return (
-      this.model.loadBpmnElementsTaskInstance.isFinished &&
-      this.bpmnElements.length === 0
+      this.model.loadProcessStepsTaskInstance.isFinished &&
+      this.processSteps.length === 0
     );
   }
 
-  get bpmnElementsBatchHasErrored() {
-    return this.model.loadBpmnElementsTaskInstance.isError;
+  get processStepsBatchHasErrored() {
+    return this.model.loadProcessStepsTaskInstance.isError;
   }
 
   get canEdit() {
