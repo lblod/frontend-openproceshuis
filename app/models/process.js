@@ -31,9 +31,11 @@ export default class ProcessModel extends Model {
       (file) =>
         file.extension === 'bpmn' && file.status !== ENV.resourceStates.archived
     );
-
     if (bpmnFiles.length === 0) return undefined;
 
-    return bpmnFiles[0];
+    const bpmnFilesSorted = bpmnFiles.sort(
+      (fileA, fileB) => fileB.created - fileA.created
+    );
+    return bpmnFilesSorted[0];
   }
 }

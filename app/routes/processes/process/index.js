@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { task, keepLatestTask, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
-import generateBpmnDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import generateBpmnFileDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service store;
@@ -43,7 +43,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     const bpmnFileId = loadProcessTaskInstance.value.bpmnFile?.id;
     if (!bpmnFileId) return;
 
-    const url = generateBpmnDownloadUrl(bpmnFileId);
+    const url = generateBpmnFileDownloadUrl(bpmnFileId);
     const response = yield fetch(url, {
       headers: {
         Accept: 'text/xml',

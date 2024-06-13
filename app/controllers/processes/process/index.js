@@ -20,7 +20,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked edit = false;
-  @tracked newFileId = undefined;
   @tracked formIsValid = false;
 
   downloadTypes = [
@@ -138,13 +137,22 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   openReplaceModal() {
-    this.newFileId = undefined;
     this.replaceModalOpened = true;
   }
 
   @action
   closeReplaceModal() {
     this.replaceModalOpened = false;
+  }
+
+  @dropTask
+  *updateProcess(bpmnFileId) {
+    const bpmnFile = yield this.store.findRecord('file', bpmnFileId);
+
+    this.process.files.push(bpmnFile);
+    this.process.modified = bpmnFile.created;
+
+    yield this.process.save();
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
@@ -157,30 +165,9 @@ export default class ProcessesProcessIndexController extends Controller {
     });
   }
 
-  @dropTask
-  *replaceFile() {
-    if (!this.process) return;
-
-    const newFile = yield this.store.findRecord('file', this.newFileId, {
-      include:
-        'publisher,publisher.primary-site,publisher.primary-site.contacts',
-    });
-
-    newFile.name = this.process.name;
-    newFile.description = this.process.description;
-    newFile.created = this.process.created;
-    yield newFile.save();
-
-    yield this.process.destroyRecord();
-  }
-
   @action
-  async fileUploaded(newFileId) {
-    this.newFileId = newFileId;
-    await this.replaceFile.perform();
-
-    let url = this.router.urlFor('processes.process', newFileId);
-    window.location.replace(url);
+  fileUploaded() {
+    this.router.refresh(); // FIXME: Reload only BPMN file instead of whole model
   }
 
   @action
@@ -226,7 +213,6 @@ export default class ProcessesProcessIndexController extends Controller {
     this.process?.rollbackAttributes();
     this.replaceModalOpened = false;
     this.edit = false;
-    this.newFileId = undefined;
   }
 
   @action

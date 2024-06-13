@@ -15,6 +15,8 @@ export default class AuFileUpload extends Component {
     if (this.queue.files.length)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
+    if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
+
     if (this.args.createProcess?.isRunning) return 'Proces aanmaken ...';
 
     if (this.args.extractBpmnElements?.isRunning) {
@@ -91,7 +93,9 @@ export default class AuFileUpload extends Component {
       const body = yield response.json();
       const fileId = yield body?.data?.id;
 
-      if (this.args.createProcess) {
+      if (this.args.updateProcess) {
+        yield this.args.updateProcess.perform(fileId);
+      } else if (this.args.createProcess) {
         yield this.args.createProcess.perform(fileId);
       }
 
