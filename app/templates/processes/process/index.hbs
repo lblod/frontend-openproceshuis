@@ -11,21 +11,7 @@
     <:title>
       {{this.process.title}}
     </:title>
-    <:action>
-      <AuButtonGroup>
-        {{#if this.canEdit}}
-          <AuButton
-            @skin="secondary"
-            {{on "click" this.openReplaceModal}}
-          >Vervang BPMN-bestand</AuButton>
-        {{/if}}
-        {{#if this.newestBpmnFile}}
-          <AuButton {{on "click" this.openDownloadModal}}>
-            Download BPMN-bestand
-          </AuButton>
-        {{/if}}
-      </AuButtonGroup>
-    </:action>
+    <:action></:action>
   </PageHeader>
 {{/if}}
 
@@ -178,7 +164,22 @@
 
   <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
     <div class="au-o-grid__item">
-      <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
+      <div class="au-u-flex au-u-flex--between">
+        <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
+        <AuButtonGroup>
+          {{#if this.canEdit}}
+            <AuButton
+              @skin="secondary"
+              {{on "click" this.openReplaceModal}}
+            >Vervang BPMN-bestand</AuButton>
+          {{/if}}
+          {{#if this.newestBpmnFile}}
+            <AuButton {{on "click" this.openDownloadModal}}>
+              Download BPMN-bestand
+            </AuButton>
+          {{/if}}
+        </AuButtonGroup>
+      </div>
       <div>
         <AuHeading
           @level="3"
