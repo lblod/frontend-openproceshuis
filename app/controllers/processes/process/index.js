@@ -136,13 +136,14 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   async downloadBpmnFile(downloadType) {
-    if (!this.bpmnFile) return;
+    console.log(this.newestBpmnFile);
+    if (!this.newestBpmnFile) return;
 
-    const url = generateBpmnFileDownloadUrl(this.bpmnFile.id);
+    const url = generateBpmnFileDownloadUrl(this.newestBpmnFile.id);
     const headers = {
       Accept: downloadType.mime,
     };
-    const fileName = `${this.bpmnFile.name}.${downloadType.extension}`;
+    const fileName = `${this.newestBpmnFile.name}.${downloadType.extension}`;
     await downloadFileByUrl(url, headers, fileName);
   }
 

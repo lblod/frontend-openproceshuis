@@ -19,9 +19,11 @@
             {{on "click" this.openReplaceModal}}
           >Vervang BPMN-bestand</AuButton>
         {{/if}}
-        <AuButton {{on "click" this.openDownloadModal}}>
-          Download BPMN-bestand
-        </AuButton>
+        {{#if this.newestBpmnFile}}
+          <AuButton {{on "click" this.openDownloadModal}}>
+            Download BPMN-bestand
+          </AuButton>
+        {{/if}}
       </AuButtonGroup>
     </:action>
   </PageHeader>
