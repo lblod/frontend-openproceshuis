@@ -24,7 +24,7 @@ export default class ProcessStepsIndexController extends Controller {
   get hasNoResults() {
     return (
       this.model.loadProcessStepsTaskInstance.isFinished &&
-      this.processSteps.length === 0
+      this.processSteps?.length === 0
     );
   }
 

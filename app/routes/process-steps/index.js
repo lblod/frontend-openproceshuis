@@ -21,85 +21,20 @@ export default class ProcessStepsIndexRoute extends Route {
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessStepsTaskMuSearch(params) {
-    const filter = {};
-    if (params.name) {
-      let filterType = 'phrase_prefix';
-      let name = params.name.trim();
-
-      filter[`:${filterType}:name`] = name;
-    }
-    if (params.type) {
-      filter['type']['key'] = params.type; // TODO: Check whether this is correct
-    }
-    let sort = null;
-    if (params.sort) {
-      const isDescending = params.sort.startsWith('-');
-
-      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-      if (fieldName === 'file') fieldName = 'processes.name';
-      else if (fieldName === 'name') filter[':has:name'] = 't'; // Filtering with non-existent names, behaves unexpectedly
-
-      sort = `${fieldName}`;
-      if (isDescending) sort = `-${sort}`;
-    }
-
-    return yield this.muSearch.search({
-      index: 'process-steps',
-      page: params.page,
-      size: params.size,
-      sort,
-      filters: filter,
-      dataMapping: (data) => {
-        const entry = data.attributes;
-        const obj = {
-          name: entry.name,
-          id: entry.uuid,
-          type: Array.isArray(entry.classification)
-            ? entry.classification
-                .map((c) =>
-                  c.replace(
-                    'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
-                    ''
-                  )
-                )
-                .join(', ')
-            : entry.classification?.replace(
-                'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
-                ''
-              ),
-          process: {
-            bpmnFile: {
-              name: entry.processes?.name,
-              created: entry.processes?.created,
-              modified: Array.isArray(entry.processes?.modified)
-                ? entry.processes.modified[0]
-                : entry.processes?.modified,
-              id: entry.processes?.fileId,
-            },
-          },
-        };
-
-        return obj;
-      },
-    });
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
   *loadProcessStepsTask(params) {
     let query = {
       page: {
         number: params.page,
         size: params.size,
       },
-      include: 'type,process.bpmn-file',
+      include: 'type,bpmn-process.bpmn-file',
     };
 
     if (params.sort) {
       const isDescending = params.sort.startsWith('-');
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-      if (fieldName === 'file') fieldName = 'process.bpmn-file.name';
+      if (fieldName === 'file') fieldName = 'bpmn-process.bpmn-file.name';
       else if (fieldName === 'type') fieldName = 'type.label';
       else if (fieldName === 'name') query['filter[:has:name]'] = true; // Filtering with non-existent names, behaves unexpectedly
 
@@ -117,9 +52,12 @@ export default class ProcessStepsIndexRoute extends Route {
       query['filter[type][key]'] = params.type;
     }
 
-    query['filter[:has:processes]'] = true;
-    query['filter[process][:has:bpmn-file]'] = true;
-    query['filter[process][bpmn-file][:not:status]'] =
+    query['filter[:has:bpmn-process]'] = true;
+    query['filter[bpmn-process][:has:bpmn-file]'] = true;
+    query['filter[bpmn-process][bpmn-file][:not:status]'] =
+      ENV.resourceStates.archived;
+    query['filter[bpmn-process][bpmn-file][:has:process]'] = true;
+    query['filter[bpmn-process][bpmn-file][process][:not:status]'] =
       ENV.resourceStates.archived;
 
     const results = yield this.store.query('bpmn-element', query);
@@ -129,4 +67,69 @@ export default class ProcessStepsIndexRoute extends Route {
           (element) => element.type.queryValue === params.type // TODO: Move exact matching to backend
         );
   }
+
+  // @keepLatestTask({ cancelOn: 'deactivate' })
+  // *loadProcessStepsTaskMuSearch(params) {
+  //   const filter = {};
+  //   if (params.name) {
+  //     let filterType = 'phrase_prefix';
+  //     let name = params.name.trim();
+
+  //     filter[`:${filterType}:name`] = name;
+  //   }
+  //   if (params.type) {
+  //     filter['type']['key'] = params.type; // TODO: Check whether this is correct
+  //   }
+  //   let sort = null;
+  //   if (params.sort) {
+  //     const isDescending = params.sort.startsWith('-');
+
+  //     let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+  //     if (fieldName === 'file') fieldName = 'processes.name';
+  //     else if (fieldName === 'name') filter[':has:name'] = 't'; // Filtering with non-existent names, behaves unexpectedly
+
+  //     sort = `${fieldName}`;
+  //     if (isDescending) sort = `-${sort}`;
+  //   }
+
+  //   return yield this.muSearch.search({
+  //     index: 'process-steps',
+  //     page: params.page,
+  //     size: params.size,
+  //     sort,
+  //     filters: filter,
+  //     dataMapping: (data) => {
+  //       const entry = data.attributes;
+  //       const obj = {
+  //         name: entry.name,
+  //         id: entry.uuid,
+  //         type: Array.isArray(entry.classification)
+  //           ? entry.classification
+  //               .map((c) =>
+  //                 c.replace(
+  //                   'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
+  //                   ''
+  //                 )
+  //               )
+  //               .join(', ')
+  //           : entry.classification?.replace(
+  //               'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
+  //               ''
+  //             ),
+  //         process: {
+  //           bpmnFile: {
+  //             name: entry.processes?.name,
+  //             created: entry.processes?.created,
+  //             modified: Array.isArray(entry.processes?.modified)
+  //               ? entry.processes.modified[0]
+  //               : entry.processes?.modified,
+  //             id: entry.processes?.fileId,
+  //           },
+  //         },
+  //       };
+
+  //       return obj;
+  //     },
+  //   });
+  // }
 }

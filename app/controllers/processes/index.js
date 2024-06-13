@@ -22,7 +22,7 @@ export default class ProcessesIndexController extends Controller {
   get hasNoResults() {
     return (
       this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes.length === 0
+      this.processes?.length === 0
     );
   }
 

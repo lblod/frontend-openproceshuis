@@ -67,7 +67,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       },
       include: 'type',
       'filter[:has:name]': true,
-      'filter[process][bpmn-file][id]': bpmnFileId,
+      'filter[bpmn-process][bpmn-file][id]': bpmnFileId,
     };
 
     if (params.sort) {

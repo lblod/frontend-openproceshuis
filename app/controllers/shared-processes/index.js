@@ -34,7 +34,7 @@ export default class SharedProcessesIndexController extends Controller {
   get hasNoResults() {
     return (
       this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes.length === 0
+      this.processes?.length === 0
     );
   }
 
