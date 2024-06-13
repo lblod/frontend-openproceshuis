@@ -304,11 +304,11 @@
           >
             <t.content class="au-c-data-table__table--small" as |c|>
               <c.header>
-                <AuDataTableThSortable @field="name" @label="Bestandsnaam" />
                 <AuDataTableThSortable
                   @field="created"
                   @label="Toegevoegd op"
                 />
+                <AuDataTableThSortable @field="name" @label="Bestandsnaam" />
                 <AuDataTableThSortable @field="size" @label="Grootte" />
                 <th></th>
               </c.header>
@@ -322,6 +322,7 @@
                 </TableMessage>
               {{else}}
                 <c.body as |element|>
+                  <td>{{date-format element.created true}}</td>
                   <td>
                     {{#if (eq element.id this.newestBpmnFile.id)}}
                       <strong>
@@ -332,7 +333,6 @@
                       {{element.name}}
                     {{/if}}
                   </td>
-                  <td>{{date-format element.created true}}</td>
                   <td>{{file-size-format element.size}}</td>
                   <td>
                     <a href=""><AuIcon @icon="download" @alignment="right" />

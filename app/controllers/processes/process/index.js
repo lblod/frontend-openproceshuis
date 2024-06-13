@@ -81,7 +81,9 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   get bpmnFiles() {
-    return this.files?.filter((file) => file.isBpmnFile);
+    return this.files
+      ?.filter((file) => file.isBpmnFile)
+      .sort((fileA, fileB) => fileB.created - fileA.created);
   }
 
   get bpmnFilesBatchHasNoResults() {
@@ -90,10 +92,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   get newestBpmnFile() {
     if (!this.bpmnFiles || this.bpmnFiles.length === 0) return null;
-    const sortedBpmnFiles = this.bpmnFiles.sort(
-      (fileA, fileB) => fileB.created - fileA.created
-    );
-    return sortedBpmnFiles[0];
+    return this.bpmnFiles[0];
   }
 
   get processSteps() {
