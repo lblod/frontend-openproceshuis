@@ -345,6 +345,64 @@
         </div>
       </div>
     </div>
+    <div class="au-o-grid__item au-u-margin-top">
+      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+        <AuHeading @level="2" @skin="3">Alle bestanden</AuHeading>
+        <AuButtonGroup>
+          <AuButton>
+            Voeg toe
+          </AuButton>
+        </AuButtonGroup>
+      </div>
+      <div class="au-c-boxed-table">
+        <AuDataTable
+          @content={{this.files}}
+          @isLoading={{this.filesBatchIsLoading}}
+          as |t|
+        >
+          <t.content class="au-c-data-table__table--small" as |c|>
+            <c.header>
+              <AuDataTableThSortable @field="name" @label="Bestandsnaam" />
+              <AuDataTableThSortable @field="size" @label="Grootte" />
+              <AuDataTableThSortable @field="extension" @label="Extensie" />
+              <AuDataTableThSortable @field="format" @label="Formaat" />
+              <AuDataTableThSortable @field="created" @label="Toegevoegd op" />
+              <th></th>
+            </c.header>
+            {{#if this.filesBatchHasErrored}}
+              <TableMessage::Error />
+            {{else if this.filesBatchHasNoResults}}
+              <TableMessage>
+                <p>
+                  Er werden geen zoekresultaten gevonden.
+                </p>
+              </TableMessage>
+            {{else}}
+              <c.body as |element|>
+                <td>
+                  {{#if (eq element.id this.newestBpmnFile.id)}}
+                    <strong>
+                      {{element.name}}
+                      <AuIcon @icon="circle-check" />
+                    </strong>
+                  {{else}}
+                    {{element.name}}
+                  {{/if}}
+                </td>
+                <td>{{file-size-format element.size}}</td>
+                <td>{{element.extension}}</td>
+                <td>{{element.format}}</td>
+                <td>{{date-format element.created true}}</td>
+                <td>
+                  <a href=""><AuIcon @icon="download" @alignment="right" />
+                  </a>
+                </td>
+              </c.body>
+            {{/if}}
+          </t.content>
+        </AuDataTable>
+      </div>
+    </div>
   </div>
 </AuBodyContainer>
 
