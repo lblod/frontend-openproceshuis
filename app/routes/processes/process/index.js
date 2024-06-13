@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
-import { task, keepLatestTask, waitForProperty } from 'ember-concurrency';
+import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import generateBpmnFileDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service store;
@@ -11,54 +11,34 @@ export default class ProcessesProcessIndexRoute extends Route {
     sort: { refreshModel: true },
   };
 
-  async model(params) {
+  async model() {
     const { loadProcessTaskInstance, loadedProcess } =
       this.modelFor('processes.process');
-
-    const loadBpmnFileTaskInstance = this.loadBpmnFileTask.perform(
-      loadProcessTaskInstance
-    );
-    const loadedBpmnFile = this.loadBpmnFileTask.lastSuccessful?.value;
-
-    const loadProcessStepsTaskInstance = this.loadProcessStepsTask.perform(
-      loadProcessTaskInstance,
-      params
-    );
-    const loadedProcessSteps = this.loadProcessStepsTask.lastSuccessful?.value;
 
     return {
       loadProcessTaskInstance,
       loadedProcess,
-      loadBpmnFileTaskInstance,
-      loadedBpmnFile,
-      loadProcessStepsTaskInstance,
-      loadedProcessSteps,
+      loadFilesTaskInstance: this.loadFilesTask.perform(),
+      loadedFiles: this.loadFilesTask.lastSuccessful?.value,
+      loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(),
+      loadedProcessSteps: this.loadProcessStepsTask.lastSuccessful?.value,
     };
   }
 
-  @task
-  *loadBpmnFileTask(loadProcessTaskInstance) {
-    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
-
-    const bpmnFileId = loadProcessTaskInstance.value.bpmnFile?.id;
-    if (!bpmnFileId) return;
-
-    const url = generateBpmnFileDownloadUrl(bpmnFileId);
-    const response = yield fetch(url, {
-      headers: {
-        Accept: 'text/xml',
-      },
-    });
-    if (!response.ok) throw Error(response.status);
-    return yield response.text();
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadFilesTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const query = {
+      'filter[:not:status]': ENV.resourceStates.archived,
+      'filter[process][id]': processId,
+    };
+    return yield this.store.query('file', query);
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessStepsTask(loadProcessTaskInstance, params) {
-    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
-
-    const bpmnFileId = loadProcessTaskInstance.value.bpmnFile?.id;
-    if (!bpmnFileId) return;
+  *loadProcessStepsTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const params = this.paramsFor('processes.process.index');
 
     let query = {
       page: {
@@ -67,7 +47,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       },
       include: 'type',
       'filter[:has:name]': true,
-      'filter[bpmn-process][bpmn-file][id]': bpmnFileId,
+      'filter[bpmn-process][bpmn-file][process][id]': processId,
     };
 
     if (params.sort) {

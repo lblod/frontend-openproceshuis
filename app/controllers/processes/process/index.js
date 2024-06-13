@@ -59,18 +59,30 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadProcessTaskInstance.isError;
   }
 
-  get bpmnFile() {
-    return this.model.loadBpmnFileTaskInstance.isFinished
-      ? this.model.loadBpmnFileTaskInstance.value
-      : this.model.loadedBpmnFile;
+  get files() {
+    return this.model.loadFilesTaskInstance.isFinished
+      ? this.model.loadFilesTaskInstance.value
+      : this.model.loadedFiles;
   }
 
-  get bpmnFileIsLoading() {
-    return this.model.loadBpmnFileTaskInstance.isRunning;
+  get filesBatchIsLoading() {
+    return this.model.loadFilesTaskInstance.isRunning;
   }
 
-  get bpmnFileHasErrored() {
-    return this.model.loadBpmnFileTaskInstance.isError;
+  get filesBatchHasErrored() {
+    return this.model.loadFilesTaskInstance.isError;
+  }
+
+  get bpmnFiles() {
+    return this.files?.filter((file) => file.isBpmnFile);
+  }
+
+  get newestBpmnFile() {
+    if (!this.bpmnFiles || this.bpmnFiles.length === 0) return null;
+    const sortedBpmnFiles = this.bpmnFiles.sort(
+      (fileA, fileB) => fileB.created - fileA.created
+    );
+    return sortedBpmnFiles[0];
   }
 
   get processSteps() {
@@ -124,14 +136,13 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   async downloadBpmnFile(downloadType) {
-    const bpmnFile = this.process.bpmnFile;
-    if (!bpmnFile) return;
+    if (!this.bpmnFile) return;
 
-    const url = generateBpmnFileDownloadUrl(bpmnFile.id);
+    const url = generateBpmnFileDownloadUrl(this.bpmnFile.id);
     const headers = {
       Accept: downloadType.mime,
     };
-    const fileName = `${bpmnFile.name}.${downloadType.extension}`;
+    const fileName = `${this.bpmnFile.name}.${downloadType.extension}`;
     await downloadFileByUrl(url, headers, fileName);
   }
 
@@ -146,18 +157,18 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @dropTask
-  *updateProcess(bpmnFileId) {
-    const bpmnFile = yield this.store.findRecord('file', bpmnFileId);
+  *updateProcess(newBpmnFileId) {
+    const newBpmnFile = yield this.store.findRecord('file', newBpmnFileId);
 
-    this.process.files.push(bpmnFile);
-    this.process.modified = bpmnFile.created;
+    this.process.files.push(newBpmnFile);
+    this.process.modified = newBpmnFile.created;
 
     yield this.process.save();
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmnElements(newFileId) {
-    yield fetch(`/bpmn?id=${newFileId}`, {
+  *extractBpmnElements(newBpmnFileId) {
+    yield fetch(`/bpmn?id=${newBpmnFileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -167,7 +178,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   fileUploaded() {
-    this.router.refresh(); // FIXME: Reload only BPMN file instead of whole model
+    this.router.refresh();
   }
 
   @action

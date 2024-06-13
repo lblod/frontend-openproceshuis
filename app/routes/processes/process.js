@@ -6,18 +6,18 @@ export default class ProcessesProcessRoute extends Route {
   @service store;
 
   async model() {
-    const { id } = this.paramsFor('processes.process');
     return {
-      loadProcessTaskInstance: this.loadProcessTask.perform(id),
+      loadProcessTaskInstance: this.loadProcessTask.perform(),
       loadedProcess: this.loadProcessTask.lastSuccesful?.value,
     };
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessTask(processId) {
+  *loadProcessTask() {
+    const { id: processId } = this.paramsFor('processes.process');
     return yield this.store.findRecord('process', processId, {
       include:
-        'files,publisher,publisher.primary-site,publisher.primary-site.contacts',
+        'publisher,publisher.primary-site,publisher.primary-site.contacts',
     });
   }
 }

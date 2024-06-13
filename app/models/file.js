@@ -18,4 +18,8 @@ export default class FileModel extends Model {
   archive() {
     this.status = ENV.resourceStates.archived;
   }
+
+  get isBpmnFile() {
+    return this.extension === 'bpmn';
+  }
 }

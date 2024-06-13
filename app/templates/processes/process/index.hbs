@@ -181,17 +181,17 @@
         @skin="4"
         class="au-u-margin-bottom-none"
       >Diagram</AuHeading>
-      {{#if this.bpmnFileIsLoading}}
+      {{#if this.filesBatchIsLoading}}
         <AuLoader />
-      {{else if this.bpmnFileHasErrored}}
+      {{else if this.fileBatchHasErrored}}
         <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer later
           opnieuw.</p>
-      {{else if this.bpmnFile}}
+      {{else if this.newestBpmnFile}}
         <p class="au-u-margin-top-none">
           <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
             Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
         </p>
-        <BpmnViewer @bpmnXml={{this.bpmnFile}} />
+        <BpmnViewer @bpmnFile={{this.newestBpmnFile}} />
       {{else}}
         <p>Dit proces heeft geen diagram.</p>
       {{/if}}
