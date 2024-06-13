@@ -136,7 +136,6 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   async downloadBpmnFile(downloadType) {
-    console.log(this.newestBpmnFile);
     if (!this.newestBpmnFile) return;
 
     const url = generateBpmnFileDownloadUrl(this.newestBpmnFile.id);
@@ -179,6 +178,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   fileUploaded() {
+    this.replaceModalOpened = false;
     this.router.refresh();
   }
 

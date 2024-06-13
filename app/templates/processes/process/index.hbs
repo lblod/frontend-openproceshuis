@@ -178,69 +178,116 @@
 
   <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
     <div class="au-o-grid__item">
-      <AuHeading
-        @level="2"
-        @skin="4"
-        class="au-u-margin-bottom-none"
-      >Diagram</AuHeading>
-      {{#if this.filesBatchIsLoading}}
-        <AuLoader />
-      {{else if this.fileBatchHasErrored}}
-        <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer later
-          opnieuw.</p>
-      {{else if this.newestBpmnFile}}
-        <p class="au-u-margin-top-none">
-          <AuHelpText @skin="secondary">Klik en hou vast om diagram te bewegen.
-            Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
-        </p>
-        <BpmnViewer @bpmnFile={{this.newestBpmnFile}} />
-      {{else}}
-        <p>Dit proces heeft geen diagram.</p>
-      {{/if}}
-    </div>
-    <div class="au-o-grid__item">
-      <AuHeading
-        @level="2"
-        @skin="4"
-        class="au-u-margin-bottom-small au-u-margin-top"
-      >Processtappen</AuHeading>
-      <div class="au-c-boxed-table">
-        <AuDataTable
-          @content={{this.processSteps}}
-          @isLoading={{this.processStepsBatchIsLoading}}
-          @page={{this.page}}
-          @size={{this.size}}
-          as |t|
-        >
-          <t.content class="au-c-data-table__table--small" as |c|>
-            <c.header>
-              <AuDataTableThSortable
-                @field="name"
-                @currentSorting={{this.sort}}
-                @label="Naam"
-              />
-              <AuDataTableThSortable
-                @field="type"
-                @currentSorting={{this.sort}}
-                @label="Type"
-              />
-            </c.header>
-            {{#if this.processStepsBatchHasErrored}}
-              <TableMessage::Error />
-            {{else if this.processStepsBatchHasNoResults}}
-              <TableMessage>
-                <p>
-                  Er werden geen zoekresultaten gevonden.
-                </p>
-              </TableMessage>
-            {{else}}
-              <c.body as |element|>
-                <td>{{or element.name "/"}}</td>
-                <td>{{capitalize-first (or element.type.name "/")}}</td>
-              </c.body>
-            {{/if}}
-          </t.content>
-        </AuDataTable>
+      <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
+      <div>
+        <AuHeading
+          @level="3"
+          @skin="4"
+          class="au-u-margin-bottom-small au-u-margin-top-small"
+        >Diagram</AuHeading>
+        {{#if this.filesBatchIsLoading}}
+          <AuLoader />
+        {{else if this.fileBatchHasErrored}}
+          <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
+            later opnieuw.</p>
+        {{else if this.newestBpmnFile}}
+          <p class="au-u-margin-top-none">
+            <AuHelpText @skin="secondary">Klik en hou vast om diagram te
+              bewegen. Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
+          </p>
+          <BpmnViewer @bpmnFile={{this.newestBpmnFile}} />
+          <DataCard class="au-u-margin-top-small">
+            <:header></:header>
+            <:title>
+              Metadata
+            </:title>
+            <:card as |Card|>
+              <Card.Columns>
+                <:left as |Item|>
+                  <Item>
+                    <:label>Bestandsnaam</:label>
+                    <:content>
+                      {{this.newestBpmnFile.name}}
+                    </:content>
+                  </Item>
+                  <Item>
+                    <:label>Laatst aangepast op</:label>
+                    <:content>
+                      {{date-format this.newestBpmnFile.modified true}}
+                    </:content>
+                  </Item>
+                </:left>
+                <:right as |Item|>
+                  <Item>
+                    <:label>Grootte</:label>
+                    <:content>
+                      {{file-size-format this.newestBpmnFile.size}}
+                    </:content>
+                  </Item>
+                  <Item>
+                    <:label>Extensie</:label>
+                    <:content>
+                      {{this.newestBpmnFile.extension}}
+                    </:content>
+                  </Item>
+                  <Item>
+                    <:label>Formaat</:label>
+                    <:content>
+                      {{this.newestBpmnFile.format}}
+                    </:content>
+                  </Item>
+                </:right>
+              </Card.Columns>
+            </:card>
+          </DataCard>
+        {{else}}
+          <p>Dit proces heeft geen diagram.</p>
+        {{/if}}
+      </div>
+      <div>
+        <AuHeading
+          @level="3"
+          @skin="4"
+          class="au-u-margin-bottom-small au-u-margin-top"
+        >Processtappen</AuHeading>
+        <div class="au-c-boxed-table">
+          <AuDataTable
+            @content={{this.processSteps}}
+            @isLoading={{this.processStepsBatchIsLoading}}
+            @page={{this.page}}
+            @size={{this.size}}
+            as |t|
+          >
+            <t.content class="au-c-data-table__table--small" as |c|>
+              <c.header>
+                <AuDataTableThSortable
+                  @field="name"
+                  @currentSorting={{this.sort}}
+                  @label="Naam"
+                />
+                <AuDataTableThSortable
+                  @field="type"
+                  @currentSorting={{this.sort}}
+                  @label="Type"
+                />
+              </c.header>
+              {{#if this.processStepsBatchHasErrored}}
+                <TableMessage::Error />
+              {{else if this.processStepsBatchHasNoResults}}
+                <TableMessage>
+                  <p>
+                    Er werden geen zoekresultaten gevonden.
+                  </p>
+                </TableMessage>
+              {{else}}
+                <c.body as |element|>
+                  <td>{{or element.name "/"}}</td>
+                  <td>{{capitalize-first (or element.type.name "/")}}</td>
+                </c.body>
+              {{/if}}
+            </t.content>
+          </AuDataTable>
+        </div>
       </div>
     </div>
   </div>

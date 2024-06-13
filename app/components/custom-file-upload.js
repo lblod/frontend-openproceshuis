@@ -67,6 +67,7 @@ export default class AuFileUpload extends Component {
   get isBusy() {
     return (
       this.queue.files.length ||
+      this.args.updateProcess?.isRunning ||
       this.args.createProcess?.isRunning ||
       this.args.extractBpmnElements?.isRunning
     );
