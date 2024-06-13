@@ -108,7 +108,6 @@ export default class SharedProcessesIndexController extends Controller {
     const created = new Date();
     const process = this.store.createRecord('process', {
       title: bpmnFile.name,
-      description: 'Dit is een test',
       created: created,
       modified: created,
       publisher: this.currentSession.group,

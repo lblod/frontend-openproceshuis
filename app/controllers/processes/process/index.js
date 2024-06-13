@@ -188,19 +188,12 @@ export default class ProcessesProcessIndexController extends Controller {
       try {
         yield this.process.save();
         this.edit = false;
-        this.toaster.success(
-          'Metadata van BPMN-bestand succesvol bijgewerkt',
-          'Gelukt!',
-          {
-            timeOut: 5000,
-          }
-        );
+        this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
+          timeOut: 5000,
+        });
       } catch (error) {
         console.error(error);
-        this.toaster.error(
-          'Metadata van BPMN-bestand kon niet worden bijgewerkt',
-          'Fout'
-        );
+        this.toaster.error('Proces kon niet worden bijgewerkt', 'Fout');
         this.resetModel();
       }
     } else {
