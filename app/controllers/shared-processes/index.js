@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
+import removeFileNameExtension from '../../utils/file-extension-remover';
 
 export default class SharedProcessesIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'title'];
@@ -105,15 +106,9 @@ export default class SharedProcessesIndexController extends Controller {
   *createProcess(bpmnFileId) {
     const bpmnFile = yield this.store.findRecord('file', bpmnFileId);
 
-    const title = bpmnFile.name.endsWith(`.${bpmnFile.extension}`)
-      ? bpmnFile.name.slice(
-          0,
-          bpmnFile.name.length - `.${bpmnFile.extension}`.length
-        )
-      : bpmnFile.name;
     const created = new Date();
     const process = this.store.createRecord('process', {
-      title,
+      title: removeFileNameExtension(bpmnFile.name, bpmnFile.extension),
       created,
       modified: created,
       publisher: this.currentSession.group,

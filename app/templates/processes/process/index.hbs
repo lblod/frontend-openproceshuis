@@ -212,7 +212,7 @@
                     </:content>
                   </Item>
                   <Item>
-                    <:label>Laatst aangepast op</:label>
+                    <:label>Toegevoegd op</:label>
                     <:content>
                       {{date-format this.newestBpmnFile.modified true}}
                     </:content>
@@ -284,6 +284,60 @@
                 <c.body as |element|>
                   <td>{{or element.name "/"}}</td>
                   <td>{{capitalize-first (or element.type.name "/")}}</td>
+                </c.body>
+              {{/if}}
+            </t.content>
+          </AuDataTable>
+        </div>
+      </div>
+      <div>
+        <AuHeading
+          @level="3"
+          @skin="4"
+          class="au-u-margin-bottom-small au-u-margin-top"
+        >Versies</AuHeading>
+        <div class="au-c-boxed-table">
+          <AuDataTable
+            @content={{this.bpmnFiles}}
+            @isLoading={{this.filesBatchIsLoading}}
+            as |t|
+          >
+            <t.content class="au-c-data-table__table--small" as |c|>
+              <c.header>
+                <AuDataTableThSortable @field="name" @label="Bestandsnaam" />
+                <AuDataTableThSortable
+                  @field="created"
+                  @label="Toegevoegd op"
+                />
+                <AuDataTableThSortable @field="size" @label="Grootte" />
+                <th></th>
+              </c.header>
+              {{#if this.filesBatchHasErrored}}
+                <TableMessage::Error />
+              {{else if this.bpmnFilesBatchHasNoResults}}
+                <TableMessage>
+                  <p>
+                    Er werden geen zoekresultaten gevonden.
+                  </p>
+                </TableMessage>
+              {{else}}
+                <c.body as |element|>
+                  <td>
+                    {{#if (eq element.id this.newestBpmnFile.id)}}
+                      <strong>
+                        {{element.name}}
+                        <AuIcon @icon="circle-check" />
+                      </strong>
+                    {{else}}
+                      {{element.name}}
+                    {{/if}}
+                  </td>
+                  <td>{{date-format element.created true}}</td>
+                  <td>{{file-size-format element.size}}</td>
+                  <td>
+                    <a href=""><AuIcon @icon="download" @alignment="right" />
+                    </a>
+                  </td>
                 </c.body>
               {{/if}}
             </t.content>

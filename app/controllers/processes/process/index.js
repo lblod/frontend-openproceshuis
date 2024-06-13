@@ -5,6 +5,7 @@ import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import generateBpmnFileDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
+import removeFileNameExtension from '../../../utils/file-extension-remover';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -69,12 +70,22 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadFilesTaskInstance.isRunning;
   }
 
+  get filesBatchHasNoResults() {
+    return (
+      this.model.loadFilesTaskInstance.isFinished && this.files?.length === 0
+    );
+  }
+
   get filesBatchHasErrored() {
     return this.model.loadFilesTaskInstance.isError;
   }
 
   get bpmnFiles() {
     return this.files?.filter((file) => file.isBpmnFile);
+  }
+
+  get bpmnFilesBatchHasNoResults() {
+    return this.filesBatchHasNoResults || this.bpmnFiles?.length === 0;
   }
 
   get newestBpmnFile() {
@@ -142,7 +153,10 @@ export default class ProcessesProcessIndexController extends Controller {
     const headers = {
       Accept: downloadType.mime,
     };
-    const fileName = `${this.newestBpmnFile.name}.${downloadType.extension}`;
+    const fileName = `${removeFileNameExtension(
+      this.newestBpmnFile.name,
+      this.newestBpmnFile.extension
+    )}.${downloadType.extension}`;
     await downloadFileByUrl(url, headers, fileName);
   }
 
