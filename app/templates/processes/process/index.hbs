@@ -349,9 +349,11 @@
       <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
         <AuHeading @level="2" @skin="3">Alle bestanden</AuHeading>
         <AuButtonGroup>
-          <AuButton>
-            Voeg toe
-          </AuButton>
+          {{#if this.canEdit}}
+            <AuButton>
+              Voeg toe
+            </AuButton>
+          {{/if}}
         </AuButtonGroup>
       </div>
       <div class="au-c-boxed-table">
