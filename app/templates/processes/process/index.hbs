@@ -346,17 +346,26 @@
       </div>
     </div>
     <div class="au-o-grid__item au-u-margin-top">
-      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-        <AuHeading @level="2" @skin="3">Alle bestanden</AuHeading>
-        <AuButtonGroup>
-          {{#if this.canEdit}}
-            <AuButton>
-              Voeg toe
-            </AuButton>
-          {{/if}}
-        </AuButtonGroup>
+      <div>
+        <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+          <AuHeading @level="2" @skin="3">Alle bestanden</AuHeading>
+          <AuButtonGroup>
+            {{#if this.canEdit}}
+              <AuButton>
+                Voeg toe
+              </AuButton>
+            {{/if}}
+          </AuButtonGroup>
+        </div>
+        <p class="au-u-margin-top-none">
+          <AuHelpText @skin="secondary">Verschillende bestanden kunnen een
+            proces betekenis geven. Alle bestanden gekoppeld aan het huidige
+            proces, worden hieronder verzameld, ongeacht hun bestandsformaat.
+            Enkel het meest recente BPMN-bestand wordt bovenaan de pagina
+            gevisualiseerd.</AuHelpText>
+        </p>
       </div>
-      <div class="au-c-boxed-table">
+      <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
           @content={{this.files}}
           @isLoading={{this.filesBatchIsLoading}}
