@@ -3,9 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
-import generateBpmnFileDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
-import removeFileNameExtension from '../../../utils/file-extension-remover';
+import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -148,15 +147,21 @@ export default class ProcessesProcessIndexController extends Controller {
   async downloadBpmnFile(downloadType) {
     if (!this.newestBpmnFile) return;
 
-    const url = generateBpmnFileDownloadUrl(this.newestBpmnFile.id);
-    const headers = {
-      Accept: downloadType.mime,
-    };
     const fileName = `${removeFileNameExtension(
       this.newestBpmnFile.name,
       this.newestBpmnFile.extension
     )}.${downloadType.extension}`;
-    await downloadFileByUrl(url, headers, fileName);
+
+    await this.downloadFile(
+      this.newestBpmnFile.id,
+      fileName,
+      downloadType.mime
+    );
+  }
+
+  @action
+  async downloadFile(fileId, fileName, mimeType) {
+    await downloadFileByUrl(fileId, fileName, mimeType);
   }
 
   @action

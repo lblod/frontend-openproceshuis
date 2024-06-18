@@ -321,22 +321,30 @@
                   </p>
                 </TableMessage>
               {{else}}
-                <c.body as |element|>
-                  <td>{{date-format element.created true}}</td>
+                <c.body as |bpmnFile|>
+                  <td>{{date-format bpmnFile.created true}}</td>
                   <td>
-                    {{#if (eq element.id this.newestBpmnFile.id)}}
+                    {{#if (eq bpmnFile.id this.newestBpmnFile.id)}}
                       <strong>
-                        {{element.name}}
+                        {{bpmnFile.name}}
                         <AuIcon @icon="circle-check" />
                       </strong>
                     {{else}}
-                      {{element.name}}
+                      {{bpmnFile.name}}
                     {{/if}}
                   </td>
-                  <td>{{file-size-format element.size}}</td>
+                  <td>{{file-size-format bpmnFile.size}}</td>
                   <td>
-                    <a href=""><AuIcon @icon="download" @alignment="right" />
-                    </a>
+                    <AuButton
+                      @icon="download"
+                      @skin="link"
+                      {{on
+                        "click"
+                        (fn
+                          this.downloadFile bpmnFile.id bpmnFile.name "text/xml"
+                        )
+                      }}
+                    />
                   </td>
                 </c.body>
               {{/if}}
@@ -389,24 +397,30 @@
                 </p>
               </TableMessage>
             {{else}}
-              <c.body as |element|>
+              <c.body as |file|>
                 <td>
-                  {{#if (eq element.id this.newestBpmnFile.id)}}
+                  {{#if (eq file.id this.newestBpmnFile.id)}}
                     <strong>
-                      {{element.name}}
+                      {{file.name}}
                       <AuIcon @icon="circle-check" />
                     </strong>
                   {{else}}
-                    {{element.name}}
+                    {{file.name}}
                   {{/if}}
                 </td>
-                <td>{{file-size-format element.size}}</td>
-                <td>{{element.extension}}</td>
-                <td>{{element.format}}</td>
-                <td>{{date-format element.created true}}</td>
+                <td>{{file-size-format file.size}}</td>
+                <td>{{file.extension}}</td>
+                <td>{{file.format}}</td>
+                <td>{{date-format file.created true}}</td>
                 <td>
-                  <a href=""><AuIcon @icon="download" @alignment="right" />
-                  </a>
+                  <AuButton
+                    @icon="download"
+                    @skin="link"
+                    {{on
+                      "click"
+                      (fn this.downloadFile file.id file.name "text/xml")
+                    }}
+                  />
                 </td>
               </c.body>
             {{/if}}

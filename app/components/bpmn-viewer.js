@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer';
 import { restartableTask } from 'ember-concurrency';
-import generateBpmnFileDownloadUrl from 'frontend-openproceshuis/utils/bpmn-download-url';
+import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
 
 export default class BpmnViewerComponent extends Component {
   viewer = null;
@@ -33,7 +33,7 @@ export default class BpmnViewerComponent extends Component {
 
   @restartableTask
   *downloadBpmnFile(bpmnFileId) {
-    const url = generateBpmnFileDownloadUrl(bpmnFileId);
+    const url = generateFileDownloadUrl(bpmnFileId);
     const response = yield fetch(url, {
       headers: {
         Accept: 'text/xml',
