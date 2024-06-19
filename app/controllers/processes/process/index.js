@@ -19,6 +19,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked sort = 'name';
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
+  @tracked addModalOpened = false;
   @tracked edit = false;
   @tracked formIsValid = false;
 
@@ -59,34 +60,14 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadProcessTaskInstance.isError;
   }
 
-  get files() {
-    return this.model.loadFilesTaskInstance.isFinished
-      ? this.model.loadFilesTaskInstance.value
-      : this.model.loadedFiles;
-  }
-
-  get filesBatchIsLoading() {
-    return this.model.loadFilesTaskInstance.isRunning;
-  }
-
-  get filesBatchHasNoResults() {
-    return (
-      this.model.loadFilesTaskInstance.isFinished && this.files?.length === 0
-    );
-  }
-
-  get filesBatchHasErrored() {
-    return this.model.loadFilesTaskInstance.isError;
-  }
-
   get bpmnFiles() {
-    return this.files
+    return this.process?.files
       ?.filter((file) => file.isBpmnFile)
       .sort((fileA, fileB) => fileB.created - fileA.created);
   }
 
   get bpmnFilesBatchHasNoResults() {
-    return this.filesBatchHasNoResults || this.bpmnFiles?.length === 0;
+    return this.bpmnFiles?.length === 0;
   }
 
   get newestBpmnFile() {
@@ -95,11 +76,11 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   get attachments() {
-    return this.files?.filter((file) => !file.isBpmnFile);
+    return this.process?.files?.filter((file) => !file.isBpmnFile);
   }
 
   get attachmentsBatchHasNoResults() {
-    return this.filesBatchHasNoResults || this.attachments?.length === 0;
+    return this.attachments?.length === 0;
   }
 
   get processSteps() {
@@ -186,12 +167,22 @@ export default class ProcessesProcessIndexController extends Controller {
     this.replaceModalOpened = false;
   }
 
-  @dropTask
-  *updateProcess(newBpmnFileId) {
-    const newBpmnFile = yield this.store.findRecord('file', newBpmnFileId);
+  @action
+  openAddModal() {
+    this.addModalOpened = true;
+  }
 
-    this.process.files.push(newBpmnFile);
-    this.process.modified = newBpmnFile.created;
+  @action
+  closeAddModal() {
+    this.addModalOpened = false;
+  }
+
+  @dropTask
+  *addFileToProcess(newFileId) {
+    const newFile = yield this.store.findRecord('file', newFileId);
+
+    this.process.files.push(newFile);
+    this.process.modified = newFile.created;
 
     yield this.process.save();
   }
@@ -209,6 +200,8 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   fileUploaded() {
     this.replaceModalOpened = false;
+    this.addModalOpened = false;
+
     this.router.refresh();
   }
 
@@ -247,6 +240,7 @@ export default class ProcessesProcessIndexController extends Controller {
   resetModel() {
     this.process?.rollbackAttributes();
     this.replaceModalOpened = false;
+    this.addModalOpened = false;
     this.edit = false;
   }
 

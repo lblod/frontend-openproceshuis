@@ -186,9 +186,9 @@
           @skin="4"
           class="au-u-margin-bottom-small au-u-margin-top-small"
         >Diagram</AuHeading>
-        {{#if this.filesBatchIsLoading}}
+        {{#if this.processIsLoading}}
           <AuLoader />
-        {{else if this.fileBatchHasErrored}}
+        {{else if this.processHasErrored}}
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
         {{else if this.newestBpmnFile}}
@@ -299,7 +299,7 @@
         <div class="au-c-boxed-table">
           <AuDataTable
             @content={{this.bpmnFiles}}
-            @isLoading={{this.filesBatchIsLoading}}
+            @isLoading={{this.processIsLoading}}
             as |t|
           >
             <t.content class="au-c-data-table__table--small" as |c|>
@@ -312,7 +312,7 @@
                 <AuDataTableThSortable @field="size" @label="Grootte" />
                 <th></th>
               </c.header>
-              {{#if this.filesBatchHasErrored}}
+              {{#if this.processHasErrored}}
                 <TableMessage::Error />
               {{else if this.bpmnFilesBatchHasNoResults}}
                 <TableMessage>
@@ -362,7 +362,7 @@
         <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
         <AuButtonGroup>
           {{#if this.canEdit}}
-            <AuButton>
+            <AuButton {{on "click" this.openAddModal}}>
               Voeg toe
             </AuButton>
           {{/if}}
@@ -371,7 +371,7 @@
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
           @content={{this.attachments}}
-          @isLoading={{this.filesBatchIsLoading}}
+          @isLoading={{this.processIsLoading}}
           as |t|
         >
           <t.content class="au-c-data-table__table--small" as |c|>
@@ -383,7 +383,7 @@
               <AuDataTableThSortable @field="created" @label="Toegevoegd op" />
               <th></th>
             </c.header>
-            {{#if this.filesBatchHasErrored}}
+            {{#if this.processHasErrored}}
               <TableMessage::Error />
             {{else if this.attachmentsBatchHasNoResults}}
               <TableMessage>
@@ -433,7 +433,7 @@
       @accept=".bpmn,.xml"
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @updateProcess={{this.updateProcess}}
+      @updateProcess={{this.addFileToProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
       @onFinishUpload={{this.fileUploaded}}
     />
@@ -479,6 +479,26 @@
       <AuButton
         @skin="naked"
         {{on "click" this.closeDownloadModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal @modalOpen={{this.addModalOpened}} @closeModal={{this.closeAddModal}}>
+  <:title>Voeg bijlage toe</:title>
+  <:body>
+    <CustomFileUpload
+      @title="Bestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
+      @updateProcess={{this.addFileToProcess}}
+      @onFinishUpload={{this.fileUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeAddModal}}
       >Annuleer</AuButton>
     </AuButtonGroup>
   </:footer>

@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
-import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service store;
@@ -18,21 +17,9 @@ export default class ProcessesProcessIndexRoute extends Route {
     return {
       loadProcessTaskInstance,
       loadedProcess,
-      loadFilesTaskInstance: this.loadFilesTask.perform(),
-      loadedFiles: this.loadFilesTask.lastSuccessful?.value,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(),
       loadedProcessSteps: this.loadProcessStepsTask.lastSuccessful?.value,
     };
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadFilesTask() {
-    const { id: processId } = this.paramsFor('processes.process');
-    const query = {
-      'filter[:not:status]': ENV.resourceStates.archived,
-      'filter[process][id]': processId,
-    };
-    return yield this.store.query('file', query);
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
