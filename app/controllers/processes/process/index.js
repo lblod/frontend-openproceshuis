@@ -94,6 +94,14 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.bpmnFiles[0];
   }
 
+  get attachments() {
+    return this.files?.filter((file) => !file.isBpmnFile);
+  }
+
+  get attachmentsBatchHasNoResults() {
+    return this.filesBatchHasNoResults || this.attachments?.length === 0;
+  }
+
   get processSteps() {
     return this.model.loadProcessStepsTaskInstance.isFinished
       ? this.model.loadProcessStepsTaskInstance.value

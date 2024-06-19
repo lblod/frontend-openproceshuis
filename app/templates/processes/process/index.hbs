@@ -370,7 +370,7 @@
       </div>
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
-          @content={{this.files}}
+          @content={{this.attachments}}
           @isLoading={{this.filesBatchIsLoading}}
           as |t|
         >
@@ -385,35 +385,32 @@
             </c.header>
             {{#if this.filesBatchHasErrored}}
               <TableMessage::Error />
-            {{else if this.filesBatchHasNoResults}}
+            {{else if this.attachmentsBatchHasNoResults}}
               <TableMessage>
                 <p>
                   Er werden geen zoekresultaten gevonden.
                 </p>
               </TableMessage>
             {{else}}
-              <c.body as |file|>
-                <td>
-                  {{#if (eq file.id this.newestBpmnFile.id)}}
-                    <strong>
-                      {{file.name}}
-                      <AuIcon @icon="circle-check" />
-                    </strong>
-                  {{else}}
-                    {{file.name}}
-                  {{/if}}
-                </td>
-                <td>{{file-size-format file.size}}</td>
-                <td>{{file.extension}}</td>
-                <td>{{file.format}}</td>
-                <td>{{date-format file.created true}}</td>
+              <c.body as |attachment|>
+                <td>{{attachment.name}}</td>
+                <td>{{file-size-format attachment.size}}</td>
+                <td>{{attachment.extension}}</td>
+                <td>{{attachment.format}}</td>
+                <td>{{date-format attachment.created true}}</td>
                 <td>
                   <AuButton
                     @icon="download"
                     @skin="link"
                     {{on
                       "click"
-                      (fn this.downloadFile file.id file.name "text/xml" false)
+                      (fn
+                        this.downloadFile
+                        attachment.id
+                        attachment.name
+                        "text/xml"
+                        false
+                      )
                     }}
                   />
                 </td>
