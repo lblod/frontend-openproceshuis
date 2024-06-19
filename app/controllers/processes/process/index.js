@@ -152,16 +152,20 @@ export default class ProcessesProcessIndexController extends Controller {
       this.newestBpmnFile.extension
     )}.${downloadType.extension}`;
 
+    const conversionNecessary =
+      downloadType.extension === 'bpmn' ? false : true;
+
     await this.downloadFile(
       this.newestBpmnFile.id,
       fileName,
-      downloadType.mime
+      downloadType.mime,
+      conversionNecessary
     );
   }
 
   @action
-  async downloadFile(fileId, fileName, mimeType) {
-    await downloadFileByUrl(fileId, fileName, mimeType);
+  async downloadFile(fileId, fileName, mimeType, conversionNecessary) {
+    await downloadFileByUrl(fileId, fileName, mimeType, conversionNecessary);
   }
 
   @action

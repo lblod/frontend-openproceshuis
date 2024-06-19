@@ -341,7 +341,11 @@
                       {{on
                         "click"
                         (fn
-                          this.downloadFile bpmnFile.id bpmnFile.name "text/xml"
+                          this.downloadFile
+                          bpmnFile.id
+                          bpmnFile.name
+                          "text/xml"
+                          false
                         )
                       }}
                     />
@@ -418,7 +422,7 @@
                     @skin="link"
                     {{on
                       "click"
-                      (fn this.downloadFile file.id file.name "text/xml")
+                      (fn this.downloadFile file.id file.name "text/xml" false)
                     }}
                   />
                 </td>
