@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import { keepLatestTask } from 'ember-concurrency';
+import { keepLatestTask, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class ProcessesProcessIndexRoute extends Route {
@@ -31,14 +31,21 @@ export default class ProcessesProcessIndexRoute extends Route {
       loadedAttachments,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
-      loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(),
+      loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(
+        loadLatestBpmnFileTaskInstance
+      ),
       loadedProcessSteps: this.loadProcessStepsTask.lastSuccessful?.value,
     };
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessStepsTask() {
-    const { id: processId } = this.paramsFor('processes.process');
+  *loadProcessStepsTask(loadLatestBpmnFileTaskInstance) {
+    yield waitForProperty(loadLatestBpmnFileTaskInstance, 'isFinished');
+
+    const latestBpmnFileId = loadLatestBpmnFileTaskInstance.value?.id;
+    console.log('id:', latestBpmnFileId);
+    if (!latestBpmnFileId) return;
+
     const params = this.paramsFor('processes.process.index');
 
     let query = {
@@ -48,7 +55,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       },
       include: 'type',
       'filter[:has:name]': true,
-      'filter[bpmn-process][bpmn-file][process][id]': processId,
+      'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
     };
 
     if (params.sort) {
