@@ -186,9 +186,9 @@
           @skin="4"
           class="au-u-margin-bottom-small au-u-margin-top-small"
         >Diagram</AuHeading>
-        {{#if this.processIsLoading}}
+        {{#if this.latestBpmnFileIsLoading}}
           <AuLoader />
-        {{else if this.processHasErrored}}
+        {{else if this.latestBpmnFileHasErrored}}
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
         {{else if this.latestBpmnFile}}

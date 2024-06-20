@@ -9,14 +9,22 @@ export default class ProcessesProcessRoute extends Route {
   async model() {
     const loadProcessTaskInstance = this.loadProcessTask.perform();
     const loadedProcess = this.loadProcessTask.lastSuccesful?.value;
+
     const loadBpmnFilesTaskInstance = this.loadBpmnFilesTask.perform(
       loadProcessTaskInstance
     );
     const loadedBpmnFiles = this.loadBpmnFilesTask.lastSuccessful?.value;
+
     const loadAttachmentsTaskInstance = this.loadAttachmentsTask.perform(
       loadProcessTaskInstance
     );
     const loadedAttachments = this.loadAttachmentsTask.lastSuccessful?.value;
+
+    const loadLatestBpmnFileTaskInstance = this.loadLatestBpmnFileTask.perform(
+      loadBpmnFilesTaskInstance
+    );
+    const loadedLatestBpmnFile =
+      this.loadLatestBpmnFileTask.lastSuccesful?.value;
 
     return {
       loadProcessTaskInstance,
@@ -25,6 +33,8 @@ export default class ProcessesProcessRoute extends Route {
       loadedBpmnFiles,
       loadAttachmentsTaskInstance,
       loadedAttachments,
+      loadLatestBpmnFileTaskInstance,
+      loadedLatestBpmnFile,
     };
   }
 
@@ -45,9 +55,9 @@ export default class ProcessesProcessRoute extends Route {
   *loadBpmnFilesTask(loadProcessTaskInstance) {
     yield waitForProperty(loadProcessTaskInstance, 'isFinished');
 
-    const files = loadProcessTaskInstance.value.files;
+    const files = loadProcessTaskInstance.value?.files;
     return files
-      .filter((file) => file.isBpmnFile)
+      ?.filter((file) => file.isBpmnFile)
       .sort((fileA, fileB) => fileB.created - fileA.created); // FIXME: should be handled by backend
   }
 
@@ -55,9 +65,18 @@ export default class ProcessesProcessRoute extends Route {
   *loadAttachmentsTask(loadProcessTaskInstance) {
     yield waitForProperty(loadProcessTaskInstance, 'isFinished');
 
-    const files = loadProcessTaskInstance.value.files;
+    const files = loadProcessTaskInstance.value?.files;
     return files
-      .filter((file) => !file.isBpmnFile)
+      ?.filter((file) => !file.isBpmnFile)
       .sort((fileA, fileB) => fileA.name.localeCompare(fileB.name)); // FIXME: should be handled by backend
+  }
+
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadLatestBpmnFileTask(loadBpmnFilesTaskInstance) {
+    yield waitForProperty(loadBpmnFilesTaskInstance, 'isFinished');
+
+    const sortedFiles = loadBpmnFilesTaskInstance.value;
+    if (!sortedFiles || sortedFiles.length === 0) return null;
+    return sortedFiles[0];
   }
 }

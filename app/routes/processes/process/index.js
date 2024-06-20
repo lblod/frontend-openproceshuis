@@ -18,6 +18,8 @@ export default class ProcessesProcessIndexRoute extends Route {
       loadedBpmnFiles,
       loadAttachmentsTaskInstance,
       loadedAttachments,
+      loadLatestBpmnFileTaskInstance,
+      loadedLatestBpmnFile,
     } = this.modelFor('processes.process');
 
     return {
@@ -27,6 +29,8 @@ export default class ProcessesProcessIndexRoute extends Route {
       loadedBpmnFiles,
       loadAttachmentsTaskInstance,
       loadedAttachments,
+      loadLatestBpmnFileTaskInstance,
+      loadedLatestBpmnFile,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(),
       loadedProcessSteps: this.loadProcessStepsTask.lastSuccessful?.value,
     };

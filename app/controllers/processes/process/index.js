@@ -85,11 +85,6 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadBpmnFilesTaskInstance.isError;
   }
 
-  get latestBpmnFile() {
-    if (!this.bpmnFiles || this.bpmnFiles.length === 0) return null;
-    return this.bpmnFiles[0]; // FIXME: sort here/elsewhere when `bpmnFiles` is no longer sorted by default
-  }
-
   // Attachments
 
   get attachments() {
@@ -111,6 +106,22 @@ export default class ProcessesProcessIndexController extends Controller {
 
   get attachmentsHaveErrored() {
     return this.model.loadAttachmentsTaskInstance.isError;
+  }
+
+  // Latest BPMN file
+
+  get latestBpmnFile() {
+    return this.model.loadLatestBpmnFileTaskInstance.isFinished
+      ? this.model.loadLatestBpmnFileTaskInstance.value
+      : this.model.loadedLatestBpmnFile;
+  }
+
+  get latestBpmnFileIsLoading() {
+    return this.model.loadLatestBpmnFileTaskInstance.isRunning;
+  }
+
+  get latestBpmnFileHasErrored() {
+    return this.model.loadLatestBpmnFileTaskInstance.isError;
   }
 
   // Process steps
