@@ -73,6 +73,11 @@
             @currentSorting={{this.sort}}
             @label="BPMN-bestand"
           />
+          <AuDataTableThSortable
+            @field="process"
+            @currentSorting={{this.sort}}
+            @label="Proces"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -86,13 +91,14 @@
           <c.body as |element|>
             <td>{{or element.name "/"}}</td>
             <td>{{capitalize-first (or element.type.name "/")}}</td>
+            <td>{{element.bpmnProcess.bpmnFile.name}}</td>
             <td>
               <LinkTo
                 class="au-c-link"
-                @model={{element.bpmnProcess.bpmnFile.id}}
+                @model={{element.bpmnProcess.bpmnFile.process.id}}
                 @route="processes.process"
               >
-                {{element.bpmnProcess.bpmnFile.name}}
+                {{element.bpmnProcess.bpmnFile.process.title}}
               </LinkTo>
             </td>
           </c.body>

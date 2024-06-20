@@ -43,7 +43,6 @@ export default class ProcessesProcessIndexRoute extends Route {
     yield waitForProperty(loadLatestBpmnFileTaskInstance, 'isFinished');
 
     const latestBpmnFileId = loadLatestBpmnFileTaskInstance.value?.id;
-    console.log('id:', latestBpmnFileId);
     if (!latestBpmnFileId) return;
 
     const params = this.paramsFor('processes.process.index');

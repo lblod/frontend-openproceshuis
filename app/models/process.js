@@ -10,7 +10,7 @@ export default class ProcessModel extends Model {
   @attr('iso-date') modified;
   @attr('string') status;
   @belongsTo('group', { inverse: null, async: false }) publisher;
-  @hasMany('file', { inverse: 'process', async: false }) files;
+  @hasMany('file', { inverse: 'processes', async: false }) files;
 
   validations = {
     title: {
