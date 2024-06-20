@@ -46,6 +46,8 @@ export default class ProcessesProcessIndexController extends Controller {
     },
   ];
 
+  // Process
+
   get process() {
     return this.model.loadProcessTaskInstance.isFinished
       ? this.model.loadProcessTaskInstance.value
@@ -60,28 +62,58 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadProcessTaskInstance.isError;
   }
 
+  // BPMN files
+
   get bpmnFiles() {
-    return this.process?.files
-      ?.filter((file) => file.isBpmnFile)
-      .sort((fileA, fileB) => fileB.created - fileA.created);
+    return this.model.loadBpmnFilesTaskInstance.isFinished
+      ? this.model.loadBpmnFilesTaskInstance.value
+      : this.model.loadedBpmnFiles;
   }
 
-  get bpmnFilesBatchHasNoResults() {
-    return this.bpmnFiles?.length === 0;
+  get bpmnFilesAreLoading() {
+    return this.model.loadBpmnFilesTaskInstance.isRunning;
   }
 
-  get newestBpmnFile() {
+  get bpmnFilesHaveNoResults() {
+    return (
+      this.model.loadBpmnFilesTaskInstance.isFinished &&
+      this.bpmnFiles?.length === 0
+    );
+  }
+
+  get bpmnFilesHaveErrored() {
+    return this.model.loadBpmnFilesTaskInstance.isError;
+  }
+
+  get latestBpmnFile() {
     if (!this.bpmnFiles || this.bpmnFiles.length === 0) return null;
-    return this.bpmnFiles[0];
+    return this.bpmnFiles[0]; // FIXME: sort here/elsewhere when `bpmnFiles` is no longer sorted by default
   }
+
+  // Attachments
 
   get attachments() {
-    return this.process?.files?.filter((file) => !file.isBpmnFile);
+    return this.model.loadAttachmentsTaskInstance.isFinished
+      ? this.model.loadAttachmentsTaskInstance.value
+      : this.model.loadedAttachments;
   }
 
-  get attachmentsBatchHasNoResults() {
-    return this.attachments?.length === 0;
+  get attachmentsAreLoading() {
+    return this.model.loadAttachmentsTaskInstance.isRunning;
   }
+
+  get attachmentsHaveNoResults() {
+    return (
+      this.model.loadAttachmentsTaskInstance.isFinished &&
+      this.attachments?.length === 0
+    );
+  }
+
+  get attachmentsHaveErrored() {
+    return this.model.loadAttachmentsTaskInstance.isError;
+  }
+
+  // Process steps
 
   get processSteps() {
     return this.model.loadProcessStepsTaskInstance.isFinished
@@ -103,6 +135,8 @@ export default class ProcessesProcessIndexController extends Controller {
   get processStepsBatchHasErrored() {
     return this.model.loadProcessStepsTaskInstance.isError;
   }
+
+  // Other
 
   get canEdit() {
     return (
@@ -134,18 +168,18 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   async downloadBpmnFile(downloadType) {
-    if (!this.newestBpmnFile) return;
+    if (!this.latestBpmnFile) return;
 
     const fileName = `${removeFileNameExtension(
-      this.newestBpmnFile.name,
-      this.newestBpmnFile.extension
+      this.latestBpmnFile.name,
+      this.latestBpmnFile.extension
     )}.${downloadType.extension}`;
 
     const conversionNecessary =
       downloadType.extension === 'bpmn' ? false : true;
 
     await this.downloadFile(
-      this.newestBpmnFile.id,
+      this.latestBpmnFile.id,
       fileName,
       downloadType.mime,
       conversionNecessary
@@ -202,7 +236,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
-    this.router.refresh();
+    window.location.reload(); // FIXME: Page should update dynamically
   }
 
   @action

@@ -173,7 +173,7 @@
               {{on "click" this.openReplaceModal}}
             >Vervang</AuButton>
           {{/if}}
-          {{#if this.newestBpmnFile}}
+          {{#if this.latestBpmnFile}}
             <AuButton {{on "click" this.openDownloadModal}}>
               Download
             </AuButton>
@@ -191,12 +191,12 @@
         {{else if this.processHasErrored}}
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
-        {{else if this.newestBpmnFile}}
+        {{else if this.latestBpmnFile}}
           <p class="au-u-margin-top-none">
             <AuHelpText @skin="secondary">Klik en hou vast om diagram te
               bewegen. Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
           </p>
-          <BpmnViewer @bpmnFile={{this.newestBpmnFile}} />
+          <BpmnViewer @bpmnFile={{this.latestBpmnFile}} />
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
             <:title>
@@ -208,13 +208,13 @@
                   <Item>
                     <:label>Bestandsnaam</:label>
                     <:content>
-                      {{this.newestBpmnFile.name}}
+                      {{this.latestBpmnFile.name}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Toegevoegd op</:label>
                     <:content>
-                      {{date-format this.newestBpmnFile.modified true}}
+                      {{date-format this.latestBpmnFile.modified true}}
                     </:content>
                   </Item>
                 </:left>
@@ -222,19 +222,19 @@
                   <Item>
                     <:label>Grootte</:label>
                     <:content>
-                      {{file-size-format this.newestBpmnFile.size}}
+                      {{file-size-format this.latestBpmnFile.size}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Extensie</:label>
                     <:content>
-                      {{this.newestBpmnFile.extension}}
+                      {{this.latestBpmnFile.extension}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Formaat</:label>
                     <:content>
-                      {{this.newestBpmnFile.format}}
+                      {{this.latestBpmnFile.format}}
                     </:content>
                   </Item>
                 </:right>
@@ -299,7 +299,7 @@
         <div class="au-c-boxed-table">
           <AuDataTable
             @content={{this.bpmnFiles}}
-            @isLoading={{this.processIsLoading}}
+            @isLoading={{this.bpmnFilesAreLoading}}
             as |t|
           >
             <t.content class="au-c-data-table__table--small" as |c|>
@@ -312,9 +312,9 @@
                 <AuDataTableThSortable @field="size" @label="Grootte" />
                 <th></th>
               </c.header>
-              {{#if this.processHasErrored}}
+              {{#if this.bpmnFilesHaveErrored}}
                 <TableMessage::Error />
-              {{else if this.bpmnFilesBatchHasNoResults}}
+              {{else if this.bpmnFilesHaveNoResults}}
                 <TableMessage>
                   <p>
                     Er werden geen zoekresultaten gevonden.
@@ -324,7 +324,7 @@
                 <c.body as |bpmnFile|>
                   <td>{{date-format bpmnFile.created true}}</td>
                   <td>
-                    {{#if (eq bpmnFile.id this.newestBpmnFile.id)}}
+                    {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
                       <strong>
                         {{bpmnFile.name}}
                         <AuIcon @icon="circle-check" />
@@ -371,7 +371,7 @@
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
           @content={{this.attachments}}
-          @isLoading={{this.processIsLoading}}
+          @isLoading={{this.attachmentsAreLoading}}
           as |t|
         >
           <t.content class="au-c-data-table__table--small" as |c|>
@@ -383,9 +383,9 @@
               <AuDataTableThSortable @field="created" @label="Toegevoegd op" />
               <th></th>
             </c.header>
-            {{#if this.processHasErrored}}
+            {{#if this.attachmentsHaveErrored}}
               <TableMessage::Error />
-            {{else if this.attachmentsBatchHasNoResults}}
+            {{else if this.attachmentsHaveNoResults}}
               <TableMessage>
                 <p>
                   Er werden geen zoekresultaten gevonden.
@@ -430,7 +430,7 @@
   <:title>Vervang BPMN-bestand</:title>
   <:body>
     <CustomFileUpload
-      @accept=".bpmn,.xml"
+      @accept=".bpmn"
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @updateProcess={{this.addFileToProcess}}

@@ -11,12 +11,22 @@ export default class ProcessesProcessIndexRoute extends Route {
   };
 
   async model() {
-    const { loadProcessTaskInstance, loadedProcess } =
-      this.modelFor('processes.process');
+    const {
+      loadProcessTaskInstance,
+      loadedProcess,
+      loadBpmnFilesTaskInstance,
+      loadedBpmnFiles,
+      loadAttachmentsTaskInstance,
+      loadedAttachments,
+    } = this.modelFor('processes.process');
 
     return {
       loadProcessTaskInstance,
       loadedProcess,
+      loadBpmnFilesTaskInstance,
+      loadedBpmnFiles,
+      loadAttachmentsTaskInstance,
+      loadedAttachments,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(),
       loadedProcessSteps: this.loadProcessStepsTask.lastSuccessful?.value,
     };
