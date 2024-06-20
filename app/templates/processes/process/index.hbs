@@ -304,12 +304,9 @@
           >
             <t.content class="au-c-data-table__table--small" as |c|>
               <c.header>
-                <AuDataTableThSortable
-                  @field="created"
-                  @label="Toegevoegd op"
-                />
-                <AuDataTableThSortable @field="name" @label="Bestandsnaam" />
-                <AuDataTableThSortable @field="size" @label="Grootte" />
+                <th>Toegevoegd op</th>
+                <th>Bestandsnaam</th>
+                <th>Grootte</th>
                 <th></th>
               </c.header>
               {{#if this.bpmnFilesHaveErrored}}
@@ -376,11 +373,11 @@
         >
           <t.content class="au-c-data-table__table--small" as |c|>
             <c.header>
-              <AuDataTableThSortable @field="name" @label="Bestandsnaam" />
-              <AuDataTableThSortable @field="size" @label="Grootte" />
-              <AuDataTableThSortable @field="extension" @label="Extensie" />
-              <AuDataTableThSortable @field="format" @label="Formaat" />
-              <AuDataTableThSortable @field="created" @label="Toegevoegd op" />
+              <th>Bestandsnaam</th>
+              <th>Grootte</th>
+              <th>Extensie</th>
+              <th>Formaat</th>
+              <th>Toegevoegd op</th>
               <th></th>
             </c.header>
             {{#if this.attachmentsHaveErrored}}
