@@ -1,4 +1,14 @@
-export default async function downloadFileByUrl(url, headers, fileName) {
+import generateFileDownloadUrl from './file-download-url';
+
+export default async function downloadFileByUrl(
+  fileId,
+  fileName,
+  mimeType,
+  conversionNecessary
+) {
+  const url = generateFileDownloadUrl(fileId, conversionNecessary);
+  const headers = mimeType ? { Accept: mimeType } : {};
+
   const response = await fetch(url, { headers });
   if (!response.ok) throw Error(response.status);
 

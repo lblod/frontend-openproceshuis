@@ -1,0 +1,502 @@
+{{#if this.edit}}
+  <PageHeader>
+    <:title>
+      Wijzig proces
+    </:title>
+    <:action>
+    </:action>
+  </PageHeader>
+{{else}}
+  <PageHeader>
+    <:title>
+      {{this.process.title}}
+    </:title>
+    <:action></:action>
+  </PageHeader>
+{{/if}}
+
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+  {{#if this.edit}}
+    <form {{on "submit" (perform this.updateModel)}}>
+      <DataCard>
+        <:header></:header>
+        <:title>
+          Algemene info
+        </:title>
+        <:card as |Card|>
+          <Card.Columns>
+            <:left as |Item|>
+              <Item>
+                <:label>Titel</:label>
+                <:content>
+                  <AuInput
+                    value={{this.process.title}}
+                    {{on "input" this.setProcessTitle}}
+                    @width="block"
+                  />
+                </:content>
+              </Item>
+              <Item>
+                <:label>Beschrijving</:label>
+                <:content>
+                  <AuTextarea
+                    value={{this.process.description}}
+                    {{on "input" this.setProcessDescription}}
+                    rows="4"
+                    @width="block"
+                  />
+                </:content>
+              </Item>
+            </:left>
+            <:right as |Item|>
+              <Item>
+                <:label>Bestuur</:label>
+                <:content>
+                  {{this.process.publisher.name}}
+                </:content>
+              </Item>
+
+              <Item>
+                <:label>Contact</:label>
+                <:content>
+                  {{or
+                    (contact-email this.process.publisher.primarySite.contacts)
+                    "/"
+                  }}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Aangemaakt op</:label>
+                <:content>
+                  {{date-format this.process.created true}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Laatst aangepast op</:label>
+                <:content>
+                  <span class="au-u-italic">Nu</span>
+                </:content>
+              </Item>
+            </:right>
+          </Card.Columns>
+        </:card>
+        <:action>
+          <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+            <AuButton
+              @skin="secondary"
+              {{on "click" this.resetModel}}
+            >Annuleer</AuButton>
+            <AuButton
+              @skin="primary"
+              type="submit"
+              @loading={{this.updateModel.isRunning}}
+              @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+            >Bewaar</AuButton>
+          </div>
+        </:action>
+      </DataCard>
+    </form>
+  {{else}}
+    <DataCard>
+      <:header>
+        {{#if this.canEdit}}
+          <AuButton
+            @skin="naked"
+            @icon="pencil"
+            {{on "click" this.toggleEdit}}
+          >Wijzig</AuButton>
+        {{/if}}
+      </:header>
+      <:title>
+        Algemene info
+      </:title>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Titel</:label>
+              <:content>
+                {{this.process.title}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Beschrijving</:label>
+              <:content>
+                {{or this.process.description "/"}}
+              </:content>
+            </Item>
+
+          </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Bestuur</:label>
+              <:content>
+                {{this.process.publisher.name}}
+              </:content>
+            </Item>
+
+            <Item>
+              <:label>Contact</:label>
+              <:content>
+                {{or
+                  (contact-email this.process.publisher.primarySite.contacts)
+                  "/"
+                }}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Aangemaakt op</:label>
+              <:content>
+                {{date-format this.process.created true}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Laatst aangepast op</:label>
+              <:content>
+                {{date-format this.process.modified true}}
+              </:content>
+            </Item>
+          </:right>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  {{/if}}
+
+  <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
+    <div class="au-o-grid__item">
+      <div class="au-u-flex au-u-flex--between">
+        <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
+        <AuButtonGroup>
+          {{#if this.canEdit}}
+            <AuButton
+              @skin="secondary"
+              {{on "click" this.openReplaceModal}}
+            >Vervang</AuButton>
+          {{/if}}
+          {{#if this.latestBpmnFile}}
+            <AuButton {{on "click" this.openDownloadModal}}>
+              Download
+            </AuButton>
+          {{/if}}
+        </AuButtonGroup>
+      </div>
+      <div>
+        <AuHeading
+          @level="3"
+          @skin="4"
+          class="au-u-margin-bottom-small au-u-margin-top-small"
+        >Diagram</AuHeading>
+        {{#if this.latestBpmnFileIsLoading}}
+          <AuLoader />
+        {{else if this.latestBpmnFileHasErrored}}
+          <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
+            later opnieuw.</p>
+        {{else if this.latestBpmnFile}}
+          <p class="au-u-margin-top-none">
+            <AuHelpText @skin="secondary">Klik en hou vast om diagram te
+              bewegen. Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
+          </p>
+          <BpmnViewer @bpmnFile={{this.latestBpmnFile}} />
+          <DataCard class="au-u-margin-top-small">
+            <:header></:header>
+            <:title>
+              Metadata
+            </:title>
+            <:card as |Card|>
+              <Card.Columns>
+                <:left as |Item|>
+                  <Item>
+                    <:label>Bestandsnaam</:label>
+                    <:content>
+                      {{this.latestBpmnFile.name}}
+                    </:content>
+                  </Item>
+                  <Item>
+                    <:label>Toegevoegd op</:label>
+                    <:content>
+                      {{date-format this.latestBpmnFile.modified true}}
+                    </:content>
+                  </Item>
+                </:left>
+                <:right as |Item|>
+                  <Item>
+                    <:label>Grootte</:label>
+                    <:content>
+                      {{file-size-format this.latestBpmnFile.size}}
+                    </:content>
+                  </Item>
+                  <Item>
+                    <:label>Extensie</:label>
+                    <:content>
+                      {{this.latestBpmnFile.extension}}
+                    </:content>
+                  </Item>
+                  <Item>
+                    <:label>Formaat</:label>
+                    <:content>
+                      {{this.latestBpmnFile.format}}
+                    </:content>
+                  </Item>
+                </:right>
+              </Card.Columns>
+            </:card>
+          </DataCard>
+        {{else}}
+          <p>Dit proces heeft geen diagram.</p>
+        {{/if}}
+      </div>
+      <div>
+        <AuHeading
+          @level="3"
+          @skin="4"
+          class="au-u-margin-bottom-small au-u-margin-top"
+        >Processtappen</AuHeading>
+        <div class="au-c-boxed-table">
+          <AuDataTable
+            @content={{this.processSteps}}
+            @isLoading={{this.processStepsBatchIsLoading}}
+            @page={{this.page}}
+            @size={{this.size}}
+            as |t|
+          >
+            <t.content class="au-c-data-table__table--small" as |c|>
+              <c.header>
+                <AuDataTableThSortable
+                  @field="name"
+                  @currentSorting={{this.sort}}
+                  @label="Naam"
+                />
+                <AuDataTableThSortable
+                  @field="type"
+                  @currentSorting={{this.sort}}
+                  @label="Type"
+                />
+              </c.header>
+              {{#if this.processStepsBatchHasErrored}}
+                <TableMessage::Error />
+              {{else if this.processStepsBatchHasNoResults}}
+                <TableMessage>
+                  <p>
+                    Er werden geen zoekresultaten gevonden.
+                  </p>
+                </TableMessage>
+              {{else}}
+                <c.body as |element|>
+                  <td>{{or element.name "/"}}</td>
+                  <td>{{capitalize-first (or element.type.name "/")}}</td>
+                </c.body>
+              {{/if}}
+            </t.content>
+          </AuDataTable>
+        </div>
+      </div>
+      <div>
+        <AuHeading
+          @level="3"
+          @skin="4"
+          class="au-u-margin-bottom-small au-u-margin-top"
+        >Versies</AuHeading>
+        <div class="au-c-boxed-table">
+          <AuDataTable
+            @content={{this.bpmnFiles}}
+            @isLoading={{this.bpmnFilesAreLoading}}
+            as |t|
+          >
+            <t.content class="au-c-data-table__table--small" as |c|>
+              <c.header>
+                <th>Toegevoegd op</th>
+                <th>Bestandsnaam</th>
+                <th>Grootte</th>
+                <th></th>
+              </c.header>
+              {{#if this.bpmnFilesHaveErrored}}
+                <TableMessage::Error />
+              {{else if this.bpmnFilesHaveNoResults}}
+                <TableMessage>
+                  <p>
+                    Er werden geen zoekresultaten gevonden.
+                  </p>
+                </TableMessage>
+              {{else}}
+                <c.body as |bpmnFile|>
+                  <td>{{date-format bpmnFile.created true}}</td>
+                  <td>
+                    {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
+                      <strong>
+                        {{bpmnFile.name}}
+                        <AuIcon @icon="circle-check" />
+                      </strong>
+                    {{else}}
+                      {{bpmnFile.name}}
+                    {{/if}}
+                  </td>
+                  <td>{{file-size-format bpmnFile.size}}</td>
+                  <td>
+                    <AuButton
+                      @icon="download"
+                      @skin="link"
+                      {{on
+                        "click"
+                        (fn
+                          this.downloadFile
+                          bpmnFile.id
+                          bpmnFile.name
+                          "text/xml"
+                          false
+                        )
+                      }}
+                    />
+                  </td>
+                </c.body>
+              {{/if}}
+            </t.content>
+          </AuDataTable>
+        </div>
+      </div>
+    </div>
+    <div class="au-o-grid__item au-u-margin-top">
+      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+        <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
+        <AuButtonGroup>
+          {{#if this.canEdit}}
+            <AuButton {{on "click" this.openAddModal}}>
+              Voeg toe
+            </AuButton>
+          {{/if}}
+        </AuButtonGroup>
+      </div>
+      <div class="au-c-boxed-table au-u-margin-top-small">
+        <AuDataTable
+          @content={{this.attachments}}
+          @isLoading={{this.attachmentsAreLoading}}
+          as |t|
+        >
+          <t.content class="au-c-data-table__table--small" as |c|>
+            <c.header>
+              <th>Bestandsnaam</th>
+              <th>Grootte</th>
+              <th>Extensie</th>
+              <th>Formaat</th>
+              <th>Toegevoegd op</th>
+              <th></th>
+            </c.header>
+            {{#if this.attachmentsHaveErrored}}
+              <TableMessage::Error />
+            {{else if this.attachmentsHaveNoResults}}
+              <TableMessage>
+                <p>
+                  Er werden geen zoekresultaten gevonden.
+                </p>
+              </TableMessage>
+            {{else}}
+              <c.body as |attachment|>
+                <td>{{attachment.name}}</td>
+                <td>{{file-size-format attachment.size}}</td>
+                <td>{{attachment.extension}}</td>
+                <td>{{attachment.format}}</td>
+                <td>{{date-format attachment.created true}}</td>
+                <td>
+                  <AuButton
+                    @icon="download"
+                    @skin="link"
+                    {{on
+                      "click"
+                      (fn
+                        this.downloadFile
+                        attachment.id
+                        attachment.name
+                        "text/xml"
+                        false
+                      )
+                    }}
+                  />
+                </td>
+              </c.body>
+            {{/if}}
+          </t.content>
+        </AuDataTable>
+      </div>
+    </div>
+  </div>
+</AuBodyContainer>
+
+<AuModal
+  @modalOpen={{this.replaceModalOpened}}
+  @closeModal={{this.closeReplaceModal}}
+>
+  <:title>Vervang BPMN-bestand</:title>
+  <:body>
+    <CustomFileUpload
+      @accept=".bpmn"
+      @title="Bestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+      @updateProcess={{this.addFileToProcess}}
+      @extractBpmnElements={{this.extractBpmnElements}}
+      @onFinishUpload={{this.fileUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeReplaceModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.downloadModalOpened}}
+  @closeModal={{this.closeDownloadModal}}
+>
+  <:title>Download BPMN-bestand</:title>
+  <:body>
+    <div class="au-o-flow">
+      <p>Het geselecteerde BPMN-bestand is beschikbaar in verschillende
+        formaten:</p>
+      <AuButtonGroup class="au-u-flex au-u-flex--around">
+        {{#each this.downloadTypes as |downloadType|}}
+          <AuButton
+            @skin={{if
+              (eq downloadType.extension "bpmn")
+              "primary"
+              "secondary"
+            }}
+            {{on "click" (fn this.downloadBpmnFile downloadType)}}
+          >{{capitalize-first downloadType.label}}
+            <span
+              class="au-u-para-tiny au-u-regular"
+            >(.{{downloadType.extension}})</span></AuButton>
+        {{/each}}
+      </AuButtonGroup>
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeDownloadModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal @modalOpen={{this.addModalOpened}} @closeModal={{this.closeAddModal}}>
+  <:title>Voeg bijlage toe</:title>
+  <:body>
+    <CustomFileUpload
+      @title="Bestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
+      @updateProcess={{this.addFileToProcess}}
+      @onFinishUpload={{this.fileUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeAddModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

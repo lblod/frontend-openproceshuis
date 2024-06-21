@@ -1,9 +1,40 @@
-import Model, { hasMany } from '@ember-data/model';
+import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import { modelValidator } from 'ember-model-validator';
+import ENV from 'frontend-openproceshuis/config/environment';
 
+@modelValidator
 export default class ProcessModel extends Model {
-  @hasMany('file', { inverse: null, async: false }) derivations;
+  @attr('string') title;
+  @attr('string') description;
+  @attr('iso-date') created;
+  @attr('iso-date') modified;
+  @attr('string') status;
+  @belongsTo('group', { inverse: null, async: false }) publisher;
+  @hasMany('file', { inverse: 'processes', async: false }) files;
 
-  get derivation() {
-    return this.derivations[0];
+  validations = {
+    title: {
+      presence: true,
+    },
+  };
+
+  get isArchived() {
+    return this.status === ENV.resourceStates.archived;
+  }
+
+  archive() {
+    this.status = ENV.resourceStates.archived;
+  }
+
+  get bpmnFile() {
+    const bpmnFiles = this.files.filter(
+      (file) => file.isBpmnFile && file.status !== ENV.resourceStates.archived
+    );
+    if (bpmnFiles.length === 0) return undefined;
+
+    const bpmnFilesSorted = bpmnFiles.sort(
+      (fileA, fileB) => fileB.created - fileA.created
+    );
+    return bpmnFilesSorted[0];
   }
 }

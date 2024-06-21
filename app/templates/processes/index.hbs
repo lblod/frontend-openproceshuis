@@ -1,0 +1,106 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <ul class="au-c-list-navigation">
+          <li class="au-c-list-navigation__item">
+            <AuNavigationLink @route="processes.index">
+              Alle processen
+            </AuNavigationLink>
+          </li>
+        </ul>
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
+        >
+          <div>
+            <AuLabel for="filter-title">Zoek op titel of beschrijving</AuLabel>
+            <ProcessSelectByTitle
+              @id="filter-title"
+              @selected={{this.title}}
+              @onChange={{this.setTitle}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuButton
+              @icon="undo"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <PageHeader>
+      <:title>Processen</:title>
+      <:subtitle>
+        <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
+          bestanden</AuLink>
+      </:subtitle>
+      <:action></:action>
+    </PageHeader>
+
+    <AuDataTable
+      @content={{this.processes}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="title"
+            @currentSorting={{this.sort}}
+            @label="Titel"
+          />
+          <AuDataTableThSortable
+            @field="description"
+            @currentSorting={{this.sort}}
+            @label="Beschrijving"
+          />
+          <AuDataTableThSortable
+            @field="modified"
+            @currentSorting={{this.sort}}
+            @label="Laatst aangepast op"
+          />
+          <AuDataTableThSortable
+            @field="organization"
+            @currentSorting={{this.sort}}
+            @label="Bestuur"
+          />
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |process|>
+            <td>
+              <LinkTo
+                class="au-c-link"
+                @model={{process.id}}
+                @route="processes.process"
+              >
+                {{process.title}}
+              </LinkTo>
+            </td>
+            <td>{{or process.description "/"}}</td>
+            <td>{{date-format process.modified}}</td>
+            <td>{{process.publisher.name}}</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

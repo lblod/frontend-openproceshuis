@@ -37,13 +37,10 @@
                 </c.content>
                 <c.footer>
                   <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                    <AuLink
-                      @skin="button"
-                      @route="bpmn-files"
-                    >Processen</AuLink>
+                    <AuLink @skin="button" @route="processes">Processen</AuLink>
                     <AuLink
                       @skin="button-secondary"
-                      @route="bpmn-elements"
+                      @route="process-steps"
                     >Processtappen</AuLink>
                   </div>
                 </c.footer>
@@ -69,7 +66,7 @@
                   </c.content>
                   <c.footer>
                     <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink @skin="button" @route="bpmn-uploads">Deel jouw
+                      <AuLink @skin="button" @route="shared-processes">Deel jouw
                         processen</AuLink>
                     </div>
                   </c.footer>
