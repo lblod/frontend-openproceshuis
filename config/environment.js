@@ -38,6 +38,13 @@ module.exports = function (environment) {
       authRedirectUrl: '{{OAUTH_API_REDIRECT_URL}}',
       switchRedirectUrl: '{{OAUTH_SWITCH_URL}}',
     },
+
+    'ember-plausible': {
+      enabled: false,
+      domain: 'openproceshuis.lblod.info',
+      // apiHost: 'APIHOST',
+      trackLocalhost: true, //temp
+    },
   };
 
   if (environment === 'development') {
