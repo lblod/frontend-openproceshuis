@@ -5,6 +5,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessRoute extends Route {
   @service store;
+  @service plausible;
 
   async model() {
     const loadProcessTaskInstance = this.loadProcessTask.perform();
@@ -48,7 +49,16 @@ export default class ProcessesProcessRoute extends Route {
       'filter[files][:not:status]': ENV.resourceStates.archived,
     };
 
-    return yield this.store.findRecord('process', processId, query);
+    const process = yield this.store.findRecord('process', processId, query);
+
+    this.plausible.trackEvent('Raadpleeg proces', {
+      'Proces-ID': process?.id,
+      Procesnaam: process?.title,
+      'Bestuur-ID': process?.publisher?.id,
+      Bestuursnaam: process?.publisher?.id,
+    });
+
+    return process;
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })

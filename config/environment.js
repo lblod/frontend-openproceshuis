@@ -42,7 +42,7 @@ module.exports = function (environment) {
     'ember-plausible': {
       enabled: false,
       domain: 'openproceshuis.lblod.info',
-      // apiHost: 'APIHOST',
+      apiHost: 'https://plausible.lblod.info',
       trackLocalhost: true, //temp
     },
   };
