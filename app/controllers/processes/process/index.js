@@ -247,7 +247,8 @@ export default class ProcessesProcessIndexController extends Controller {
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
-    window.location.reload(); // FIXME: Page should update dynamically
+    this.page = 0;
+    this.router.refresh();
   }
 
   @action
