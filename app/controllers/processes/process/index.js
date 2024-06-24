@@ -27,22 +27,18 @@ export default class ProcessesProcessIndexController extends Controller {
   downloadTypes = [
     {
       extension: 'bpmn',
-      mime: 'text/xml',
       label: 'origineel',
     },
     {
       extension: 'png',
-      mime: 'image/png',
       label: 'afbeelding',
     },
     {
       extension: 'svg',
-      mime: 'image/svg+xml',
       label: 'vectorafbeelding',
     },
     {
       extension: 'pdf',
-      mime: 'application/pdf',
       label: 'PDF',
     },
   ];
@@ -179,39 +175,35 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  async downloadBpmnFile(downloadType) {
+  async downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
     const fileName = `${removeFileNameExtension(
       this.latestBpmnFile.name,
       this.latestBpmnFile.extension
-    )}.${downloadType.extension}`;
+    )}.${targetExtension}`;
 
     await this.downloadFile(
       this.latestBpmnFile.id,
       fileName,
       this.latestBpmnFile.extension,
-      downloadType.extension,
-      downloadType.mime
+      targetExtension
     );
   }
 
   @action
-  async downloadFile(
-    fileId,
-    fileName,
-    originalExtension,
-    targetExtension,
-    mimeType
-  ) {
-    const conversionNecessary = originalExtension !== targetExtension;
-    await downloadFileByUrl(fileId, fileName, mimeType, conversionNecessary);
+  async downloadOriginalFile(file) {
+    await this.downloadFile(file.id, file.name, file.extension);
+  }
+
+  async downloadFile(fileId, fileName, fileExtension, targetExtension) {
+    await downloadFileByUrl(fileId, fileName, fileExtension, targetExtension);
 
     this.plausible.trackEvent('Download proces', {
       'Bestand-ID': fileId,
       Bestandsnaam: fileName,
-      Bestandstype: originalExtension,
-      Downloadtype: targetExtension,
+      Bestandstype: fileExtension,
+      Downloadtype: targetExtension ?? fileExtension,
       'Proces-ID': this.process?.id,
       Procesnaam: this.process?.title,
       'Bestuur-ID': this.process?.publisher?.id,

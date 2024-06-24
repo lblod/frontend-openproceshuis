@@ -3,10 +3,12 @@ import generateFileDownloadUrl from './file-download-url';
 export default async function downloadFileByUrl(
   fileId,
   fileName,
-  mimeType,
-  conversionNecessary
+  fileExtension,
+  targetExtension
 ) {
-  const url = generateFileDownloadUrl(fileId, conversionNecessary);
+  const url = generateFileDownloadUrl(fileId, fileExtension, targetExtension);
+
+  const mimeType = mimeTypes[targetExtension];
   const headers = mimeType ? { Accept: mimeType } : {};
 
   const response = await fetch(url, { headers });
@@ -23,3 +25,10 @@ export default async function downloadFileByUrl(
   window.URL.revokeObjectURL(downloadUrl);
   a.remove();
 }
+
+const mimeTypes = {
+  bpmn: 'text/xml',
+  png: 'image/png',
+  svg: 'image/svg+xml',
+  pdf: 'application/pdf',
+};
