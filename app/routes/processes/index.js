@@ -44,7 +44,8 @@ export default class ProcessesIndexRoute extends Route {
     }
 
     if (params.title) {
-      query['filter[title]'] = params.title;
+      query['filter[:or:][title]'] = params.title;
+      query['filter[:or:][description]'] = params.title;
     }
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 

@@ -5,13 +5,13 @@
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @searchMessage="Typ om te zoeken"
-    @searchField="name"
+    @searchField="title"
     @search={{perform this.loadProcessesTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
     @triggerId={{@id}}
-    as |name|
+    as |title|
   >
-    {{name}}
+    {{title}}
   </PowerSelect>
 </div>
