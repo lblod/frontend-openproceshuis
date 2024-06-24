@@ -6,7 +6,8 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class ProcessStepSelectByNameComponent extends Component {
   @service store;
 
-  @restartableTask *loadProcessStepsTask(searchParams = '') {
+  @restartableTask
+  *loadProcessStepsTask(searchParams = '') {
     const query = {
       'filter[:has:bpmn-process]': true,
       'filter[bpmn-process][:has:bpmn-file]': true,

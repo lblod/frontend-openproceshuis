@@ -1,12 +1,16 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessSelectByTitleComponent extends Component {
   @service store;
 
-  @restartableTask *loadBpmnFilesTask(searchParams = '') {
-    const query = {};
+  @restartableTask
+  *loadProcessesTask(searchParams = '') {
+    const query = {
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
 
     if (searchParams.trim() !== '') {
       query['filter[name]'] = searchParams;
