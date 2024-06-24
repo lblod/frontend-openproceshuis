@@ -39,11 +39,9 @@ module.exports = function (environment) {
       switchRedirectUrl: '{{OAUTH_SWITCH_URL}}',
     },
 
-    'ember-plausible': {
-      enabled: false,
-      domain: 'openproceshuis.lblod.info',
-      apiHost: 'https://plausible.lblod.info',
-      trackLocalhost: true, //temp
+    plausible: {
+      domain: '{{ANALYTICS_APP_DOMAIN}}',
+      apiHost: '{{ANALYTICS_API_HOST}}',
     },
   };
 

@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
-import config from 'frontend-openproceshuis/config/environment';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ApplicationRoute extends Route {
   @service router;
@@ -9,7 +9,7 @@ export default class ApplicationRoute extends Route {
   @service plausible;
 
   async beforeModel() {
-    await this.startAnalytics();
+    this.startAnalytics();
     await this.session.setup();
     try {
       await this.currentSession.load();
@@ -19,8 +19,12 @@ export default class ApplicationRoute extends Route {
   }
 
   async startAnalytics() {
-    const plausibleConfig = config['ember-plausible'];
-    // if (plausibleConfig && config.environment === 'production')
-    if (plausibleConfig) return this.plausible.enable(plausibleConfig);
+    let { domain, apiHost } = ENV.plausible;
+
+    if (
+      domain !== '{{ANALYTICS_APP_DOMAIN}}' &&
+      apiHost !== '{{ANALYTICS_API_HOST}}'
+    )
+      this.plausible.enable({ domain, apiHost });
   }
 }
