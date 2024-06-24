@@ -12,9 +12,9 @@ export default class ProcessSelectByTitleComponent extends Component {
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
-    if (searchParams.trim() !== '') {
-      query['filter[title]'] = searchParams;
-    }
+    if (searchParams.trim() !== '') query['filter[title]'] = searchParams;
+    if (this.args.publisher)
+      query['filter[publisher][id]'] = this.args.publisher; // FIXME: should be handled by backend instead of frontend
 
     const result = yield this.store.query('process', query);
 
