@@ -13,13 +13,13 @@ export default class ProcessSelectByTitleComponent extends Component {
     };
 
     if (searchParams.trim() !== '') {
-      query['filter[name]'] = searchParams;
+      query['filter[title]'] = searchParams;
     }
 
-    const result = yield this.store.query('file', query);
+    const result = yield this.store.query('process', query);
 
     if (result) {
-      return [...[searchParams], ...new Set(result.map((r) => r.name))];
+      return [...[searchParams], ...new Set(result.map((r) => r.title))];
     }
   }
 }
