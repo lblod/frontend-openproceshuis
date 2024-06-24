@@ -13,6 +13,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @service router;
   @service currentSession;
   @service toaster;
+  @service plausible;
 
   @tracked page = 0;
   size = 20;
@@ -186,20 +187,36 @@ export default class ProcessesProcessIndexController extends Controller {
       this.latestBpmnFile.extension
     )}.${downloadType.extension}`;
 
-    const conversionNecessary =
-      downloadType.extension === 'bpmn' ? false : true;
-
     await this.downloadFile(
       this.latestBpmnFile.id,
       fileName,
-      downloadType.mime,
-      conversionNecessary
+      this.latestBpmnFile.extension,
+      downloadType.extension,
+      downloadType.mime
     );
   }
 
   @action
-  async downloadFile(fileId, fileName, mimeType, conversionNecessary) {
+  async downloadFile(
+    fileId,
+    fileName,
+    originalExtension,
+    targetExtension,
+    mimeType
+  ) {
+    const conversionNecessary = originalExtension !== targetExtension;
     await downloadFileByUrl(fileId, fileName, mimeType, conversionNecessary);
+
+    this.plausible.trackEvent('Download proces', {
+      'Bestand-ID': fileId,
+      Bestandsnaam: fileName,
+      Bestandstype: originalExtension,
+      Downloadtype: targetExtension,
+      'Proces-ID': this.process?.id,
+      Procesnaam: this.process?.title,
+      'Bestuur-ID': this.process?.publisher?.id,
+      Bestuursnaam: this.process?.publisher?.name,
+    });
   }
 
   @action

@@ -55,7 +55,7 @@ export default class ProcessesProcessRoute extends Route {
       'Proces-ID': process?.id,
       Procesnaam: process?.title,
       'Bestuur-ID': process?.publisher?.id,
-      Bestuursnaam: process?.publisher?.id,
+      Bestuursnaam: process?.publisher?.name,
     });
 
     return process;
