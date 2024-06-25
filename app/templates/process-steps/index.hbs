@@ -1,12 +1,12 @@
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
-      <div class="au-c-sidebar__content au-o-box au-o-box--small">
+      <div class="au-c-sidebar__content">
         <form
           {{on "reset" this.resetFilters}}
-          class="au-o-grid au-o-grid--small"
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
         >
-          <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
+          <div>
             <AuLabel for="filter-name">Filter op naam</AuLabel>
             <ProcessStepSelectByName
               @id="filter-name"
@@ -15,7 +15,7 @@
               class="grow"
             />
           </div>
-          <div class="au-o-grid__item au-u-1-2@small au-u-1-1@medium">
+          <div>
             <AuLabel for="filter-type">Filter op type</AuLabel>
             <ProcessStepSelectByType
               @id="filter-type"
@@ -24,7 +24,7 @@
               class="grow"
             />
           </div>
-          <div class="au-o-grid__item">
+          <div>
             <AuButton
               @icon="undo"
               @skin="link"
