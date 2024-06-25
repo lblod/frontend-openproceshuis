@@ -472,6 +472,7 @@
     <CustomFileUpload
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
+      @bpmnForbidden="true"
       @updateProcess={{this.addFileToProcess}}
       @onFinishUpload={{this.fileUploaded}}
     />
