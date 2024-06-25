@@ -38,6 +38,11 @@ module.exports = function (environment) {
       authRedirectUrl: '{{OAUTH_API_REDIRECT_URL}}',
       switchRedirectUrl: '{{OAUTH_SWITCH_URL}}',
     },
+
+    plausible: {
+      domain: '{{ANALYTICS_APP_DOMAIN}}',
+      apiHost: '{{ANALYTICS_API_HOST}}',
+    },
   };
 
   if (environment === 'development') {

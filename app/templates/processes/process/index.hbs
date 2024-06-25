@@ -335,16 +335,7 @@
                     <AuButton
                       @icon="download"
                       @skin="link"
-                      {{on
-                        "click"
-                        (fn
-                          this.downloadFile
-                          bpmnFile.id
-                          bpmnFile.name
-                          "text/xml"
-                          false
-                        )
-                      }}
+                      {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
                     />
                   </td>
                 </c.body>
@@ -399,16 +390,7 @@
                   <AuButton
                     @icon="download"
                     @skin="link"
-                    {{on
-                      "click"
-                      (fn
-                        this.downloadFile
-                        attachment.id
-                        attachment.name
-                        "text/xml"
-                        false
-                      )
-                    }}
+                    {{on "click" (fn this.downloadOriginalFile attachment)}}
                   />
                 </td>
               </c.body>
@@ -462,7 +444,10 @@
               "primary"
               "secondary"
             }}
-            {{on "click" (fn this.downloadBpmnFile downloadType)}}
+            {{on
+              "click"
+              (fn this.downloadLatestBpmnFile downloadType.extension)
+            }}
           >{{capitalize-first downloadType.label}}
             <span
               class="au-u-para-tiny au-u-regular"
