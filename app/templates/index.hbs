@@ -24,8 +24,12 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek
-            processtappen en upload processen.</p>
+          {{#if this.currentSession.canEdit}}
+            <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek
+              processtappen en upload processen.</p>
+          {{else}}
+            <p>Raadpleeg processen en originele BPMN-bestanden.</p>
+          {{/if}}
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
