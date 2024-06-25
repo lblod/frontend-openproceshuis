@@ -1,13 +1,15 @@
 <LayoutHome>
-  <AuAlert
-    @skin="warning"
-    @icon="alert-triangle"
-    @size="small"
-    class="au-u-margin-bottom-none"
-  >
-    U hebt niet de juiste rechten om processen toe te voegen of aan te passen.
-    Processen of processtappen raadplegen, is wel steeds mogelijk.
-  </AuAlert>
+  {{#if this.currentSession.canOnlyReadWhileAuthenticated}}
+    <AuAlert
+      @skin="warning"
+      @icon="alert-triangle"
+      @size="small"
+      class="au-u-margin-bottom-none"
+    >
+      U hebt niet de juiste rechten om processen toe te voegen of aan te passen.
+      Processen of processtappen raadplegen, is wel steeds mogelijk.
+    </AuAlert>
+  {{/if}}
   <AuBodyContainer class="au-u-background-gray-100">
     <section class="c-home">
       <div class="au-o-flow">
