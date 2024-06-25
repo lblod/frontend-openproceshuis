@@ -1,4 +1,15 @@
 <LayoutHome>
+  {{#if this.currentSession.canOnlyReadWhileAuthenticated}}
+    <AuAlert
+      @skin="warning"
+      @icon="alert-triangle"
+      @size="small"
+      class="au-u-margin-bottom-none"
+    >
+      U hebt niet de juiste rechten om processen toe te voegen of aan te passen.
+      Processen of processtappen raadplegen, is wel steeds mogelijk.
+    </AuAlert>
+  {{/if}}
   <AuBodyContainer class="au-u-background-gray-100">
     <section class="c-home">
       <div class="au-o-flow">
@@ -13,8 +24,12 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek
-            processtappen en upload processen.</p>
+          {{#if this.currentSession.canEdit}}
+            <p>Raadpleeg processen en originele BPMN-bestanden. Doorzoek
+              processtappen en upload processen.</p>
+          {{else}}
+            <p>Raadpleeg processen en originele BPMN-bestanden.</p>
+          {{/if}}
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">

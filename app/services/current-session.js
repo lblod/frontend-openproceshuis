@@ -33,12 +33,19 @@ export default class CurrentSessionService extends Service {
     }
   }
 
-  get canEdit() {
-    if (!this.session.isAuthenticated) return false;
+  get hasEditorRole() {
     return this.roles.some((role) => EDITOR_ROLES.includes(role));
+  }
+
+  get canEdit() {
+    return this.session.isAuthenticated && this.hasEditorRole;
   }
 
   get canOnlyRead() {
     return !this.canEdit;
+  }
+
+  get canOnlyReadWhileAuthenticated() {
+    return this.session.isAuthenticated && !this.hasEditorRole;
   }
 }
