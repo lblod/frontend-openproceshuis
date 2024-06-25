@@ -13,6 +13,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @service router;
   @service currentSession;
   @service toaster;
+  @service plausible;
 
   @tracked page = 0;
   size = 20;
@@ -26,22 +27,18 @@ export default class ProcessesProcessIndexController extends Controller {
   downloadTypes = [
     {
       extension: 'bpmn',
-      mime: 'text/xml',
       label: 'origineel',
     },
     {
       extension: 'png',
-      mime: 'image/png',
       label: 'afbeelding',
     },
     {
       extension: 'svg',
-      mime: 'image/svg+xml',
       label: 'vectorafbeelding',
     },
     {
       extension: 'pdf',
-      mime: 'application/pdf',
       label: 'PDF',
     },
   ];
@@ -178,28 +175,40 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  async downloadBpmnFile(downloadType) {
+  async downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
     const fileName = `${removeFileNameExtension(
       this.latestBpmnFile.name,
       this.latestBpmnFile.extension
-    )}.${downloadType.extension}`;
-
-    const conversionNecessary =
-      downloadType.extension === 'bpmn' ? false : true;
+    )}.${targetExtension}`;
 
     await this.downloadFile(
       this.latestBpmnFile.id,
       fileName,
-      downloadType.mime,
-      conversionNecessary
+      this.latestBpmnFile.extension,
+      targetExtension
     );
   }
 
   @action
-  async downloadFile(fileId, fileName, mimeType, conversionNecessary) {
-    await downloadFileByUrl(fileId, fileName, mimeType, conversionNecessary);
+  async downloadOriginalFile(file) {
+    await this.downloadFile(file.id, file.name, file.extension);
+  }
+
+  async downloadFile(fileId, fileName, fileExtension, targetExtension) {
+    await downloadFileByUrl(fileId, fileName, fileExtension, targetExtension);
+
+    this.plausible.trackEvent('Download proces', {
+      'Bestand-ID': fileId,
+      Bestandsnaam: fileName,
+      Bestandstype: fileExtension,
+      Downloadtype: targetExtension ?? fileExtension,
+      'Proces-ID': this.process?.id,
+      Procesnaam: this.process?.title,
+      'Bestuur-ID': this.process?.publisher?.id,
+      Bestuursnaam: this.process?.publisher?.name,
+    });
   }
 
   @action
