@@ -76,6 +76,16 @@ export default class AuFileUpload extends Component {
   @task
   *upload(file) {
     this.resetErrors();
+
+    if (this.args.bpmnForbidden && file.name.endsWith('.bpmn')) {
+      this.addError(
+        file,
+        'BPMN-bestanden kunnen niet worden toegevoegd aan bijlagen.'
+      );
+      this.removeFileFromQueue(file);
+      return;
+    }
+
     let uploadedFileId = yield this.uploadFileTask.perform(file);
 
     this.notifyQueueUpdate();

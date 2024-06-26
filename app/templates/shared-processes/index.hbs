@@ -34,8 +34,11 @@
     <PageHeader>
       <:title>Gedeelde processen</:title>
       <:subtitle>
-        <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
-          bestanden</AuLink>
+        {{! 
+          TODO: Reintroduce when help page gets content
+          }}
+        {{! <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
+          bestanden</AuLink> }}
       </:subtitle>
       <:action>
         <AuButton {{on "click" this.openUploadModal}}>Voeg proces toe</AuButton>
@@ -92,7 +95,7 @@
                 {{process.title}}
               </LinkTo>
             </td>
-            <td>{{or process.description "/"}}</td>
+            <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.created}}</td>
             <td>{{date-format process.modified}}</td>
             <td>
