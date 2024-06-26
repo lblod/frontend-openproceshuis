@@ -163,7 +163,11 @@
   {{/if}}
 
   <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
+
+    {{! Latest BPMN file }}
     <div class="au-o-grid__item">
+
+      {{! Latest BPMN file - Title }}
       <div class="au-u-flex au-u-flex--between">
         <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
         <AuButtonGroup>
@@ -180,6 +184,8 @@
           {{/if}}
         </AuButtonGroup>
       </div>
+
+      {{! Latest BPMN file - Diagram }}
       <div>
         <AuHeading
           @level="3"
@@ -192,10 +198,10 @@
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
         {{else if this.latestBpmnFile}}
-          <p class="au-u-margin-top-none">
-            <AuHelpText @skin="secondary">Klik en hou vast om diagram te
-              bewegen. Gebruik ctrl en scrollwiel om in en uit te zoomen.</AuHelpText>
-          </p>
+          <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+            Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
+            om in en uit te zoomen. Klik elders om bediening uit te schakelen.
+          </AuHelpText>
           <BpmnViewer @bpmnFile={{this.latestBpmnFile}} />
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
@@ -245,6 +251,8 @@
           <p>Dit proces heeft geen diagram.</p>
         {{/if}}
       </div>
+
+      {{! Latest BPMN file - Process steps }}
       <div>
         <AuHeading
           @level="3"
@@ -290,72 +298,97 @@
           </AuDataTable>
         </div>
       </div>
-      <div>
-        <AuHeading
-          @level="3"
-          @skin="4"
-          class="au-u-margin-bottom-small au-u-margin-top"
-        >Versies</AuHeading>
-        <div class="au-c-boxed-table">
-          <AuDataTable
-            @content={{this.bpmnFiles}}
-            @isLoading={{this.bpmnFilesAreLoading}}
-            as |t|
-          >
-            <t.content class="au-c-data-table__table--small" as |c|>
-              <c.header>
-                <th>Toegevoegd op</th>
-                <th>Bestandsnaam</th>
-                <th>Grootte</th>
-                <th></th>
-              </c.header>
-              {{#if this.bpmnFilesHaveErrored}}
-                <TableMessage::Error />
-              {{else if this.bpmnFilesHaveNoResults}}
-                <TableMessage>
-                  <p>
-                    Er werden geen zoekresultaten gevonden.
-                  </p>
-                </TableMessage>
-              {{else}}
-                <c.body as |bpmnFile|>
-                  <td>{{date-format bpmnFile.created true}}</td>
-                  <td>
-                    {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
-                      <strong>
-                        {{bpmnFile.name}}
-                        <AuIcon @icon="circle-check" />
-                      </strong>
-                    {{else}}
-                      {{bpmnFile.name}}
-                    {{/if}}
-                  </td>
-                  <td>{{file-size-format bpmnFile.size}}</td>
-                  <td>
-                    <AuButton
-                      @icon="download"
-                      @skin="link"
-                      {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
-                    />
-                  </td>
-                </c.body>
-              {{/if}}
-            </t.content>
-          </AuDataTable>
+    </div>
+
+    {{! BPMN files }}
+    <div class="au-o-grid__item au-u-margin-top">
+
+      {{! BPMN files - Title }}
+      <div class="au-u-margin-bottom-small">
+        <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+          <AuHeading @level="2" @skin="3">Versies</AuHeading>
         </div>
+        <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+          Ontdek hier vorige versies van het BPMN-diagram van dit proces,
+          geüpload in het Open Proces Huis. Deze versies zijn beschikbaar om te
+          downloaden.
+        </AuHelpText>
+      </div>
+
+      {{! BPMN files - Files }}
+      <div class="au-c-boxed-table au-u-margin-top-small">
+        <AuDataTable
+          @content={{this.bpmnFiles}}
+          @isLoading={{this.bpmnFilesAreLoading}}
+          as |t|
+        >
+          <t.content class="au-c-data-table__table--small" as |c|>
+            <c.header>
+              <th>Toegevoegd op</th>
+              <th>Bestandsnaam</th>
+              <th>Grootte</th>
+              <th></th>
+            </c.header>
+            {{#if this.bpmnFilesHaveErrored}}
+              <TableMessage::Error />
+            {{else if this.bpmnFilesHaveNoResults}}
+              <TableMessage>
+                <p>
+                  Er werden geen zoekresultaten gevonden.
+                </p>
+              </TableMessage>
+            {{else}}
+              <c.body as |bpmnFile|>
+                <td>{{date-format bpmnFile.created true}}</td>
+                <td>
+                  {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
+                    <strong>
+                      {{bpmnFile.name}}
+                      <AuIcon @icon="circle-check" />
+                    </strong>
+                  {{else}}
+                    {{bpmnFile.name}}
+                  {{/if}}
+                </td>
+                <td>{{file-size-format bpmnFile.size}}</td>
+                <td>
+                  <AuButton
+                    @icon="download"
+                    @skin="link"
+                    @hideText="true"
+                    {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
+                  >Download</AuButton>
+                </td>
+              </c.body>
+            {{/if}}
+          </t.content>
+        </AuDataTable>
       </div>
     </div>
+
+    {{! Attachments }}
     <div class="au-o-grid__item au-u-margin-top">
-      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-        <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
-        <AuButtonGroup>
-          {{#if this.canEdit}}
-            <AuButton {{on "click" this.openAddModal}}>
-              Voeg toe
-            </AuButton>
-          {{/if}}
-        </AuButtonGroup>
+
+      {{! Attachments - Title }}
+      <div class="au-u-margin-bottom-small">
+        <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+          <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
+          <AuButtonGroup>
+            {{#if this.canEdit}}
+              <AuButton {{on "click" this.openAddModal}}>
+                Voeg toe
+              </AuButton>
+            {{/if}}
+          </AuButtonGroup>
+        </div>
+        <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+          Bijlagen kunnen worden toegevoegd om het BPMN-diagram te
+          verduidelijken in alle bestandsformaten, behalve
+          <span class="au-u-italic">.bpmn</span>.
+        </AuHelpText>
       </div>
+
+      {{! Attachments - Files }}
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
           @content={{this.attachments}}
@@ -390,15 +423,18 @@
                   <AuButton
                     @icon="download"
                     @skin="link"
+                    @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile attachment)}}
-                  />
+                  >Download</AuButton>
                 </td>
               </c.body>
             {{/if}}
           </t.content>
         </AuDataTable>
       </div>
+
     </div>
+
   </div>
 </AuBodyContainer>
 
