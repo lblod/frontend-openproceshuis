@@ -354,8 +354,9 @@
                   <AuButton
                     @icon="download"
                     @skin="link"
+                    @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
-                  />
+                  >Download</AuButton>
                 </td>
               </c.body>
             {{/if}}
@@ -420,8 +421,9 @@
                   <AuButton
                     @icon="download"
                     @skin="link"
+                    @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile attachment)}}
-                  />
+                  >Download</AuButton>
                 </td>
               </c.body>
             {{/if}}
