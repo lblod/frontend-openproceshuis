@@ -163,7 +163,11 @@
   {{/if}}
 
   <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
+
+    {{! Latest BPMN file }}
     <div class="au-o-grid__item">
+
+      {{! Latest BPMN file - Title }}
       <div class="au-u-flex au-u-flex--between">
         <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
         <AuButtonGroup>
@@ -180,6 +184,8 @@
           {{/if}}
         </AuButtonGroup>
       </div>
+
+      {{! Latest BPMN file - Diagram }}
       <div>
         <AuHeading
           @level="3"
@@ -245,6 +251,8 @@
           <p>Dit proces heeft geen diagram.</p>
         {{/if}}
       </div>
+
+      {{! Latest BPMN file - Process steps }}
       <div>
         <AuHeading
           @level="3"
@@ -290,6 +298,8 @@
           </AuDataTable>
         </div>
       </div>
+
+      {{! Latest BPMN file - Versions }}
       <div>
         <AuHeading
           @level="3"
@@ -345,7 +355,11 @@
         </div>
       </div>
     </div>
+
+    {{! Attachments }}
     <div class="au-o-grid__item au-u-margin-top">
+
+      {{! Attachments - Title }}
       <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
         <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
         <AuButtonGroup>
@@ -356,6 +370,8 @@
           {{/if}}
         </AuButtonGroup>
       </div>
+
+      {{! Attachments - Files }}
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
           @content={{this.attachments}}
@@ -398,7 +414,9 @@
           </t.content>
         </AuDataTable>
       </div>
+
     </div>
+
   </div>
 </AuBodyContainer>
 
