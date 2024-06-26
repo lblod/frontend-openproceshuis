@@ -2,13 +2,6 @@
   <:sidebar>
     <div class="au-c-sidebar">
       <div class="au-c-sidebar__content">
-        <ul class="au-c-list-navigation">
-          <li class="au-c-list-navigation__item">
-            <AuNavigationLink @route="processes.index">
-              Alle processen
-            </AuNavigationLink>
-          </li>
-        </ul>
         <form
           {{on "reset" this.resetFilters}}
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
@@ -40,8 +33,11 @@
     <PageHeader>
       <:title>Processen</:title>
       <:subtitle>
-        <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
-          bestanden</AuLink>
+        {{! 
+          TODO: Reintroduce when help page gets content
+          }}
+        {{! <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
+          bestanden</AuLink> }}
       </:subtitle>
       <:action></:action>
     </PageHeader>
@@ -95,7 +91,7 @@
                 {{process.title}}
               </LinkTo>
             </td>
-            <td>{{or process.description "/"}}</td>
+            <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.modified}}</td>
             <td>{{process.publisher.name}}</td>
           </c.body>

@@ -15,6 +15,14 @@ export default class ProcessModel extends Model {
   validations = {
     title: {
       presence: true,
+      length: {
+        maximum: 100,
+      },
+    },
+    description: {
+      length: {
+        maximum: 3000,
+      },
     },
   };
 
