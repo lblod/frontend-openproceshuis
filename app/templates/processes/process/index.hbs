@@ -298,61 +298,63 @@
           </AuDataTable>
         </div>
       </div>
+    </div>
 
-      {{! Latest BPMN file - Versions }}
-      <div>
-        <AuHeading
-          @level="3"
-          @skin="4"
-          class="au-u-margin-bottom-small au-u-margin-top"
-        >Versies</AuHeading>
-        <div class="au-c-boxed-table">
-          <AuDataTable
-            @content={{this.bpmnFiles}}
-            @isLoading={{this.bpmnFilesAreLoading}}
-            as |t|
-          >
-            <t.content class="au-c-data-table__table--small" as |c|>
-              <c.header>
-                <th>Toegevoegd op</th>
-                <th>Bestandsnaam</th>
-                <th>Grootte</th>
-                <th></th>
-              </c.header>
-              {{#if this.bpmnFilesHaveErrored}}
-                <TableMessage::Error />
-              {{else if this.bpmnFilesHaveNoResults}}
-                <TableMessage>
-                  <p>
-                    Er werden geen zoekresultaten gevonden.
-                  </p>
-                </TableMessage>
-              {{else}}
-                <c.body as |bpmnFile|>
-                  <td>{{date-format bpmnFile.created true}}</td>
-                  <td>
-                    {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
-                      <strong>
-                        {{bpmnFile.name}}
-                        <AuIcon @icon="circle-check" />
-                      </strong>
-                    {{else}}
+    {{! BPMN files }}
+    <div class="au-o-grid__item au-u-margin-top">
+
+      {{! BPMN files - Title }}
+      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+        <AuHeading @level="2" @skin="3">Versies</AuHeading>
+      </div>
+
+      {{! BPMN files - Files }}
+      <div class="au-c-boxed-table au-u-margin-top-small">
+        <AuDataTable
+          @content={{this.bpmnFiles}}
+          @isLoading={{this.bpmnFilesAreLoading}}
+          as |t|
+        >
+          <t.content class="au-c-data-table__table--small" as |c|>
+            <c.header>
+              <th>Toegevoegd op</th>
+              <th>Bestandsnaam</th>
+              <th>Grootte</th>
+              <th></th>
+            </c.header>
+            {{#if this.bpmnFilesHaveErrored}}
+              <TableMessage::Error />
+            {{else if this.bpmnFilesHaveNoResults}}
+              <TableMessage>
+                <p>
+                  Er werden geen zoekresultaten gevonden.
+                </p>
+              </TableMessage>
+            {{else}}
+              <c.body as |bpmnFile|>
+                <td>{{date-format bpmnFile.created true}}</td>
+                <td>
+                  {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
+                    <strong>
                       {{bpmnFile.name}}
-                    {{/if}}
-                  </td>
-                  <td>{{file-size-format bpmnFile.size}}</td>
-                  <td>
-                    <AuButton
-                      @icon="download"
-                      @skin="link"
-                      {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
-                    />
-                  </td>
-                </c.body>
-              {{/if}}
-            </t.content>
-          </AuDataTable>
-        </div>
+                      <AuIcon @icon="circle-check" />
+                    </strong>
+                  {{else}}
+                    {{bpmnFile.name}}
+                  {{/if}}
+                </td>
+                <td>{{file-size-format bpmnFile.size}}</td>
+                <td>
+                  <AuButton
+                    @icon="download"
+                    @skin="link"
+                    {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
+                  />
+                </td>
+              </c.body>
+            {{/if}}
+          </t.content>
+        </AuDataTable>
       </div>
     </div>
 
