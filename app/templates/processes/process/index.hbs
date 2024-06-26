@@ -198,11 +198,10 @@
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
         {{else if this.latestBpmnFile}}
-          <p class="au-u-margin-top-none">
-            <AuHelpText @skin="secondary">Klik en hou vast om diagram te
-              bedienen. Gebruik ctrl en scrollwiel om in en uit te zoomen. Klik
-              elders om bediening uit te schakelen.</AuHelpText>
-          </p>
+          <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+            Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
+            om in en uit te zoomen. Klik elders om bediening uit te schakelen.
+          </AuHelpText>
           <BpmnViewer @bpmnFile={{this.latestBpmnFile}} />
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
@@ -305,8 +304,14 @@
     <div class="au-o-grid__item au-u-margin-top">
 
       {{! BPMN files - Title }}
-      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-        <AuHeading @level="2" @skin="3">Versies</AuHeading>
+      <div class="au-u-margin-bottom-small">
+        <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+          <AuHeading @level="2" @skin="3">Versies</AuHeading>
+        </div>
+        <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+          Naast het huidige BPMN-bestand worden ook oudere versies bijgehouden.
+          Het huidige BPMN-bestand is in vet aangeduid.
+        </AuHelpText>
       </div>
 
       {{! BPMN files - Files }}
@@ -363,15 +368,21 @@
     <div class="au-o-grid__item au-u-margin-top">
 
       {{! Attachments - Title }}
-      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-        <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
-        <AuButtonGroup>
-          {{#if this.canEdit}}
-            <AuButton {{on "click" this.openAddModal}}>
-              Voeg toe
-            </AuButton>
-          {{/if}}
-        </AuButtonGroup>
+      <div class="au-u-margin-bottom-small">
+        <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+          <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
+          <AuButtonGroup>
+            {{#if this.canEdit}}
+              <AuButton {{on "click" this.openAddModal}}>
+                Voeg toe
+              </AuButton>
+            {{/if}}
+          </AuButtonGroup>
+        </div>
+        <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+          Verschillende bestanden kunnen een proces betekenis geven.
+          Niet-BPMN-bestanden kunnen zodoende als bijlagen bewaard worden.
+        </AuHelpText>
       </div>
 
       {{! Attachments - Files }}
