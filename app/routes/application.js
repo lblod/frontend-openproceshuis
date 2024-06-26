@@ -19,12 +19,21 @@ export default class ApplicationRoute extends Route {
   }
 
   async startAnalytics() {
+    console.log('start analytics');
     let { domain, apiHost } = ENV.plausible;
 
+    console.log('domain:', domain, 'apiHost:', apiHost);
+
     if (
+      domain &&
+      apiHost &&
       domain !== '{{ANALYTICS_APP_DOMAIN}}' &&
       apiHost !== '{{ANALYTICS_API_HOST}}'
-    )
-      this.plausible.enable({ domain, apiHost });
+    ) {
+      const trackLocalhost = true;
+      this.plausible.enable({ domain, apiHost, trackLocalhost });
+      console.log('enabled');
+    }
+    console.log(this.plausible);
   }
 }
