@@ -93,7 +93,7 @@
         {{else}}
           <c.body as |element|>
             <td>{{or (truncate element.name 50 true) "/"}}</td>
-            <td>{{capitalize-first (or element.type.name "/")}}</td>
+            <td>{{capitalize (or element.type.name "/")}}</td>
             <td>{{element.bpmnProcess.bpmnFile.name}}</td>
             <td>
               <LinkTo

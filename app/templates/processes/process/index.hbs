@@ -283,7 +283,7 @@
               {{else}}
                 <c.body as |element|>
                   <td>{{or element.name "/"}}</td>
-                  <td>{{capitalize-first (or element.type.name "/")}}</td>
+                  <td>{{capitalize (or element.type.name "/")}}</td>
                 </c.body>
               {{/if}}
             </t.content>
@@ -448,7 +448,7 @@
               "click"
               (fn this.downloadLatestBpmnFile downloadType.extension)
             }}
-          >{{capitalize-first downloadType.label}}
+          >{{capitalize downloadType.label}}
             <span
               class="au-u-para-tiny au-u-regular"
             >(.{{downloadType.extension}})</span></AuButton>
