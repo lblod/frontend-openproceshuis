@@ -1,5 +1,22 @@
 
 
+
+## 1.0.0-0 (2024-06-26)
+
+#### :rocket: Enhancement
+* [#38](https://github.com/lblod/frontend-openproceshuis/pull/38) Feature/update-ui ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#37](https://github.com/lblod/frontend-openproceshuis/pull/37) Improvements ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#36](https://github.com/lblod/frontend-openproceshuis/pull/36) Feature/add-unauthorized-banner ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#35](https://github.com/lblod/frontend-openproceshuis/pull/35) Enable Plausible tracking ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#33](https://github.com/lblod/frontend-openproceshuis/pull/33) Reshape domain ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :bug: Bug Fix
+* [#34](https://github.com/lblod/frontend-openproceshuis/pull/34) Bug fixes ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+
 ## 0.2.0 (2024-06-12)
 
 #### :rocket: Enhancement
