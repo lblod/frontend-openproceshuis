@@ -199,7 +199,7 @@ export default class ProcessesProcessIndexController extends Controller {
   async downloadFile(fileId, fileName, fileExtension, targetExtension) {
     await downloadFileByUrl(fileId, fileName, fileExtension, targetExtension);
 
-    this.plausible.trackEvent('Download proces', {
+    this.plausible.trackEvent('Download bestand', {
       'Bestand-ID': fileId,
       Bestandsnaam: fileName,
       Bestandstype: fileExtension,
