@@ -22,6 +22,8 @@ export default class ApplicationRoute extends Route {
     let { domain, apiHost } = ENV.plausible;
 
     if (
+      domain &&
+      apiHost &&
       domain !== '{{ANALYTICS_APP_DOMAIN}}' &&
       apiHost !== '{{ANALYTICS_API_HOST}}'
     )
