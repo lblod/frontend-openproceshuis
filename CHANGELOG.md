@@ -1,6 +1,17 @@
 
 
 
+
+## 1.0.0 (2024-06-27)
+
+#### :bug: Bug Fix
+* [#39](https://github.com/lblod/frontend-openproceshuis/pull/39) Fix Plausible analytics tracking ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+
+
 ## 1.0.0-0 (2024-06-26)
 
 #### :rocket: Enhancement
