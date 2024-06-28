@@ -28,8 +28,7 @@ export default class ApplicationController extends Controller {
 
   get showEnvironment() {
     return (
-      this.environmentName !== '' &&
-      this.environmentName !== '{{ENVIRONMENT_NAME}}'
+      this.environmentName && this.environmentName !== '{{ENVIRONMENT_NAME}}'
     );
   }
 }
