@@ -2,6 +2,16 @@
 
 
 
+
+## 1.0.1 (2024-06-28)
+
+#### :bug: Bug Fix
+* [#40](https://github.com/lblod/frontend-openproceshuis/pull/40) Update website titles and text ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+
 ## 1.0.0 (2024-06-27)
 
 #### :bug: Bug Fix
