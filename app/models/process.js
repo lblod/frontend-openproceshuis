@@ -23,6 +23,11 @@ export default class ProcessModel extends Model {
       length: {
         maximum: 3000,
       },
+      custom: (_, value) => {
+        if (!value) return true;
+        if (value.trim() !== '') return true;
+        return false;
+      },
     },
   };
 
