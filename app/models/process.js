@@ -1,6 +1,7 @@
 import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { modelValidator } from 'ember-model-validator';
 import ENV from 'frontend-openproceshuis/config/environment';
+import { isOnlyWhitespace } from 'frontend-openproceshuis/utils/custom-validators';
 
 @modelValidator
 export default class ProcessModel extends Model {
@@ -23,11 +24,7 @@ export default class ProcessModel extends Model {
       length: {
         maximum: 3000,
       },
-      custom: (_, value) => {
-        if (!value) return true;
-        if (value.trim() !== '') return true;
-        return false;
-      },
+      custom: (_, value) => !isOnlyWhitespace(value),
     },
   };
 
