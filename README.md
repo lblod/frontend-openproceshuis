@@ -1,57 +1,47 @@
 # Open Proces Huis (frontend)
 
-This README outlines the details of collaborating on this Ember application.
+This repo holds the [Ember](https://emberjs.com/) project that serves as the frontend of Open Proces Huis. Open Proces Huis is one of many applications developed under the [Agentschap Binnenlands Bestuur (ABB)](https://www.vlaanderen.be/agentschap-binnenlands-bestuur), which is part of the [Flemish Government](https://www.vlaanderen.be/en). It allows for _lokale besturen_ to create and share processes. Such process is created by uploading a BPMN file, and can be populated further with other types of files that serve as attachments. The application also allows for uploading new versions of a process's BPMN file, enabling for a very rudamentary idea of version control.
 
-A short introduction of this app could easily go here.
+## Getting started
 
-## Prerequisites
+### Backend
 
-You will need the following things properly installed on your computer.
+The frontend relies on some backend for proper running. In fact, it relies on a wide range of microservices, each doing its own part. The setup of the complete microservices stack can be found in [this repo](https://github.com/lblod/app-openproceshuis), whose README also stipulates the necessary steps to undertake in order to get the stack running.
 
-- [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/) (with npm)
-- [Ember CLI](https://cli.emberjs.com/release/)
-- [Google Chrome](https://google.com/chrome/)
+### Frontend
 
-## Installation
+> First make sure the backend is up and running.
 
-- `git clone <repository-url>` this repository
-- `cd frontend-openproceshuis`
-- `npm install`
+1. Clone this repository
 
-## Running / Development
+```bash
+git clone https://github.com/lblod/frontend-openproceshuis.git
+```
 
-- `npm run start`
-- Visit your app at [http://localhost:4200](http://localhost:4200).
-- Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
+2. Download the necessary NPM packages
 
-### Code Generators
+```bash
+cd /path/to/project
+```
 
-Make use of the many generators for code, try `ember help generate` for more details
+```bash
+npm install
+```
 
-### Running Tests
+3. Run the project
 
-- `npm run test`
-- `npm run test:ember -- --server`
+```bash
+ember serve --proxy "http://localhost:80"
+```
 
-### Linting
+4. In your browser, go to [localhost:4200](http://localhost:4200) to visit the homepage of the web application.
 
-- `npm run lint`
-- `npm run lint:fix`
+## Routes
 
-### Building
+As with any Ember project, [router.js](./app/router.js) holds all possible routes the application offers. What follows, is a brief overview of the most important ones.
 
-- `npm exec ember build` (development)
-- `npm run build` (production)
-
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-- [ember.js](https://emberjs.com/)
-- [ember-cli](https://cli.emberjs.com/release/)
-- Development Browser Extensions
-  - [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  - [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+- `/mock-login`: log in using a mock user (every user is part of a _lokaal bestuur_)
+- `/processen`: list all processes of all _lokale besturen_
+- `/processen/<id>`: consult the details, the latest BPMN file, the latest BPMN file's process steps, all BPMN file versions, and attachments of a specific process
+- `/gedeelde-processen`: list all processes of the current user's _lokaal bestuur_ and upload a new one (a BPMN file is always the starting point for the creation of a process)
+- `/processtappen`: list all process steps of all _lokale besturen_ (process steps correspond to the BPMN elements found in a BPMN file)
