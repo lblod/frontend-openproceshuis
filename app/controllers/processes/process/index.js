@@ -7,7 +7,17 @@ import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 
 export default class ProcessesProcessIndexController extends Controller {
-  queryParams = ['page', 'size', 'sort'];
+  queryParams = [
+    { pageProcessSteps: 'processtappen-pagina' },
+    { sizeProcessSteps: 'processtappen-aantal' },
+    { sortProcessSteps: 'processtappen-sorteer' },
+    { pageVersions: 'versies-pagina' },
+    { sizeVersions: 'versies-aantal' },
+    { sortVersions: 'versies-sorteer' },
+    { pageAttachments: 'bijlagen-pagina' },
+    { sizeAttachments: 'bijlagen-aantal' },
+    { sortAttachments: 'bijlagen-sorteer' },
+  ];
 
   @service store;
   @service router;
@@ -15,9 +25,9 @@ export default class ProcessesProcessIndexController extends Controller {
   @service toaster;
   @service plausible;
 
-  @tracked page = 0;
-  size = 20;
-  @tracked sort = 'name';
+  @tracked pageProcessSteps = 0;
+  sizeProcessSteps = 20;
+  @tracked sortProcessSteps = 'name';
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked addModalOpened = false;
@@ -157,11 +167,11 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   resetFilters() {
-    this.page = 0;
-    this.sort = 'name';
+    this.pageProcessSteps = 0;
+    this.sortProcessSteps = 'name';
 
     // Triggers a refresh of the model
-    this.page = null;
+    this.pageProcessSteps = null;
   }
 
   @action
@@ -256,7 +266,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
-    this.page = 0;
+    this.pageProcessSteps = 0;
     this.router.refresh();
   }
 

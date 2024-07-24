@@ -263,20 +263,20 @@
           <AuDataTable
             @content={{this.processSteps}}
             @isLoading={{this.processStepsBatchIsLoading}}
-            @page={{this.page}}
-            @size={{this.size}}
+            @page={{this.pageProcessSteps}}
+            @size={{this.sizeProcessSteps}}
             as |t|
           >
             <t.content class="au-c-data-table__table--small" as |c|>
               <c.header>
                 <AuDataTableThSortable
                   @field="name"
-                  @currentSorting={{this.sort}}
+                  @currentSorting={{this.sortProcessSteps}}
                   @label="Naam"
                 />
                 <AuDataTableThSortable
                   @field="type"
-                  @currentSorting={{this.sort}}
+                  @currentSorting={{this.sortProcessSteps}}
                   @label="Type"
                 />
               </c.header>

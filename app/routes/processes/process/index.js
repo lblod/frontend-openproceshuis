@@ -6,8 +6,15 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service store;
 
   queryParams = {
-    page: { refreshModel: true },
-    sort: { refreshModel: true },
+    pageProcessSteps: { as: 'processtappen-pagina', refreshModel: true },
+    sizeProcessSteps: { as: 'processtappen-aantal', refreshModel: true },
+    sortProcessSteps: { as: 'processtappen-sorteer', refreshModel: true },
+    pageVersions: { as: 'versies-pagina', refreshModel: true },
+    sizeVersions: { as: 'versies-aantal', refreshModel: true },
+    sortVersions: { as: 'versies-sorteer', refreshModel: true },
+    pageAttachments: { as: 'bijlagen-pagina', refreshModel: true },
+    sizeAttachments: { as: 'bijlagen-aantal', refreshModel: true },
+    sortAttachments: { as: 'bijlagen-sorteer', refreshModel: true },
   };
 
   async model() {
@@ -49,18 +56,20 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     let query = {
       page: {
-        number: params.page,
-        size: params.size,
+        number: params.pageProcessSteps,
+        size: params.sizeProcessSteps,
       },
       include: 'type',
       'filter[:has:name]': true,
       'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
     };
 
-    if (params.sort) {
-      const isDescending = params.sort.startsWith('-');
+    if (params.sortProcessSteps) {
+      const isDescending = params.sortProcessSteps.startsWith('-');
 
-      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      let fieldName = isDescending
+        ? params.sortProcessSteps.substring(1)
+        : params.sortProcessSteps;
       if (fieldName === 'type') fieldName = 'type.label';
 
       let sortValue = `:no-case:${fieldName}`;
