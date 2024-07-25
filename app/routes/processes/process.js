@@ -16,11 +16,6 @@ export default class ProcessesProcessRoute extends Route {
     );
     const loadedBpmnFiles = this.loadBpmnFilesTask.lastSuccessful?.value;
 
-    const loadAttachmentsTaskInstance = this.loadAttachmentsTask.perform(
-      loadProcessTaskInstance
-    );
-    const loadedAttachments = this.loadAttachmentsTask.lastSuccessful?.value;
-
     const loadLatestBpmnFileTaskInstance = this.loadLatestBpmnFileTask.perform(
       loadBpmnFilesTaskInstance
     );
@@ -32,8 +27,6 @@ export default class ProcessesProcessRoute extends Route {
       loadedProcess,
       loadBpmnFilesTaskInstance,
       loadedBpmnFiles,
-      loadAttachmentsTaskInstance,
-      loadedAttachments,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
     };
@@ -69,16 +62,6 @@ export default class ProcessesProcessRoute extends Route {
     return files
       ?.filter((file) => file.isBpmnFile)
       .sort((fileA, fileB) => fileB.created - fileA.created); // FIXME: should be handled by backend
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadAttachmentsTask(loadProcessTaskInstance) {
-    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
-
-    const files = loadProcessTaskInstance.value?.files;
-    return files
-      ?.filter((file) => !file.isBpmnFile)
-      .sort((fileA, fileB) => fileA.name.localeCompare(fileB.name)); // FIXME: should be handled by backend
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })

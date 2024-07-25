@@ -23,8 +23,6 @@ export default class ProcessesProcessIndexRoute extends Route {
       loadedProcess,
       loadBpmnFilesTaskInstance,
       loadedBpmnFiles,
-      loadAttachmentsTaskInstance,
-      loadedAttachments,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
     } = this.modelFor('processes.process');
@@ -34,8 +32,8 @@ export default class ProcessesProcessIndexRoute extends Route {
       loadedProcess,
       loadBpmnFilesTaskInstance,
       loadedBpmnFiles,
-      loadAttachmentsTaskInstance,
-      loadedAttachments,
+      loadAttachmentsTaskInstance: this.loadAttachmentsTask.perform(),
+      loadedAttachments: this.loadAttachmentsTask.lastSuccessful?.value,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(
@@ -54,7 +52,7 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     const params = this.paramsFor('processes.process.index');
 
-    let query = {
+    const query = {
       page: {
         number: params.pageProcessSteps,
         size: params.sizeProcessSteps,
@@ -79,6 +77,25 @@ export default class ProcessesProcessIndexRoute extends Route {
     }
 
     return yield this.store.query('bpmn-element', query);
+  }
+
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadAttachmentsTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const params = this.paramsFor('processes.process.index');
+
+    const query = {
+      page: {
+        number: params.pageAttachments,
+        size: params.sizeAttachments,
+      },
+      'filter[processes][id]': processId,
+      'filter[:not:extension]': 'bpmn',
+    };
+
+    if (params.sortAttachments) query.sort = params.sortAttachments;
+
+    return yield this.store.query('file', query);
   }
 
   resetController(controller) {
