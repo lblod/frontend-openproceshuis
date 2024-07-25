@@ -8,15 +8,15 @@ import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extensio
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
-    { pageProcessSteps: 'processtappen-pagina' },
-    { sizeProcessSteps: 'processtappen-aantal' },
-    { sortProcessSteps: 'processtappen-sorteer' },
-    { pageVersions: 'versies-pagina' },
-    { sizeVersions: 'versies-aantal' },
-    { sortVersions: 'versies-sorteer' },
-    { pageAttachments: 'bijlagen-pagina' },
-    { sizeAttachments: 'bijlagen-aantal' },
-    { sortAttachments: 'bijlagen-sorteer' },
+    { pageProcessSteps: 'process-steps-page' },
+    { sizeProcessSteps: 'process-steps-size' },
+    { sortProcessSteps: 'process-steps-sort' },
+    { pageVersions: 'versions-page' },
+    { sizeVersions: 'versions-size' },
+    { sortVersions: 'versions-sort' },
+    { pageAttachments: 'attachments-page' },
+    { sizeAttachments: 'attachments-size' },
+    { sortAttachments: 'attachments-sort' },
   ];
 
   @service store;

@@ -6,15 +6,15 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service store;
 
   queryParams = {
-    pageProcessSteps: { as: 'processtappen-pagina', refreshModel: true },
-    sizeProcessSteps: { as: 'processtappen-aantal', refreshModel: true },
-    sortProcessSteps: { as: 'processtappen-sorteer', refreshModel: true },
-    pageVersions: { as: 'versies-pagina', refreshModel: true },
-    sizeVersions: { as: 'versies-aantal', refreshModel: true },
-    sortVersions: { as: 'versies-sorteer', refreshModel: true },
-    pageAttachments: { as: 'bijlagen-pagina', refreshModel: true },
-    sizeAttachments: { as: 'bijlagen-aantal', refreshModel: true },
-    sortAttachments: { as: 'bijlagen-sorteer', refreshModel: true },
+    pageProcessSteps: { as: 'process-steps-page', refreshModel: true },
+    sizeProcessSteps: { as: 'process-steps-size', refreshModel: true },
+    sortProcessSteps: { as: 'process-steps-sort', refreshModel: true },
+    pageVersions: { as: 'versions-page', refreshModel: true },
+    sizeVersions: { as: 'versions-size', refreshModel: true },
+    sortVersions: { as: 'versions-sort', refreshModel: true },
+    pageAttachments: { as: 'attachments-page', refreshModel: true },
+    sizeAttachments: { as: 'attachments-size', refreshModel: true },
+    sortAttachments: { as: 'attachments-sort', refreshModel: true },
   };
 
   async model() {
