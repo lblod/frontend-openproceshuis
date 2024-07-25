@@ -28,6 +28,13 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked pageProcessSteps = 0;
   sizeProcessSteps = 20;
   @tracked sortProcessSteps = 'name';
+  @tracked pageVersions = 0;
+  sizeVersions = 10;
+  @tracked sortVersions = 'created';
+  @tracked pageAttachments = 0;
+  sizeAttachments = 10;
+  @tracked sortAttachments = 'name';
+
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked addModalOpened = false;
@@ -163,15 +170,6 @@ export default class ProcessesProcessIndexController extends Controller {
       this.process?.publisher &&
       this.process.publisher.id === this.currentSession.group.id
     );
-  }
-
-  @action
-  resetFilters() {
-    this.pageProcessSteps = 0;
-    this.sortProcessSteps = 'name';
-
-    // Triggers a refresh of the model
-    this.pageProcessSteps = null;
   }
 
   @action
