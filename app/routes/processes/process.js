@@ -16,9 +16,8 @@ export default class ProcessesProcessRoute extends Route {
     );
     const loadedBpmnFiles = this.loadBpmnFilesTask.lastSuccessful?.value;
 
-    const loadLatestBpmnFileTaskInstance = this.loadLatestBpmnFileTask.perform(
-      loadBpmnFilesTaskInstance
-    );
+    const loadLatestBpmnFileTaskInstance =
+      this.loadLatestBpmnFileTask.perform();
     const loadedLatestBpmnFile =
       this.loadLatestBpmnFileTask.lastSuccesful?.value;
 
@@ -65,11 +64,19 @@ export default class ProcessesProcessRoute extends Route {
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadLatestBpmnFileTask(loadBpmnFilesTaskInstance) {
-    yield waitForProperty(loadBpmnFilesTaskInstance, 'isFinished');
+  *loadLatestBpmnFileTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const query = {
+      page: {
+        number: 0,
+        size: 1,
+      },
+      'filter[processes][id]': processId,
+      'filter[extension]': 'bpmn',
+      sort: '-created',
+    };
 
-    const sortedFiles = loadBpmnFilesTaskInstance.value;
-    if (!sortedFiles || sortedFiles.length === 0) return null;
-    return sortedFiles[0];
+    const bpmnFiles = yield this.store.query('file', query);
+    return bpmnFiles.length ? bpmnFiles[0] : undefined;
   }
 }
