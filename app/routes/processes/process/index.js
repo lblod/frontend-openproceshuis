@@ -121,7 +121,23 @@ export default class ProcessesProcessIndexRoute extends Route {
       'filter[:not:extension]': 'bpmn',
     };
 
-    if (params.sortAttachments) query.sort = params.sortAttachments;
+    if (params.sortAttachments) {
+      const isDescending = params.sortAttachments.startsWith('-');
+
+      let sortValue = isDescending
+        ? params.sortAttachments.substring(1)
+        : params.sortAttachments;
+
+      if (
+        sortValue === 'name' ||
+        sortValue === 'extension' ||
+        sortValue === 'format'
+      )
+        sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
 
     return yield this.store.query('file', query);
   }
