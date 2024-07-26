@@ -21,8 +21,6 @@ export default class ProcessesProcessIndexRoute extends Route {
     const {
       loadProcessTaskInstance,
       loadedProcess,
-      loadBpmnFilesTaskInstance,
-      loadedBpmnFiles,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
     } = this.modelFor('processes.process');
@@ -30,8 +28,8 @@ export default class ProcessesProcessIndexRoute extends Route {
     return {
       loadProcessTaskInstance,
       loadedProcess,
-      loadBpmnFilesTaskInstance,
-      loadedBpmnFiles,
+      loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(),
+      loadedBpmnFiles: this.loadBpmnFilesTask.lastSuccessful?.value,
       loadAttachmentsTaskInstance: this.loadAttachmentsTask.perform(),
       loadedAttachments: this.loadAttachmentsTask.lastSuccessful?.value,
       loadLatestBpmnFileTaskInstance,
@@ -77,6 +75,36 @@ export default class ProcessesProcessIndexRoute extends Route {
     }
 
     return yield this.store.query('bpmn-element', query);
+  }
+
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadBpmnFilesTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const params = this.paramsFor('processes.process.index');
+
+    const query = {
+      page: {
+        number: params.pageVersions,
+        size: params.sizeVersions,
+      },
+      'filter[processes][id]': processId,
+      'filter[extension]': 'bpmn',
+    };
+
+    if (params.sortVersions) {
+      const isDescending = params.sortVersions.startsWith('-');
+
+      let sortValue = isDescending
+        ? params.sortVersions.substring(1)
+        : params.sortVersions;
+
+      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    return yield this.store.query('file', query);
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })

@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
-import { keepLatestTask, waitForProperty } from 'ember-concurrency';
+import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessRoute extends Route {
@@ -8,26 +8,11 @@ export default class ProcessesProcessRoute extends Route {
   @service plausible;
 
   async model() {
-    const loadProcessTaskInstance = this.loadProcessTask.perform();
-    const loadedProcess = this.loadProcessTask.lastSuccesful?.value;
-
-    const loadBpmnFilesTaskInstance = this.loadBpmnFilesTask.perform(
-      loadProcessTaskInstance
-    );
-    const loadedBpmnFiles = this.loadBpmnFilesTask.lastSuccessful?.value;
-
-    const loadLatestBpmnFileTaskInstance =
-      this.loadLatestBpmnFileTask.perform();
-    const loadedLatestBpmnFile =
-      this.loadLatestBpmnFileTask.lastSuccesful?.value;
-
     return {
-      loadProcessTaskInstance,
-      loadedProcess,
-      loadBpmnFilesTaskInstance,
-      loadedBpmnFiles,
-      loadLatestBpmnFileTaskInstance,
-      loadedLatestBpmnFile,
+      loadProcessTaskInstance: this.loadProcessTask.perform(),
+      loadedProcess: this.loadProcessTask.lastSuccesful?.value,
+      loadLatestBpmnFileTaskInstance: this.loadLatestBpmnFileTask.perform(),
+      loadedLatestBpmnFile: this.loadLatestBpmnFileTask.lastSuccesful?.value,
     };
   }
 
@@ -51,16 +36,6 @@ export default class ProcessesProcessRoute extends Route {
     });
 
     return process;
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnFilesTask(loadProcessTaskInstance) {
-    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
-
-    const files = loadProcessTaskInstance.value?.files;
-    return files
-      ?.filter((file) => file.isBpmnFile)
-      .sort((fileA, fileB) => fileB.created - fileA.created); // FIXME: should be handled by backend
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })

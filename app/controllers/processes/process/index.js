@@ -30,7 +30,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked sortProcessSteps = 'name';
   @tracked pageVersions = 0;
   sizeVersions = 10;
-  @tracked sortVersions = 'created';
+  @tracked sortVersions = '-created';
   @tracked pageAttachments = 0;
   sizeAttachments = 10;
   @tracked sortAttachments = 'name';
