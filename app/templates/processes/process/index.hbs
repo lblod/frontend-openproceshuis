@@ -370,6 +370,7 @@
                   <AuButton
                     @icon="download"
                     @skin="link"
+                    @width="block"
                     @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
                   >Download</AuButton>
@@ -381,6 +382,7 @@
                     @alert="true"
                     @width="block"
                     @hideText="true"
+                    @disabled={{eq bpmnFile.id this.latestBpmnFile.id}}
                     {{on "click" (fn this.openDeleteModal bpmnFile)}}
                   >Verwijder</AuButton>
                 </td>
@@ -471,6 +473,7 @@
                   <AuButton
                     @icon="download"
                     @skin="link"
+                    @width="block"
                     @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile attachment)}}
                   >Download</AuButton>
