@@ -42,6 +42,7 @@ export default class ProcessesProcessRoute extends Route {
   *loadLatestBpmnFileTask() {
     const { id: processId } = this.paramsFor('processes.process');
     const query = {
+      reload: true,
       page: {
         number: 0,
         size: 1,

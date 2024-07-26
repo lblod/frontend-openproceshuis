@@ -83,6 +83,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     const params = this.paramsFor('processes.process.index');
 
     const query = {
+      reload: true,
       page: {
         number: params.pageVersions,
         size: params.sizeVersions,
@@ -113,6 +114,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     const params = this.paramsFor('processes.process.index');
 
     const query = {
+      reload: true,
       page: {
         number: params.pageAttachments,
         size: params.sizeAttachments,
