@@ -340,9 +340,22 @@ export default class ProcessesProcessIndexController extends Controller {
     this.deleteModalOpened = false;
   }
 
-  @action
-  deleteFile() {
-    console.log('delete', this.fileToDelete.name);
+  @task
+  *deleteFile() {
+    this.fileToDelete.archive();
+
+    try {
+      yield this.fileToDelete.save();
+      this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('Bestand kon niet worden verwijderd', 'Fout');
+      this.fileToDelete.rollbackAttributes();
+    }
+
     this.closeDeleteModal();
+    this.router.refresh();
   }
 }

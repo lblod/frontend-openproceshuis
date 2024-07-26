@@ -608,7 +608,7 @@
         @skin="primary"
         @icon="bin"
         @alert="true"
-        {{on "click" this.deleteFile}}
+        {{on "click" (perform this.deleteFile)}}
       >Verwijder</AuButton>
     </AuButtonGroup>
   </:footer>
