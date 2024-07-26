@@ -40,6 +40,8 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked addModalOpened = false;
   @tracked edit = false;
   @tracked formIsValid = false;
+  @tracked fileToDelete = undefined;
+  @tracked deleteModalOpened = false;
 
   downloadTypes = [
     {
@@ -324,5 +326,23 @@ export default class ProcessesProcessIndexController extends Controller {
   validateForm() {
     this.formIsValid =
       this.process?.validate() && this.process?.hasDirtyAttributes;
+  }
+
+  @action
+  openDeleteModal(fileToDelete) {
+    this.fileToDelete = fileToDelete;
+    this.deleteModalOpened = true;
+  }
+
+  @action
+  closeDeleteModal() {
+    this.fileToDelete = undefined;
+    this.deleteModalOpened = false;
+  }
+
+  @action
+  deleteFile() {
+    console.log('delete', this.fileToDelete.name);
+    this.closeDeleteModal();
   }
 }

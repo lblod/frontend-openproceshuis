@@ -342,6 +342,7 @@
                 @label="Grootte"
               />
               <th></th>
+              <th></th>
             </c.header>
             {{#if this.bpmnFilesHaveErrored}}
               <TableMessage::Error />
@@ -372,6 +373,16 @@
                     @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
                   >Download</AuButton>
+                </td>
+                <td>
+                  <AuButton
+                    @icon="bin"
+                    @skin="naked"
+                    @alert="true"
+                    @width="block"
+                    @hideText="true"
+                    {{on "click" (fn this.openDeleteModal bpmnFile)}}
+                  >Verwijder</AuButton>
                 </td>
               </c.body>
             {{/if}}
@@ -439,6 +450,7 @@
                 @label="Toegevoegd op"
               />
               <th></th>
+              <th></th>
             </c.header>
             {{#if this.attachmentsHaveErrored}}
               <TableMessage::Error />
@@ -462,6 +474,16 @@
                     @hideText="true"
                     {{on "click" (fn this.downloadOriginalFile attachment)}}
                   >Download</AuButton>
+                </td>
+                <td>
+                  <AuButton
+                    @icon="bin"
+                    @skin="naked"
+                    @alert="true"
+                    @width="block"
+                    @hideText="true"
+                    {{on "click" (fn this.openDeleteModal attachment)}}
+                  >Verwijder</AuButton>
                 </td>
               </c.body>
             {{/if}}
@@ -555,6 +577,28 @@
         @skin="naked"
         {{on "click" this.closeAddModal}}
       >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.deleteModalOpened}}
+  @closeModal={{this.closeDeleteModal}}
+>
+  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" this.deleteFile}}
+      >Verwijder</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>
