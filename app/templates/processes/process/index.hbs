@@ -342,7 +342,9 @@
                 @label="Grootte"
               />
               <th></th>
-              <th></th>
+              {{#if this.canEdit}}
+                <th></th>
+              {{/if}}
             </c.header>
             {{#if this.bpmnFilesHaveErrored}}
               <TableMessage::Error />
@@ -375,17 +377,19 @@
                     {{on "click" (fn this.downloadOriginalFile bpmnFile)}}
                   >Download</AuButton>
                 </td>
-                <td>
-                  <AuButton
-                    @icon="bin"
-                    @skin="naked"
-                    @alert="true"
-                    @width="block"
-                    @hideText="true"
-                    @disabled={{eq bpmnFile.id this.latestBpmnFile.id}}
-                    {{on "click" (fn this.openDeleteModal bpmnFile)}}
-                  >Verwijder</AuButton>
-                </td>
+                {{#if this.canEdit}}
+                  <td>
+                    <AuButton
+                      @icon="bin"
+                      @skin="naked"
+                      @alert="true"
+                      @width="block"
+                      @hideText="true"
+                      @disabled={{eq bpmnFile.id this.latestBpmnFile.id}}
+                      {{on "click" (fn this.openDeleteModal bpmnFile)}}
+                    >Verwijder</AuButton>
+                  </td>
+                {{/if}}
               </c.body>
             {{/if}}
           </t.content>
@@ -452,7 +456,9 @@
                 @label="Toegevoegd op"
               />
               <th></th>
-              <th></th>
+              {{#if this.canEdit}}
+                <th></th>
+              {{/if}}
             </c.header>
             {{#if this.attachmentsHaveErrored}}
               <TableMessage::Error />
@@ -478,16 +484,18 @@
                     {{on "click" (fn this.downloadOriginalFile attachment)}}
                   >Download</AuButton>
                 </td>
-                <td>
-                  <AuButton
-                    @icon="bin"
-                    @skin="naked"
-                    @alert="true"
-                    @width="block"
-                    @hideText="true"
-                    {{on "click" (fn this.openDeleteModal attachment)}}
-                  >Verwijder</AuButton>
-                </td>
+                {{#if this.canEdit}}
+                  <td>
+                    <AuButton
+                      @icon="bin"
+                      @skin="naked"
+                      @alert="true"
+                      @width="block"
+                      @hideText="true"
+                      {{on "click" (fn this.openDeleteModal attachment)}}
+                    >Verwijder</AuButton>
+                  </td>
+                {{/if}}
               </c.body>
             {{/if}}
           </t.content>
