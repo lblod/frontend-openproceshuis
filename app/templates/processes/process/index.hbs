@@ -263,20 +263,20 @@
           <AuDataTable
             @content={{this.processSteps}}
             @isLoading={{this.processStepsBatchIsLoading}}
-            @page={{this.page}}
-            @size={{this.size}}
+            @page={{this.pageProcessSteps}}
+            @size={{this.sizeProcessSteps}}
             as |t|
           >
             <t.content class="au-c-data-table__table--small" as |c|>
               <c.header>
                 <AuDataTableThSortable
                   @field="name"
-                  @currentSorting={{this.sort}}
+                  @currentSorting={{this.sortProcessSteps}}
                   @label="Naam"
                 />
                 <AuDataTableThSortable
                   @field="type"
-                  @currentSorting={{this.sort}}
+                  @currentSorting={{this.sortProcessSteps}}
                   @label="Type"
                 />
               </c.header>
@@ -320,13 +320,27 @@
         <AuDataTable
           @content={{this.bpmnFiles}}
           @isLoading={{this.bpmnFilesAreLoading}}
+          @page={{this.pageVersions}}
+          @size={{this.sizeVersions}}
           as |t|
         >
           <t.content class="au-c-data-table__table--small" as |c|>
             <c.header>
-              <th>Toegevoegd op</th>
-              <th>Bestandsnaam</th>
-              <th>Grootte</th>
+              <AuDataTableThSortable
+                @field="created"
+                @currentSorting={{this.sortVersions}}
+                @label="Toegevoegd op"
+              />
+              <AuDataTableThSortable
+                @field="name"
+                @currentSorting={{this.sortVersions}}
+                @label="Bestandsnaam"
+              />
+              <AuDataTableThSortable
+                @field="size"
+                @currentSorting={{this.sortVersions}}
+                @label="Grootte"
+              />
               <th></th>
             </c.header>
             {{#if this.bpmnFilesHaveErrored}}
@@ -393,15 +407,37 @@
         <AuDataTable
           @content={{this.attachments}}
           @isLoading={{this.attachmentsAreLoading}}
+          @page={{this.pageAttachments}}
+          @size={{this.sizeAttachments}}
           as |t|
         >
           <t.content class="au-c-data-table__table--small" as |c|>
             <c.header>
-              <th>Bestandsnaam</th>
-              <th>Grootte</th>
-              <th>Extensie</th>
-              <th>Formaat</th>
-              <th>Toegevoegd op</th>
+              <AuDataTableThSortable
+                @field="name"
+                @currentSorting={{this.sortAttachments}}
+                @label="Bestandsnaam"
+              />
+              <AuDataTableThSortable
+                @field="size"
+                @currentSorting={{this.sortAttachments}}
+                @label="Grootte"
+              />
+              <AuDataTableThSortable
+                @field="extension"
+                @currentSorting={{this.sortAttachments}}
+                @label="Extensie"
+              />
+              <AuDataTableThSortable
+                @field="format"
+                @currentSorting={{this.sortAttachments}}
+                @label="Formaat"
+              />
+              <AuDataTableThSortable
+                @field="created"
+                @currentSorting={{this.sortAttachments}}
+                @label="Toegevoegd op"
+              />
               <th></th>
             </c.header>
             {{#if this.attachmentsHaveErrored}}

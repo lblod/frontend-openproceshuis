@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
-import { keepLatestTask, waitForProperty } from 'ember-concurrency';
+import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessRoute extends Route {
@@ -8,34 +8,11 @@ export default class ProcessesProcessRoute extends Route {
   @service plausible;
 
   async model() {
-    const loadProcessTaskInstance = this.loadProcessTask.perform();
-    const loadedProcess = this.loadProcessTask.lastSuccesful?.value;
-
-    const loadBpmnFilesTaskInstance = this.loadBpmnFilesTask.perform(
-      loadProcessTaskInstance
-    );
-    const loadedBpmnFiles = this.loadBpmnFilesTask.lastSuccessful?.value;
-
-    const loadAttachmentsTaskInstance = this.loadAttachmentsTask.perform(
-      loadProcessTaskInstance
-    );
-    const loadedAttachments = this.loadAttachmentsTask.lastSuccessful?.value;
-
-    const loadLatestBpmnFileTaskInstance = this.loadLatestBpmnFileTask.perform(
-      loadBpmnFilesTaskInstance
-    );
-    const loadedLatestBpmnFile =
-      this.loadLatestBpmnFileTask.lastSuccesful?.value;
-
     return {
-      loadProcessTaskInstance,
-      loadedProcess,
-      loadBpmnFilesTaskInstance,
-      loadedBpmnFiles,
-      loadAttachmentsTaskInstance,
-      loadedAttachments,
-      loadLatestBpmnFileTaskInstance,
-      loadedLatestBpmnFile,
+      loadProcessTaskInstance: this.loadProcessTask.perform(),
+      loadedProcess: this.loadProcessTask.lastSuccesful?.value,
+      loadLatestBpmnFileTaskInstance: this.loadLatestBpmnFileTask.perform(),
+      loadedLatestBpmnFile: this.loadLatestBpmnFileTask.lastSuccesful?.value,
     };
   }
 
@@ -62,31 +39,20 @@ export default class ProcessesProcessRoute extends Route {
   }
 
   @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnFilesTask(loadProcessTaskInstance) {
-    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
+  *loadLatestBpmnFileTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const query = {
+      reload: true,
+      page: {
+        number: 0,
+        size: 1,
+      },
+      'filter[processes][id]': processId,
+      'filter[extension]': 'bpmn',
+      sort: '-created',
+    };
 
-    const files = loadProcessTaskInstance.value?.files;
-    return files
-      ?.filter((file) => file.isBpmnFile)
-      .sort((fileA, fileB) => fileB.created - fileA.created); // FIXME: should be handled by backend
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadAttachmentsTask(loadProcessTaskInstance) {
-    yield waitForProperty(loadProcessTaskInstance, 'isFinished');
-
-    const files = loadProcessTaskInstance.value?.files;
-    return files
-      ?.filter((file) => !file.isBpmnFile)
-      .sort((fileA, fileB) => fileA.name.localeCompare(fileB.name)); // FIXME: should be handled by backend
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadLatestBpmnFileTask(loadBpmnFilesTaskInstance) {
-    yield waitForProperty(loadBpmnFilesTaskInstance, 'isFinished');
-
-    const sortedFiles = loadBpmnFilesTaskInstance.value;
-    if (!sortedFiles || sortedFiles.length === 0) return null;
-    return sortedFiles[0];
+    const bpmnFiles = yield this.store.query('file', query);
+    return bpmnFiles.length ? bpmnFiles[0] : undefined;
   }
 }

@@ -6,18 +6,21 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service store;
 
   queryParams = {
-    page: { refreshModel: true },
-    sort: { refreshModel: true },
+    pageProcessSteps: { as: 'process-steps-page', refreshModel: true },
+    sizeProcessSteps: { as: 'process-steps-size', refreshModel: true },
+    sortProcessSteps: { as: 'process-steps-sort', refreshModel: true },
+    pageVersions: { as: 'versions-page', refreshModel: true },
+    sizeVersions: { as: 'versions-size', refreshModel: true },
+    sortVersions: { as: 'versions-sort', refreshModel: true },
+    pageAttachments: { as: 'attachments-page', refreshModel: true },
+    sizeAttachments: { as: 'attachments-size', refreshModel: true },
+    sortAttachments: { as: 'attachments-sort', refreshModel: true },
   };
 
   async model() {
     const {
       loadProcessTaskInstance,
       loadedProcess,
-      loadBpmnFilesTaskInstance,
-      loadedBpmnFiles,
-      loadAttachmentsTaskInstance,
-      loadedAttachments,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
     } = this.modelFor('processes.process');
@@ -25,10 +28,10 @@ export default class ProcessesProcessIndexRoute extends Route {
     return {
       loadProcessTaskInstance,
       loadedProcess,
-      loadBpmnFilesTaskInstance,
-      loadedBpmnFiles,
-      loadAttachmentsTaskInstance,
-      loadedAttachments,
+      loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(),
+      loadedBpmnFiles: this.loadBpmnFilesTask.lastSuccessful?.value,
+      loadAttachmentsTaskInstance: this.loadAttachmentsTask.perform(),
+      loadedAttachments: this.loadAttachmentsTask.lastSuccessful?.value,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(
@@ -47,20 +50,22 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     const params = this.paramsFor('processes.process.index');
 
-    let query = {
+    const query = {
       page: {
-        number: params.page,
-        size: params.size,
+        number: params.pageProcessSteps,
+        size: params.sizeProcessSteps,
       },
       include: 'type',
       'filter[:has:name]': true,
       'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
     };
 
-    if (params.sort) {
-      const isDescending = params.sort.startsWith('-');
+    if (params.sortProcessSteps) {
+      const isDescending = params.sortProcessSteps.startsWith('-');
 
-      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      let fieldName = isDescending
+        ? params.sortProcessSteps.substring(1)
+        : params.sortProcessSteps;
       if (fieldName === 'type') fieldName = 'type.label';
 
       let sortValue = `:no-case:${fieldName}`;
@@ -70,6 +75,73 @@ export default class ProcessesProcessIndexRoute extends Route {
     }
 
     return yield this.store.query('bpmn-element', query);
+  }
+
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadBpmnFilesTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const params = this.paramsFor('processes.process.index');
+
+    const query = {
+      reload: true,
+      page: {
+        number: params.pageVersions,
+        size: params.sizeVersions,
+      },
+      'filter[processes][id]': processId,
+      'filter[extension]': 'bpmn',
+    };
+
+    if (params.sortVersions) {
+      const isDescending = params.sortVersions.startsWith('-');
+
+      let sortValue = isDescending
+        ? params.sortVersions.substring(1)
+        : params.sortVersions;
+
+      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    return yield this.store.query('file', query);
+  }
+
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadAttachmentsTask() {
+    const { id: processId } = this.paramsFor('processes.process');
+    const params = this.paramsFor('processes.process.index');
+
+    const query = {
+      reload: true,
+      page: {
+        number: params.pageAttachments,
+        size: params.sizeAttachments,
+      },
+      'filter[processes][id]': processId,
+      'filter[:not:extension]': 'bpmn',
+    };
+
+    if (params.sortAttachments) {
+      const isDescending = params.sortAttachments.startsWith('-');
+
+      let sortValue = isDescending
+        ? params.sortAttachments.substring(1)
+        : params.sortAttachments;
+
+      if (
+        sortValue === 'name' ||
+        sortValue === 'extension' ||
+        sortValue === 'format'
+      )
+        sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    return yield this.store.query('file', query);
   }
 
   resetController(controller) {
