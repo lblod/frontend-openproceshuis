@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { keepLatestTask, waitForProperty } from 'ember-concurrency';
 import { service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service store;
@@ -90,6 +91,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       },
       'filter[processes][id]': processId,
       'filter[extension]': 'bpmn',
+      'filter[:not:status]': ENV.resourceStates.archived,
     };
 
     if (params.sortVersions) {
@@ -121,6 +123,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       },
       'filter[processes][id]': processId,
       'filter[:not:extension]': 'bpmn',
+      'filter[:not:status]': ENV.resourceStates.archived,
     };
 
     if (params.sortAttachments) {

@@ -40,6 +40,8 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked addModalOpened = false;
   @tracked edit = false;
   @tracked formIsValid = false;
+  @tracked fileToDelete = undefined;
+  @tracked deleteModalOpened = false;
 
   downloadTypes = [
     {
@@ -324,5 +326,36 @@ export default class ProcessesProcessIndexController extends Controller {
   validateForm() {
     this.formIsValid =
       this.process?.validate() && this.process?.hasDirtyAttributes;
+  }
+
+  @action
+  openDeleteModal(fileToDelete) {
+    this.fileToDelete = fileToDelete;
+    this.deleteModalOpened = true;
+  }
+
+  @action
+  closeDeleteModal() {
+    this.fileToDelete = undefined;
+    this.deleteModalOpened = false;
+  }
+
+  @task
+  *deleteFile() {
+    this.fileToDelete.archive();
+
+    try {
+      yield this.fileToDelete.save();
+      this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('Bestand kon niet worden verwijderd', 'Fout');
+      this.fileToDelete.rollbackAttributes();
+    }
+
+    this.closeDeleteModal();
+    this.router.refresh();
   }
 }
