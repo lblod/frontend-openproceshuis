@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import { keepLatestTask, waitForProperty } from 'ember-concurrency';
+import { keepLatestTask, waitForProperty, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
@@ -48,6 +48,27 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     const latestBpmnFileId = loadLatestBpmnFileTaskInstance.value?.id;
     if (!latestBpmnFileId) return;
+
+    while (true) {
+      const query = {
+        'filter[:exact:resource]': `http://mu.semte.ch/services/file-service/files/${latestBpmnFileId}`,
+        sort: '-modified',
+      };
+      const jobs = yield this.store.query('job', query);
+
+      if (jobs.length === 0) break;
+
+      const jobStatus = jobs[0].status;
+      if (jobStatus === ENV.jobStates.success) break;
+
+      if (
+        jobStatus === ENV.jobStates.failed ||
+        jobStatus === ENV.jobStates.canceled
+      )
+        return;
+
+      yield timeout(1000);
+    }
 
     const params = this.paramsFor('processes.process.index');
 
