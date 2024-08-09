@@ -25,6 +25,14 @@ module.exports = function (environment) {
       archived: 'http://lblod.data.gift/concepts/concept-status/gearchiveerd',
     },
 
+    jobStates: {
+      scheduled: 'http://redpencil.data.gift/id/concept/JobStatus/scheduled',
+      busy: 'http://redpencil.data.gift/id/concept/JobStatus/busy',
+      success: 'http://redpencil.data.gift/id/concept/JobStatus/success',
+      failed: 'http://redpencil.data.gift/id/concept/JobStatus/failed',
+      canceled: 'http://redpencil.data.gift/id/concept/JobStatus/canceled',
+    },
+
     yasgui: {
       defaultQuery: '{{YASGUI_DEFAULT_QUERY}}',
       extraPrefixes: '{{YASGUI_EXTRA_PREFIXES}}',
