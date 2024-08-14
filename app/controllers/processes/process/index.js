@@ -43,25 +43,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked fileToDelete = undefined;
   @tracked deleteModalOpened = false;
 
-  downloadTypes = [
-    {
-      extension: 'bpmn',
-      label: 'origineel',
-    },
-    {
-      extension: 'png',
-      label: 'afbeelding',
-    },
-    {
-      extension: 'svg',
-      label: 'vectorafbeelding',
-    },
-    {
-      extension: 'pdf',
-      label: 'PDF',
-    },
-  ];
-
   // Process
 
   get process() {
@@ -185,7 +166,13 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  async downloadLatestBpmnFile(targetExtension) {
+  async downloadFile(file) {
+    await downloadFileByUrl(file.id, file.name, file.extension);
+    this.trackDownloadFileEvent(file.id, file.name, file.extension);
+  }
+
+  @action
+  downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
     const fileName = `${removeFileNameExtension(
@@ -193,22 +180,17 @@ export default class ProcessesProcessIndexController extends Controller {
       this.latestBpmnFile.extension
     )}.${targetExtension}`;
 
-    await this.downloadFile(
+    console.log('Download', fileName);
+
+    this.trackDownloadFileEvent(
       this.latestBpmnFile.id,
-      fileName,
-      this.latestBpmnFile.extension,
+      this.latestBpmnFile.name,
+      'bpmn',
       targetExtension
     );
   }
 
-  @action
-  async downloadOriginalFile(file) {
-    await this.downloadFile(file.id, file.name, file.extension);
-  }
-
-  async downloadFile(fileId, fileName, fileExtension, targetExtension) {
-    await downloadFileByUrl(fileId, fileName, fileExtension, targetExtension);
-
+  trackDownloadFileEvent(fileId, fileName, fileExtension, targetExtension) {
     this.plausible.trackEvent('Download bestand', {
       'Bestand-ID': fileId,
       Bestandsnaam: fileName,

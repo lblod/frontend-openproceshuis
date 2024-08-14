@@ -1,12 +1,4 @@
-export default function generateFileDownloadUrl(
-  fileId,
-  fileExtension,
-  targetExtension
-) {
+export default function generateFileDownloadUrl(fileId) {
   if (!fileId) return null;
-
-  if (fileExtension && targetExtension && fileExtension !== targetExtension)
-    return `/files/${fileId}/converted/download`;
-
   return `/files/${fileId}/download`;
 }
