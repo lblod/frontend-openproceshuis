@@ -1,12 +1,16 @@
 import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { modelValidator } from 'ember-model-validator';
 import ENV from 'frontend-openproceshuis/config/environment';
-import { isOnlyWhitespace } from 'frontend-openproceshuis/utils/custom-validators';
+import {
+  isOnlyWhitespace,
+  isEmptyOrEmail,
+} from 'frontend-openproceshuis/utils/custom-validators';
 
 @modelValidator
 export default class ProcessModel extends Model {
   @attr('string') title;
   @attr('string') description;
+  @attr('string') email;
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
@@ -25,6 +29,9 @@ export default class ProcessModel extends Model {
         maximum: 3000,
       },
       custom: (_, value) => !isOnlyWhitespace(value),
+    },
+    email: {
+      custom: (_, value) => isEmptyOrEmail(value),
     },
   };
 

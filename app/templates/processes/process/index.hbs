@@ -47,6 +47,16 @@
                   />
                 </:content>
               </Item>
+              <Item>
+                <:label>Contact proces</:label>
+                <:content>
+                  <AuInput
+                    value={{this.process.email}}
+                    {{on "input" this.setProcessEmail}}
+                    @width="block"
+                  />
+                </:content>
+              </Item>
             </:left>
             <:right as |Item|>
               <Item>
@@ -125,7 +135,12 @@
                 {{or this.process.description "/"}}
               </:content>
             </Item>
-
+            <Item>
+              <:label>Contact proces</:label>
+              <:content>
+                {{or this.process.email "/"}}
+              </:content>
+            </Item>
           </:left>
           <:right as |Item|>
             <Item>
@@ -134,7 +149,6 @@
                 {{this.process.publisher.name}}
               </:content>
             </Item>
-
             <Item>
               <:label>Contact</:label>
               <:content>

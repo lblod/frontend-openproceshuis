@@ -323,6 +323,13 @@ export default class ProcessesProcessIndexController extends Controller {
     this.validateForm();
   }
 
+  @action
+  setProcessEmail(event) {
+    if (!this.process) return;
+    this.process.email = event.target.value;
+    this.validateForm();
+  }
+
   validateForm() {
     this.formIsValid =
       this.process?.validate() && this.process?.hasDirtyAttributes;
