@@ -7,6 +7,7 @@ import { isOnlyWhitespace } from 'frontend-openproceshuis/utils/custom-validator
 export default class ProcessModel extends Model {
   @attr('string') title;
   @attr('string') description;
+  @attr('string') email;
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
