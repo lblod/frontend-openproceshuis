@@ -189,25 +189,23 @@ export default class ProcessesProcessIndexController extends Controller {
   downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
-    let result = undefined;
-    let type = undefined;
-
+    let blob = undefined;
     if (targetExtension === 'bpmn' && this.latestBpmnFileAsBpmn) {
-      result = this.latestBpmnFileAsBpmn;
-      type = 'application/xml;charset=utf-8';
+      blob = new Blob([this.latestBpmnFileAsBpmn], {
+        type: 'application/xml;charset=utf-8',
+      });
     } else if (targetExtension === 'svg' && this.latestBpmnFileAsSvg) {
-      result = this.latestBpmnFileAsSvg;
-      type = 'image/svg+xml;charset=utf-8';
+      blob = new Blob([this.latestBpmnFileAsSvg], {
+        type: 'image/svg+xml;charset=utf-8',
+      });
     }
-
-    if (!result) return;
+    if (!blob) return;
 
     const fileName = `${removeFileNameExtension(
       this.latestBpmnFile.name,
       this.latestBpmnFile.extension
     )}.${targetExtension}`;
 
-    const blob = new Blob([result], { type: type });
     FileSaver.saveAs(blob, fileName);
 
     this.trackDownloadFileEvent(
