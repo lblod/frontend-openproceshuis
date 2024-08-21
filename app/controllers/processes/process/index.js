@@ -5,6 +5,7 @@ import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
+import FileSaver from 'file-saver';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -42,6 +43,9 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
   @tracked deleteModalOpened = false;
+
+  latestBpmnFileAsBpmn = undefined;
+  latestBpmnFileAsSvg = undefined;
 
   // Process
 
@@ -156,6 +160,16 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
+  setLatestBpmnFileAsBpmn(value) {
+    this.latestBpmnFileAsBpmn = value;
+  }
+
+  @action
+  setLatestBpmnFileAsSvg(value) {
+    this.latestBpmnFileAsSvg = value;
+  }
+
+  @action
   openDownloadModal() {
     this.downloadModalOpened = true;
   }
@@ -175,12 +189,26 @@ export default class ProcessesProcessIndexController extends Controller {
   downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
+    let result = undefined;
+    let type = undefined;
+
+    if (targetExtension === 'bpmn' && this.latestBpmnFileAsBpmn) {
+      result = this.latestBpmnFileAsBpmn;
+      type = 'application/xml;charset=utf-8';
+    } else if (targetExtension === 'svg' && this.latestBpmnFileAsSvg) {
+      result = this.latestBpmnFileAsSvg;
+      type = 'image/svg+xml;charset=utf-8';
+    }
+
+    if (!result) return;
+
     const fileName = `${removeFileNameExtension(
       this.latestBpmnFile.name,
       this.latestBpmnFile.extension
     )}.${targetExtension}`;
 
-    console.log('Download', fileName);
+    const blob = new Blob([result], { type: type });
+    FileSaver.saveAs(blob, fileName);
 
     this.trackDownloadFileEvent(
       this.latestBpmnFile.id,

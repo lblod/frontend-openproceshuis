@@ -216,7 +216,11 @@
             Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
             om in en uit te zoomen. Klik elders om bediening uit te schakelen.
           </AuHelpText>
-          <BpmnViewer @bpmnFile={{this.latestBpmnFile}} />
+          <BpmnViewer
+            @bpmnFile={{this.latestBpmnFile}}
+            @onBpmnLoaded={{this.setLatestBpmnFileAsBpmn}}
+            @onSvgLoaded={{this.setLatestBpmnFileAsSvg}}
+          />
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
             <:title>
