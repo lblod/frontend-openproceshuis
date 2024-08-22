@@ -5,6 +5,10 @@ import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
+import {
+  convertSvgToPdf,
+  convertSvgToPng,
+} from 'frontend-openproceshuis/utils/svg-convertors';
 import FileSaver from 'file-saver';
 
 export default class ProcessesProcessIndexController extends Controller {
@@ -186,7 +190,7 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  downloadLatestBpmnFile(targetExtension) {
+  async downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
     let blob = undefined;
@@ -198,6 +202,10 @@ export default class ProcessesProcessIndexController extends Controller {
       blob = new Blob([this.latestBpmnFileAsSvg], {
         type: 'image/svg+xml;charset=utf-8',
       });
+    } else if (targetExtension === 'pdf' && this.latestBpmnFileAsSvg) {
+      blob = await convertSvgToPdf(this.latestBpmnFileAsSvg);
+    } else if (targetExtension === 'png' && this.latestBpmnFileAsSvg) {
+      blob = await convertSvgToPng(this.latestBpmnFileAsSvg);
     }
     if (!blob) return;
 
