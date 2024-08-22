@@ -43,10 +43,11 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked addModalOpened = false;
+  @tracked deleteModalOpened = false;
+
   @tracked edit = false;
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
-  @tracked deleteModalOpened = false;
 
   latestBpmnFileAsBpmn = undefined;
   latestBpmnFileAsSvg = undefined;
@@ -320,8 +321,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   resetModel() {
     this.process?.rollbackAttributes();
-    this.replaceModalOpened = false;
-    this.addModalOpened = false;
     this.edit = false;
   }
 
@@ -380,5 +379,17 @@ export default class ProcessesProcessIndexController extends Controller {
 
     this.closeDeleteModal();
     this.router.refresh();
+  }
+
+  reset() {
+    this.resetModel();
+
+    this.downloadModalOpened = false;
+    this.replaceModalOpened = false;
+    this.addModalOpened = false;
+    this.deleteModalOpened = false;
+
+    this.latestBpmnFileAsBpmn = undefined;
+    this.latestBpmnFileAsSvg = undefined;
   }
 }
