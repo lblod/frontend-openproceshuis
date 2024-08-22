@@ -189,8 +189,8 @@ export default class ProcessesProcessIndexController extends Controller {
     this.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  @action
-  async downloadLatestBpmnFile(targetExtension) {
+  @dropTask
+  *downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
 
     let blob = undefined;
@@ -203,9 +203,9 @@ export default class ProcessesProcessIndexController extends Controller {
         type: 'image/svg+xml;charset=utf-8',
       });
     } else if (targetExtension === 'pdf' && this.latestBpmnFileAsSvg) {
-      blob = await convertSvgToPdf(this.latestBpmnFileAsSvg);
+      blob = yield convertSvgToPdf(this.latestBpmnFileAsSvg);
     } else if (targetExtension === 'png' && this.latestBpmnFileAsSvg) {
-      blob = await convertSvgToPng(this.latestBpmnFileAsSvg);
+      blob = yield convertSvgToPng(this.latestBpmnFileAsSvg);
     }
     if (!blob) return;
 

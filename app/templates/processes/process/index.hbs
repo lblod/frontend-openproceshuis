@@ -562,28 +562,28 @@
       <AuButtonGroup class="au-u-flex au-u-flex--around">
         <AuButton
           @skin="primary"
-          {{on "click" (fn this.downloadLatestBpmnFile "bpmn")}}
+          {{on "click" (perform this.downloadLatestBpmnFile "bpmn")}}
         >
           Origineel
           <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (fn this.downloadLatestBpmnFile "png")}}
+          {{on "click" (perform this.downloadLatestBpmnFile "png")}}
         >
           Afbeelding
           <span class="au-u-para-tiny au-u-regular">(.png)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (fn this.downloadLatestBpmnFile "svg")}}
+          {{on "click" (perform this.downloadLatestBpmnFile "svg")}}
         >
           Vectorafbeelding
           <span class="au-u-para-tiny au-u-regular">(.svg)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (fn this.downloadLatestBpmnFile "pdf")}}
+          {{on "click" (perform this.downloadLatestBpmnFile "pdf")}}
         >
           PDF
           <span class="au-u-para-tiny au-u-regular">(.pdf)</span>
