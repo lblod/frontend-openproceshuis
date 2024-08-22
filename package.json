@@ -120,6 +120,7 @@
   "dependencies": {
     "bpmn-js": "^16.3.2",
     "file-saver": "^2.0.5",
-    "jspdf": "^2.5.1"
+    "jspdf": "^2.5.1",
+    "svg64": "^2.0.0"
   }
 }

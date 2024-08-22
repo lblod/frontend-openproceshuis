@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import svg64 from 'svg64';
 
 export async function convertSvgToPng(svg) {
   const canvas = await convertSvgToCanvas(svg);
@@ -36,8 +37,6 @@ async function convertSvgToCanvas(svg) {
       resolve(canvas);
     };
     img.onerror = reject;
-    img.src = `data:image/svg+xml;base64,${btoa(
-      unescape(encodeURIComponent(svg))
-    )}`;
+    img.src = svg64(svg);
   });
 }
