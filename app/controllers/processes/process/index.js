@@ -222,6 +222,15 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
+  async downloadAttachemnts() {
+    if (!this.attachments) return;
+
+    this.attachments.map((attachment) => {
+      console.log('download', attachment.name);
+    });
+  }
+
+  @action
   openReplaceModal() {
     this.replaceModalOpened = true;
   }
