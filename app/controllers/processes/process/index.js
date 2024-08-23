@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, dropTask } from 'ember-concurrency';
+import { task, dropTask, enqueueTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
@@ -241,7 +241,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.addModalOpened = false;
   }
 
-  @dropTask
+  @enqueueTask
   *addFileToProcess(newFileId) {
     const newFile = yield this.store.findRecord('file', newFileId);
 
@@ -262,7 +262,9 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  fileUploaded() {
+  fileUploaded(_, queueInfo) {
+    if (!queueInfo.isQueueEmpty) return;
+
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
