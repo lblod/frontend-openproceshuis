@@ -186,7 +186,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   async downloadFile(file) {
-    await downloadFileByUrl(file.id, file.name, file.extension);
+    await downloadFileByUrl(file.id, file.name);
     this.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 

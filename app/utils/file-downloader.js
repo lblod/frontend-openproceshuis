@@ -1,11 +1,7 @@
 import generateFileDownloadUrl from './file-download-url';
 
-export default async function downloadFileByUrl(
-  fileId,
-  fileName,
-  fileExtension
-) {
-  const url = generateFileDownloadUrl(fileId, fileExtension);
+export default async function downloadFileByUrl(fileId, fileName) {
+  const url = generateFileDownloadUrl(fileId);
 
   const response = await fetch(url);
   if (!response.ok) throw Error(response.status);
