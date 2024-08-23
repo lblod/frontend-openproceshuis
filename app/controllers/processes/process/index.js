@@ -225,6 +225,11 @@ export default class ProcessesProcessIndexController extends Controller {
   async downloadAttachemnts() {
     if (!this.attachments) return;
 
+    if (this.attachments.length === 1) {
+      await this.downloadOriginalFile(this.attachments[0]);
+      return;
+    }
+
     this.attachments.map((attachment) => {
       console.log('download', attachment.name);
     });
