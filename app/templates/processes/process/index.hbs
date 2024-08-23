@@ -420,10 +420,16 @@
           <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
           <AuButtonGroup>
             {{#if this.canEdit}}
-              <AuButton {{on "click" this.openAddModal}}>
+              <AuButton @skin="secondary" {{on "click" this.openAddModal}}>
                 Voeg toe
               </AuButton>
             {{/if}}
+            <AuButton
+              @disabled={{not this.attachments}}
+              {{on "click" this.downloadAttachemnts}}
+            >
+              Download alles
+            </AuButton>
           </AuButtonGroup>
         </div>
         <AuHelpText @skin="secondary" class="au-u-margin-top-none">
