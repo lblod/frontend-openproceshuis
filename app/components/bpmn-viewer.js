@@ -29,6 +29,12 @@ export default class BpmnViewerComponent extends Component {
     element.addEventListener('blur', () => {
       this.disableZoomScroll();
     });
+
+    if (this.args.onBpmnLoaded) this.args.onBpmnLoaded(bpmnXml);
+    if (this.args.onSvgLoaded) {
+      const { svg } = await this.viewer.saveSVG();
+      this.args.onSvgLoaded(svg);
+    }
   }
 
   @restartableTask

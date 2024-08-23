@@ -170,6 +170,6 @@ export default class ProcessesProcessIndexRoute extends Route {
 
   resetController(controller) {
     super.resetController(...arguments);
-    controller.resetModel();
+    controller.reset();
   }
 }
