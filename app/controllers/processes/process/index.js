@@ -5,6 +5,11 @@ import { task, dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
+import {
+  convertSvgToPdf,
+  convertSvgToPng,
+} from 'frontend-openproceshuis/utils/svg-convertors';
+import FileSaver from 'file-saver';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -38,29 +43,14 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
   @tracked addModalOpened = false;
+  @tracked deleteModalOpened = false;
+
   @tracked edit = false;
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
-  @tracked deleteModalOpened = false;
 
-  downloadTypes = [
-    {
-      extension: 'bpmn',
-      label: 'origineel',
-    },
-    {
-      extension: 'png',
-      label: 'afbeelding',
-    },
-    {
-      extension: 'svg',
-      label: 'vectorafbeelding',
-    },
-    {
-      extension: 'pdf',
-      label: 'PDF',
-    },
-  ];
+  latestBpmnFileAsBpmn = undefined;
+  latestBpmnFileAsSvg = undefined;
 
   // Process
 
@@ -175,6 +165,16 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
+  setLatestBpmnFileAsBpmn(value) {
+    this.latestBpmnFileAsBpmn = value;
+  }
+
+  @action
+  setLatestBpmnFileAsSvg(value) {
+    this.latestBpmnFileAsSvg = value;
+  }
+
+  @action
   openDownloadModal() {
     this.downloadModalOpened = true;
   }
@@ -185,30 +185,47 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  async downloadLatestBpmnFile(targetExtension) {
+  async downloadFile(file) {
+    await downloadFileByUrl(file.id, file.name, file.extension);
+    this.trackDownloadFileEvent(file.id, file.name, file.extension);
+  }
+
+  @dropTask
+  *downloadLatestBpmnFile(targetExtension) {
     if (!this.latestBpmnFile) return;
+
+    let blob = undefined;
+    if (targetExtension === 'bpmn' && this.latestBpmnFileAsBpmn) {
+      blob = new Blob([this.latestBpmnFileAsBpmn], {
+        type: 'application/xml;charset=utf-8',
+      });
+    } else if (targetExtension === 'svg' && this.latestBpmnFileAsSvg) {
+      blob = new Blob([this.latestBpmnFileAsSvg], {
+        type: 'image/svg+xml;charset=utf-8',
+      });
+    } else if (targetExtension === 'pdf' && this.latestBpmnFileAsSvg) {
+      blob = yield convertSvgToPdf(this.latestBpmnFileAsSvg);
+    } else if (targetExtension === 'png' && this.latestBpmnFileAsSvg) {
+      blob = yield convertSvgToPng(this.latestBpmnFileAsSvg);
+    }
+    if (!blob) return;
 
     const fileName = `${removeFileNameExtension(
       this.latestBpmnFile.name,
       this.latestBpmnFile.extension
     )}.${targetExtension}`;
 
-    await this.downloadFile(
+    FileSaver.saveAs(blob, fileName);
+
+    this.trackDownloadFileEvent(
       this.latestBpmnFile.id,
-      fileName,
-      this.latestBpmnFile.extension,
+      this.latestBpmnFile.name,
+      'bpmn',
       targetExtension
     );
   }
 
-  @action
-  async downloadOriginalFile(file) {
-    await this.downloadFile(file.id, file.name, file.extension);
-  }
-
-  async downloadFile(fileId, fileName, fileExtension, targetExtension) {
-    await downloadFileByUrl(fileId, fileName, fileExtension, targetExtension);
-
+  trackDownloadFileEvent(fileId, fileName, fileExtension, targetExtension) {
     this.plausible.trackEvent('Download bestand', {
       'Bestand-ID': fileId,
       Bestandsnaam: fileName,
@@ -304,8 +321,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   resetModel() {
     this.process?.rollbackAttributes();
-    this.replaceModalOpened = false;
-    this.addModalOpened = false;
     this.edit = false;
   }
 
@@ -364,5 +379,17 @@ export default class ProcessesProcessIndexController extends Controller {
 
     this.closeDeleteModal();
     this.router.refresh();
+  }
+
+  reset() {
+    this.resetModel();
+
+    this.downloadModalOpened = false;
+    this.replaceModalOpened = false;
+    this.addModalOpened = false;
+    this.deleteModalOpened = false;
+
+    this.latestBpmnFileAsBpmn = undefined;
+    this.latestBpmnFileAsSvg = undefined;
   }
 }

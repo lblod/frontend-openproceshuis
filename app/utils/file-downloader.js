@@ -3,15 +3,11 @@ import generateFileDownloadUrl from './file-download-url';
 export default async function downloadFileByUrl(
   fileId,
   fileName,
-  fileExtension,
-  targetExtension
+  fileExtension
 ) {
-  const url = generateFileDownloadUrl(fileId, fileExtension, targetExtension);
+  const url = generateFileDownloadUrl(fileId, fileExtension);
 
-  const mimeType = mimeTypes[targetExtension];
-  const headers = mimeType ? { Accept: mimeType } : {};
-
-  const response = await fetch(url, { headers });
+  const response = await fetch(url);
   if (!response.ok) throw Error(response.status);
 
   const blob = await response.blob();
@@ -25,10 +21,3 @@ export default async function downloadFileByUrl(
   window.URL.revokeObjectURL(downloadUrl);
   a.remove();
 }
-
-const mimeTypes = {
-  bpmn: 'text/xml',
-  png: 'image/png',
-  svg: 'image/svg+xml',
-  pdf: 'application/pdf',
-};
