@@ -6,7 +6,7 @@ export async function downloadFileByUrl(fileId, fileName) {
   initiateDownload(fileBlob, fileName);
 }
 
-export async function downloadFilesAsZip(files) {
+export async function downloadFilesAsZip(files, zipFileName) {
   const filesToZip = await Promise.all(
     files.map(async (file) => {
       const fileBlob = await fetchFileBlobByUrl(file.id);
@@ -17,7 +17,7 @@ export async function downloadFilesAsZip(files) {
     })
   );
   const zipBlob = await downloadZip(filesToZip).blob();
-  initiateDownload(zipBlob, 'test.zip');
+  initiateDownload(zipBlob, `${zipFileName}.zip`);
 }
 
 async function fetchFileBlobByUrl(fileId) {

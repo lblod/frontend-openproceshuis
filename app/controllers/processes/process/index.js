@@ -4,9 +4,11 @@ import { action } from '@ember/object';
 import { task, dropTask, enqueueTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import FileSaver from 'file-saver';
-import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
-import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
+import {
+  downloadFileByUrl,
+  downloadFilesAsZip,
+} from 'frontend-openproceshuis/utils/file-downloader';
 import {
   convertSvgToPdf,
   convertSvgToPng,
@@ -245,7 +247,11 @@ export default class ProcessesProcessIndexController extends Controller {
 
     if (this.attachments.length === 1)
       yield this.downloadOriginalFile(this.attachments[0]);
-    else yield downloadFilesAsZip(this.attachments);
+    else
+      yield downloadFilesAsZip(
+        this.attachments,
+        this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen'
+      );
   }
 
   @action
