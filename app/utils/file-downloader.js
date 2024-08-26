@@ -1,12 +1,35 @@
+import { downloadZip } from 'client-zip';
 import generateFileDownloadUrl from './file-download-url';
 
-export default async function downloadFileByUrl(fileId, fileName) {
+export async function downloadFileByUrl(fileId, fileName) {
+  const fileBlob = await fetchFileBlobByUrl(fileId);
+  initiateDownload(fileBlob, fileName);
+}
+
+export async function downloadFilesAsZip(files) {
+  const filesToZip = await Promise.all(
+    files.map(async (file) => {
+      const fileBlob = await fetchFileBlobByUrl(file.id);
+      return {
+        name: file.name,
+        input: fileBlob,
+      };
+    })
+  );
+  const zipBlob = await downloadZip(filesToZip).blob();
+  initiateDownload(zipBlob, 'test.zip');
+}
+
+async function fetchFileBlobByUrl(fileId) {
   const url = generateFileDownloadUrl(fileId);
 
   const response = await fetch(url);
   if (!response.ok) throw Error(response.status);
 
-  const blob = await response.blob();
+  return await response.blob();
+}
+
+function initiateDownload(blob, fileName) {
   const downloadUrl = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.style.display = 'none';

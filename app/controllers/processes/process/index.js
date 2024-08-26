@@ -3,13 +3,14 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task, dropTask, enqueueTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
-import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
+import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
 import FileSaver from 'file-saver';
+import { downloadFilesAsZip } from '../../../utils/file-downloader';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -247,9 +248,7 @@ export default class ProcessesProcessIndexController extends Controller {
       return;
     }
 
-    this.attachments.map((attachment) => {
-      console.log('download', attachment.name);
-    });
+    await downloadFilesAsZip(this.attachments);
   }
 
   @action
