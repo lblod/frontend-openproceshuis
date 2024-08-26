@@ -1,15 +1,18 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, dropTask } from 'ember-concurrency';
+import { task, dropTask, enqueueTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
-import downloadFileByUrl from 'frontend-openproceshuis/utils/file-downloader';
+import FileSaver from 'file-saver';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
+import {
+  downloadFileByUrl,
+  downloadFilesAsZip,
+} from 'frontend-openproceshuis/utils/file-downloader';
 import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
-import FileSaver from 'file-saver';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -186,7 +189,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   async downloadFile(file) {
-    await downloadFileByUrl(file.id, file.name, file.extension);
+    await downloadFileByUrl(file.id, file.name);
     this.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
@@ -238,6 +241,19 @@ export default class ProcessesProcessIndexController extends Controller {
     });
   }
 
+  @dropTask
+  *downloadAttachemnts() {
+    if (!this.attachments) return;
+
+    if (this.attachments.length === 1)
+      yield this.downloadOriginalFile(this.attachments[0]);
+    else
+      yield downloadFilesAsZip(
+        this.attachments,
+        this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen'
+      );
+  }
+
   @action
   openReplaceModal() {
     this.replaceModalOpened = true;
@@ -258,7 +274,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.addModalOpened = false;
   }
 
-  @dropTask
+  @enqueueTask
   *addFileToProcess(newFileId) {
     const newFile = yield this.store.findRecord('file', newFileId);
 
@@ -279,7 +295,9 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  fileUploaded() {
+  fileUploaded(_, queueInfo) {
+    if (!queueInfo.isQueueEmpty) return;
+
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
