@@ -74,25 +74,55 @@ export default class ProcessesProcessIndexController extends Controller {
 
   // BPMN files
 
-  get bpmnFiles() {
-    return this.model.loadBpmnFilesTaskInstance.isFinished
-      ? this.model.loadBpmnFilesTaskInstance.value
-      : this.model.loadedBpmnFiles;
-  }
-
-  get bpmnFilesAreLoading() {
-    return this.model.loadBpmnFilesTaskInstance.isRunning;
-  }
-
+  @tracked bpmnFiles;
+  @tracked bpmnFilesAreLoading = true;
+  @tracked bpmnFilesHaveErrored = false;
   get bpmnFilesHaveNoResults() {
     return (
-      this.model.loadBpmnFilesTaskInstance.isFinished &&
+      !this.bpmnFilesAreLoading &&
+      !this.bpmnFilesHaveErrored &&
       this.bpmnFiles?.length === 0
     );
   }
 
-  get bpmnFilesHaveErrored() {
-    return this.model.loadBpmnFilesTaskInstance.isError;
+  @keepLatestTask({ observes: ['pageVersions', 'sortVersions'] })
+  *fetchBpmnFiles() {
+    console.log('fetch bpmn files');
+
+    this.bpmnFilesAreLoading = true;
+    this.bpmnFilesHaveErrored = false;
+
+    const query = {
+      reload: true,
+      page: {
+        number: this.pageVersions,
+        size: this.sizeVersions,
+      },
+      'filter[processes][id]': this.model.processId,
+      'filter[extension]': 'bpmn',
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
+
+    if (this.sortVersions) {
+      const isDescending = this.sortVersions.startsWith('-');
+
+      let sortValue = isDescending
+        ? this.sortVersions.substring(1)
+        : this.sortVersions;
+
+      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    try {
+      this.bpmnFiles = yield this.store.query('file', query);
+    } catch {
+      this.bpmnFilesHaveErrored = true;
+    }
+
+    this.bpmnFilesAreLoading = false;
   }
 
   // Attachments

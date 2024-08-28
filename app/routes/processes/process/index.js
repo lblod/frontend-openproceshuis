@@ -10,9 +10,6 @@ export default class ProcessesProcessIndexRoute extends Route {
     pageProcessSteps: { as: 'process-steps-page', refreshModel: true },
     sizeProcessSteps: { as: 'process-steps-size', refreshModel: true },
     sortProcessSteps: { as: 'process-steps-sort', refreshModel: true },
-    pageVersions: { as: 'versions-page', refreshModel: true },
-    sizeVersions: { as: 'versions-size', refreshModel: true },
-    sortVersions: { as: 'versions-sort', refreshModel: true },
   };
 
   async model() {
@@ -29,8 +26,6 @@ export default class ProcessesProcessIndexRoute extends Route {
       processId,
       loadProcessTaskInstance,
       loadedProcess,
-      loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(),
-      loadedBpmnFiles: this.loadBpmnFilesTask.lastSuccessful?.value,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(
@@ -95,38 +90,6 @@ export default class ProcessesProcessIndexRoute extends Route {
     }
 
     return yield this.store.query('bpmn-element', query);
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnFilesTask() {
-    const { id: processId } = this.paramsFor('processes.process');
-    const params = this.paramsFor('processes.process.index');
-
-    const query = {
-      reload: true,
-      page: {
-        number: params.pageVersions,
-        size: params.sizeVersions,
-      },
-      'filter[processes][id]': processId,
-      'filter[extension]': 'bpmn',
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (params.sortVersions) {
-      const isDescending = params.sortVersions.startsWith('-');
-
-      let sortValue = isDescending
-        ? params.sortVersions.substring(1)
-        : params.sortVersions;
-
-      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    return yield this.store.query('file', query);
   }
 
   resetController(controller) {
