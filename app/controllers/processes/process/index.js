@@ -1,9 +1,10 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, dropTask, enqueueTask } from 'ember-concurrency';
+import { task, dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import FileSaver from 'file-saver';
+import ENV from 'frontend-openproceshuis/config/environment';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import {
   downloadFileByUrl,
@@ -96,25 +97,60 @@ export default class ProcessesProcessIndexController extends Controller {
 
   // Attachments
 
-  get attachments() {
-    return this.model.loadAttachmentsTaskInstance.isFinished
-      ? this.model.loadAttachmentsTaskInstance.value
-      : this.model.loadedAttachments;
-  }
-
-  get attachmentsAreLoading() {
-    return this.model.loadAttachmentsTaskInstance.isRunning;
-  }
-
+  @tracked attachments;
+  @tracked attachmentsAreLoading = true;
+  @tracked attachmentsHaveErrored = false;
   get attachmentsHaveNoResults() {
     return (
-      this.model.loadAttachmentsTaskInstance.isFinished &&
+      !this.attachmentsAreLoading &&
+      !this.attachmentsHaveErrored &&
       this.attachments?.length === 0
     );
   }
 
-  get attachmentsHaveErrored() {
-    return this.model.loadAttachmentsTaskInstance.isError;
+  @keepLatestTask({ observes: ['pageAttachments', 'sortAttachments'] })
+  *fetchAttachments() {
+    console.log('fetch attachments');
+
+    this.attachmentsAreLoading = true;
+    this.attachmentsHaveErrored = false;
+
+    const query = {
+      reload: true,
+      page: {
+        number: this.pageAttachments,
+        size: this.sizeAttachments,
+      },
+      'filter[processes][id]': this.model.processId,
+      'filter[:not:extension]': 'bpmn',
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
+
+    if (this.sortAttachments) {
+      const isDescending = this.sortAttachments.startsWith('-');
+
+      let sortValue = isDescending
+        ? this.sortAttachments.substring(1)
+        : this.sortAttachments;
+
+      if (
+        sortValue === 'name' ||
+        sortValue === 'extension' ||
+        sortValue === 'format'
+      )
+        sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    try {
+      this.attachments = yield this.store.query('file', query);
+    } catch {
+      this.attachmentsHaveErrored = true;
+    }
+
+    this.attachmentsAreLoading = false;
   }
 
   // Latest BPMN file

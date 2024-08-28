@@ -13,12 +13,11 @@ export default class ProcessesProcessIndexRoute extends Route {
     pageVersions: { as: 'versions-page', refreshModel: true },
     sizeVersions: { as: 'versions-size', refreshModel: true },
     sortVersions: { as: 'versions-sort', refreshModel: true },
-    pageAttachments: { as: 'attachments-page', refreshModel: true },
-    sizeAttachments: { as: 'attachments-size', refreshModel: true },
-    sortAttachments: { as: 'attachments-sort', refreshModel: true },
   };
 
   async model() {
+    const { id: processId } = this.paramsFor('processes.process');
+
     const {
       loadProcessTaskInstance,
       loadedProcess,
@@ -27,12 +26,11 @@ export default class ProcessesProcessIndexRoute extends Route {
     } = this.modelFor('processes.process');
 
     return {
+      processId,
       loadProcessTaskInstance,
       loadedProcess,
       loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(),
       loadedBpmnFiles: this.loadBpmnFilesTask.lastSuccessful?.value,
-      loadAttachmentsTaskInstance: this.loadAttachmentsTask.perform(),
-      loadedAttachments: this.loadAttachmentsTask.lastSuccessful?.value,
       loadLatestBpmnFileTaskInstance,
       loadedLatestBpmnFile,
       loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(
@@ -123,43 +121,6 @@ export default class ProcessesProcessIndexRoute extends Route {
         : params.sortVersions;
 
       if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    return yield this.store.query('file', query);
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadAttachmentsTask() {
-    const { id: processId } = this.paramsFor('processes.process');
-    const params = this.paramsFor('processes.process.index');
-
-    const query = {
-      reload: true,
-      page: {
-        number: params.pageAttachments,
-        size: params.sizeAttachments,
-      },
-      'filter[processes][id]': processId,
-      'filter[:not:extension]': 'bpmn',
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (params.sortAttachments) {
-      const isDescending = params.sortAttachments.startsWith('-');
-
-      let sortValue = isDescending
-        ? params.sortAttachments.substring(1)
-        : params.sortAttachments;
-
-      if (
-        sortValue === 'name' ||
-        sortValue === 'extension' ||
-        sortValue === 'format'
-      )
-        sortValue = `:no-case:${sortValue}`;
       if (isDescending) sortValue = `-${sortValue}`;
 
       query.sort = sortValue;
