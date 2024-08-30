@@ -1,7 +1,13 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
+import {
+  task,
+  dropTask,
+  enqueueTask,
+  keepLatestTask,
+  timeout,
+} from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
@@ -185,41 +191,129 @@ export default class ProcessesProcessIndexController extends Controller {
 
   // Latest BPMN file
 
-  get latestBpmnFile() {
-    return this.model.loadLatestBpmnFileTaskInstance.isFinished
-      ? this.model.loadLatestBpmnFileTaskInstance.value
-      : this.model.loadedLatestBpmnFile;
-  }
+  @tracked latestBpmnFile;
+  @tracked latestBpmnFileIsLoading = true;
+  @tracked latestBpmnFileHasErrored = false;
 
-  get latestBpmnFileIsLoading() {
-    return this.model.loadLatestBpmnFileTaskInstance.isRunning;
-  }
+  @keepLatestTask
+  *fetchLatestBpmnFile() {
+    console.log('fetch latest bpmn file');
 
-  get latestBpmnFileHasErrored() {
-    return this.model.loadLatestBpmnFileTaskInstance.isError;
+    this.latestBpmnFileIsLoading = true;
+    this.latestBpmnFileHasErrored = false;
+
+    const query = {
+      reload: true,
+      page: {
+        number: 0,
+        size: 1,
+      },
+      'filter[processes][id]': this.model.processId,
+      'filter[extension]': 'bpmn',
+      sort: '-created',
+    };
+
+    let bpmnFiles;
+    try {
+      bpmnFiles = yield this.store.query('file', query);
+    } catch {
+      this.latestBpmnFileHasErrored = true;
+    }
+    if (bpmnFiles?.length) this.latestBpmnFile = bpmnFiles[0];
+    else this.latestBpmnFileHasErrored = true;
+
+    this.latestBpmnFileIsLoading = false;
   }
 
   // Process steps
 
-  get processSteps() {
-    return this.model.loadProcessStepsTaskInstance.isFinished
-      ? this.model.loadProcessStepsTaskInstance.value
-      : this.model.loadedProcessSteps;
-  }
-
-  get processStepsBatchIsLoading() {
-    return this.model.loadProcessStepsTaskInstance.isRunning;
-  }
-
-  get processStepsBatchHasNoResults() {
+  @tracked processSteps;
+  @tracked processStepsAreLoading = true;
+  @tracked processStepsHaveErrored = false;
+  get processStepsHaveNoResults() {
     return (
-      this.model.loadProcessStepsTaskInstance.isFinished &&
+      !this.processStepsAreLoading &&
+      !this.processStepsHaveErrored &&
       this.processSteps?.length === 0
     );
   }
 
-  get processStepsBatchHasErrored() {
-    return this.model.loadProcessStepsTaskInstance.isError;
+  @keepLatestTask({
+    observes: ['latestBpmnFile', 'pageProcessSteps', 'sortProcessSteps'],
+  })
+  *fetchProcessSteps() {
+    console.log('fetch process steps');
+
+    this.processStepsAreLoading = true;
+    this.processStepsHaveErrored = false;
+
+    if (this.latestBpmnFileHasErrored) {
+      this.processStepsHaveErrored = true;
+      this.processStepsAreLoading = false;
+      return;
+    }
+
+    const latestBpmnFileId = this.latestBpmnFile?.id;
+    if (!latestBpmnFileId) return;
+
+    try {
+      while (true) {
+        const query = {
+          'filter[:exact:resource]': `http://mu.semte.ch/services/file-service/files/${latestBpmnFileId}`,
+          sort: '-modified',
+        };
+        const jobs = yield this.store.query('job', query);
+
+        if (jobs.length === 0) break;
+
+        const jobStatus = jobs[0].status;
+        if (jobStatus === ENV.jobStates.success) break;
+
+        if (
+          jobStatus === ENV.jobStates.failed ||
+          jobStatus === ENV.jobStates.canceled
+        )
+          throw Error;
+
+        yield timeout(1000);
+      }
+    } catch {
+      this.processStepsHaveErrored = true;
+      this.processStepsAreLoading = false;
+      return;
+    }
+
+    const query = {
+      page: {
+        number: this.pageProcessSteps,
+        size: this.sizeProcessSteps,
+      },
+      include: 'type',
+      'filter[:has:name]': true,
+      'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
+    };
+
+    if (this.sortProcessSteps) {
+      const isDescending = this.sortProcessSteps.startsWith('-');
+
+      let fieldName = isDescending
+        ? this.sortProcessSteps.substring(1)
+        : this.sortProcessSteps;
+      if (fieldName === 'type') fieldName = 'type.label';
+
+      let sortValue = `:no-case:${fieldName}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    try {
+      this.processSteps = yield this.store.query('bpmn-element', query);
+    } catch {
+      this.processStepsHaveErrored = true;
+    }
+
+    this.processStepsAreLoading = false;
   }
 
   // Other

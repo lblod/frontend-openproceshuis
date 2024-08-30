@@ -11,8 +11,6 @@ export default class ProcessesProcessRoute extends Route {
     return {
       loadProcessTaskInstance: this.loadProcessTask.perform(),
       loadedProcess: this.loadProcessTask.lastSuccesful?.value,
-      loadLatestBpmnFileTaskInstance: this.loadLatestBpmnFileTask.perform(),
-      loadedLatestBpmnFile: this.loadLatestBpmnFileTask.lastSuccesful?.value,
     };
   }
 
@@ -36,23 +34,5 @@ export default class ProcessesProcessRoute extends Route {
     });
 
     return process;
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadLatestBpmnFileTask() {
-    const { id: processId } = this.paramsFor('processes.process');
-    const query = {
-      reload: true,
-      page: {
-        number: 0,
-        size: 1,
-      },
-      'filter[processes][id]': processId,
-      'filter[extension]': 'bpmn',
-      sort: '-created',
-    };
-
-    const bpmnFiles = yield this.store.query('file', query);
-    return bpmnFiles.length ? bpmnFiles[0] : undefined;
   }
 }
