@@ -267,15 +267,14 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  fileUploaded(newFileId, queueInfo) {
+  fileUploaded(uploadedFileId, queueInfo) {
     if (!queueInfo.isQueueEmpty) return;
 
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
-    // this.pageProcessSteps = 0;
-    console.log('uploaded file id:', newFileId);
-    this.fetchLatestBpmnFile.perform();
+    this.pageProcessSteps = 0;
+    this.fetchLatestBpmnFileById.perform(uploadedFileId);
   }
 
   @action
@@ -411,7 +410,21 @@ export default class ProcessesProcessIndexController extends Controller {
     if (bpmnFiles?.length) this.latestBpmnFile = bpmnFiles[0];
     else this.latestBpmnFileHasErrored = true;
 
-    console.log('fetched file id:', this.latestBpmnFile.id);
+    this.latestBpmnFileIsLoading = false;
+  }
+
+  @keepLatestTask
+  *fetchLatestBpmnFileById(fileId) {
+    this.latestBpmnFileIsLoading = true;
+    this.latestBpmnFileHasErrored = false;
+
+    try {
+      this.latestBpmnFile = yield this.store.findRecord('file', fileId, {
+        reload: true,
+      });
+    } catch {
+      this.latestBpmnFileHasErrored = true;
+    }
 
     this.latestBpmnFileIsLoading = false;
   }
