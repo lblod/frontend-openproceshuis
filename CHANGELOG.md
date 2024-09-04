@@ -3,6 +3,27 @@
 
 
 
+
+## 1.1.0 (2024-09-04)
+
+#### :rocket: Enhancement
+* [#48](https://github.com/lblod/frontend-openproceshuis/pull/48) Upload and download multiple attachments at once ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#47](https://github.com/lblod/frontend-openproceshuis/pull/47) Download BPMN files in different formats, generated client-side ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#46](https://github.com/lblod/frontend-openproceshuis/pull/46) Add email property to process ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#45](https://github.com/lblod/frontend-openproceshuis/pull/45) Fetch process steps on extraction job completion ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#44](https://github.com/lblod/frontend-openproceshuis/pull/44) Remove BPMN file historical versions ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#43](https://github.com/lblod/frontend-openproceshuis/pull/43) Sort and paginate process's verions and attachments tables ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :bug: Bug Fix
+* [#41](https://github.com/lblod/frontend-openproceshuis/pull/41) Disallow description containing only whitespaces ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :memo: Documentation
+* [#42](https://github.com/lblod/frontend-openproceshuis/pull/42) Add documentation ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+
 ## 1.0.1 (2024-06-28)
 
 #### :bug: Bug Fix
