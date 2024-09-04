@@ -2,7 +2,6 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import {
-  task,
   dropTask,
   enqueueTask,
   keepLatestTask,
@@ -256,7 +255,7 @@ export default class ProcessesProcessIndexController extends Controller {
     yield this.process.save();
   }
 
-  @task({ enqueue: true, maxConcurrency: 3 })
+  @dropTask
   *extractBpmnElements(newBpmnFileId) {
     yield fetch(`/bpmn?id=${newBpmnFileId}`, {
       method: 'POST',
@@ -267,14 +266,17 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  fileUploaded(uploadedFileId, queueInfo) {
-    if (!queueInfo.isQueueEmpty) return;
-
+  bpmnFileUploaded(uploadedFileId) {
     this.replaceModalOpened = false;
-    this.addModalOpened = false;
-
     this.pageProcessSteps = 0;
     this.fetchLatestBpmnFileById.perform(uploadedFileId);
+  }
+
+  @action
+  attachmentsUploaded(_, queueInfo) {
+    if (!queueInfo.isQueueEmpty) return;
+    this.addModalOpened = false;
+    this.fetchAttachments.perform();
   }
 
   @action
@@ -352,7 +354,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.deleteModalOpened = false;
   }
 
-  @task
+  @dropTask
   *deleteFile() {
     if (!this.fileToDelete) return;
 

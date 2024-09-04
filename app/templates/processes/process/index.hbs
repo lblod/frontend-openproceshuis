@@ -543,7 +543,7 @@
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @updateProcess={{this.addFileToProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.fileUploaded}}
+      @onFinishUpload={{this.bpmnFileUploaded}}
     />
   </:body>
   <:footer>
@@ -616,7 +616,7 @@
       @bpmnForbidden="true"
       @multiple="true"
       @updateProcess={{this.addFileToProcess}}
-      @onFinishUpload={{this.fileUploaded}}
+      @onFinishUpload={{this.attachmentsUploaded}}
     />
   </:body>
   <:footer>
