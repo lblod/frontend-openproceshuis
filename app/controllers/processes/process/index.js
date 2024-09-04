@@ -49,9 +49,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
 
-  latestBpmnFileAsBpmn = undefined;
-  latestBpmnFileAsSvg = undefined;
-
   // Process
 
   get process() {
@@ -73,6 +70,19 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked latestBpmnFile;
   @tracked latestBpmnFileIsLoading = true;
   @tracked latestBpmnFileHasErrored = false;
+
+  latestBpmnFileAsBpmn = undefined;
+  latestBpmnFileAsSvg = undefined;
+
+  @action
+  setLatestBpmnFileAsBpmn(value) {
+    this.latestBpmnFileAsBpmn = value;
+  }
+
+  @action
+  setLatestBpmnFileAsSvg(value) {
+    this.latestBpmnFileAsSvg = value;
+  }
 
   // Process steps
 
@@ -140,16 +150,6 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  setLatestBpmnFileAsBpmn(value) {
-    this.latestBpmnFileAsBpmn = value;
-  }
-
-  @action
-  setLatestBpmnFileAsSvg(value) {
-    this.latestBpmnFileAsSvg = value;
-  }
-
-  @action
   openDownloadModal() {
     this.downloadModalOpened = true;
   }
@@ -214,7 +214,7 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @dropTask
-  *downloadAttachemnts() {
+  *downloadAttachments() {
     if (!this.attachments) return;
 
     if (this.attachments.length === 1)
@@ -267,14 +267,15 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  fileUploaded(_, queueInfo) {
+  fileUploaded(newFileId, queueInfo) {
     if (!queueInfo.isQueueEmpty) return;
 
     this.replaceModalOpened = false;
     this.addModalOpened = false;
 
-    this.pageProcessSteps = 0;
-    this.router.refresh();
+    // this.pageProcessSteps = 0;
+    console.log('uploaded file id:', newFileId);
+    this.fetchLatestBpmnFile.perform();
   }
 
   @action
@@ -385,95 +386,8 @@ export default class ProcessesProcessIndexController extends Controller {
 
   // Tasks
 
-  @keepLatestTask({ observes: ['pageVersions', 'sortVersions'] })
-  *fetchBpmnFiles() {
-    console.log('fetch bpmn files');
-
-    this.bpmnFilesAreLoading = true;
-    this.bpmnFilesHaveErrored = false;
-
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageVersions,
-        size: this.sizeVersions,
-      },
-      'filter[processes][id]': this.model.processId,
-      'filter[extension]': 'bpmn',
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (this.sortVersions) {
-      const isDescending = this.sortVersions.startsWith('-');
-
-      let sortValue = isDescending
-        ? this.sortVersions.substring(1)
-        : this.sortVersions;
-
-      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    try {
-      this.bpmnFiles = yield this.store.query('file', query);
-    } catch {
-      this.bpmnFilesHaveErrored = true;
-    }
-
-    this.bpmnFilesAreLoading = false;
-  }
-
-  @keepLatestTask({ observes: ['pageAttachments', 'sortAttachments'] })
-  *fetchAttachments() {
-    console.log('fetch attachments');
-
-    this.attachmentsAreLoading = true;
-    this.attachmentsHaveErrored = false;
-
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageAttachments,
-        size: this.sizeAttachments,
-      },
-      'filter[processes][id]': this.model.processId,
-      'filter[:not:extension]': 'bpmn',
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (this.sortAttachments) {
-      const isDescending = this.sortAttachments.startsWith('-');
-
-      let sortValue = isDescending
-        ? this.sortAttachments.substring(1)
-        : this.sortAttachments;
-
-      if (
-        sortValue === 'name' ||
-        sortValue === 'extension' ||
-        sortValue === 'format'
-      )
-        sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    try {
-      this.attachments = yield this.store.query('file', query);
-    } catch {
-      this.attachmentsHaveErrored = true;
-    }
-
-    this.attachmentsAreLoading = false;
-  }
-
   @keepLatestTask
   *fetchLatestBpmnFile() {
-    console.log('fetch latest bpmn file');
-
     this.latestBpmnFileIsLoading = true;
     this.latestBpmnFileHasErrored = false;
 
@@ -497,6 +411,8 @@ export default class ProcessesProcessIndexController extends Controller {
     if (bpmnFiles?.length) this.latestBpmnFile = bpmnFiles[0];
     else this.latestBpmnFileHasErrored = true;
 
+    console.log('fetched file id:', this.latestBpmnFile.id);
+
     this.latestBpmnFileIsLoading = false;
   }
 
@@ -504,8 +420,6 @@ export default class ProcessesProcessIndexController extends Controller {
     observes: ['latestBpmnFile', 'pageProcessSteps', 'sortProcessSteps'],
   })
   *fetchProcessSteps() {
-    console.log('fetch process steps');
-
     this.processStepsAreLoading = true;
     this.processStepsHaveErrored = false;
 
@@ -576,5 +490,88 @@ export default class ProcessesProcessIndexController extends Controller {
     }
 
     this.processStepsAreLoading = false;
+  }
+
+  @keepLatestTask({
+    observes: ['latestBpmnFile', 'pageVersions', 'sortVersions'],
+  })
+  *fetchBpmnFiles() {
+    this.bpmnFilesAreLoading = true;
+    this.bpmnFilesHaveErrored = false;
+
+    const query = {
+      reload: true,
+      page: {
+        number: this.pageVersions,
+        size: this.sizeVersions,
+      },
+      'filter[processes][id]': this.model.processId,
+      'filter[extension]': 'bpmn',
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
+
+    if (this.sortVersions) {
+      const isDescending = this.sortVersions.startsWith('-');
+
+      let sortValue = isDescending
+        ? this.sortVersions.substring(1)
+        : this.sortVersions;
+
+      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    try {
+      this.bpmnFiles = yield this.store.query('file', query);
+    } catch {
+      this.bpmnFilesHaveErrored = true;
+    }
+
+    this.bpmnFilesAreLoading = false;
+  }
+
+  @keepLatestTask({ observes: ['pageAttachments', 'sortAttachments'] })
+  *fetchAttachments() {
+    this.attachmentsAreLoading = true;
+    this.attachmentsHaveErrored = false;
+
+    const query = {
+      reload: true,
+      page: {
+        number: this.pageAttachments,
+        size: this.sizeAttachments,
+      },
+      'filter[processes][id]': this.model.processId,
+      'filter[:not:extension]': 'bpmn',
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
+
+    if (this.sortAttachments) {
+      const isDescending = this.sortAttachments.startsWith('-');
+
+      let sortValue = isDescending
+        ? this.sortAttachments.substring(1)
+        : this.sortAttachments;
+
+      if (
+        sortValue === 'name' ||
+        sortValue === 'extension' ||
+        sortValue === 'format'
+      )
+        sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    try {
+      this.attachments = yield this.store.query('file', query);
+    } catch {
+      this.attachmentsHaveErrored = true;
+    }
+
+    this.attachmentsAreLoading = false;
   }
 }
