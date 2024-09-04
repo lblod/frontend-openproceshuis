@@ -1,171 +1,47 @@
 import Route from '@ember/routing/route';
-import { keepLatestTask, waitForProperty, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
+import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service store;
-
-  queryParams = {
-    pageProcessSteps: { as: 'process-steps-page', refreshModel: true },
-    sizeProcessSteps: { as: 'process-steps-size', refreshModel: true },
-    sortProcessSteps: { as: 'process-steps-sort', refreshModel: true },
-    pageVersions: { as: 'versions-page', refreshModel: true },
-    sizeVersions: { as: 'versions-size', refreshModel: true },
-    sortVersions: { as: 'versions-sort', refreshModel: true },
-    pageAttachments: { as: 'attachments-page', refreshModel: true },
-    sizeAttachments: { as: 'attachments-size', refreshModel: true },
-    sortAttachments: { as: 'attachments-sort', refreshModel: true },
-  };
+  @service plausible;
 
   async model() {
-    const {
-      loadProcessTaskInstance,
-      loadedProcess,
-      loadLatestBpmnFileTaskInstance,
-      loadedLatestBpmnFile,
-    } = this.modelFor('processes.process');
+    const { id: processId } = this.paramsFor('processes.process');
 
     return {
-      loadProcessTaskInstance,
-      loadedProcess,
-      loadBpmnFilesTaskInstance: this.loadBpmnFilesTask.perform(),
-      loadedBpmnFiles: this.loadBpmnFilesTask.lastSuccessful?.value,
-      loadAttachmentsTaskInstance: this.loadAttachmentsTask.perform(),
-      loadedAttachments: this.loadAttachmentsTask.lastSuccessful?.value,
-      loadLatestBpmnFileTaskInstance,
-      loadedLatestBpmnFile,
-      loadProcessStepsTaskInstance: this.loadProcessStepsTask.perform(
-        loadLatestBpmnFileTaskInstance
-      ),
-      loadedProcessSteps: this.loadProcessStepsTask.lastSuccessful?.value,
+      processId,
+      loadProcessTaskInstance: this.loadProcessTask.perform(),
+      loadedProcess: this.loadProcessTask.lastSuccesful?.value,
     };
   }
 
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadProcessStepsTask(loadLatestBpmnFileTaskInstance) {
-    yield waitForProperty(loadLatestBpmnFileTaskInstance, 'isFinished');
-
-    const latestBpmnFileId = loadLatestBpmnFileTaskInstance.value?.id;
-    if (!latestBpmnFileId) return;
-
-    while (true) {
-      const query = {
-        'filter[:exact:resource]': `http://mu.semte.ch/services/file-service/files/${latestBpmnFileId}`,
-        sort: '-modified',
-      };
-      const jobs = yield this.store.query('job', query);
-
-      if (jobs.length === 0) break;
-
-      const jobStatus = jobs[0].status;
-      if (jobStatus === ENV.jobStates.success) break;
-
-      if (
-        jobStatus === ENV.jobStates.failed ||
-        jobStatus === ENV.jobStates.canceled
-      )
-        return;
-
-      yield timeout(1000);
-    }
-
-    const params = this.paramsFor('processes.process.index');
-
-    const query = {
-      page: {
-        number: params.pageProcessSteps,
-        size: params.sizeProcessSteps,
-      },
-      include: 'type',
-      'filter[:has:name]': true,
-      'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
-    };
-
-    if (params.sortProcessSteps) {
-      const isDescending = params.sortProcessSteps.startsWith('-');
-
-      let fieldName = isDescending
-        ? params.sortProcessSteps.substring(1)
-        : params.sortProcessSteps;
-      if (fieldName === 'type') fieldName = 'type.label';
-
-      let sortValue = `:no-case:${fieldName}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    return yield this.store.query('bpmn-element', query);
-  }
-
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadBpmnFilesTask() {
+  @keepLatestTask
+  *loadProcessTask() {
     const { id: processId } = this.paramsFor('processes.process');
-    const params = this.paramsFor('processes.process.index');
-
     const query = {
       reload: true,
-      page: {
-        number: params.pageVersions,
-        size: params.sizeVersions,
-      },
-      'filter[processes][id]': processId,
-      'filter[extension]': 'bpmn',
-      'filter[:not:status]': ENV.resourceStates.archived,
+      include:
+        'files,publisher,publisher.primary-site,publisher.primary-site.contacts',
+      'filter[files][:not:status]': ENV.resourceStates.archived,
     };
 
-    if (params.sortVersions) {
-      const isDescending = params.sortVersions.startsWith('-');
+    const process = yield this.store.findRecord('process', processId, query);
 
-      let sortValue = isDescending
-        ? params.sortVersions.substring(1)
-        : params.sortVersions;
+    this.plausible.trackEvent('Raadpleeg proces', {
+      'Proces-ID': process?.id,
+      Procesnaam: process?.title,
+      'Bestuur-ID': process?.publisher?.id,
+      Bestuursnaam: process?.publisher?.name,
+    });
 
-      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    return yield this.store.query('file', query);
+    return process;
   }
 
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadAttachmentsTask() {
-    const { id: processId } = this.paramsFor('processes.process');
-    const params = this.paramsFor('processes.process.index');
-
-    const query = {
-      reload: true,
-      page: {
-        number: params.pageAttachments,
-        size: params.sizeAttachments,
-      },
-      'filter[processes][id]': processId,
-      'filter[:not:extension]': 'bpmn',
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (params.sortAttachments) {
-      const isDescending = params.sortAttachments.startsWith('-');
-
-      let sortValue = isDescending
-        ? params.sortAttachments.substring(1)
-        : params.sortAttachments;
-
-      if (
-        sortValue === 'name' ||
-        sortValue === 'extension' ||
-        sortValue === 'format'
-      )
-        sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    return yield this.store.query('file', query);
+  setupController(controller) {
+    super.setupController(...arguments);
+    controller.fetchLatestBpmnFile.perform();
   }
 
   resetController(controller) {
