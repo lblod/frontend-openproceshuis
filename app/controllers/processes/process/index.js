@@ -354,6 +354,8 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @task
   *deleteFile() {
+    if (!this.fileToDelete) return;
+
     this.fileToDelete.archive();
 
     try {
@@ -367,8 +369,10 @@ export default class ProcessesProcessIndexController extends Controller {
       this.fileToDelete.rollbackAttributes();
     }
 
+    if (this.fileToDelete.isBpmnFile) this.fetchBpmnFiles.perform();
+    else this.fetchAttachments.perform();
+
     this.closeDeleteModal();
-    this.router.refresh();
   }
 
   reset() {
