@@ -66,7 +66,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   // Latest BPMN file
 
-  @tracked latestBpmnFile;
+  @tracked latestBpmnFile = undefined;
   @tracked latestBpmnFileIsLoading = true;
   @tracked latestBpmnFileHasErrored = false;
 
@@ -89,7 +89,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked sortProcessSteps = 'name';
   sizeProcessSteps = 20;
 
-  @tracked processSteps;
+  @tracked processSteps = undefined;
   @tracked processStepsAreLoading = true;
   @tracked processStepsHaveErrored = false;
 
@@ -107,7 +107,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked sortVersions = '-created';
   sizeVersions = 10;
 
-  @tracked bpmnFiles;
+  @tracked bpmnFiles = undefined;
   @tracked bpmnFilesAreLoading = true;
   @tracked bpmnFilesHaveErrored = false;
 
@@ -125,7 +125,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked sortAttachments = 'name';
   sizeAttachments = 10;
 
-  @tracked attachments;
+  @tracked attachments = undefined;
   @tracked attachmentsAreLoading = true;
   @tracked attachmentsHaveErrored = false;
 
@@ -387,6 +387,11 @@ export default class ProcessesProcessIndexController extends Controller {
 
     this.latestBpmnFileAsBpmn = undefined;
     this.latestBpmnFileAsSvg = undefined;
+
+    this.attachments = undefined;
+    this.bpmnFiles = undefined;
+    this.processSteps = undefined;
+    this.latestBpmnFile = undefined;
   }
 
   // Tasks
