@@ -70,68 +70,68 @@ export default class ProcessStepsIndexRoute extends Route {
         );
   }
 
-  // @keepLatestTask({ cancelOn: 'deactivate' })
-  // *loadProcessStepsTaskMuSearch(params) {
-  //   const filter = {};
-  //   if (params.name) {
-  //     let filterType = 'phrase_prefix';
-  //     let name = params.name.trim();
+  @keepLatestTask({ cancelOn: 'deactivate' })
+  *loadProcessStepsTaskMuSearch(params) {
+    const filter = {};
+    if (params.name) {
+      let filterType = 'phrase_prefix';
+      let name = params.name.trim();
 
-  //     filter[`:${filterType}:name`] = name;
-  //   }
-  //   if (params.type) {
-  //     filter['type']['key'] = params.type; // TODO: Check whether this is correct
-  //   }
-  //   let sort = null;
-  //   if (params.sort) {
-  //     const isDescending = params.sort.startsWith('-');
+      filter[`:${filterType}:name`] = name;
+    }
+    if (params.type) {
+      filter['type']['key'] = params.type; // TODO: Check whether this is correct
+    }
+    let sort = null;
+    if (params.sort) {
+      const isDescending = params.sort.startsWith('-');
 
-  //     let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-  //     if (fieldName === 'file') fieldName = 'processes.name';
-  //     else if (fieldName === 'name') filter[':has:name'] = 't'; // Filtering with non-existent names, behaves unexpectedly
+      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
+      if (fieldName === 'file') fieldName = 'processes.name';
+      else if (fieldName === 'name') filter[':has:name'] = 't'; // Filtering with non-existent names, behaves unexpectedly
 
-  //     sort = `${fieldName}`;
-  //     if (isDescending) sort = `-${sort}`;
-  //   }
+      sort = `${fieldName}`;
+      if (isDescending) sort = `-${sort}`;
+    }
 
-  //   return yield this.muSearch.search({
-  //     index: 'process-steps',
-  //     page: params.page,
-  //     size: params.size,
-  //     sort,
-  //     filters: filter,
-  //     dataMapping: (data) => {
-  //       const entry = data.attributes;
-  //       const obj = {
-  //         name: entry.name,
-  //         id: entry.uuid,
-  //         type: Array.isArray(entry.classification)
-  //           ? entry.classification
-  //               .map((c) =>
-  //                 c.replace(
-  //                   'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
-  //                   ''
-  //                 )
-  //               )
-  //               .join(', ')
-  //           : entry.classification?.replace(
-  //               'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
-  //               ''
-  //             ),
-  //         process: {
-  //           bpmnFile: {
-  //             name: entry.processes?.name,
-  //             created: entry.processes?.created,
-  //             modified: Array.isArray(entry.processes?.modified)
-  //               ? entry.processes.modified[0]
-  //               : entry.processes?.modified,
-  //             id: entry.processes?.fileId,
-  //           },
-  //         },
-  //       };
+    return yield this.muSearch.search({
+      index: 'process-steps',
+      page: params.page,
+      size: params.size,
+      sort,
+      filters: filter,
+      dataMapping: (data) => {
+        const entry = data.attributes;
+        const obj = {
+          name: entry.name,
+          id: entry.uuid,
+          type: Array.isArray(entry.classification)
+            ? entry.classification
+                .map((c) =>
+                  c.replace(
+                    'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
+                    ''
+                  )
+                )
+                .join(', ')
+            : entry.classification?.replace(
+                'https://www.irit.fr/recherches/MELODI/ontologies/BBO#',
+                ''
+              ),
+          process: {
+            bpmnFile: {
+              name: entry.processes?.name,
+              created: entry.processes?.created,
+              modified: Array.isArray(entry.processes?.modified)
+                ? entry.processes.modified[0]
+                : entry.processes?.modified,
+              id: entry.processes?.fileId,
+            },
+          },
+        };
 
-  //       return obj;
-  //     },
-  //   });
-  // }
+        return obj;
+      },
+    });
+  }
 }
