@@ -2,6 +2,7 @@ import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
+import fetch from 'fetch';
 
 export default class ProcessStepsIndexRoute extends Route {
   @service store;
@@ -76,7 +77,14 @@ export default class ProcessStepsIndexRoute extends Route {
       });
     }
 
-    console.log(muSearchBody);
+    const response = yield fetch('/search/bpmn-elements/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(muSearchBody),
+    });
+
+    const data = yield response.json();
+    console.log(data);
 
     //////////////////////////////
 
