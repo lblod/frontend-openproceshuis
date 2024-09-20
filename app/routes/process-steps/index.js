@@ -22,6 +22,64 @@ export default class ProcessStepsIndexRoute extends Route {
 
   @keepLatestTask({ cancelOn: 'deactivate' })
   *loadProcessStepsTask(params) {
+    const muSearchBody = {
+      from: params.page,
+      size: params.size,
+      query: {
+        bool: {
+          must: [
+            { exists: { field: 'bpmn-process' } },
+            { exists: { field: 'bpmn-process.bpmn-file' } },
+            { exists: { field: 'bpmn-process.bpmn-file.processes' } },
+          ],
+          must_not: [
+            {
+              term: {
+                'bpmn-process.bpmn-file.status':
+                  'http://lblod.data.gift/concepts/concept-status/gearchiveerd',
+              },
+            },
+            {
+              term: {
+                'bpmn-process.bpmn-file.processes.status':
+                  'http://lblod.data.gift/concepts/concept-status/gearchiveerd',
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    if (params.sort) {
+      const isDescending = params.sort.startsWith('-');
+      let sortKey = isDescending ? params.sort.substring(1) : params.sort;
+
+      if (sortKey === 'type') sortKey = 'type.label';
+      else if (sortKey === 'file') sortKey = 'bpmn-process.bpmn-file.name';
+      else if (sortKey === 'process')
+        sortKey = 'bpmn-process.bpmn-file.processes.title';
+
+      muSearchBody.sort = {
+        [`${sortKey}.keyword`]: { order: isDescending ? 'desc' : 'asc' },
+      };
+    }
+
+    if (params.name) {
+      muSearchBody.query.bool.must.push({
+        match_phrase: { name: params.name },
+      });
+    }
+
+    if (params.type) {
+      muSearchBody.query.bool.must.push({
+        term: { ['type.key']: params.type },
+      });
+    }
+
+    console.log(muSearchBody);
+
+    //////////////////////////////
+
     let query = {
       page: {
         number: params.page,
