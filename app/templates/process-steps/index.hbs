@@ -91,17 +91,17 @@
             </p>
           </TableMessage>
         {{else}}
-          <c.body as |element|>
-            <td>{{or (truncate element.name 50 true) "/"}}</td>
-            <td>{{capitalize (or element.type.name "/")}}</td>
-            <td>{{element.bpmnProcess.bpmnFile.name}}</td>
+          <c.body as |bpmnElement|>
+            <td>{{or (truncate bpmnElement.name 50 true) "/"}}</td>
+            <td>{{capitalize (or bpmnElement.type.name "/")}}</td>
+            <td>{{bpmnElement.bpmnProcess.bpmnFile.name}}</td>
             <td>
               <LinkTo
                 class="au-c-link"
-                @model={{element.bpmnProcess.bpmnFile.process.id}}
+                @model={{bpmnElement.bpmnProcess.bpmnFile.process.id}}
                 @route="processes.process"
               >
-                {{element.bpmnProcess.bpmnFile.process.title}}
+                {{bpmnElement.bpmnProcess.bpmnFile.process.title}}
               </LinkTo>
             </td>
           </c.body>
