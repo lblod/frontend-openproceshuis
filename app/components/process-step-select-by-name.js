@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { restartableTask } from 'ember-concurrency';
+import { restartableTask, timeout } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessStepSelectByNameComponent extends Component {
@@ -9,6 +9,8 @@ export default class ProcessStepSelectByNameComponent extends Component {
   @restartableTask
   *loadProcessStepsTask(searchValue = '') {
     if (!searchValue?.trim()) return;
+
+    yield timeout(200);
 
     const page = 0;
     const size = 50;
