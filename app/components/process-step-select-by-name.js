@@ -4,28 +4,61 @@ import { restartableTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessStepSelectByNameComponent extends Component {
-  @service store;
+  @service muSearch;
 
   @restartableTask
-  *loadProcessStepsTask(searchParams = '') {
-    const query = {
-      'filter[:has:bpmn-process]': true,
-      'filter[bpmn-process][:has:bpmn-file]': true,
-      'filter[bpmn-process][bpmn-file][:not:status]':
-        ENV.resourceStates.archived,
-      'filter[bpmn-process][bpmn-file][:has:processes]': true,
-      'filter[bpmn-process][bpmn-file][processes][:not:status]':
-        ENV.resourceStates.archived,
+  *loadProcessStepsTask(searchValue = '') {
+    const page = 0;
+    const size = 50;
+
+    const muSearchBody = {
+      from: page,
+      size,
+      query: {
+        bool: {
+          must: [
+            { exists: { field: 'bpmn-process' } },
+            { exists: { field: 'bpmn-process.bpmn-file' } },
+            { exists: { field: 'bpmn-process.bpmn-file.processes' } },
+          ],
+          must_not: [
+            {
+              term: {
+                'bpmn-process.bpmn-file.status': ENV.resourceStates.archived,
+              },
+            },
+            {
+              term: {
+                'bpmn-process.bpmn-file.processes.status':
+                  ENV.resourceStates.archived,
+              },
+            },
+          ],
+        },
+      },
     };
 
-    if (searchParams.trim() !== '') {
-      query['filter[name]'] = searchParams;
+    if (searchValue.trim() !== '') {
+      muSearchBody.query.bool.must.push({
+        match_phrase: { name: searchValue },
+      });
     }
 
-    const result = yield this.store.query('bpmn-element', query);
+    const bpmnElements = yield this.muSearch.searchDsl({
+      index: 'bpmn-elements',
+      page: page,
+      size,
+      body: muSearchBody,
+      dataMapping: (data) => {
+        const entry = data.attributes;
+        return {
+          name: entry.name,
+        };
+      },
+    });
 
-    if (result) {
-      return [...[searchParams], ...new Set(result.map((r) => r.name))];
+    if (bpmnElements) {
+      return [...[searchValue], ...new Set(bpmnElements.map((r) => r.name))];
     }
   }
 }

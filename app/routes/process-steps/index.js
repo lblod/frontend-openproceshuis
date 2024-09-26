@@ -4,8 +4,8 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessStepsIndexRoute extends Route {
-  @service store;
   @service muSearch;
+
   queryParams = {
     page: { refreshModel: true },
     sort: { refreshModel: true },

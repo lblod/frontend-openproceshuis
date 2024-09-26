@@ -106,6 +106,8 @@ export default class MuSearchService extends Service {
     });
     const { count, data } = await response.json();
 
+    console.log(data);
+
     const pagination = this.getPaginationMetadata(page, size, count);
     const entries = A(data.flatMap(dataMapping));
 
