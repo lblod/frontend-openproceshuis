@@ -8,6 +8,8 @@ export default class ProcessStepSelectByNameComponent extends Component {
 
   @restartableTask
   *loadProcessStepsTask(searchValue = '') {
+    if (!searchValue?.trim()) return;
+
     const page = 0;
     const size = 50;
 
@@ -20,6 +22,7 @@ export default class ProcessStepSelectByNameComponent extends Component {
             { exists: { field: 'bpmn-process' } },
             { exists: { field: 'bpmn-process.bpmn-file' } },
             { exists: { field: 'bpmn-process.bpmn-file.processes' } },
+            { match_phrase: { name: searchValue } },
           ],
           must_not: [
             {
@@ -37,12 +40,6 @@ export default class ProcessStepSelectByNameComponent extends Component {
         },
       },
     };
-
-    if (searchValue.trim() !== '') {
-      muSearchBody.query.bool.must.push({
-        match_phrase: { name: searchValue },
-      });
-    }
 
     const bpmnElements = yield this.muSearch.searchDsl({
       index: 'bpmn-elements',
