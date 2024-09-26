@@ -22,7 +22,13 @@ export default class ProcessStepSelectByNameComponent extends Component {
             { exists: { field: 'bpmn-process' } },
             { exists: { field: 'bpmn-process.bpmn-file' } },
             { exists: { field: 'bpmn-process.bpmn-file.processes' } },
-            { match_phrase: { name: searchValue } },
+            {
+              query_string: {
+                query: `*${searchValue}*`,
+                fields: ['name'],
+                default_operator: 'AND',
+              },
+            },
           ],
           must_not: [
             {

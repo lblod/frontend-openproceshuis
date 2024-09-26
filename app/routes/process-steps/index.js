@@ -65,7 +65,11 @@ export default class ProcessStepsIndexRoute extends Route {
 
     if (params.name) {
       muSearchBody.query.bool.must.push({
-        match_phrase: { name: params.name },
+        query_string: {
+          query: `*${params.name}*`,
+          fields: ['name'],
+          default_operator: 'AND',
+        },
       });
     }
 
