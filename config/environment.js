@@ -38,6 +38,10 @@ module.exports = function (environment) {
       extraPrefixes: '{{YASGUI_EXTRA_PREFIXES}}',
     },
 
+    mockLogin: {
+      enabled: '{{MOCKLOGIN_ENABLED}}', // enabled by default, set to false to disable
+    },
+
     acmidm: {
       clientId: '{{OAUTH_API_KEY}}',
       scope: '{{OAUTH_API_SCOPE}}',
