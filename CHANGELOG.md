@@ -4,6 +4,18 @@
 
 
 
+
+## 1.1.1 (2024-10-01)
+
+#### :rocket: Enhancement
+* [#49](https://github.com/lblod/frontend-openproceshuis/pull/49) Fetch data only when needed ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :bug: Bug Fix
+* [#50](https://github.com/lblod/frontend-openproceshuis/pull/50) Always fetch correct process steps ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
 ## 1.1.0 (2024-09-04)
 
 #### :rocket: Enhancement
