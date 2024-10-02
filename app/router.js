@@ -7,7 +7,8 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  if (ENV.mockLogin.enabled) this.route('mock-login');
+  if (window.location.hostname !== 'openproceshuis.vlaanderen.be')
+    this.route('mock-login');
 
   this.route('switch-login');
   this.route('auth', { path: '/authorization' }, function () {
