@@ -1,13 +1,18 @@
 import EmberRouter from '@ember/routing/router';
-import config from 'frontend-openproceshuis/config/environment';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class Router extends EmberRouter {
-  location = config.locationType;
-  rootURL = config.rootURL;
+  location = ENV.locationType;
+  rootURL = ENV.rootURL;
 }
 
 Router.map(function () {
-  this.route('mock-login');
+  if (
+    ENV.mockLogin.disabled === '{{DISABLE_MOCK_LOGIN}}' ||
+    ENV.mockLogin.disabled === 'false' ||
+    !ENV.mockLogin.disabled
+  )
+    this.route('mock-login');
 
   this.route('switch-login');
   this.route('auth', { path: '/authorization' }, function () {
