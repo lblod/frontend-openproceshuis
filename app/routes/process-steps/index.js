@@ -89,14 +89,14 @@ export default class ProcessStepsIndexRoute extends Route {
         return {
           name: entry.name,
           type: {
-            name: entry.type.label,
+            name: entry.type?.label,
           },
           bpmnProcess: {
             bpmnFile: {
               name: entry['bpmn-process']['bpmn-file'].name,
               process: {
-                id: entry['bpmn-process']['bpmn-file'].processes.uuid,
-                title: entry['bpmn-process']['bpmn-file'].processes.title,
+                id: entry['bpmn-process']['bpmn-file'].processes?.uuid,
+                title: entry['bpmn-process']['bpmn-file'].processes?.title,
               },
             },
           },
