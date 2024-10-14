@@ -15,45 +15,26 @@ export default class ProcessStepSelectByNameComponent extends Component {
     const page = 0;
     const size = 50;
 
-    const muSearchBody = {
-      from: page,
-      size,
-      query: {
-        bool: {
-          must: [
-            { exists: { field: 'bpmn-process' } },
-            { exists: { field: 'bpmn-process.bpmn-file' } },
-            { exists: { field: 'bpmn-process.bpmn-file.processes' } },
-            {
-              query_string: {
-                query: `*${searchValue}*`,
-                fields: ['name'],
-                default_operator: 'AND',
-              },
-            },
-          ],
-          must_not: [
-            {
-              term: {
-                'bpmn-process.bpmn-file.status': ENV.resourceStates.archived,
-              },
-            },
-            {
-              term: {
-                'bpmn-process.bpmn-file.processes.status':
-                  ENV.resourceStates.archived,
-              },
-            },
-          ],
-        },
-      },
-    };
+    const filter = {};
 
-    const bpmnElements = yield this.muSearch.searchDsl({
+    filter[':has:bpmn-process.bpmn-file.processes'] = 't';
+    filter[':query:name'] = `*${searchValue}*`;
+
+    const encodedArchivedUri = encodeURIComponent(
+      ENV.resourceStates.archived.replaceAll('/', '\\/')
+    );
+    filter[
+      ':query:bpmn-process.bpmn-file.status'
+    ] = `NOT (${encodedArchivedUri})`;
+    filter[
+      ':query:bpmn-process.bpmn-file.processes.status'
+    ] = `NOT (${encodedArchivedUri})`;
+
+    const bpmnElements = yield this.muSearch.search({
       index: 'bpmn-elements',
-      page: page,
+      page,
       size,
-      body: muSearchBody,
+      filters: filter,
       dataMapping: (data) => {
         const entry = data.attributes;
         return {

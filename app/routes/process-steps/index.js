@@ -22,68 +22,42 @@ export default class ProcessStepsIndexRoute extends Route {
 
   @keepLatestTask({ cancelOn: 'deactivate' })
   *loadProcessStepsTask(params) {
-    const muSearchBody = {
-      from: params.page,
-      size: params.size,
-      query: {
-        bool: {
-          must: [
-            { exists: { field: 'bpmn-process' } },
-            { exists: { field: 'bpmn-process.bpmn-file' } },
-            { exists: { field: 'bpmn-process.bpmn-file.processes' } },
-          ],
-          must_not: [
-            {
-              term: {
-                'bpmn-process.bpmn-file.status': ENV.resourceStates.archived,
-              },
-            },
-            {
-              term: {
-                'bpmn-process.bpmn-file.processes.status':
-                  ENV.resourceStates.archived,
-              },
-            },
-          ],
-        },
-      },
-    };
+    const filter = {};
+
+    filter[':has:bpmn-process.bpmn-file.processes'] = 't';
+    if (params.name) filter[':query:name'] = `*${params.name}*`;
+    if (params.type) filter[':term:type.key'] = params.type;
+
+    const encodedArchivedUri = encodeURIComponent(
+      ENV.resourceStates.archived.replaceAll('/', '\\/')
+    );
+    filter[
+      ':query:bpmn-process.bpmn-file.status'
+    ] = `NOT (${encodedArchivedUri})`;
+    filter[
+      ':query:bpmn-process.bpmn-file.processes.status'
+    ] = `NOT (${encodedArchivedUri})`;
+
+    let sort = null;
 
     if (params.sort) {
       const isDescending = params.sort.startsWith('-');
-      let sortKey = isDescending ? params.sort.substring(1) : params.sort;
+      sort = isDescending ? params.sort.substring(1) : params.sort;
 
-      if (sortKey === 'type') sortKey = 'type.label';
-      else if (sortKey === 'file') sortKey = 'bpmn-process.bpmn-file.name';
-      else if (sortKey === 'process')
-        sortKey = 'bpmn-process.bpmn-file.processes.title';
+      if (sort === 'type') sort = 'type.label';
+      else if (sort === 'file') sort = 'bpmn-process.bpmn-file.name';
+      else if (sort === 'process')
+        sort = 'bpmn-process.bpmn-file.processes.title';
 
-      muSearchBody.sort = {
-        [`${sortKey}.keyword`]: { order: isDescending ? 'desc' : 'asc' },
-      };
+      if (isDescending) sort = `-${sort}`;
     }
 
-    if (params.name) {
-      muSearchBody.query.bool.must.push({
-        query_string: {
-          query: `*${params.name}*`,
-          fields: ['name'],
-          default_operator: 'AND',
-        },
-      });
-    }
-
-    if (params.type) {
-      muSearchBody.query.bool.must.push({
-        term: { ['type.key']: params.type },
-      });
-    }
-
-    return yield this.muSearch.searchDsl({
+    return yield this.muSearch.search({
       index: 'bpmn-elements',
       page: params.page,
       size: params.size,
-      body: muSearchBody,
+      sort: sort,
+      filters: filter,
       dataMapping: (data) => {
         const entry = data.attributes;
         return {

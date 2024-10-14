@@ -75,7 +75,7 @@ export default class MuSearchService extends Service {
       const sortParams = sort.split(',');
       sortParams.forEach((sortParam) => {
         params.push(
-          `sort[${this.stripSort(sortParam)}.field]=${this.sortOrder(
+          `sort[${this.stripSort(sortParam)}.keyword]=${this.sortOrder(
             sortParam
           )}`
         );
@@ -84,30 +84,6 @@ export default class MuSearchService extends Service {
 
     const endpoint = `/search/${index}/search?${params.join('&')}`;
     const { count, data } = await (await fetch(endpoint)).json();
-    const pagination = this.getPaginationMetadata(page, size, count);
-    const entries = A(data.flatMap(dataMapping));
-
-    return ArrayProxy.create({
-      content: entries,
-      meta: {
-        count,
-        pagination,
-      },
-    });
-  }
-
-  async searchDsl(request) {
-    const { index, page, size, body, dataMapping } = request;
-
-    const response = await fetch(`/search/${index}/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    const { count, data } = await response.json();
-
-    console.log(data);
-
     const pagination = this.getPaginationMetadata(page, size, count);
     const entries = A(data.flatMap(dataMapping));
 
