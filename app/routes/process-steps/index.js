@@ -28,15 +28,11 @@ export default class ProcessStepsIndexRoute extends Route {
     if (params.name) filter[':query:name'] = `*${params.name}*`;
     if (params.type) filter[':term:type.key'] = params.type;
 
-    const encodedArchivedUri = encodeURIComponent(
-      ENV.resourceStates.archived.replaceAll('/', '\\/')
-    );
-    filter[
-      ':query:bpmn-process.bpmn-file.status'
-    ] = `NOT (${encodedArchivedUri})`;
+    const sanitizedUri = ENV.resourceStates.archived.replace(/[/:.\\-]/g, '');
+    filter[':query:bpmn-process.bpmn-file.status'] = `NOT (${sanitizedUri})`;
     filter[
       ':query:bpmn-process.bpmn-file.processes.status'
-    ] = `NOT (${encodedArchivedUri})`;
+    ] = `NOT (${sanitizedUri})`;
 
     let sort = null;
 
