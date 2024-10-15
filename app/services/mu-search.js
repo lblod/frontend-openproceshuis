@@ -75,7 +75,7 @@ export default class MuSearchService extends Service {
       const sortParams = sort.split(',');
       sortParams.forEach((sortParam) => {
         params.push(
-          `sort[${this.stripSort(sortParam)}.field]=${this.sortOrder(
+          `sort[${this.stripSort(sortParam)}.keyword]=${this.sortOrder(
             sortParam
           )}`
         );
