@@ -34,11 +34,9 @@
     <PageHeader>
       <:title>Gedeelde processen</:title>
       <:subtitle>
-        {{! 
-          TODO: Reintroduce when help page gets content
-          }}
-        {{! <AuLink @route="help" @skin="secondary" @icon="circle-info">Over BPMN
-          bestanden</AuLink> }}
+        <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
+          Over BPMN-bestanden
+        </AuLinkExternal>
       </:subtitle>
       <:action>
         <AuButton {{on "click" this.openUploadModal}}>Voeg proces toe</AuButton>

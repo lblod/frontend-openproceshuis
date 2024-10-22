@@ -54,7 +54,6 @@ Router.map(function () {
     path: '/*wildcard',
   });
   this.route('accessibility-statement');
-  // this.route('help'); // TODO: Reintroduce when help page gets content
   this.route('cookie-notice');
   this.route('disclaimer');
 });
