@@ -54,7 +54,7 @@ export default class CurrentSessionService extends Service {
   }
 
   get isAdmin() {
-    return true;
+    return this.session.isAuthenticated;
 
     // TODO: reintroduce when "LoketLB-admin" role available
 
