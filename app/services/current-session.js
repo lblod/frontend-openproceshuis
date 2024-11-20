@@ -2,10 +2,12 @@ import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 const EDITOR_ROLES = ['LoketLB-OpenProcesHuisGebruiker'];
+const ADMIN_ROLE = 'LoketLB-admin';
 
 export default class CurrentSessionService extends Service {
   @service session;
   @service store;
+  @service impersonation;
 
   @tracked account;
   @tracked user;
@@ -15,6 +17,8 @@ export default class CurrentSessionService extends Service {
 
   async load() {
     if (this.session.isAuthenticated) {
+      await this.impersonation.load();
+
       let sessionData = this.session.data.authenticated.relationships;
       this.roles = [
         ...new Set(this.session.data.authenticated.data?.attributes?.roles),
@@ -47,5 +51,12 @@ export default class CurrentSessionService extends Service {
 
   get canOnlyReadWhileAuthenticated() {
     return this.session.isAuthenticated && !this.hasEditorRole;
+  }
+
+  get isAdmin() {
+    let roles = this.roles;
+    if (this.impersonation.isImpersonating)
+      roles = this.impersonation.originalRoles || [];
+    return roles?.includes(ADMIN_ROLE);
   }
 }
