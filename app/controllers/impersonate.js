@@ -26,6 +26,8 @@ export default class ImpersonateController extends Controller {
         'family-name': this.gemeente,
       };
     }
+
+    this.store.unloadAll('account');
     const accounts = await this.store.query('account', {
       include: 'user,user.groups',
       filter: filter,
