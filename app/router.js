@@ -23,8 +23,6 @@ Router.map(function () {
     this.route('switch');
   });
 
-  this.route('impersonate');
-
   this.route('index', { path: '' });
 
   this.route('processes', { path: 'processen' }, function () {
