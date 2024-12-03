@@ -77,10 +77,19 @@ export default class AuFileUpload extends Component {
   *upload(file) {
     this.resetErrors();
 
-    if (this.args.bpmnForbidden && file.name.endsWith('.bpmn')) {
+    const forbidden = this.args.forbidden.split(',');
+
+    if (forbidden.includes('.bpmn') && file.name.endsWith('.bpmn')) {
       this.addError(
         file,
         'BPMN-bestanden kunnen niet worden toegevoegd aan bijlagen.'
+      );
+      this.removeFileFromQueue(file);
+      return;
+    } else if (forbidden.includes('.vsdx') && file.name.endsWith('.vsdx')) {
+      this.addError(
+        file,
+        'Visiobestanden kunnen niet worden toegevoegd aan bijlagen.'
       );
       this.removeFileFromQueue(file);
       return;

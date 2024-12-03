@@ -613,7 +613,7 @@
     <CustomFileUpload
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
-      @bpmnForbidden="true"
+      @forbidden=".bpmn,.vsdx"
       @multiple="true"
       @updateProcess={{this.addFileToProcess}}
       @onFinishUpload={{this.attachmentsUploaded}}
