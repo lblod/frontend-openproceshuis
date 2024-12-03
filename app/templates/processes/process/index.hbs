@@ -535,11 +535,11 @@
   @modalOpen={{this.replaceModalOpened}}
   @closeModal={{this.closeReplaceModal}}
 >
-  <:title>Vervang BPMN-bestand</:title>
+  <:title>Vervang diagram</:title>
   <:body>
     <CustomFileUpload
-      @accept=".bpmn"
-      @title="Bestand selecteren"
+      @accept=".bpmn,.vsdx"
+      @title="BPMN- of Visiobestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @updateProcess={{this.addFileToProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
