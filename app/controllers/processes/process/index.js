@@ -408,14 +408,18 @@ export default class ProcessesProcessIndexController extends Controller {
         size: 1,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[extension]': 'bpmn',
+      'filter[:or:][extension]': 'bpmn',
+      // eslint-disable-next-line no-dupe-keys
+      'filter[:or:][extension]': 'vsdx',
       sort: '-created',
     };
 
     let bpmnFiles;
     try {
       bpmnFiles = yield this.store.query('file', query);
+      console.log(bpmnFiles);
     } catch {
+      console.log('error');
       this.latestBpmnFileHasErrored = true;
     }
     if (bpmnFiles?.length) this.latestBpmnFile = bpmnFiles[0];
@@ -530,7 +534,9 @@ export default class ProcessesProcessIndexController extends Controller {
         size: this.sizeVersions,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[extension]': 'bpmn',
+      'filter[:or:][extension]': 'bpmn',
+      // eslint-disable-next-line no-dupe-keys
+      'filter[:or:][extension]': 'vsdx',
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
@@ -569,6 +575,8 @@ export default class ProcessesProcessIndexController extends Controller {
       },
       'filter[processes][id]': this.model.processId,
       'filter[:not:extension]': 'bpmn',
+      // eslint-disable-next-line no-dupe-keys
+      'filter[:not:extension]': 'vsdx',
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
