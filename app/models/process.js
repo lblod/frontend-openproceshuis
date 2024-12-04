@@ -43,15 +43,17 @@ export default class ProcessModel extends Model {
     this.status = ENV.resourceStates.archived;
   }
 
-  get bpmnFile() {
-    const bpmnFiles = this.files.filter(
-      (file) => file.isBpmnFile && file.status !== ENV.resourceStates.archived
+  get diagram() {
+    const diagrams = this.files.filter(
+      (file) =>
+        (file.isBpmnFile || file.isVisioFile) &&
+        file.status !== ENV.resourceStates.archived
     );
-    if (bpmnFiles.length === 0) return undefined;
+    if (diagrams.length === 0) return undefined;
 
-    const bpmnFilesSorted = bpmnFiles.sort(
+    const diagramsSorted = diagrams.sort(
       (fileA, fileB) => fileB.created - fileA.created
     );
-    return bpmnFilesSorted[0];
+    return diagramsSorted[0];
   }
 }
