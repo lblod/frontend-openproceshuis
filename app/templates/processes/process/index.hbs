@@ -564,17 +564,25 @@
   @modalOpen={{this.downloadModalOpened}}
   @closeModal={{this.closeDownloadModal}}
 >
-  <:title>Download BPMN-bestand</:title>
+  <:title>Download diagram</:title>
   <:body>
     <div class="au-o-flow">
-      <p>Het geselecteerde BPMN-bestand is beschikbaar in verschillende
-        formaten:</p>
+      <p>Het geselecteerde diagram is beschikbaar in verschillende formaten:</p>
       <AuButtonGroup class="au-u-flex au-u-flex--around">
+        {{#if this.latestDiagram.isVisioFile}}
+          <AuButton
+            @skin="primary"
+            {{on "click" (perform this.downloadLatestDiagram "vsdx")}}
+          >
+            Visio
+            <span class="au-u-para-tiny au-u-regular">(.vsdx)</span>
+          </AuButton>
+        {{/if}}
         <AuButton
-          @skin="primary"
+          @skin={{if this.latestDiagram.isBpmnFile "primary" "secondary"}}
           {{on "click" (perform this.downloadLatestDiagram "bpmn")}}
         >
-          Origineel
+          BPMN
           <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
         </AuButton>
         <AuButton

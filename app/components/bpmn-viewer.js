@@ -40,11 +40,7 @@ export default class BpmnViewerComponent extends Component {
   @restartableTask
   *downloadBpmnFile(bpmnFileId) {
     const url = generateFileDownloadUrl(bpmnFileId);
-    const response = yield fetch(url, {
-      headers: {
-        Accept: 'text/xml',
-      },
-    });
+    const response = yield fetch(url);
     if (!response.ok) throw Error(response.status);
     return yield response.text();
   }

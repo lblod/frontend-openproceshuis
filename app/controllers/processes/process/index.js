@@ -19,6 +19,7 @@ import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
+import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -169,7 +170,12 @@ export default class ProcessesProcessIndexController extends Controller {
     if (!this.latestDiagram) return;
 
     let blob = undefined;
-    if (targetExtension === 'bpmn' && this.latestDiagramAsBpmn) {
+    if (targetExtension === 'vsdx' && this.latestDiagram?.isVisioFile) {
+      const url = generateFileDownloadUrl(this.latestDiagram.id);
+      const response = yield fetch(url);
+      if (!response.ok) throw Error(response.status);
+      blob = yield response.blob();
+    } else if (targetExtension === 'bpmn' && this.latestDiagramAsBpmn) {
       blob = new Blob([this.latestDiagramAsBpmn], {
         type: 'application/xml;charset=utf-8',
       });
