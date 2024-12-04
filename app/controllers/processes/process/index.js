@@ -409,9 +409,7 @@ export default class ProcessesProcessIndexController extends Controller {
         size: 1,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[:or:][extension]': 'bpmn',
-      // eslint-disable-next-line no-dupe-keys
-      'filter[:or:][extension]': 'vsdx',
+      'filter[:or:][extension]': ['bpmn', 'vsdx'],
       sort: '-created',
     };
 
@@ -535,9 +533,7 @@ export default class ProcessesProcessIndexController extends Controller {
         size: this.sizeVersions,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[:or:][extension]': 'bpmn',
-      // eslint-disable-next-line no-dupe-keys
-      'filter[:or:][extension]': 'vsdx',
+      'filter[:or:][extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
@@ -575,9 +571,7 @@ export default class ProcessesProcessIndexController extends Controller {
         size: this.sizeAttachments,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[:not:extension]': 'bpmn',
-      // eslint-disable-next-line no-dupe-keys
-      'filter[:not:extension]': 'vsdx',
+      'filter[:not:extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
