@@ -182,8 +182,8 @@
     <div class="au-o-grid__item">
 
       {{! Latest diagram - Title }}
-      <div class="au-u-flex au-u-flex--between">
-        <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
+      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+        <AuHeading @level="2" @skin="3">Diagram</AuHeading>
         <AuButtonGroup>
           {{#if this.canEdit}}
             <AuButton
@@ -201,18 +201,22 @@
 
       {{! Latest diagram - Visual }}
       <div>
-        <AuHeading
-          @level="3"
-          @skin="4"
-          class="au-u-margin-bottom-small au-u-margin-top-small"
-        >Diagram</AuHeading>
         {{#if this.latestDiagramIsLoading}}
           <AuLoader />
         {{else if this.latestDiagramHasErrored}}
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
         {{else if this.latestDiagram}}
-          <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+          {{#if this.latestDiagram.isVisioFile}}
+            <AuHelpText @skin="secondary" class="au-u-margin-bottom-small">
+              Dit diagram is origineel gemaakt in Visio. Open Proces Huis kan
+              geen Visiobestanden tonen, het toont enkel een
+              <span class="au-u-italic">.bpmn</span>-versie. Let op: die kan
+              verschillen van het originele Visiobestand. Je kan het originele
+              Visiobestand downloaden om te bekijken in de Visiotoepassing.
+            </AuHelpText>
+          {{/if}}
+          <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
             Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
             om in en uit te zoomen. Klik elders om bediening uit te schakelen.
           </AuHelpText>
