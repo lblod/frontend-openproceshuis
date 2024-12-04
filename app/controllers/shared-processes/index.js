@@ -103,16 +103,16 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @task
-  *createProcess(bpmnFileId) {
-    const bpmnFile = yield this.store.findRecord('file', bpmnFileId);
+  *createProcess(diagramId) {
+    const diagram = yield this.store.findRecord('file', diagramId);
 
     const created = new Date();
     const process = this.store.createRecord('process', {
-      title: removeFileNameExtension(bpmnFile.name, bpmnFile.extension),
+      title: removeFileNameExtension(diagram.name, diagram.extension),
       created,
       modified: created,
       publisher: this.currentSession.group,
-      files: [bpmnFile],
+      files: [diagram],
     });
     yield process.save();
     this.newProcessId = process.id;
@@ -129,7 +129,7 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  bpmnFileUploaded() {
+  diagramUploaded() {
     this.closeUploadModal();
     this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
       timeOut: 5000,

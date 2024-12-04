@@ -27,4 +27,8 @@ export default class FileModel extends Model {
   get isBpmnFile() {
     return this.extension === 'bpmn';
   }
+
+  get isVisioFile() {
+    return this.extension === 'vsdx';
+  }
 }

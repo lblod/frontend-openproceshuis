@@ -178,10 +178,10 @@
 
   <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
 
-    {{! Latest BPMN file }}
+    {{! Latest diagram }}
     <div class="au-o-grid__item">
 
-      {{! Latest BPMN file - Title }}
+      {{! Latest diagram - Title }}
       <div class="au-u-flex au-u-flex--between">
         <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
         <AuButtonGroup>
@@ -191,7 +191,7 @@
               {{on "click" this.openReplaceModal}}
             >Vervang</AuButton>
           {{/if}}
-          {{#if this.latestBpmnFile}}
+          {{#if this.latestDiagram}}
             <AuButton {{on "click" this.openDownloadModal}}>
               Download
             </AuButton>
@@ -199,27 +199,27 @@
         </AuButtonGroup>
       </div>
 
-      {{! Latest BPMN file - Diagram }}
+      {{! Latest diagram - Visual }}
       <div>
         <AuHeading
           @level="3"
           @skin="4"
           class="au-u-margin-bottom-small au-u-margin-top-small"
         >Diagram</AuHeading>
-        {{#if this.latestBpmnFileIsLoading}}
+        {{#if this.latestDiagramIsLoading}}
           <AuLoader />
-        {{else if this.latestBpmnFileHasErrored}}
+        {{else if this.latestDiagramHasErrored}}
           <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
             later opnieuw.</p>
-        {{else if this.latestBpmnFile}}
+        {{else if this.latestDiagram}}
           <AuHelpText @skin="secondary" class="au-u-margin-top-none">
             Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
             om in en uit te zoomen. Klik elders om bediening uit te schakelen.
           </AuHelpText>
           <BpmnViewer
-            @bpmnFile={{this.latestBpmnFile}}
-            @onBpmnLoaded={{this.setLatestBpmnFileAsBpmn}}
-            @onSvgLoaded={{this.setLatestBpmnFileAsSvg}}
+            @diagram={{this.latestDiagram}}
+            @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
+            @onSvgLoaded={{this.setLatestDiagramAsSvg}}
           />
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
@@ -232,13 +232,13 @@
                   <Item>
                     <:label>Bestandsnaam</:label>
                     <:content>
-                      {{this.latestBpmnFile.name}}
+                      {{this.latestDiagram.name}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Toegevoegd op</:label>
                     <:content>
-                      {{date-format this.latestBpmnFile.modified true}}
+                      {{date-format this.latestDiagram.modified true}}
                     </:content>
                   </Item>
                 </:left>
@@ -246,19 +246,19 @@
                   <Item>
                     <:label>Grootte</:label>
                     <:content>
-                      {{file-size-format this.latestBpmnFile.size}}
+                      {{file-size-format this.latestDiagram.size}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Extensie</:label>
                     <:content>
-                      {{this.latestBpmnFile.extension}}
+                      {{this.latestDiagram.extension}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Formaat</:label>
                     <:content>
-                      {{this.latestBpmnFile.format}}
+                      {{this.latestDiagram.format}}
                     </:content>
                   </Item>
                 </:right>
@@ -270,7 +270,7 @@
         {{/if}}
       </div>
 
-      {{! Latest BPMN file - Process steps }}
+      {{! Latest diagram - Process steps }}
       <div>
         <AuHeading
           @level="3"
@@ -318,10 +318,10 @@
       </div>
     </div>
 
-    {{! BPMN files }}
+    {{! Diagrams }}
     <div class="au-o-grid__item au-u-margin-top">
 
-      {{! BPMN files - Title }}
+      {{! Diagrams - Title }}
       <div class="au-u-margin-bottom-small">
         <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
           <AuHeading @level="2" @skin="3">Versies</AuHeading>
@@ -333,11 +333,11 @@
         </AuHelpText>
       </div>
 
-      {{! BPMN files - Files }}
+      {{! Diagrams - Files }}
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
-          @content={{this.bpmnFiles}}
-          @isLoading={{this.bpmnFilesAreLoading}}
+          @content={{this.diagrams}}
+          @isLoading={{this.diagramsAreLoading}}
           @page={{this.pageVersions}}
           @size={{this.sizeVersions}}
           as |t|
@@ -364,35 +364,35 @@
                 <th></th>
               {{/if}}
             </c.header>
-            {{#if this.bpmnFilesHaveErrored}}
+            {{#if this.diagramsHaveErrored}}
               <TableMessage::Error />
-            {{else if this.bpmnFilesHaveNoResults}}
+            {{else if this.diagramsHaveNoResults}}
               <TableMessage>
                 <p>
                   Er werden geen zoekresultaten gevonden.
                 </p>
               </TableMessage>
             {{else}}
-              <c.body as |bpmnFile|>
-                <td>{{date-format bpmnFile.created true}}</td>
+              <c.body as |diagram|>
+                <td>{{date-format diagram.created true}}</td>
                 <td>
-                  {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
+                  {{#if (eq diagram.id this.latestDiagram.id)}}
                     <strong>
-                      {{bpmnFile.name}}
+                      {{diagram.name}}
                       <AuIcon @icon="circle-check" />
                     </strong>
                   {{else}}
-                    {{bpmnFile.name}}
+                    {{diagram.name}}
                   {{/if}}
                 </td>
-                <td>{{file-size-format bpmnFile.size}}</td>
+                <td>{{file-size-format diagram.size}}</td>
                 <td>
                   <AuButton
                     @icon="download"
                     @skin="link"
                     @width="block"
                     @hideText="true"
-                    {{on "click" (fn this.downloadFile bpmnFile)}}
+                    {{on "click" (fn this.downloadFile diagram)}}
                   >Download</AuButton>
                 </td>
                 {{#if this.canEdit}}
@@ -403,8 +403,8 @@
                       @alert="true"
                       @width="block"
                       @hideText="true"
-                      @disabled={{eq bpmnFile.id this.latestBpmnFile.id}}
-                      {{on "click" (fn this.openDeleteModal bpmnFile)}}
+                      @disabled={{eq diagram.id this.latestDiagram.id}}
+                      {{on "click" (fn this.openDeleteModal diagram)}}
                     >Verwijder</AuButton>
                   </td>
                 {{/if}}
@@ -543,7 +543,7 @@
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @updateProcess={{this.addFileToProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.bpmnFileUploaded}}
+      @onFinishUpload={{this.diagramUploaded}}
     />
   </:body>
   <:footer>
@@ -568,28 +568,28 @@
       <AuButtonGroup class="au-u-flex au-u-flex--around">
         <AuButton
           @skin="primary"
-          {{on "click" (perform this.downloadLatestBpmnFile "bpmn")}}
+          {{on "click" (perform this.downloadLatestDiagram "bpmn")}}
         >
           Origineel
           <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (perform this.downloadLatestBpmnFile "png")}}
+          {{on "click" (perform this.downloadLatestDiagram "png")}}
         >
           Afbeelding
           <span class="au-u-para-tiny au-u-regular">(.png)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (perform this.downloadLatestBpmnFile "svg")}}
+          {{on "click" (perform this.downloadLatestDiagram "svg")}}
         >
           Vectorafbeelding
           <span class="au-u-para-tiny au-u-regular">(.svg)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (perform this.downloadLatestBpmnFile "pdf")}}
+          {{on "click" (perform this.downloadLatestDiagram "pdf")}}
         >
           PDF
           <span class="au-u-para-tiny au-u-regular">(.pdf)</span>
