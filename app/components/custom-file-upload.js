@@ -77,7 +77,7 @@ export default class AuFileUpload extends Component {
   *upload(file) {
     this.resetErrors();
 
-    const forbidden = this.args.forbidden.split(',');
+    const forbidden = this.args.forbidden?.split(',') ?? [];
 
     if (forbidden.includes('.bpmn') && file.name.endsWith('.bpmn')) {
       this.addError(
