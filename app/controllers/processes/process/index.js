@@ -408,6 +408,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: 0,
         size: 1,
       },
+      include: 'bpmn-files',
       'filter[processes][id]': this.model.processId,
       'filter[:or:][extension]': ['bpmn', 'vsdx'],
       sort: '-created',
@@ -416,9 +417,7 @@ export default class ProcessesProcessIndexController extends Controller {
     let diagrams;
     try {
       diagrams = yield this.store.query('file', query);
-      console.log(diagrams);
     } catch {
-      console.log('error');
       this.latestDiagramHasErrored = true;
     }
     if (diagrams?.length) this.latestDiagram = diagrams[0];
@@ -435,6 +434,7 @@ export default class ProcessesProcessIndexController extends Controller {
     try {
       this.latestDiagram = yield this.store.findRecord('file', fileId, {
         reload: true,
+        include: 'bpmn-files',
       });
     } catch {
       this.latestDiagramHasErrored = true;
@@ -456,13 +456,13 @@ export default class ProcessesProcessIndexController extends Controller {
       return;
     }
 
-    const latestDiagramId = this.latestDiagram?.id;
-    if (!latestDiagramId) return;
+    const latestBpmnFileId = this.latestDiagram?.bpmnFile?.id;
+    if (!latestBpmnFileId) return;
 
     try {
       while (true) {
         const query = {
-          'filter[:exact:resource]': `http://mu.semte.ch/services/file-service/files/${latestDiagramId}`,
+          'filter[:exact:resource]': `http://mu.semte.ch/services/file-service/files/${latestBpmnFileId}`,
           sort: '-modified',
         };
         const jobs = yield this.store.query('job', query);
@@ -493,7 +493,7 @@ export default class ProcessesProcessIndexController extends Controller {
       },
       include: 'type',
       'filter[:has:name]': true,
-      'filter[bpmn-process][bpmn-file][id]': latestDiagramId,
+      'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
     };
 
     if (this.sortProcessSteps) {
