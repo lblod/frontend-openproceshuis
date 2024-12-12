@@ -2,9 +2,12 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
+import { service } from '@ember/service';
 
 export default class ReportingController extends Controller {
   queryParams = ['page', 'size', 'sort'];
+
+  @service router;
 
   @tracked page = 0;
   size = 20;
@@ -29,6 +32,26 @@ export default class ReportingController extends Controller {
 
   get hasErrored() {
     return this.model.loadReportsTaskInstance.isError;
+  }
+
+  @action
+  async regenerateReport(report) {
+    const response = await fetch('/reports', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: {
+          attributes: {
+            reportName: report.title,
+          },
+        },
+      }),
+    });
+    if (!response.ok) throw Error(response.status);
+
+    this.router.refresh();
   }
 
   @action

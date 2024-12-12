@@ -38,6 +38,7 @@
         @label="Bijgewerkt op"
       />
       <th></th>
+      <th></th>
     </c.header>
     {{#if this.hasErrored}}
       <TableMessage::Error />
@@ -52,13 +53,24 @@
         <td>{{report.title}}</td>
         <td>{{report.description}}</td>
         <td>{{date-format report.created true}}</td>
-        <AuButton
-          @icon="download"
-          @skin="link"
-          @width="block"
-          @hideText="true"
-          {{on "click" (fn this.downloadReport report)}}
-        >Download</AuButton>
+        <td>
+          <AuButton
+            @icon="redo"
+            @skin="link"
+            @width="block"
+            @hideText="true"
+            {{on "click" (fn this.regenerateReport report)}}
+          >Regenereer</AuButton>
+        </td>
+        <td>
+          <AuButton
+            @icon="download"
+            @skin="link"
+            @width="block"
+            @hideText="true"
+            {{on "click" (fn this.downloadReport report)}}
+          >Download</AuButton>
+        </td>
       </c.body>
     {{/if}}
   </t.content>
