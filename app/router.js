@@ -49,6 +49,8 @@ Router.map(function () {
     });
   });
 
+  this.route('reporting', { path: '/rapportering' });
+
   this.route('unauthorized', { path: 'niet-toegestaan' });
   this.route('sparql');
 
