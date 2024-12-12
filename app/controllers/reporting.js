@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ReportingController extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -31,11 +32,10 @@ export default class ReportingController extends Controller {
   }
 
   @action
-  resetFilters() {
-    this.page = 0;
-    this.sort = 'title';
+  async downloadReport(report) {
+    if (!report.file) return;
 
-    // Triggers a refresh of the model
-    this.page = null;
+    const fileName = report.title.toLowerCase();
+    await downloadFileByUrl(report.file.id, fileName);
   }
 }
