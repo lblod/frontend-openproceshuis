@@ -23,7 +23,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     const query = {
       reload: true,
       include:
-        'files,publisher,publisher.primary-site,publisher.primary-site.contacts',
+        'files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification',
       'filter[files][:not:status]': ENV.resourceStates.archived,
     };
 
