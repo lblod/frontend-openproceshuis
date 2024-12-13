@@ -27,7 +27,7 @@ export default class ProcessesIndexRoute extends Route {
         size: params.size,
       },
       include:
-        'publisher,publisher.primary-site,publisher.primary-site.contacts',
+        'publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification',
     };
 
     if (params.sort) {

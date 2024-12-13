@@ -65,6 +65,11 @@
             @label="Laatst aangepast op"
           />
           <AuDataTableThSortable
+            @field="classification"
+            @currentSorting={{this.sort}}
+            @label="Type bestuur"
+          />
+          <AuDataTableThSortable
             @field="organization"
             @currentSorting={{this.sort}}
             @label="Bestuur"
@@ -91,6 +96,7 @@
             </td>
             <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.modified}}</td>
+            <td>{{process.publisher.classification.label}}</td>
             <td>{{process.publisher.name}}</td>
           </c.body>
         {{/if}}
