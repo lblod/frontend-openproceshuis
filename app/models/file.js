@@ -1,4 +1,4 @@
-import Model, { attr, hasMany } from '@ember-data/model';
+import Model, { attr, hasMany, belongsTo } from '@ember-data/model';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class FileModel extends Model {
@@ -10,10 +10,18 @@ export default class FileModel extends Model {
   @attr('iso-date') modified;
   @attr('string') status;
   @hasMany('process', { inverse: 'files', async: false }) processes;
+  @belongsTo('file', { inverse: 'bpmnFiles', async: false }) vsdxFile;
+  @hasMany('file', { inverse: 'vsdxFile', async: false }) bpmnFiles;
 
   get process() {
     if (!this.processes || this.processes.length === 0) return null;
     return this.processes[0];
+  }
+
+  get bpmnFile() {
+    if (this.isBpmnFile) return this;
+    if (!this.bpmnFiles || this.bpmnFiles.length === 0) return null;
+    return this.bpmnFiles[0];
   }
 
   get isArchived() {
@@ -26,5 +34,9 @@ export default class FileModel extends Model {
 
   get isBpmnFile() {
     return this.extension === 'bpmn';
+  }
+
+  get isVisioFile() {
+    return this.extension === 'vsdx';
   }
 }
