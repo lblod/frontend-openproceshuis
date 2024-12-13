@@ -36,6 +36,8 @@ export default class ProcessesIndexRoute extends Route {
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
 
       if (fieldName === 'organization') fieldName = 'publisher.name';
+      else if (fieldName === 'classification')
+        fieldName = 'publisher.classification';
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
