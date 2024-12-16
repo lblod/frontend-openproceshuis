@@ -7,11 +7,20 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
         >
           <div>
-            <AuLabel for="filter-title">Zoek op titel of beschrijving</AuLabel>
+            <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
               @id="filter-title"
               @selected={{this.title}}
               @onChange={{this.setTitle}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-classification">Type bestuur</AuLabel>
+            <ProcessSelectByClassification
+              @id="filter-classification"
+              @selected={{this.classification}}
+              @onChange={{this.setClassification}}
               class="grow"
             />
           </div>

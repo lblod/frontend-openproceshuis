@@ -8,6 +8,7 @@ export default class ProcessesIndexController extends Controller {
   size = 20;
   @tracked sort = 'title';
   @tracked title = '';
+  @tracked classification = '';
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished
@@ -37,8 +38,15 @@ export default class ProcessesIndexController extends Controller {
   }
 
   @action
+  setClassification(selection) {
+    this.page = null;
+    this.classification = selection;
+  }
+
+  @action
   resetFilters() {
     this.title = '';
+    this.classification = '';
     this.page = 0;
     this.sort = 'title';
 
