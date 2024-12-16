@@ -13,7 +13,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
   @action
   setClassification(selected) {
     this.classification = selected;
-    this.args.onChange(selected?.queryValue ?? '');
+    this.args.onChange(selected?.label ?? '');
   }
 
   @restartableTask

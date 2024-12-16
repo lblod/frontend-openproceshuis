@@ -10,6 +10,7 @@ export default class ProcessesIndexRoute extends Route {
     page: { refreshModel: true },
     sort: { refreshModel: true },
     title: { refreshModel: true, replace: true },
+    classification: { refreshModel: true, replace: true },
   };
 
   async model(params) {
@@ -37,7 +38,7 @@ export default class ProcessesIndexRoute extends Route {
 
       if (fieldName === 'organization') fieldName = 'publisher.name';
       else if (fieldName === 'classification')
-        fieldName = 'publisher.classification';
+        fieldName = 'publisher.classification.label';
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
@@ -49,6 +50,12 @@ export default class ProcessesIndexRoute extends Route {
       query['filter[:or:][title]'] = params.title;
       query['filter[:or:][description]'] = params.title;
     }
+
+    console.log(params);
+
+    if (params.classification)
+      query['filter[publisher][classification][label]'] = params.classification;
+
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
     return yield this.store.query('process', query);
