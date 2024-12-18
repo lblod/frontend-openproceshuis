@@ -86,6 +86,39 @@
                 </AuCard>
               </div>
             {{/if}}
+            {{#if this.currentSession.isAdmin}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="upload"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Administratie
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Raadpleeg rapporten</Item>
+                      <Item>Bevraag de databank</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink
+                        @skin="button"
+                        @route="reporting"
+                      >Rapportering</AuLink>
+                      <AuLink
+                        @skin="button-secondary"
+                        @route="sparql"
+                      >SPARQL</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
           </div>
           <p class="au-u-text-center">
             <AuLinkExternal

@@ -1,0 +1,77 @@
+<PageHeader>
+  <:title>Rapportering</:title>
+  <:subtitle>
+    <p>Deze pagina bundelt alle rapporten met betrekking tot besturen en
+      processen.
+    </p>
+    <AuLinkExternal
+      href="https://app.gitbook.com/o/-MP9Yduzf5xu7wIebqPG/s/XKRwfgAcZ0dhzZWkI6YJ/research/analytics"
+    >
+      Gebruiksgegevens raadplegen
+    </AuLinkExternal>
+  </:subtitle>
+  <:action></:action>
+</PageHeader>
+
+<AuDataTable
+  @content={{this.reports}}
+  @isLoading={{this.isLoading}}
+  @page={{this.page}}
+  @size={{this.size}}
+  as |t|
+>
+  <t.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <AuDataTableThSortable
+        @field="title"
+        @currentSorting={{this.sort}}
+        @label="Titel"
+      />
+      <AuDataTableThSortable
+        @field="description"
+        @currentSorting={{this.sort}}
+        @label="Beschrijving"
+      />
+      <AuDataTableThSortable
+        @field="created"
+        @currentSorting={{this.sort}}
+        @label="Bijgewerkt op"
+      />
+      <th></th>
+      <th></th>
+    </c.header>
+    {{#if this.hasErrored}}
+      <TableMessage::Error />
+    {{else if this.hasNoResults}}
+      <TableMessage>
+        <p>
+          Er werden geen zoekresultaten gevonden.
+        </p>
+      </TableMessage>
+    {{else}}
+      <c.body as |report|>
+        <td>{{report.title}}</td>
+        <td>{{report.description}}</td>
+        <td>{{date-format report.created true}}</td>
+        <td>
+          <AuButton
+            @icon="redo"
+            @skin="link"
+            @width="block"
+            @hideText="true"
+            {{on "click" (fn this.regenerateReport report)}}
+          >Regenereer</AuButton>
+        </td>
+        <td>
+          <AuButton
+            @icon="download"
+            @skin="link"
+            @width="block"
+            @hideText="true"
+            {{on "click" (fn this.downloadReport report)}}
+          >Download</AuButton>
+        </td>
+      </c.body>
+    {{/if}}
+  </t.content>
+</AuDataTable>
