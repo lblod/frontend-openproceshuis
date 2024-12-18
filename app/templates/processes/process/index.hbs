@@ -65,7 +65,12 @@
                   {{this.process.publisher.name}}
                 </:content>
               </Item>
-
+              <Item>
+                <:label>Type bestuur</:label>
+                <:content>
+                  {{this.process.publisher.classification.label}}
+                </:content>
+              </Item>
               <Item>
                 <:label>Contact</:label>
                 <:content>
@@ -147,6 +152,12 @@
               <:label>Bestuur</:label>
               <:content>
                 {{this.process.publisher.name}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Type bestuur</:label>
+              <:content>
+                {{this.process.publisher.classification.label}}
               </:content>
             </Item>
             <Item>
