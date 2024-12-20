@@ -49,3 +49,13 @@
 .yasgui .autocompleteWrapper {
   display: none !important;
 }
+
+@include mq($au-main-container-breakpoint) {
+  .au-c-app {
+    overflow: visible !important;
+  }
+
+  .au-c-app .au-c-main-container {
+    overflow: visible !important;
+  }
+}
