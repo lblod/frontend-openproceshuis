@@ -15,7 +15,7 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
     if (!instanceNumberOrId) return;
 
     const response = yield fetch(`/ipdc/doc/instantie/${instanceNumberOrId}`);
-    if (!response.ok) throw Error(response.status);
+    if (!response.ok) return;
     const instanceJson = yield response.json();
 
     const instance = this.store.createRecord('ipdc-instance', {
