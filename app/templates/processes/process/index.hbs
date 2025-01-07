@@ -60,10 +60,9 @@
               <Item>
                 <:label>Link naar IPDC/LPDC</:label>
                 <:content>
-                  <AuInput
-                    value={{this.process.ipdcInstance.productNumber}}
-                    {{on "input" this.setProcessIpdcInstance}}
-                    @width="block"
+                  <IpdcMultipleSelect
+                    @selected={{this.process.ipdcInstances}}
+                    @onChange={{this.setProcessIpdcInstances}}
                   />
                   <div class="au-u-flex au-u-flex--between">
                     <AuHelpText
