@@ -5,7 +5,7 @@ export default class IpdcInstanceModel extends Model {
   @attr('string') productNumber;
 
   get nameNl() {
-    if (!this.name) return undefined;
+    if (!this.name?.length) return undefined;
 
     return (
       this.name.find((name) => name.language === 'nl')?.content ??
