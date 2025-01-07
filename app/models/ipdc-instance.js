@@ -5,14 +5,12 @@ export default class IpdcInstanceModel extends Model {
   @attr('string') productNumber;
 
   get nameNl() {
-    if (!this.name?.length) {
-      return null;
-    }
-    const nameNl = this.name.find((name) => name.language === 'nl')?.content;
-    const nl = this.name.find((name) =>
-      name.language.startsWith('nl')
-    )?.content;
-    const fallBack = this.name[0].content;
-    return nameNl ?? nl ?? fallBack;
+    if (!this.name) return undefined;
+
+    return (
+      this.name.find((name) => name.language === 'nl')?.content ??
+      this.name.find((name) => name.language.startsWith('nl'))?.content ??
+      this.name[0].content
+    );
   }
 }
