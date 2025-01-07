@@ -11,22 +11,23 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
 
     yield timeout(500);
 
-    const input = this.extractNumberOrId(searchParams);
-    console.log(input);
+    const instanceNumberOrId = this.extractNumberOrId(searchParams);
+    if (!instanceNumberOrId) return;
 
-    const ipdc1 = this.store.createRecord('ipdc-instance');
-    ipdc1.name = 'ipdc1';
-    ipdc1.productNumber = '1';
+    const response = yield fetch(`/ipdc/doc/instantie/${instanceNumberOrId}`);
+    if (!response.ok) throw Error(response.status);
+    const instanceJson = yield response.json();
 
-    const ipdc2 = this.store.createRecord('ipdc-instance');
-    ipdc2.name = 'ipdc2';
-    ipdc2.productNumber = '2';
+    const instance = this.store.createRecord('ipdc-instance', {
+      id: instanceJson.id,
+      name: Object.entries(instanceJson.naam).map(([language, content]) => ({
+        content,
+        language,
+      })),
+      productNumber: instanceJson.productnummer,
+    });
 
-    const ipdc3 = this.store.createRecord('ipdc-instance');
-    ipdc3.name = 'ipdc3';
-    ipdc3.productNumber = '3';
-
-    return [ipdc1, ipdc2, ipdc3];
+    return [instance];
   }
 
   extractNumberOrId(input) {

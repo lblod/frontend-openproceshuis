@@ -3,4 +3,16 @@ import Model, { attr } from '@ember-data/model';
 export default class IpdcInstanceModel extends Model {
   @attr('language-string-set') name;
   @attr('string') productNumber;
+
+  get nameNl() {
+    if (!this.name?.length) {
+      return null;
+    }
+    const nameNl = this.name.find((name) => name.language === 'nl')?.content;
+    const nl = this.name.find((name) =>
+      name.language.startsWith('nl')
+    )?.content;
+    const fallBack = this.name[0].content;
+    return nameNl ?? nl ?? fallBack;
+  }
 }
