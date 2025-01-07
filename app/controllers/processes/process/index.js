@@ -341,6 +341,8 @@ export default class ProcessesProcessIndexController extends Controller {
   setProcessIpdcInstances(event) {
     if (!this.process) return;
     this.process.ipdcInstances = event;
+    this.validateForm();
+    console.log(this.process.ipdcInstances);
   }
 
   validateForm() {

@@ -56,12 +56,19 @@ export default class ProcessModel extends Model {
     return bpmnFilesSorted[0];
   }
 
-  get ipdcInstance() {
-    if (this.ipdcInstances.length === 0) return undefined;
-    return this.ipdcInstances[0];
+  get hasDirtyAttributes() {
+    return (
+      super.hasDirtyAttributes ||
+      this.ipdcInstances.any((instance) => instance.isNew)
+    );
   }
 
-  set ipdcInstance(ipdcInstance) {
-    this.ipdcInstances = [ipdcInstance];
+  rollbackAttributes() {
+    super.rollbackAttributes();
+    this.ipdcInstances.forEach((instance) => {
+      if (instance.isNew) {
+        instance.unloadRecord();
+      }
+    });
   }
 }
