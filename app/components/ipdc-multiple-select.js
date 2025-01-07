@@ -19,7 +19,6 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
     const instanceJson = yield response.json();
 
     const instance = this.store.createRecord('ipdc-instance', {
-      id: instanceJson.id,
       name: Object.entries(instanceJson.naam).map(([language, content]) => ({
         content,
         language,
