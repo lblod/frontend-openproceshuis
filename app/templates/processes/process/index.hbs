@@ -58,7 +58,7 @@
                 </:content>
               </Item>
               <Item>
-                <:label>Link naar IPDC/LPDC</:label>
+                <:label>Links naar IPDC/LPDC</:label>
                 <:content>
                   <IpdcMultipleSelect
                     @selected={{this.process.ipdcInstances}}
@@ -69,7 +69,7 @@
                       @skin="secondary"
                       class="au-u-margin-top-none au-u-flex-self-start"
                     >
-                      Vul hier een IPDC-productcode of -URL in.
+                      Vul hier IPDC-productcodes of -URLs in.
                     </AuHelpText>
                     <AuLinkExternal
                       class="au-u-flex-self-start"
@@ -170,9 +170,15 @@
               </:content>
             </Item>
             <Item>
-              <:label>Link naar IPDC/LPDC</:label>
+              <:label>Links naar IPDC/LPDC</:label>
               <:content>
-                {{or this.process.ipdcInstance.productNumber "/"}}
+                {{#each this.process.ipdcInstances as |instance|}}
+                  <AuLinkExternal
+                    href="https://productencatalogus-v3.vlaanderen.be/instantie/{{instance.productNumber}}"
+                  >
+                    {{instance.nameNl}}
+                  </AuLinkExternal>
+                {{/each}}
               </:content>
             </Item>
           </:left>
