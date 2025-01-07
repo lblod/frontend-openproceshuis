@@ -172,13 +172,17 @@
             <Item>
               <:label>Links naar IPDC/LPDC</:label>
               <:content>
-                {{#each this.process.ipdcInstances as |instance|}}
-                  <AuLinkExternal
-                    href="https://productencatalogus-v3.vlaanderen.be/instantie/{{instance.productNumber}}"
-                  >
-                    {{instance.nameNl}}
-                  </AuLinkExternal>
-                {{/each}}
+                {{#if this.process.ipdcInstances.length}}
+                  {{#each this.process.ipdcInstances as |instance|}}
+                    <AuLinkExternal
+                      href="https://productencatalogus-v3.vlaanderen.be/instantie/{{instance.productNumber}}"
+                    >
+                      {{instance.nameNl}}
+                    </AuLinkExternal>
+                  {{/each}}
+                {{else}}
+                  /
+                {{/if}}
               </:content>
             </Item>
           </:left>
