@@ -6,6 +6,16 @@
 
 
 
+
+## 1.2.0 (2025-01-08)
+
+#### :rocket: Enhancement
+* [#58](https://github.com/lblod/frontend-openproceshuis/pull/58) Allow consulting reports ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#59](https://github.com/lblod/frontend-openproceshuis/pull/59) Display organization types ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
 ## 1.2.0-0 (2024-12-04)
 
 #### :rocket: Enhancement
