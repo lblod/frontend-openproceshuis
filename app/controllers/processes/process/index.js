@@ -295,13 +295,7 @@ export default class ProcessesProcessIndexController extends Controller {
       this.process.modified = new Date();
 
       try {
-        yield Promise.all(
-          this.process.ipdcInstances
-            .filter((instance) => instance.isNew)
-            .map((instance) => instance.save())
-        );
         yield this.process.save();
-
         this.edit = false;
         this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
           timeOut: 5000,

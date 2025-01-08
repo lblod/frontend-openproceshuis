@@ -71,4 +71,13 @@ export default class ProcessModel extends Model {
       }
     });
   }
+
+  async save() {
+    await Promise.all(
+      this.ipdcInstances
+        .filter((instance) => instance.isNew)
+        .map((instance) => instance.save())
+    );
+    await super.save();
+  }
 }
