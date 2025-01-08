@@ -4,6 +4,43 @@
 
 
 
+
+
+
+## 1.2.0 (2025-01-08)
+
+#### :rocket: Enhancement
+* [#58](https://github.com/lblod/frontend-openproceshuis/pull/58) Allow consulting reports ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#59](https://github.com/lblod/frontend-openproceshuis/pull/59) Display organization types ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+## 1.2.0-0 (2024-12-04)
+
+#### :rocket: Enhancement
+* [#56](https://github.com/lblod/frontend-openproceshuis/pull/56) Add admin functionality ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#54](https://github.com/lblod/frontend-openproceshuis/pull/54) Add admin functionality ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#53](https://github.com/lblod/frontend-openproceshuis/pull/53) Reintroduce links to help page ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#51](https://github.com/lblod/frontend-openproceshuis/pull/51) Use mu-search for process steps ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :bug: Bug Fix
+* [#52](https://github.com/lblod/frontend-openproceshuis/pull/52) Disable mock-login route on production ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+## 1.1.1 (2024-10-01)
+
+#### :rocket: Enhancement
+* [#49](https://github.com/lblod/frontend-openproceshuis/pull/49) Fetch data only when needed ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :bug: Bug Fix
+* [#50](https://github.com/lblod/frontend-openproceshuis/pull/50) Always fetch correct process steps ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 1
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
 ## 1.1.0 (2024-09-04)
 
 #### :rocket: Enhancement
