@@ -18,6 +18,8 @@ export default class ProcessModel extends Model {
   @hasMany('file', { inverse: 'processes', async: false }) files;
   @hasMany('ipdc-instance', { inverse: null, async: false }) ipdcInstances;
 
+  removedIpdcInstances = [];
+
   validations = {
     title: {
       presence: true,
@@ -59,25 +61,37 @@ export default class ProcessModel extends Model {
   get hasDirtyAttributes() {
     return (
       super.hasDirtyAttributes ||
+      this.removedIpdcInstances.length ||
       this.ipdcInstances.any((instance) => instance.isNew)
     );
   }
 
   rollbackAttributes() {
     super.rollbackAttributes();
+
     this.ipdcInstances.forEach((instance) => {
-      if (instance.isNew) {
-        instance.unloadRecord();
-      }
+      if (instance.isNew) instance.unloadRecord();
     });
+
+    this.removedIpdcInstances.forEach((instance) => {
+      if (instance.isNew) instance.unloadRecord();
+      else this.ipdcInstances.push(instance);
+    });
+    this.removedIpdcInstances = [];
   }
 
   async save() {
+    this.removedIpdcInstances.forEach((instance) => {
+      if (instance.isNew) instance.unloadRecord();
+    });
+    this.removedIpdcInstances = [];
+
     await Promise.all(
       this.ipdcInstances
         .filter((instance) => instance.isNew)
         .map((instance) => instance.save())
     );
+
     await super.save();
   }
 }

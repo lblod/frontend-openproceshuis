@@ -338,9 +338,17 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  setProcessIpdcInstances(event) {
+  setProcessIpdcInstances(updatedIpdcInstances) {
     if (!this.process) return;
-    this.process.ipdcInstances = event;
+
+    if (updatedIpdcInstances.length < this.process.ipdcInstances.length) {
+      this.process.ipdcInstances.forEach((instance) => {
+        if (!instance.isNew && !updatedIpdcInstances.includes(instance))
+          this.process.removedIpdcInstances.push(instance);
+      });
+    }
+
+    this.process.ipdcInstances = updatedIpdcInstances;
     this.validateForm();
   }
 
