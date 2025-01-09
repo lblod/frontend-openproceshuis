@@ -358,6 +358,11 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   setDraftIpdcInstances(event) {
+    const productNumbers = event.map((instance) => instance.productNumber);
+    const hasDuplicates =
+      new Set(productNumbers).size !== productNumbers.length;
+    if (hasDuplicates) return;
+
     this.draftIpdcInstances = event;
     this.validateForm();
   }
