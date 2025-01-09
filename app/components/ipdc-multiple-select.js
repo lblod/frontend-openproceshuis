@@ -18,15 +18,16 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
     if (!response.ok) return;
     const instanceJson = yield response.json();
 
-    const instance = this.store.createRecord('ipdc-instance', {
+    const draftIpdcInstance = {
       name: Object.entries(instanceJson.naam).map(([language, content]) => ({
         content,
         language,
       })),
       productNumber: instanceJson.productnummer,
-    });
+      isDraft: true,
+    };
 
-    return [instance];
+    return [draftIpdcInstance];
   }
 
   extractNumberOrId(input) {

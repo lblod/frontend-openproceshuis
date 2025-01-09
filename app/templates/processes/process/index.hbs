@@ -61,8 +61,8 @@
                 <:label>Links naar IPDC/LPDC</:label>
                 <:content>
                   <IpdcMultipleSelect
-                    @selected={{this.process.ipdcInstances}}
-                    @onChange={{this.setProcessIpdcInstances}}
+                    @selected={{this.draftIpdcInstances}}
+                    @onChange={{this.setDraftIpdcInstances}}
                   />
                   <div class="au-u-flex au-u-flex--between">
                     <AuHelpText
@@ -178,7 +178,7 @@
                       href="https://productencatalogus-v3.vlaanderen.be/instantie/{{instance.productNumber}}"
                       class="au-u-flex"
                     >
-                      {{instance.nameNl}}
+                      {{language-string-set-nl instance.name}}
                     </AuLinkExternal>
                   {{/each}}
                 {{else}}

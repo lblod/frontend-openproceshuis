@@ -7,9 +7,9 @@
     @search={{perform this.loadIpdcInstancesTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
-    as |ipdcInstance|
+    as |draftIpdcInstance|
   >
-    {{ipdcInstance.nameNl}}
-    ({{ipdcInstance.productNumber}})
+    {{language-string-set-nl draftIpdcInstance.name}}
+    ({{draftIpdcInstance.productNumber}})
   </PowerSelectMultiple>
 </div>

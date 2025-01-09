@@ -47,6 +47,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked edit = false;
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
+  @tracked draftIpdcInstances = undefined;
 
   // Process
 
@@ -281,6 +282,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   toggleEdit() {
+    this.draftIpdcInstances = this.process?.ipdcInstances;
     this.edit = !this.edit;
     this.validateForm();
   }
@@ -291,12 +293,28 @@ export default class ProcessesProcessIndexController extends Controller {
 
     if (!this.process) return;
 
-    if (this.process.validate() && this.process.hasDirtyAttributes) {
+    if (this.formIsValid) {
       this.process.modified = new Date();
 
       try {
+        this.process.ipdcInstances = yield Promise.all(
+          this.draftIpdcInstances.map(async (instance) => {
+            if (instance.isDraft) {
+              const newInstance = this.store.createRecord('ipdc-instance', {
+                name: instance.name,
+                productNumber: instance.productNumber,
+              });
+              await newInstance.save();
+              return newInstance;
+            }
+            return instance;
+          })
+        );
+
         yield this.process.save();
+
         this.edit = false;
+
         this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
           timeOut: 5000,
         });
@@ -313,6 +331,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   resetModel() {
     this.process?.rollbackAttributes();
+    this.draftIpdcInstances = this.process?.ipdcInstances;
     this.edit = false;
   }
 
@@ -338,23 +357,17 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  setProcessIpdcInstances(updatedIpdcInstances) {
-    if (!this.process) return;
-
-    if (updatedIpdcInstances.length < this.process.ipdcInstances.length) {
-      this.process.ipdcInstances.forEach((instance) => {
-        if (!instance.isNew && !updatedIpdcInstances.includes(instance))
-          this.process.removedIpdcInstances.push(instance);
-      });
-    }
-
-    this.process.ipdcInstances = updatedIpdcInstances;
+  setDraftIpdcInstances(event) {
+    this.draftIpdcInstances = event;
     this.validateForm();
   }
 
   validateForm() {
     this.formIsValid =
-      this.process?.validate() && this.process?.hasDirtyAttributes;
+      this.process?.validate() &&
+      (this.process?.hasDirtyAttributes ||
+        this.draftIpdcInstances?.length < this.process?.ipdcInstances?.length ||
+        this.draftIpdcInstances?.some((instance) => instance.isDraft));
   }
 
   @action
