@@ -300,6 +300,14 @@ export default class ProcessesProcessIndexController extends Controller {
         this.process.ipdcInstances = yield Promise.all(
           this.draftIpdcInstances.map(async (instance) => {
             if (instance.isDraft) {
+              const existingInstances = await this.store.query(
+                'ipdc-instance',
+                {
+                  filter: { 'product-number': instance.productNumber },
+                }
+              );
+              if (existingInstances.length) return existingInstances[0];
+
               const newInstance = this.store.createRecord('ipdc-instance', {
                 name: instance.name,
                 productNumber: instance.productNumber,
