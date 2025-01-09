@@ -57,6 +57,29 @@
                   />
                 </:content>
               </Item>
+              <Item>
+                <:label>Links naar IPDC/LPDC</:label>
+                <:content>
+                  <IpdcMultipleSelect
+                    @selected={{this.draftIpdcInstances}}
+                    @onChange={{this.setDraftIpdcInstances}}
+                  />
+                  <div class="au-u-flex au-u-flex--between">
+                    <AuHelpText
+                      @skin="secondary"
+                      class="au-u-margin-top-none au-u-flex-self-start"
+                    >
+                      Vul hier IPDC-productcodes of -URLs in.
+                    </AuHelpText>
+                    <AuLinkExternal
+                      class="au-u-flex-self-start"
+                      href="https://productencatalogus-v3.vlaanderen.be/nl/producten"
+                    >
+                      Zoek in IPDC
+                    </AuLinkExternal>
+                  </div>
+                </:content>
+              </Item>
             </:left>
             <:right as |Item|>
               <Item>
@@ -144,6 +167,23 @@
               <:label>Contact proces</:label>
               <:content>
                 {{or this.process.email "/"}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Links naar IPDC/LPDC</:label>
+              <:content>
+                {{#if this.process.ipdcInstances.length}}
+                  {{#each this.process.ipdcInstances as |instance|}}
+                    <AuLinkExternal
+                      href="https://productencatalogus-v3.vlaanderen.be/instantie/{{instance.productNumber}}"
+                      class="au-u-flex"
+                    >
+                      {{language-string-set-nl instance.name}}
+                    </AuLinkExternal>
+                  {{/each}}
+                {{else}}
+                  /
+                {{/if}}
               </:content>
             </Item>
           </:left>

@@ -59,3 +59,7 @@
     overflow: visible !important;
   }
 }
+
+.ember-power-select-multiple-options > li {
+  flex-grow: 1;
+}

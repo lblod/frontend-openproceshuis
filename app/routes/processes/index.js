@@ -51,8 +51,6 @@ export default class ProcessesIndexRoute extends Route {
       query['filter[:or:][description]'] = params.title;
     }
 
-    console.log(params);
-
     if (params.classification)
       query['filter[publisher][classification][label]'] = params.classification;
 

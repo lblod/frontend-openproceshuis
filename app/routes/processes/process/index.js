@@ -23,7 +23,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     const query = {
       reload: true,
       include:
-        'files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification',
+        'files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-instances',
       'filter[files][:not:status]': ENV.resourceStates.archived,
     };
 
@@ -41,6 +41,7 @@ export default class ProcessesProcessIndexRoute extends Route {
 
   setupController(controller) {
     super.setupController(...arguments);
+    controller.reset();
     controller.fetchLatestDiagram.perform();
   }
 

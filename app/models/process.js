@@ -16,6 +16,7 @@ export default class ProcessModel extends Model {
   @attr('string') status;
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @hasMany('file', { inverse: 'processes', async: false }) files;
+  @hasMany('ipdc-instance', { inverse: null, async: false }) ipdcInstances;
 
   validations = {
     title: {
