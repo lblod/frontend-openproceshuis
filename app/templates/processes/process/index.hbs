@@ -4,6 +4,8 @@
       Wijzig proces
     </:title>
     <:action>
+      <AuPill @icon="clock-rewind" @draft="true">Laatst aangepast op
+        {{date-format this.process.modified true}}</AuPill>
     </:action>
   </PageHeader>
 {{else}}
@@ -11,7 +13,10 @@
     <:title>
       {{this.process.title}}
     </:title>
-    <:action></:action>
+    <:action>
+      <AuPill @icon="clock-rewind">Laatst aangepast op
+        {{date-format this.process.modified true}}</AuPill>
+    </:action>
   </PageHeader>
 {{/if}}
 
@@ -107,12 +112,6 @@
                 <:label>Aangemaakt op</:label>
                 <:content>
                   {{date-format this.process.created true}}
-                </:content>
-              </Item>
-              <Item>
-                <:label>Laatst aangepast op</:label>
-                <:content>
-                  <span class="au-u-italic">Nu</span>
                 </:content>
               </Item>
             </:right>
@@ -213,12 +212,6 @@
               <:label>Aangemaakt op</:label>
               <:content>
                 {{date-format this.process.created true}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Laatst aangepast op</:label>
-              <:content>
-                {{date-format this.process.modified true}}
               </:content>
             </Item>
           </:right>
