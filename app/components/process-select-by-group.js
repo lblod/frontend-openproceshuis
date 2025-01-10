@@ -1,19 +1,24 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { restartableTask } from 'ember-concurrency';
+import { restartableTask, timeout } from 'ember-concurrency';
 
 export default class ProcessSelectByGroupComponent extends Component {
   @service store;
 
   @restartableTask
   *loadGroupsTask(searchParams = '') {
+    if (!searchParams?.trim()) return;
+
+    yield timeout(200);
+
     const query = {
       page: {
         size: 50,
       },
+      filter: {
+        name: searchParams,
+      },
     };
-
-    if (searchParams.trim() !== '') query['filter[name]'] = searchParams;
 
     if (this.args.classification)
       query['filter[classification][:exact:label]'] = this.args.classification;
