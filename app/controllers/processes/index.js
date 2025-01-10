@@ -2,13 +2,14 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 export default class ProcessesIndexController extends Controller {
-  queryParams = ['page', 'size', 'sort', 'title', 'classification'];
+  queryParams = ['page', 'size', 'sort', 'title', 'classification', 'group'];
 
   @tracked page = 0;
   size = 20;
   @tracked sort = 'title';
   @tracked title = '';
   @tracked classification = '';
+  @tracked group = '';
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished
@@ -41,6 +42,12 @@ export default class ProcessesIndexController extends Controller {
   setClassification(selection) {
     this.page = null;
     this.classification = selection;
+  }
+
+  @action
+  setGroup(selection) {
+    this.page = null;
+    this.group = selection;
   }
 
   @action

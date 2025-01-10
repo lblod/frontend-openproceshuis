@@ -25,6 +25,16 @@
               class="grow"
             />
           </div>
+          <div>
+            <AuLabel for="filter-group">Naam bestuur</AuLabel>
+            <ProcessSelectByGroup
+              @id="filter-group"
+              @selected={{this.group}}
+              @onChange={{this.setGroup}}
+              @classification={{this.classification}}
+              class="grow"
+            />
+          </div>
           <div class="au-u-flex au-u-flex--end">
             <AuButton
               @icon="cross"

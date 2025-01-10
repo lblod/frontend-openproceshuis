@@ -11,6 +11,7 @@ export default class ProcessesIndexRoute extends Route {
     sort: { refreshModel: true },
     title: { refreshModel: true, replace: true },
     classification: { refreshModel: true, replace: true },
+    group: { refreshModel: true, replace: true },
   };
 
   async model(params) {
@@ -53,6 +54,8 @@ export default class ProcessesIndexRoute extends Route {
 
     if (params.classification)
       query['filter[publisher][classification][label]'] = params.classification;
+
+    if (params.group) query['filter[publisher][:exact:name]'] = params.group;
 
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
