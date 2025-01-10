@@ -18,6 +18,7 @@ export default class ProcessSelectByGroupComponent extends Component {
       filter: {
         name: searchParams,
       },
+      sort: ':no-case:name',
     };
 
     if (this.args.classification)
