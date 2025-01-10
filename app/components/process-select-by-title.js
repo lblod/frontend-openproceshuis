@@ -14,7 +14,7 @@ export default class ProcessSelectByTitleComponent extends Component {
 
     if (searchParams.trim() !== '') query['filter[title]'] = searchParams;
     if (this.args.publisher)
-      query['filter[publisher][id]'] = this.args.publisher; // FIXME: should be handled by backend instead of frontend
+      query['filter[publisher][id]'] = this.args.publisher;
 
     const result = yield this.store.query('process', query);
 

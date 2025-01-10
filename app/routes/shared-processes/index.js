@@ -54,7 +54,7 @@ export default class SharedProcessesIndexRoute extends Route {
     if (params.title) {
       query['filter[title]'] = params.title;
     }
-    query['filter[publisher][id]'] = this.currentSession.group.id; // FIXME: should be handled by backend instead of frontend
+    query['filter[publisher][id]'] = this.currentSession.group.id;
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
     return yield this.store.query('process', query);
