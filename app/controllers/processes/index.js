@@ -54,6 +54,7 @@ export default class ProcessesIndexController extends Controller {
   resetFilters() {
     this.title = '';
     this.classification = '';
+    this.group = '';
     this.page = 0;
     this.sort = 'title';
 
