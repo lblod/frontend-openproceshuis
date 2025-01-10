@@ -24,10 +24,23 @@
   {{#if this.edit}}
     <form {{on "submit" (perform this.updateModel)}}>
       <DataCard>
-        <:header></:header>
         <:title>
           Algemene informatie
         </:title>
+        <:header>
+          <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+            <AuButton
+              @skin="secondary"
+              {{on "click" this.resetModel}}
+            >Annuleer</AuButton>
+            <AuButton
+              @skin="primary"
+              type="submit"
+              @loading={{this.updateModel.isRunning}}
+              @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+            >Bewaar</AuButton>
+          </div>
+        </:header>
         <:card as |Card|>
           <Card.Columns>
             <:left as |Item|>
@@ -117,24 +130,13 @@
             </:right>
           </Card.Columns>
         </:card>
-        <:action>
-          <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
-            <AuButton
-              @skin="secondary"
-              {{on "click" this.resetModel}}
-            >Annuleer</AuButton>
-            <AuButton
-              @skin="primary"
-              type="submit"
-              @loading={{this.updateModel.isRunning}}
-              @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
-            >Bewaar</AuButton>
-          </div>
-        </:action>
       </DataCard>
     </form>
   {{else}}
     <DataCard>
+      <:title>
+        Algemene informatie
+      </:title>
       <:header>
         {{#if this.canEdit}}
           <AuButton
@@ -144,9 +146,6 @@
           >Wijzig</AuButton>
         {{/if}}
       </:header>
-      <:title>
-        Algemene informatie
-      </:title>
       <:card as |Card|>
         <Card.Columns>
           <:left as |Item|>
