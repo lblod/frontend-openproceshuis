@@ -4,10 +4,11 @@
       <div class="au-c-sidebar__content">
         <form
           {{on "reset" this.resetFilters}}
-          class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
           <div>
-            <AuLabel for="filter-name">Filter op naam</AuLabel>
+            <AuLabel for="filter-name">Naam</AuLabel>
             <ProcessStepSelectByName
               @id="filter-name"
               @selected={{this.name}}
@@ -16,7 +17,7 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-type">Filter op type</AuLabel>
+            <AuLabel for="filter-type">Type</AuLabel>
             <ProcessStepSelectByType
               @id="filter-type"
               @selected={{this.type}}
@@ -24,12 +25,12 @@
               class="grow"
             />
           </div>
-          <div>
+          <div class="au-u-flex au-u-flex--end">
             <AuButton
-              @icon="undo"
+              @icon="cross"
               @skin="link"
               type="reset"
-              class="au-u-padding-none"
+              class="au-u-padding-none au-u-medium"
             >
               Herstel alle filters
             </AuButton>

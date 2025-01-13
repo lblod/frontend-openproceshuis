@@ -17,7 +17,6 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
 
 .au-c-sidebar-container__sidebar {
   flex-basis: 100%;
-  padding: $au-unit-small;
 
   @include mq(medium) {
     height: 100%;
@@ -47,7 +46,6 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
 
 .au-c-sidebar {
   border: 1px solid var(--au-gray-200);
-  border-radius: $au-radius;
 }
 
 .au-c-list-navigation {

@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { restartableTask } from 'ember-concurrency';
+import { restartableTask, timeout } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessSelectByTitleComponent extends Component {
@@ -8,13 +8,19 @@ export default class ProcessSelectByTitleComponent extends Component {
 
   @restartableTask
   *loadProcessesTask(searchParams = '') {
+    if (!searchParams?.trim()) return;
+
+    yield timeout(200);
+
     const query = {
-      'filter[:not:status]': ENV.resourceStates.archived,
+      filter: {
+        title: searchParams,
+        ':not:status': ENV.resourceStates.archived,
+      },
     };
 
-    if (searchParams.trim() !== '') query['filter[title]'] = searchParams;
     if (this.args.publisher)
-      query['filter[publisher][id]'] = this.args.publisher; // FIXME: should be handled by backend instead of frontend
+      query['filter[publisher][id]'] = this.args.publisher;
 
     const result = yield this.store.query('process', query);
 
