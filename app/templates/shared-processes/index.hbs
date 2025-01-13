@@ -4,8 +4,9 @@
       <div class="au-c-sidebar__content">
         <form
           {{on "reset" this.resetFilters}}
-          class="au-o-box au-o-box--small au-o-flow au-o-flow--small"
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
           <div>
             <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
@@ -16,12 +17,12 @@
               class="grow"
             />
           </div>
-          <div>
+          <div class="au-u-flex au-u-flex--end">
             <AuButton
-              @icon="undo"
+              @icon="cross"
               @skin="link"
               type="reset"
-              class="au-u-padding-none"
+              class="au-u-padding-none au-u-medium"
             >
               Herstel alle filters
             </AuButton>

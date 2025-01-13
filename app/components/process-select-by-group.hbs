@@ -1,0 +1,18 @@
+<div class={{if @error "ember-power-select--error"}} ...attributes>
+  <PowerSelect
+    @allowClear={{true}}
+    @searchEnabled={{true}}
+    @loadingMessage="Aan het laden..."
+    @noMatchesMessage="Geen resultaten"
+    @searchMessage="Typ om te zoeken"
+    @searchField="group"
+    @search={{perform this.loadGroupsTask}}
+    @selected={{@selected}}
+    @onChange={{@onChange}}
+    @classification={{@classification}}
+    @triggerId={{@id}}
+    as |group|
+  >
+    {{group}}
+  </PowerSelect>
+</div>

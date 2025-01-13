@@ -4,6 +4,8 @@
       Wijzig proces
     </:title>
     <:action>
+      <AuPill @icon="clock-rewind" @draft="true">Laatst aangepast op
+        {{date-format this.process.modified true}}</AuPill>
     </:action>
   </PageHeader>
 {{else}}
@@ -11,7 +13,10 @@
     <:title>
       {{this.process.title}}
     </:title>
-    <:action></:action>
+    <:action>
+      <AuPill @icon="clock-rewind">Laatst aangepast op
+        {{date-format this.process.modified true}}</AuPill>
+    </:action>
   </PageHeader>
 {{/if}}
 
@@ -19,10 +24,23 @@
   {{#if this.edit}}
     <form {{on "submit" (perform this.updateModel)}}>
       <DataCard>
-        <:header></:header>
         <:title>
-          Algemene info
+          Algemene informatie
         </:title>
+        <:header>
+          <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+            <AuButton
+              @skin="secondary"
+              {{on "click" this.resetModel}}
+            >Annuleer</AuButton>
+            <AuButton
+              @skin="primary"
+              type="submit"
+              @loading={{this.updateModel.isRunning}}
+              @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+            >Bewaar</AuButton>
+          </div>
+        </:header>
         <:card as |Card|>
           <Card.Columns>
             <:left as |Item|>
@@ -95,7 +113,7 @@
                 </:content>
               </Item>
               <Item>
-                <:label>Contact</:label>
+                <:label>Emailadres bestuur</:label>
                 <:content>
                   {{or
                     (contact-email this.process.publisher.primarySite.contacts)
@@ -109,33 +127,16 @@
                   {{date-format this.process.created true}}
                 </:content>
               </Item>
-              <Item>
-                <:label>Laatst aangepast op</:label>
-                <:content>
-                  <span class="au-u-italic">Nu</span>
-                </:content>
-              </Item>
             </:right>
           </Card.Columns>
         </:card>
-        <:action>
-          <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
-            <AuButton
-              @skin="secondary"
-              {{on "click" this.resetModel}}
-            >Annuleer</AuButton>
-            <AuButton
-              @skin="primary"
-              type="submit"
-              @loading={{this.updateModel.isRunning}}
-              @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
-            >Bewaar</AuButton>
-          </div>
-        </:action>
       </DataCard>
     </form>
   {{else}}
     <DataCard>
+      <:title>
+        Algemene informatie
+      </:title>
       <:header>
         {{#if this.canEdit}}
           <AuButton
@@ -145,9 +146,6 @@
           >Wijzig</AuButton>
         {{/if}}
       </:header>
-      <:title>
-        Algemene info
-      </:title>
       <:card as |Card|>
         <Card.Columns>
           <:left as |Item|>
@@ -201,7 +199,7 @@
               </:content>
             </Item>
             <Item>
-              <:label>Contact</:label>
+              <:label>Emailadres bestuur</:label>
               <:content>
                 {{or
                   (contact-email this.process.publisher.primarySite.contacts)
@@ -213,12 +211,6 @@
               <:label>Aangemaakt op</:label>
               <:content>
                 {{date-format this.process.created true}}
-              </:content>
-            </Item>
-            <Item>
-              <:label>Laatst aangepast op</:label>
-              <:content>
-                {{date-format this.process.modified true}}
               </:content>
             </Item>
           </:right>
