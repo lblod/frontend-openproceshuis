@@ -16,6 +16,8 @@ export default class ProcessSelectByClassificationComponent extends Component {
         number: 0,
         size: 20,
       },
+      'filter[:has:groups]': true,
+      'filter[groups][:has:processes]': true,
       sort: ':no-case:label',
     };
 
