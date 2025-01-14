@@ -9,6 +9,7 @@ export default class ProcessesIndexController extends Controller {
   @tracked sort = 'title';
   @tracked title = '';
   @tracked classification = '';
+  @tracked selectedClassification = '';
   @tracked group = '';
 
   get processes() {
@@ -41,7 +42,8 @@ export default class ProcessesIndexController extends Controller {
   @action
   setClassification(selection) {
     this.page = null;
-    this.classification = selection;
+    this.selectedClassification = selection;
+    this.classification = selection?.label;
   }
 
   @action
@@ -54,6 +56,7 @@ export default class ProcessesIndexController extends Controller {
   resetFilters() {
     this.title = '';
     this.classification = '';
+    this.selectedClassification = '';
     this.group = '';
     this.page = 0;
     this.sort = 'title';
