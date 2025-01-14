@@ -10,6 +10,7 @@ export default class ProcessStepsIndexController extends Controller {
   @tracked sort = '';
   @tracked name = '';
   @tracked type = '';
+  @tracked selectedType = '';
 
   get processSteps() {
     return this.model.loadProcessStepsTaskInstance.isFinished
@@ -41,13 +42,15 @@ export default class ProcessStepsIndexController extends Controller {
   @action
   setType(selection) {
     this.page = null;
-    this.type = selection;
+    this.selectedType = selection;
+    this.type = selection?.queryValue;
   }
 
   @action
   resetFilters() {
     this.name = '';
     this.type = '';
+    this.selectedType = '';
     this.page = 0;
     this.sort = '';
 
