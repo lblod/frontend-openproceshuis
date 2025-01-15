@@ -2,19 +2,12 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 
 export default class ProcessSelectByClassificationComponent extends Component {
+  @service router;
   @service store;
 
   @tracked classifications = [];
-  @tracked classification = null;
-
-  @action
-  setClassification(selected) {
-    this.classification = selected;
-    this.args.onChange(selected?.label ?? '');
-  }
 
   @restartableTask
   *loadProcessClassificationsTask() {
@@ -23,6 +16,8 @@ export default class ProcessSelectByClassificationComponent extends Component {
         number: 0,
         size: 20,
       },
+      'filter[:has:groups]': true,
+      'filter[groups][:has:processes]': true,
       sort: ':no-case:label',
     };
 
@@ -32,10 +27,13 @@ export default class ProcessSelectByClassificationComponent extends Component {
     );
     this.classifications = result;
 
-    if (this.args.selected) {
-      this.classification = result.find(
-        (classification) => classification.label === this.args.selected
+    const selectedClassificationLabel =
+      this.router.currentRoute.queryParams.classification;
+    if (selectedClassificationLabel) {
+      const selectedClassification = this.classifications.find(
+        (classification) => classification.label === selectedClassificationLabel
       );
+      this.args.onChange(selectedClassification);
     }
   }
 }

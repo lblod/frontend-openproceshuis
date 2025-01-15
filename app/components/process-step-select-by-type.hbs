@@ -5,8 +5,8 @@
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @options={{this.types}}
-    @selected={{this.type}}
-    @onChange={{this.setType}}
+    @selected={{@selected}}
+    @onChange={{@onChange}}
     @triggerId={{@id}}
     as |type|
   >
