@@ -2,19 +2,12 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 
 export default class ProcessStepSelectByTypeComponent extends Component {
+  @service router;
   @service store;
 
   @tracked types = [];
-  @tracked type = null;
-
-  @action
-  setType(selected) {
-    this.type = selected;
-    this.args.onChange(selected?.queryValue ?? '');
-  }
 
   @restartableTask
   *loadProcessStepTypesTask() {
@@ -31,8 +24,12 @@ export default class ProcessStepSelectByTypeComponent extends Component {
     const result = yield this.store.query('bpmn-element-type', query);
     this.types = result;
 
-    if (this.args.selected) {
-      this.type = result.find((type) => type.queryValue === this.args.selected);
+    const selectedTypeQueryValue = this.router.currentRoute.queryParams.type;
+    if (selectedTypeQueryValue) {
+      const selectedType = this.types.find(
+        (type) => type.queryValue === selectedTypeQueryValue
+      );
+      this.args.onChange(selectedType);
     }
   }
 }

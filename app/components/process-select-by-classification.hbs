@@ -5,11 +5,11 @@
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @options={{this.classifications}}
-    @selected={{this.classification}}
-    @onChange={{this.setClassification}}
+    @selected={{@selected}}
+    @onChange={{@onChange}}
     @triggerId={{@id}}
     as |classification|
   >
-    {{capitalize classification.label}}
+    {{classification.label}}
   </PowerSelect>
 </div>
