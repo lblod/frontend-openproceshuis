@@ -37,10 +37,6 @@ Router.map(function () {
     this.route('index', { path: '' });
   });
 
-  this.route('process-steps', { path: 'processtappen' }, function () {
-    this.route('index', { path: '' });
-  });
-
   this.route('legal', { path: '/legaal' }, function () {
     this.route('disclaimer');
     this.route('cookiestatement', { path: '/cookieverklaring' });
