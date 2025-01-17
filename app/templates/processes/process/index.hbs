@@ -313,52 +313,6 @@
         {{/if}}
       </div>
 
-      {{! Latest BPMN file - Process steps }}
-      <div>
-        <AuHeading
-          @level="3"
-          @skin="4"
-          class="au-u-margin-bottom-small au-u-margin-top"
-        >Processtappen</AuHeading>
-        <div class="au-c-boxed-table">
-          <AuDataTable
-            @content={{this.processSteps}}
-            @isLoading={{this.processStepsAreLoading}}
-            @page={{this.pageProcessSteps}}
-            @size={{this.sizeProcessSteps}}
-            as |t|
-          >
-            <t.content class="au-c-data-table__table--small" as |c|>
-              <c.header>
-                <AuDataTableThSortable
-                  @field="name"
-                  @currentSorting={{this.sortProcessSteps}}
-                  @label="Naam"
-                />
-                <AuDataTableThSortable
-                  @field="type"
-                  @currentSorting={{this.sortProcessSteps}}
-                  @label="Type"
-                />
-              </c.header>
-              {{#if this.processStepsHaveErrored}}
-                <TableMessage::Error />
-              {{else if this.processStepsHaveNoResults}}
-                <TableMessage>
-                  <p>
-                    Er werden geen zoekresultaten gevonden.
-                  </p>
-                </TableMessage>
-              {{else}}
-                <c.body as |element|>
-                  <td>{{or element.name "/"}}</td>
-                  <td>{{capitalize (or element.type.name "/")}}</td>
-                </c.body>
-              {{/if}}
-            </t.content>
-          </AuDataTable>
-        </div>
-      </div>
     </div>
 
     {{! BPMN files }}
