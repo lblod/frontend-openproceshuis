@@ -18,13 +18,18 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
     if (!response.ok) return;
     const productJson = yield response.json();
 
+    let type;
+    if (productJson['@type'] === 'Instantie') type = 'ipdc-instance';
+    else if (productJson['@type'] === 'Concept') type = 'ipdc-concept';
+    else return;
+
     const draftIpdcProduct = {
       name: Object.entries(productJson.naam).map(([language, content]) => ({
         content,
         language,
       })),
       productNumber: productJson.productnummer,
-      type: productJson['@type'].toLowerCase(),
+      type,
       isDraft: true,
     };
 

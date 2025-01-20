@@ -5,6 +5,6 @@ export default class IpdcProductModel extends Model {
   @attr('string') productNumber;
 
   get url() {
-    return `https://productencatalogus-v3.vlaanderen.be`;
+    return `https://productencatalogus-v3.vlaanderen.be/product/${this.productNumber}`;
   }
 }
