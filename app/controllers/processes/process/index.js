@@ -1,12 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import {
-  dropTask,
-  enqueueTask,
-  keepLatestTask,
-  timeout,
-} from 'ember-concurrency';
+import { dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
@@ -23,9 +18,6 @@ import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
-    { pageProcessSteps: 'process-steps-page' },
-    { sizeProcessSteps: 'process-steps-size' },
-    { sortProcessSteps: 'process-steps-sort' },
     { pageVersions: 'versions-page' },
     { sizeVersions: 'versions-size' },
     { sortVersions: 'versions-sort' },
@@ -83,24 +75,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   setLatestDiagramAsSvg(value) {
     this.latestDiagramAsSvg = value;
-  }
-
-  // Process steps
-
-  @tracked pageProcessSteps = 0;
-  @tracked sortProcessSteps = 'name';
-  sizeProcessSteps = 20;
-
-  @tracked processSteps = undefined;
-  @tracked processStepsAreLoading = true;
-  @tracked processStepsHaveErrored = false;
-
-  get processStepsHaveNoResults() {
-    return (
-      !this.processStepsAreLoading &&
-      !this.processStepsHaveErrored &&
-      this.processSteps?.length === 0
-    );
   }
 
   // Diagram versions
@@ -275,7 +249,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   diagramUploaded(uploadedFileId) {
     this.replaceModalOpened = false;
-    this.pageProcessSteps = 0;
     this.fetchLatestDiagramById.perform(uploadedFileId);
   }
 
@@ -438,7 +411,6 @@ export default class ProcessesProcessIndexController extends Controller {
 
     this.attachments = undefined;
     this.diagrams = undefined;
-    this.processSteps = undefined;
     this.latestDiagram = undefined;
   }
 
@@ -488,82 +460,6 @@ export default class ProcessesProcessIndexController extends Controller {
     }
 
     this.latestDiagramIsLoading = false;
-  }
-
-  @keepLatestTask({
-    observes: ['latestDiagram', 'pageProcessSteps', 'sortProcessSteps'],
-  })
-  *fetchProcessSteps() {
-    this.processStepsAreLoading = true;
-    this.processStepsHaveErrored = false;
-
-    if (this.latestDiagramHasErrored) {
-      this.processStepsHaveErrored = true;
-      this.processStepsAreLoading = false;
-      return;
-    }
-
-    const latestBpmnFileId = this.latestDiagram?.bpmnFile?.id;
-    if (!latestBpmnFileId) return;
-
-    try {
-      while (true) {
-        const query = {
-          'filter[:exact:resource]': `http://mu.semte.ch/services/file-service/files/${latestBpmnFileId}`,
-          sort: '-modified',
-        };
-        const jobs = yield this.store.query('job', query);
-
-        if (jobs.length === 0) break;
-
-        const jobStatus = jobs[0].status;
-        if (jobStatus === ENV.jobStates.success) break;
-
-        if (
-          jobStatus === ENV.jobStates.failed ||
-          jobStatus === ENV.jobStates.canceled
-        )
-          throw Error;
-
-        yield timeout(1000);
-      }
-    } catch {
-      this.processStepsHaveErrored = true;
-      this.processStepsAreLoading = false;
-      return;
-    }
-
-    const query = {
-      page: {
-        number: this.pageProcessSteps,
-        size: this.sizeProcessSteps,
-      },
-      include: 'type',
-      'filter[:has:name]': true,
-      'filter[bpmn-process][bpmn-file][id]': latestBpmnFileId,
-    };
-
-    if (this.sortProcessSteps) {
-      const isDescending = this.sortProcessSteps.startsWith('-');
-
-      let fieldName = isDescending
-        ? this.sortProcessSteps.substring(1)
-        : this.sortProcessSteps;
-      if (fieldName === 'type') fieldName = 'type.label';
-
-      let sortValue = `:no-case:${fieldName}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    try {
-      this.processSteps = yield this.store.query('bpmn-element', query);
-    } catch {
-      this.processStepsHaveErrored = true;
-    }
-
-    this.processStepsAreLoading = false;
   }
 
   @keepLatestTask({
