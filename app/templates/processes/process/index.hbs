@@ -171,12 +171,9 @@
               <:label>Links naar IPDC/LPDC</:label>
               <:content>
                 {{#if this.process.ipdcProducts.length}}
-                  {{#each this.process.ipdcProducts as |instance|}}
-                    <AuLinkExternal
-                      href="https://productencatalogus-v3.vlaanderen.be/instantie/{{instance.productNumber}}"
-                      class="au-u-flex"
-                    >
-                      {{language-string-set-nl instance.name}}
+                  {{#each this.process.ipdcProducts as |product|}}
+                    <AuLinkExternal href="{{product.url}}" class="au-u-flex">
+                      {{language-string-set-nl product.name}}
                     </AuLinkExternal>
                   {{/each}}
                 {{else}}

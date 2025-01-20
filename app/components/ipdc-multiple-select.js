@@ -14,7 +14,7 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
     const productNumberOrId = this.extractNumberOrId(searchParams);
     if (!productNumberOrId) return;
 
-    const response = yield fetch(`/ipdc/doc/instantie/${productNumberOrId}`);
+    const response = yield fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) return;
     const productJson = yield response.json();
 
@@ -24,6 +24,7 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
         language,
       })),
       productNumber: productJson.productnummer,
+      type: productJson['@type'].toLowerCase(),
       isDraft: true,
     };
 
