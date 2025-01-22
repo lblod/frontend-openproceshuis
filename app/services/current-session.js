@@ -50,6 +50,9 @@ export default class CurrentSessionService extends Service {
   }
 
   get canOnlyReadWhileAuthenticated() {
+    if (this.isAdmin) {
+      return false;
+    }
     return this.session.isAuthenticated && !this.hasEditorRole;
   }
 
