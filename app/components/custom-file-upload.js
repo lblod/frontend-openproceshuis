@@ -5,6 +5,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
+import { UploadFile } from 'ember-file-upload';
 
 export default class AuFileUpload extends Component {
   fileQueueHelper = fileQueue;
@@ -95,40 +96,88 @@ export default class AuFileUpload extends Component {
       return;
     }
 
-    let uploadedFileId = yield this.uploadFileTask.perform(file);
+    let fileId;
+    try {
+      fileId = yield this.uploadFileTask.perform(file);
+    } catch {
+      this.addError(
+        file,
+        'Er ging iets mis tijdens het opslaan van het bestand.'
+      );
+      this.removeFileFromQueue(file);
+      return;
+    }
+
+    if (this.args.updateProcess) {
+      try {
+        yield this.args.updateProcess.perform(fileId);
+      } catch {
+        this.addError(
+          file,
+          'Er ging iets mis tijdens het bijwerken van het proces.'
+        );
+        this.removeFileFromQueue(file);
+        return;
+      }
+    } else if (this.args.createProcess) {
+      try {
+        yield this.args.createProcess.perform(fileId);
+      } catch {
+        this.addError(
+          file,
+          'Er ging iets mis tijdens het aanmaken van het proces.'
+        );
+        this.removeFileFromQueue(file);
+        return;
+      }
+    }
+
+    let bpmnFileId = fileId;
+    if (file.name.endsWith('.vsdx')) {
+      try {
+        const bpmnFile = yield this.convertVisioToBpmn.perform(fileId);
+        bpmnFileId = yield this.uploadFileTask.perform(bpmnFile);
+      } catch (e) {
+        console.error(e);
+        bpmnFileId = null;
+      }
+    }
+
+    if (this.args.extractBpmnElements && bpmnFileId) {
+      yield this.args.extractBpmnElements.perform(bpmnFileId);
+    }
 
     this.notifyQueueUpdate();
 
-    if (uploadedFileId && this.args.onFinishUpload)
-      this.args.onFinishUpload(uploadedFileId, this.calculateQueueInfo());
+    if (fileId && this.args.onFinishUpload)
+      this.args.onFinishUpload(fileId, this.calculateQueueInfo());
   }
 
   @task({ enqueue: true, maxConcurrency: 3 })
   *uploadFileTask(file) {
-    this.notifyQueueUpdate();
-    try {
-      const response = yield file.upload(this.endPoint, {
-        'Content-Type': 'multipart/form-data',
-      });
-      const body = yield response.json();
-      const fileId = yield body?.data?.id;
+    const response = yield file.upload(this.endPoint, {
+      'Content-Type': 'multipart/form-data',
+    });
+    const body = yield response.json();
+    return body?.data?.id;
+  }
 
-      if (this.args.updateProcess) {
-        yield this.args.updateProcess.perform(fileId);
-      } else if (this.args.createProcess) {
-        yield this.args.createProcess.perform(fileId);
-      }
+  @task
+  *convertVisioToBpmn(visioFileId) {
+    const response = yield fetch(`/visio?id=${visioFileId}`, {
+      method: 'POST',
+    });
 
-      if (this.args.extractBpmnElements) {
-        yield this.args.extractBpmnElements.perform(fileId);
-      }
+    const contentDisposition = response.headers.get('Content-Disposition');
+    const fileName = contentDisposition
+      .split('filename=')[1]
+      .replace(/['"]/g, '');
 
-      return fileId;
-    } catch (e) {
-      this.addError(file);
-      this.removeFileFromQueue(file);
-      return null;
-    }
+    const blob = yield response.blob();
+    const bpmnFile = UploadFile.fromBlob(blob, 'blob');
+    bpmnFile.name = fileName;
+
+    return bpmnFile;
   }
 
   @action
@@ -186,6 +235,7 @@ export default class AuFileUpload extends Component {
 
   removeFileFromQueue(file) {
     this.queue.remove(file);
+    this.notifyQueueUpdate();
   }
 }
 
