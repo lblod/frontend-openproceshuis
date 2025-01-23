@@ -5,7 +5,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
-import { UploadFile } from 'ember-file-upload';
 
 export default class AuFileUpload extends Component {
   fileQueueHelper = fileQueue;
@@ -135,8 +134,7 @@ export default class AuFileUpload extends Component {
     let bpmnFileId = fileId;
     if (file.name.endsWith('.vsdx')) {
       try {
-        const bpmnFile = yield this.convertVisioToBpmn.perform(fileId);
-        bpmnFileId = yield this.uploadFileTask.perform(bpmnFile);
+        bpmnFileId = yield this.convertVisioToBpmn.perform(fileId);
       } catch (e) {
         console.error(e);
         bpmnFileId = null;
@@ -167,17 +165,8 @@ export default class AuFileUpload extends Component {
     const response = yield fetch(`/visio?id=${visioFileId}`, {
       method: 'POST',
     });
-
-    const contentDisposition = response.headers.get('Content-Disposition');
-    const fileName = contentDisposition
-      .split('filename=')[1]
-      .replace(/['"]/g, '');
-
-    const blob = yield response.blob();
-    const bpmnFile = UploadFile.fromBlob(blob, 'blob');
-    bpmnFile.name = fileName;
-
-    return bpmnFile;
+    const body = yield response.json();
+    return body['bpmn-file-id'];
   }
 
   @action
