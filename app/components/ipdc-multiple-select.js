@@ -6,28 +6,34 @@ export default class OrganizationTypeMultipleSelectComponent extends Component {
   @service store;
 
   @restartableTask
-  *loadIpdcInstancesTask(searchParams = '') {
+  *loadIpdcProductsTask(searchParams = '') {
     if (!searchParams) return;
 
     yield timeout(500);
 
-    const instanceNumberOrId = this.extractNumberOrId(searchParams);
-    if (!instanceNumberOrId) return;
+    const productNumberOrId = this.extractNumberOrId(searchParams);
+    if (!productNumberOrId) return;
 
-    const response = yield fetch(`/ipdc/doc/instantie/${instanceNumberOrId}`);
+    const response = yield fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) return;
-    const instanceJson = yield response.json();
+    const productJson = yield response.json();
 
-    const draftIpdcInstance = {
-      name: Object.entries(instanceJson.naam).map(([language, content]) => ({
+    let type;
+    if (productJson['@type'] === 'Instantie') type = 'ipdc-instance';
+    else if (productJson['@type'] === 'Concept') type = 'ipdc-concept';
+    else return;
+
+    const draftIpdcProduct = {
+      name: Object.entries(productJson.naam).map(([language, content]) => ({
         content,
         language,
       })),
-      productNumber: instanceJson.productnummer,
+      productNumber: productJson.productnummer,
+      type,
       isDraft: true,
     };
 
-    return [draftIpdcInstance];
+    return [draftIpdcProduct];
   }
 
   extractNumberOrId(input) {
