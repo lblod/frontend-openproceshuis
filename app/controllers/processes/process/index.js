@@ -39,7 +39,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked edit = false;
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
-  @tracked draftIpdcInstances = undefined;
+  @tracked draftIpdcProducts = undefined;
 
   // Process
 
@@ -255,7 +255,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   toggleEdit() {
-    this.draftIpdcInstances = this.process?.ipdcInstances;
+    this.draftIpdcProducts = this.process?.ipdcProducts;
     this.edit = !this.edit;
     this.validateForm();
   }
@@ -270,25 +270,22 @@ export default class ProcessesProcessIndexController extends Controller {
       this.process.modified = new Date();
 
       try {
-        this.process.ipdcInstances = yield Promise.all(
-          this.draftIpdcInstances.map(async (instance) => {
-            if (instance.isDraft) {
-              const existingInstances = await this.store.query(
-                'ipdc-instance',
-                {
-                  filter: { 'product-number': instance.productNumber },
-                }
-              );
-              if (existingInstances.length) return existingInstances[0];
-
-              const newInstance = this.store.createRecord('ipdc-instance', {
-                name: instance.name,
-                productNumber: instance.productNumber,
+        this.process.ipdcProducts = yield Promise.all(
+          this.draftIpdcProducts.map(async (product) => {
+            if (product.isDraft) {
+              const existingProducts = await this.store.query(product.type, {
+                filter: { 'product-number': product.productNumber },
               });
-              await newInstance.save();
-              return newInstance;
+              if (existingProducts.length) return existingProducts[0];
+
+              const newProduct = this.store.createRecord(product.type, {
+                name: product.name,
+                productNumber: product.productNumber,
+              });
+              await newProduct.save();
+              return newProduct;
             }
-            return instance;
+            return product;
           })
         );
 
@@ -312,7 +309,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   resetModel() {
     this.process?.rollbackAttributes();
-    this.draftIpdcInstances = this.process?.ipdcInstances;
+    this.draftIpdcProducts = this.process?.ipdcProducts;
     this.edit = false;
   }
 
@@ -338,13 +335,13 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  setDraftIpdcInstances(event) {
-    const productNumbers = event.map((instance) => instance.productNumber);
+  setDraftIpdcProducts(event) {
+    const productNumbers = event.map((product) => product.productNumber);
     const hasDuplicates =
       new Set(productNumbers).size !== productNumbers.length;
     if (hasDuplicates) return;
 
-    this.draftIpdcInstances = event;
+    this.draftIpdcProducts = event;
     this.validateForm();
   }
 
@@ -352,8 +349,8 @@ export default class ProcessesProcessIndexController extends Controller {
     this.formIsValid =
       this.process?.validate() &&
       (this.process?.hasDirtyAttributes ||
-        this.draftIpdcInstances?.length < this.process?.ipdcInstances?.length ||
-        this.draftIpdcInstances?.some((instance) => instance.isDraft));
+        this.draftIpdcProducts?.length < this.process?.ipdcProducts?.length ||
+        this.draftIpdcProducts?.some((product) => product.isDraft));
   }
 
   @action

@@ -1,6 +1,3 @@
-import Model, { attr } from '@ember-data/model';
+import IpdcProductModel from './ipdc-product';
 
-export default class IpdcInstanceModel extends Model {
-  @attr('language-string-set') name;
-  @attr('string') productNumber;
-}
+export default class IpdcInstanceModel extends IpdcProductModel {}
