@@ -218,12 +218,12 @@
 
   <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
 
-    {{! Latest BPMN file }}
+    {{! Latest diagram }}
     <div class="au-o-grid__item">
 
-      {{! Latest BPMN file - Title }}
-      <div class="au-u-flex au-u-flex--between">
-        <AuHeading @level="2" @skin="3">BPMN-bestand</AuHeading>
+      {{! Latest diagram - Title }}
+      <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+        <AuHeading @level="2" @skin="3">Diagram</AuHeading>
         <AuButtonGroup>
           {{#if this.canEdit}}
             <AuButton
@@ -231,7 +231,7 @@
               {{on "click" this.openReplaceModal}}
             >Vervang</AuButton>
           {{/if}}
-          {{#if this.latestBpmnFile}}
+          {{#if this.latestDiagram}}
             <AuButton {{on "click" this.openDownloadModal}}>
               Download
             </AuButton>
@@ -239,28 +239,54 @@
         </AuButtonGroup>
       </div>
 
-      {{! Latest BPMN file - Diagram }}
+      {{! Latest diagram - Visual }}
       <div>
-        <AuHeading
-          @level="3"
-          @skin="4"
-          class="au-u-margin-bottom-small au-u-margin-top-small"
-        >Diagram</AuHeading>
-        {{#if this.latestBpmnFileIsLoading}}
+        {{#if this.latestDiagramIsLoading}}
           <AuLoader />
-        {{else if this.latestBpmnFileHasErrored}}
-          <p>Er ging iets mis bij het ophalen van het BPMN-bestand. Probeer
-            later opnieuw.</p>
-        {{else if this.latestBpmnFile}}
-          <AuHelpText @skin="secondary" class="au-u-margin-top-none">
-            Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
-            om in en uit te zoomen. Klik elders om bediening uit te schakelen.
-          </AuHelpText>
-          <BpmnViewer
-            @bpmnFile={{this.latestBpmnFile}}
-            @onBpmnLoaded={{this.setLatestBpmnFileAsBpmn}}
-            @onSvgLoaded={{this.setLatestBpmnFileAsSvg}}
-          />
+        {{else if this.latestDiagramHasErrored}}
+          <AuAlert
+            @title="Niet gevonden"
+            @skin="warning"
+            @icon="alert-triangle"
+          >
+            Er ging iets mis bij het ophalen van het diagram. Probeer later
+            opnieuw.
+          </AuAlert>
+        {{else if this.latestDiagram}}
+          {{#if this.latestDiagram.bpmnFile}}
+            {{#if this.latestDiagram.isVisioFile}}
+              <AuHelpText @skin="secondary" class="au-u-margin-bottom-small">
+                Dit diagram is origineel gemaakt in Visio. Open Proces Huis kan
+                geen Visiobestanden tonen, het toont enkel een
+                <span class="au-u-italic">.bpmn</span>-versie. Let op: die kan
+                verschillen van het originele Visiobestand. Je kan het originele
+                Visiobestand downloaden om te bekijken in de Visiotoepassing.
+              </AuHelpText>
+            {{/if}}
+            <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
+              Klik en hou vast om diagram te bedienen. Gebruik ctrl en
+              scrollwiel om in en uit te zoomen. Klik elders om bediening uit te
+              schakelen.
+            </AuHelpText>
+            <BpmnViewer
+              @diagram={{this.latestDiagram}}
+              @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
+              @onSvgLoaded={{this.setLatestDiagramAsSvg}}
+            />
+          {{else}}
+            <AuAlert
+              @title="Visualisatie mislukt"
+              @skin="warning"
+              @icon="alert-triangle"
+            >
+              {{#if this.latestDiagram.isVisioFile}}
+                <span>Het Visiobestand kon niet worden omgezet naar BPMN,
+                  bijgevolg kan Open Proces Huis het diagram niet weergeven.</span>
+              {{else}}
+                <span>Er ging iets mis bij het weergeven van het diagram.</span>
+              {{/if}}
+            </AuAlert>
+          {{/if}}
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
             <:title>
@@ -272,13 +298,13 @@
                   <Item>
                     <:label>Bestandsnaam</:label>
                     <:content>
-                      {{this.latestBpmnFile.name}}
+                      {{this.latestDiagram.name}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Toegevoegd op</:label>
                     <:content>
-                      {{date-format this.latestBpmnFile.modified true}}
+                      {{date-format this.latestDiagram.modified true}}
                     </:content>
                   </Item>
                 </:left>
@@ -286,19 +312,19 @@
                   <Item>
                     <:label>Grootte</:label>
                     <:content>
-                      {{file-size-format this.latestBpmnFile.size}}
+                      {{file-size-format this.latestDiagram.size}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Extensie</:label>
                     <:content>
-                      {{this.latestBpmnFile.extension}}
+                      {{this.latestDiagram.extension}}
                     </:content>
                   </Item>
                   <Item>
                     <:label>Formaat</:label>
                     <:content>
-                      {{this.latestBpmnFile.format}}
+                      {{this.latestDiagram.format}}
                     </:content>
                   </Item>
                 </:right>
@@ -306,16 +332,21 @@
             </:card>
           </DataCard>
         {{else}}
-          <p>Dit proces heeft geen diagram.</p>
+          <AuAlert
+            @title="Niet gevonden"
+            @skin="warning"
+            @icon="alert-triangle"
+          >
+            Er werd geen diagram gevonden voor die proces.
+          </AuAlert>
         {{/if}}
       </div>
-
     </div>
 
-    {{! BPMN files }}
+    {{! Diagrams }}
     <div class="au-o-grid__item au-u-margin-top">
 
-      {{! BPMN files - Title }}
+      {{! Diagrams - Title }}
       <div class="au-u-margin-bottom-small">
         <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
           <AuHeading @level="2" @skin="3">Versies</AuHeading>
@@ -326,11 +357,11 @@
         </AuHelpText>
       </div>
 
-      {{! BPMN files - Files }}
+      {{! Diagrams - Files }}
       <div class="au-c-boxed-table au-u-margin-top-small">
         <AuDataTable
-          @content={{this.bpmnFiles}}
-          @isLoading={{this.bpmnFilesAreLoading}}
+          @content={{this.diagrams}}
+          @isLoading={{this.diagramsAreLoading}}
           @page={{this.pageVersions}}
           @size={{this.sizeVersions}}
           as |t|
@@ -357,35 +388,35 @@
                 <th></th>
               {{/if}}
             </c.header>
-            {{#if this.bpmnFilesHaveErrored}}
+            {{#if this.diagramsHaveErrored}}
               <TableMessage::Error />
-            {{else if this.bpmnFilesHaveNoResults}}
+            {{else if this.diagramsHaveNoResults}}
               <TableMessage>
                 <p>
                   Er werden geen zoekresultaten gevonden.
                 </p>
               </TableMessage>
             {{else}}
-              <c.body as |bpmnFile|>
-                <td>{{date-format bpmnFile.created true}}</td>
+              <c.body as |diagram|>
+                <td>{{date-format diagram.created true}}</td>
                 <td>
-                  {{#if (eq bpmnFile.id this.latestBpmnFile.id)}}
+                  {{#if (eq diagram.id this.latestDiagram.id)}}
                     <strong>
-                      {{bpmnFile.name}}
+                      {{diagram.name}}
                       <AuIcon @icon="circle-check" />
                     </strong>
                   {{else}}
-                    {{bpmnFile.name}}
+                    {{diagram.name}}
                   {{/if}}
                 </td>
-                <td>{{file-size-format bpmnFile.size}}</td>
+                <td>{{file-size-format diagram.size}}</td>
                 <td>
                   <AuButton
                     @icon="download"
                     @skin="link"
                     @width="block"
                     @hideText="true"
-                    {{on "click" (fn this.downloadFile bpmnFile)}}
+                    {{on "click" (fn this.downloadFile diagram)}}
                   >Download</AuButton>
                 </td>
                 {{#if this.canEdit}}
@@ -396,8 +427,8 @@
                       @alert="true"
                       @width="block"
                       @hideText="true"
-                      @disabled={{eq bpmnFile.id this.latestBpmnFile.id}}
-                      {{on "click" (fn this.openDeleteModal bpmnFile)}}
+                      @disabled={{eq diagram.id this.latestDiagram.id}}
+                      {{on "click" (fn this.openDeleteModal diagram)}}
                     >Verwijder</AuButton>
                   </td>
                 {{/if}}
@@ -530,15 +561,15 @@
   @modalOpen={{this.replaceModalOpened}}
   @closeModal={{this.closeReplaceModal}}
 >
-  <:title>Vervang BPMN-bestand</:title>
+  <:title>Vervang diagram</:title>
   <:body>
     <CustomFileUpload
-      @accept=".bpmn"
-      @title="Bestand selecteren"
+      @accept=".bpmn,.vsdx"
+      @title="BPMN- of Visiobestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @updateProcess={{this.addFileToProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.bpmnFileUploaded}}
+      @onFinishUpload={{this.diagramUploaded}}
     />
   </:body>
   <:footer>
@@ -555,36 +586,60 @@
   @modalOpen={{this.downloadModalOpened}}
   @closeModal={{this.closeDownloadModal}}
 >
-  <:title>Download BPMN-bestand</:title>
+  <:title>Download diagram</:title>
   <:body>
     <div class="au-o-flow">
-      <p>Het geselecteerde BPMN-bestand is beschikbaar in verschillende
-        formaten:</p>
+      <p>Het geselecteerde diagram is beschikbaar in verschillende formaten:</p>
       <AuButtonGroup class="au-u-flex au-u-flex--around">
+        {{#if this.latestDiagram.isVisioFile}}
+          <AuButton
+            @skin="primary"
+            {{on "click" (perform this.downloadLatestDiagram "vsdx")}}
+          >
+            Visio
+            <span class="au-u-para-tiny au-u-regular">(.vsdx)</span>
+          </AuButton>
+        {{/if}}
         <AuButton
-          @skin="primary"
-          {{on "click" (perform this.downloadLatestBpmnFile "bpmn")}}
+          @skin={{if this.latestDiagram.isBpmnFile "primary" "secondary"}}
+          @disabled={{and
+            this.latestDiagram.isVisioFile
+            (not this.latestDiagram.bpmnFile)
+          }}
+          {{on "click" (perform this.downloadLatestDiagram "bpmn")}}
         >
-          Origineel
+          BPMN
           <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (perform this.downloadLatestBpmnFile "png")}}
+          @disabled={{and
+            this.latestDiagram.isVisioFile
+            (not this.latestDiagram.bpmnFile)
+          }}
+          {{on "click" (perform this.downloadLatestDiagram "png")}}
         >
           Afbeelding
           <span class="au-u-para-tiny au-u-regular">(.png)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (perform this.downloadLatestBpmnFile "svg")}}
+          @disabled={{and
+            this.latestDiagram.isVisioFile
+            (not this.latestDiagram.bpmnFile)
+          }}
+          {{on "click" (perform this.downloadLatestDiagram "svg")}}
         >
           Vectorafbeelding
           <span class="au-u-para-tiny au-u-regular">(.svg)</span>
         </AuButton>
         <AuButton
           @skin="secondary"
-          {{on "click" (perform this.downloadLatestBpmnFile "pdf")}}
+          @disabled={{and
+            this.latestDiagram.isVisioFile
+            (not this.latestDiagram.bpmnFile)
+          }}
+          {{on "click" (perform this.downloadLatestDiagram "pdf")}}
         >
           PDF
           <span class="au-u-para-tiny au-u-regular">(.pdf)</span>
@@ -608,7 +663,7 @@
     <CustomFileUpload
       @title="Bestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
-      @bpmnForbidden="true"
+      @forbidden=".bpmn,.vsdx"
       @multiple="true"
       @updateProcess={{this.addFileToProcess}}
       @onFinishUpload={{this.attachmentsUploaded}}

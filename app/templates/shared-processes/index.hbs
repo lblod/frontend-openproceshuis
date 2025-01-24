@@ -121,12 +121,12 @@
   <:title>Voeg proces toe</:title>
   <:body>
     <CustomFileUpload
-      @accept=".bpmn"
-      @title="BPMN-bestand selecteren"
+      @accept=".bpmn,.vsdx"
+      @title="BPMN- of Visiobestand selecteren"
       @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
       @createProcess={{this.createProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.bpmnFileUploaded}}
+      @onFinishUpload={{this.diagramUploaded}}
     />
   </:body>
   <:footer>

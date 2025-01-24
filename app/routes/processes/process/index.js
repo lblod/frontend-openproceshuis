@@ -42,7 +42,7 @@ export default class ProcessesProcessIndexRoute extends Route {
   setupController(controller) {
     super.setupController(...arguments);
     controller.reset();
-    controller.fetchLatestBpmnFile.perform();
+    controller.fetchLatestDiagram.perform();
   }
 
   resetController(controller) {

@@ -14,6 +14,7 @@ import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
+import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -57,40 +58,40 @@ export default class ProcessesProcessIndexController extends Controller {
     return this.model.loadProcessTaskInstance.isError;
   }
 
-  // Latest BPMN file
+  // Latest diagram
 
-  @tracked latestBpmnFile = undefined;
-  @tracked latestBpmnFileIsLoading = true;
-  @tracked latestBpmnFileHasErrored = false;
+  @tracked latestDiagram = undefined;
+  @tracked latestDiagramIsLoading = true;
+  @tracked latestDiagramHasErrored = false;
 
-  latestBpmnFileAsBpmn = undefined;
-  latestBpmnFileAsSvg = undefined;
+  latestDiagramAsBpmn = undefined;
+  latestDiagramAsSvg = undefined;
 
   @action
-  setLatestBpmnFileAsBpmn(value) {
-    this.latestBpmnFileAsBpmn = value;
+  setLatestDiagramAsBpmn(value) {
+    this.latestDiagramAsBpmn = value;
   }
 
   @action
-  setLatestBpmnFileAsSvg(value) {
-    this.latestBpmnFileAsSvg = value;
+  setLatestDiagramAsSvg(value) {
+    this.latestDiagramAsSvg = value;
   }
 
-  // BPMN file versions
+  // Diagram versions
 
   @tracked pageVersions = 0;
   @tracked sortVersions = '-created';
   sizeVersions = 10;
 
-  @tracked bpmnFiles = undefined;
-  @tracked bpmnFilesAreLoading = true;
-  @tracked bpmnFilesHaveErrored = false;
+  @tracked diagrams = undefined;
+  @tracked diagramsAreLoading = true;
+  @tracked diagramsHaveErrored = false;
 
-  get bpmnFilesHaveNoResults() {
+  get diagramsHaveNoResults() {
     return (
-      !this.bpmnFilesAreLoading &&
-      !this.bpmnFilesHaveErrored &&
-      this.bpmnFiles?.length === 0
+      !this.diagramsAreLoading &&
+      !this.diagramsHaveErrored &&
+      this.diagrams?.length === 0
     );
   }
 
@@ -140,35 +141,40 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @dropTask
-  *downloadLatestBpmnFile(targetExtension) {
-    if (!this.latestBpmnFile) return;
+  *downloadLatestDiagram(targetExtension) {
+    if (!this.latestDiagram) return;
 
     let blob = undefined;
-    if (targetExtension === 'bpmn' && this.latestBpmnFileAsBpmn) {
-      blob = new Blob([this.latestBpmnFileAsBpmn], {
+    if (targetExtension === 'vsdx' && this.latestDiagram?.isVisioFile) {
+      const url = generateFileDownloadUrl(this.latestDiagram.id);
+      const response = yield fetch(url);
+      if (!response.ok) throw Error(response.status);
+      blob = yield response.blob();
+    } else if (targetExtension === 'bpmn' && this.latestDiagramAsBpmn) {
+      blob = new Blob([this.latestDiagramAsBpmn], {
         type: 'application/xml;charset=utf-8',
       });
-    } else if (targetExtension === 'svg' && this.latestBpmnFileAsSvg) {
-      blob = new Blob([this.latestBpmnFileAsSvg], {
+    } else if (targetExtension === 'svg' && this.latestDiagramAsSvg) {
+      blob = new Blob([this.latestDiagramAsSvg], {
         type: 'image/svg+xml;charset=utf-8',
       });
-    } else if (targetExtension === 'pdf' && this.latestBpmnFileAsSvg) {
-      blob = yield convertSvgToPdf(this.latestBpmnFileAsSvg);
-    } else if (targetExtension === 'png' && this.latestBpmnFileAsSvg) {
-      blob = yield convertSvgToPng(this.latestBpmnFileAsSvg);
+    } else if (targetExtension === 'pdf' && this.latestDiagramAsSvg) {
+      blob = yield convertSvgToPdf(this.latestDiagramAsSvg);
+    } else if (targetExtension === 'png' && this.latestDiagramAsSvg) {
+      blob = yield convertSvgToPng(this.latestDiagramAsSvg);
     }
     if (!blob) return;
 
     const fileName = `${removeFileNameExtension(
-      this.latestBpmnFile.name,
-      this.latestBpmnFile.extension
+      this.latestDiagram.name,
+      this.latestDiagram.extension
     )}.${targetExtension}`;
 
     FileSaver.saveAs(blob, fileName);
 
     this.trackDownloadFileEvent(
-      this.latestBpmnFile.id,
-      this.latestBpmnFile.name,
+      this.latestDiagram.id,
+      this.latestDiagram.name,
       'bpmn',
       targetExtension
     );
@@ -231,8 +237,8 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @dropTask
-  *extractBpmnElements(newBpmnFileId) {
-    yield fetch(`/bpmn?id=${newBpmnFileId}`, {
+  *extractBpmnElements(bpmnFileId) {
+    yield fetch(`/bpmn?id=${bpmnFileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',
@@ -241,9 +247,9 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  bpmnFileUploaded(uploadedFileId) {
+  diagramUploaded(uploadedFileId) {
     this.replaceModalOpened = false;
-    this.fetchLatestBpmnFileById.perform(uploadedFileId);
+    this.fetchLatestDiagramById.perform(uploadedFileId);
   }
 
   @action
@@ -382,7 +388,8 @@ export default class ProcessesProcessIndexController extends Controller {
       this.fileToDelete.rollbackAttributes();
     }
 
-    if (this.fileToDelete.isBpmnFile) this.fetchBpmnFiles.perform();
+    if (this.fileToDelete.isBpmnFile || this.fileToDelete.isVisioFile)
+      this.fetchDiagrams.perform();
     else this.fetchAttachments.perform();
 
     this.closeDeleteModal();
@@ -396,20 +403,20 @@ export default class ProcessesProcessIndexController extends Controller {
     this.addModalOpened = false;
     this.deleteModalOpened = false;
 
-    this.latestBpmnFileAsBpmn = undefined;
-    this.latestBpmnFileAsSvg = undefined;
+    this.latestDiagramAsBpmn = undefined;
+    this.latestDiagramAsSvg = undefined;
 
     this.attachments = undefined;
-    this.bpmnFiles = undefined;
-    this.latestBpmnFile = undefined;
+    this.diagrams = undefined;
+    this.latestDiagram = undefined;
   }
 
   // Tasks
 
   @keepLatestTask
-  *fetchLatestBpmnFile() {
-    this.latestBpmnFileIsLoading = true;
-    this.latestBpmnFileHasErrored = false;
+  *fetchLatestDiagram() {
+    this.latestDiagramIsLoading = true;
+    this.latestDiagramHasErrored = false;
 
     const query = {
       reload: true,
@@ -417,45 +424,47 @@ export default class ProcessesProcessIndexController extends Controller {
         number: 0,
         size: 1,
       },
+      include: 'bpmn-files',
       'filter[processes][id]': this.model.processId,
-      'filter[extension]': 'bpmn',
+      'filter[:or:][extension]': ['bpmn', 'vsdx'],
       sort: '-created',
     };
 
-    let bpmnFiles;
+    let diagrams;
     try {
-      bpmnFiles = yield this.store.query('file', query);
+      diagrams = yield this.store.query('file', query);
     } catch {
-      this.latestBpmnFileHasErrored = true;
+      this.latestDiagramHasErrored = true;
     }
-    if (bpmnFiles?.length) this.latestBpmnFile = bpmnFiles[0];
-    else this.latestBpmnFileHasErrored = true;
+    if (diagrams?.length) this.latestDiagram = diagrams[0];
+    else this.latestDiagramHasErrored = true;
 
-    this.latestBpmnFileIsLoading = false;
+    this.latestDiagramIsLoading = false;
   }
 
   @keepLatestTask
-  *fetchLatestBpmnFileById(fileId) {
-    this.latestBpmnFileIsLoading = true;
-    this.latestBpmnFileHasErrored = false;
+  *fetchLatestDiagramById(fileId) {
+    this.latestDiagramIsLoading = true;
+    this.latestDiagramHasErrored = false;
 
     try {
-      this.latestBpmnFile = yield this.store.findRecord('file', fileId, {
+      this.latestDiagram = yield this.store.findRecord('file', fileId, {
         reload: true,
+        include: 'bpmn-files',
       });
     } catch {
-      this.latestBpmnFileHasErrored = true;
+      this.latestDiagramHasErrored = true;
     }
 
-    this.latestBpmnFileIsLoading = false;
+    this.latestDiagramIsLoading = false;
   }
 
   @keepLatestTask({
-    observes: ['latestBpmnFile', 'pageVersions', 'sortVersions'],
+    observes: ['latestDiagram', 'pageVersions', 'sortVersions'],
   })
-  *fetchBpmnFiles() {
-    this.bpmnFilesAreLoading = true;
-    this.bpmnFilesHaveErrored = false;
+  *fetchDiagrams() {
+    this.diagramsAreLoading = true;
+    this.diagramsHaveErrored = false;
 
     const query = {
       reload: true,
@@ -464,7 +473,7 @@ export default class ProcessesProcessIndexController extends Controller {
         size: this.sizeVersions,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[extension]': 'bpmn',
+      'filter[:or:][extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
@@ -482,12 +491,12 @@ export default class ProcessesProcessIndexController extends Controller {
     }
 
     try {
-      this.bpmnFiles = yield this.store.query('file', query);
+      this.diagrams = yield this.store.query('file', query);
     } catch {
-      this.bpmnFilesHaveErrored = true;
+      this.diagramsHaveErrored = true;
     }
 
-    this.bpmnFilesAreLoading = false;
+    this.diagramsAreLoading = false;
   }
 
   @keepLatestTask({ observes: ['pageAttachments', 'sortAttachments'] })
@@ -502,7 +511,7 @@ export default class ProcessesProcessIndexController extends Controller {
         size: this.sizeAttachments,
       },
       'filter[processes][id]': this.model.processId,
-      'filter[:not:extension]': 'bpmn',
+      'filter[:not:extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
 
