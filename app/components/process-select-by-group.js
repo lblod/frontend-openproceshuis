@@ -22,9 +22,8 @@ export default class ProcessSelectByGroupComponent extends Component {
       sort: ':no-case:name',
     };
 
-    if (this.args.classification) {
+    if (this.args.classification)
       query['filter[classification][:exact:label]'] = this.args.classification;
-    }
 
     const result = yield this.store.query('group', query);
 
