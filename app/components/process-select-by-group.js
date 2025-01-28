@@ -15,6 +15,7 @@ export default class ProcessSelectByGroupComponent extends Component {
       page: {
         size: 50,
       },
+      'filter[:has:processes]': true,
       filter: {
         name: searchParams,
       },
