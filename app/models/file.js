@@ -9,6 +9,11 @@ export default class FileModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+  @attr('number') pdfDownloadQuantity;
+  @attr('number') svgDownloadQuantity;
+  @attr('number') bpmnDownloadQuantity;
+  @attr('number') pngDownloadQuantity;
+
   @hasMany('process', { inverse: 'files', async: false }) processes;
   @belongsTo('file', { inverse: 'bpmnFiles', async: false }) vsdxFile;
   @hasMany('file', { inverse: 'vsdxFile', async: false }) bpmnFiles;
