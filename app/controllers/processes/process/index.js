@@ -191,6 +191,38 @@ export default class ProcessesProcessIndexController extends Controller {
       'Bestuur-ID': this.process?.publisher?.id,
       Bestuursnaam: this.process?.publisher?.name,
     });
+    try {
+      this.loadFileDownloads(fileId, targetExtension);
+    } catch (error) {
+      console.error(
+        `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
+        error
+      );
+    }
+  }
+
+  @action
+  async loadFileDownloads(fileId, targetExtension) {
+    const file = await this.store.findRecord('file', fileId);
+
+    switch (targetExtension) {
+      case 'bpmn':
+        file.bpmnDownloadQuantity += 1;
+        break;
+      case 'pdf':
+        file.pdfDownloadQuantity += 1;
+        break;
+      case 'png':
+        file.pngDownloadQuantity += 1;
+        break;
+      case 'svg':
+        file.svgDownloadQuantity += 1;
+        break;
+      default:
+        console.log('fileExtension', targetExtension, 'not recognized');
+        return;
+    }
+    await file.save();
   }
 
   @dropTask
