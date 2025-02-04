@@ -209,7 +209,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
     switch (targetExtension) {
       case 'bpmn':
-        process.bpmnDownload = (process.bpmnDownloads || 0) + 1;
+        process.bpmnDownloads = (process.bpmnDownloads || 0) + 1;
         break;
       case 'pdf':
         process.pdfDownloads = (process.pdfDownloads || 0) + 1;
