@@ -209,16 +209,16 @@ export default class ProcessesProcessIndexController extends Controller {
 
     switch (targetExtension) {
       case 'bpmn':
-        process.bpmnDownloadQuantity = (process.bpmnDownloads || 0) + 1;
+        process.bpmnDownload = (process.bpmnDownloads || 0) + 1;
         break;
       case 'pdf':
-        process.pdfDownloadQuantity = (process.pdfDownloads || 0) + 1;
+        process.pdfDownloads = (process.pdfDownloads || 0) + 1;
         break;
       case 'png':
-        process.pngDownloadQuantity = (process.pngDownloads || 0) + 1;
+        process.pngDownloads = (process.pngDownloads || 0) + 1;
         break;
       case 'svg':
-        process.svgDownloadQuantity = (process.svgDownloads || 0) + 1;
+        process.svgDownloads = (process.svgDownloads || 0) + 1;
         break;
       default:
         console.error('fileExtension', targetExtension, 'not recognized');
