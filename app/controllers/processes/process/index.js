@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
+import { dropTask, enqueueTask, keepLatestTask, task } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
@@ -192,7 +192,7 @@ export default class ProcessesProcessIndexController extends Controller {
       Bestuursnaam: this.process?.publisher?.name,
     });
     try {
-      this.loadFileDownloads(fileId, targetExtension);
+      this.loadFileDownloads.perform(targetExtension);
     } catch (error) {
       console.error(
         `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
@@ -201,28 +201,30 @@ export default class ProcessesProcessIndexController extends Controller {
     }
   }
 
-  @action
-  async loadFileDownloads(fileId, targetExtension) {
-    const file = await this.store.findRecord('file', fileId);
+  @task
+  *loadFileDownloads(targetExtension) {
+    const process = yield this.store.findRecord('process', this.process.id, {
+      reload: true,
+    });
 
     switch (targetExtension) {
       case 'bpmn':
-        file.bpmnDownloadQuantity += 1;
+        process.bpmnDownloadQuantity = (process.bpmnDownloads || 0) + 1;
         break;
       case 'pdf':
-        file.pdfDownloadQuantity += 1;
+        process.pdfDownloadQuantity = (process.pdfDownloads || 0) + 1;
         break;
       case 'png':
-        file.pngDownloadQuantity += 1;
+        process.pngDownloadQuantity = (process.pngDownloads || 0) + 1;
         break;
       case 'svg':
-        file.svgDownloadQuantity += 1;
+        process.svgDownloadQuantity = (process.svgDownloads || 0) + 1;
         break;
       default:
-        console.log('fileExtension', targetExtension, 'not recognized');
+        console.error('fileExtension', targetExtension, 'not recognized');
         return;
     }
-    await file.save();
+    yield process.save();
   }
 
   @dropTask
