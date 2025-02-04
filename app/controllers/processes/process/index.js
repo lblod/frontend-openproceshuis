@@ -424,7 +424,6 @@ export default class ProcessesProcessIndexController extends Controller {
         number: 0,
         size: 1,
       },
-      include: 'bpmn-files',
       'filter[processes][id]': this.model.processId,
       'filter[:or:][extension]': ['bpmn', 'vsdx'],
       sort: '-created',
@@ -450,7 +449,6 @@ export default class ProcessesProcessIndexController extends Controller {
     try {
       this.latestDiagram = yield this.store.findRecord('file', fileId, {
         reload: true,
-        include: 'bpmn-files',
       });
     } catch {
       this.latestDiagramHasErrored = true;
