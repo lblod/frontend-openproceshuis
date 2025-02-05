@@ -172,8 +172,18 @@ export default class ProcessesProcessIndexController extends Controller {
       blob = new Blob([this.latestDiagramAsSvg], {
         type: 'image/svg+xml;charset=utf-8',
       });
-    } else if (targetExtension === 'pdf' && this.latestDiagramAsSvg) {
-      blob = yield convertSvgToPdf(this.latestDiagramAsSvg);
+    } else if (targetExtension === 'pdf') {
+      if (this.latestDiagramAsSvg) {
+        blob = yield convertSvgToPdf(this.latestDiagramAsSvg);
+      } else if (this.latestDiagram.isVisioFile) {
+        const url = generateVisioConversionUrl(
+          this.latestDiagram.id,
+          targetExtension
+        );
+        const response = yield fetch(url);
+        if (!response.ok) throw Error(response.status);
+        blob = yield response.blob();
+      }
     } else if (targetExtension === 'png' && this.latestDiagramAsSvg) {
       blob = yield convertSvgToPng(this.latestDiagramAsSvg);
     }
