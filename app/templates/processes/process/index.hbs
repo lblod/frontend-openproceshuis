@@ -594,6 +594,7 @@
         </AuButton>
         <AuButton
           @skin="secondary"
+          @disabled={{not this.latestDiagramAsSvg}}
           {{on "click" (perform this.downloadLatestDiagram "png")}}
         >
           Afbeelding
@@ -601,6 +602,7 @@
         </AuButton>
         <AuButton
           @skin="secondary"
+          @disabled={{not this.latestDiagramAsSvg}}
           {{on "click" (perform this.downloadLatestDiagram "svg")}}
         >
           Vectorafbeelding
