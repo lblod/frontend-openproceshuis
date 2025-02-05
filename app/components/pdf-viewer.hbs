@@ -1,10 +1,12 @@
-<object
-  data="{{this.pdfUrl}}"
-  type="application/pdf"
-  width="100%"
-  height="100%"
+<div
+  class="bpmn-container au-u-margin-top-small"
+  {{did-insert this.setupViewer}}
 >
-  <AuAlert @title="Visualisatie mislukt" @skin="warning" @icon="alert-triangle">
-    Er ging iets mis bij het weergeven van het diagram.
-  </AuAlert>
-</object>
+  {{! template-lint-disable require-valid-alt-text }}
+  <object
+    data="{{this.pdfBlobUrl}}"
+    type="application/pdf"
+    width="100%"
+    height="100%"
+  />
+</div>

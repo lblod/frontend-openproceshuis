@@ -12,12 +12,12 @@ export default class BpmnViewerComponent extends Component {
     element.tabIndex = 0; // Make element focusable
     this.viewer = new NavigatedViewer({ container: element });
 
-    const latestBpmnFileId = this.args.diagram?.isBpmnFile
+    const bpmnFileId = this.args.diagram?.isBpmnFile
       ? this.args.diagram.id
       : undefined;
-    if (!latestBpmnFileId) return;
+    if (!bpmnFileId) return;
 
-    const bpmnXml = await this.downloadBpmnFile.perform(latestBpmnFileId);
+    const bpmnXml = await this.downloadBpmnFile.perform(bpmnFileId);
     if (!bpmnXml) return;
 
     await this.viewer.importXML(bpmnXml);

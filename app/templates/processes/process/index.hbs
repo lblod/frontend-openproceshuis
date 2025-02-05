@@ -265,10 +265,7 @@
               @onSvgLoaded={{this.setLatestDiagramAsSvg}}
             />
           {{else if this.latestDiagram.isVisioFile}}
-            <AuAlert @title="Visio" @skin="warning" @icon="alert-triangle">
-              Visio bestand
-              {{! TODO: improve }}
-            </AuAlert>
+            <PdfViewer @diagram={{this.latestDiagram}} />
           {{else}}
             <AuAlert @title="Mislukt" @skin="warning" @icon="alert-triangle">
               Visualisatie mislukt
