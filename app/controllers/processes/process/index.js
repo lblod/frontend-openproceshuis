@@ -14,7 +14,9 @@ import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
-import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
+import generateFileDownloadUrl, {
+  generateVisioConversionUrl,
+} from 'frontend-openproceshuis/utils/file-download-url';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -142,18 +144,30 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @dropTask
   *downloadLatestDiagram(targetExtension) {
+    console.log('latest diagram:', this.latestDiagram);
+    console.log('target extension:', targetExtension);
     if (!this.latestDiagram) return;
 
     let blob = undefined;
-    if (targetExtension === 'vsdx' && this.latestDiagram?.isVisioFile) {
+    if (targetExtension === 'vsdx' && this.latestDiagram.isVisioFile) {
       const url = generateFileDownloadUrl(this.latestDiagram.id);
       const response = yield fetch(url);
       if (!response.ok) throw Error(response.status);
       blob = yield response.blob();
-    } else if (targetExtension === 'bpmn' && this.latestDiagramAsBpmn) {
-      blob = new Blob([this.latestDiagramAsBpmn], {
-        type: 'application/xml;charset=utf-8',
-      });
+    } else if (targetExtension === 'bpmn') {
+      if (this.latestDiagramAsBpmn) {
+        blob = new Blob([this.latestDiagramAsBpmn], {
+          type: 'application/xml;charset=utf-8',
+        });
+      } else if (this.latestDiagram.isVisioFile) {
+        const url = generateVisioConversionUrl(
+          this.latestDiagram.id,
+          targetExtension
+        );
+        const response = yield fetch(url);
+        if (!response.ok) throw Error(response.status);
+        blob = yield response.blob();
+      }
     } else if (targetExtension === 'svg' && this.latestDiagramAsSvg) {
       blob = new Blob([this.latestDiagramAsSvg], {
         type: 'image/svg+xml;charset=utf-8',

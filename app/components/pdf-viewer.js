@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { restartableTask } from 'ember-concurrency';
+import { generateVisioConversionUrl } from 'frontend-openproceshuis/utils/file-download-url';
 
 export default class PdfViewerComponent extends Component {
   @tracked pdfBlobUrl = null;
@@ -21,7 +22,7 @@ export default class PdfViewerComponent extends Component {
 
   @restartableTask
   *downloadVisioAsPdf(visioFileId) {
-    const url = `/visio/convert?id=${visioFileId}&target=pdf`;
+    const url = generateVisioConversionUrl(visioFileId);
     const response = yield fetch(url);
     if (!response.ok) throw Error(response.status);
     return yield response.blob();
