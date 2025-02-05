@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
+import { dropTask, enqueueTask, keepLatestTask, task } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
@@ -191,6 +191,40 @@ export default class ProcessesProcessIndexController extends Controller {
       'Bestuur-ID': this.process?.publisher?.id,
       Bestuursnaam: this.process?.publisher?.name,
     });
+    try {
+      this.loadFileDownloads.perform(targetExtension);
+    } catch (error) {
+      console.error(
+        `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
+        error
+      );
+    }
+  }
+
+  @task
+  *loadFileDownloads(targetExtension) {
+    const process = yield this.store.findRecord('process', this.process.id, {
+      reload: true,
+    });
+
+    switch (targetExtension) {
+      case 'bpmn':
+        process.bpmnDownloads = (process.bpmnDownloads || 0) + 1;
+        break;
+      case 'pdf':
+        process.pdfDownloads = (process.pdfDownloads || 0) + 1;
+        break;
+      case 'png':
+        process.pngDownloads = (process.pngDownloads || 0) + 1;
+        break;
+      case 'svg':
+        process.svgDownloads = (process.svgDownloads || 0) + 1;
+        break;
+      default:
+        console.error('fileExtension', targetExtension, 'not recognized');
+        return;
+    }
+    yield process.save();
   }
 
   @dropTask
