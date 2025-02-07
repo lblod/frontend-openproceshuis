@@ -253,16 +253,7 @@
             opnieuw.
           </AuAlert>
         {{else if this.latestDiagram}}
-          {{#if this.latestDiagram.bpmnFile}}
-            {{#if this.latestDiagram.isVisioFile}}
-              <AuHelpText @skin="secondary" class="au-u-margin-bottom-small">
-                Dit diagram is origineel gemaakt in Visio. Open Proces Huis kan
-                geen Visiobestanden tonen, het toont enkel een
-                <span class="au-u-italic">.bpmn</span>-versie. Let op: die kan
-                verschillen van het originele Visiobestand. Je kan het originele
-                Visiobestand downloaden om te bekijken in de Visiotoepassing.
-              </AuHelpText>
-            {{/if}}
+          {{#if this.latestDiagram.isBpmnFile}}
             <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
               Klik en hou vast om diagram te bedienen. Gebruik ctrl en
               scrollwiel om in en uit te zoomen. Klik elders om bediening uit te
@@ -273,18 +264,12 @@
               @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
               @onSvgLoaded={{this.setLatestDiagramAsSvg}}
             />
+          {{else if this.latestDiagram.isVisioFile}}
+            <PdfViewer @diagram={{this.latestDiagram}} />
           {{else}}
-            <AuAlert
-              @title="Visualisatie mislukt"
-              @skin="warning"
-              @icon="alert-triangle"
-            >
-              {{#if this.latestDiagram.isVisioFile}}
-                <span>Het Visiobestand kon niet worden omgezet naar BPMN,
-                  bijgevolg kan Open Proces Huis het diagram niet weergeven.</span>
-              {{else}}
-                <span>Er ging iets mis bij het weergeven van het diagram.</span>
-              {{/if}}
+            <AuAlert @title="Mislukt" @skin="warning" @icon="alert-triangle">
+              Visualisatie mislukt
+              {{! TODO: improve }}
             </AuAlert>
           {{/if}}
           <DataCard class="au-u-margin-top-small">
@@ -602,10 +587,6 @@
         {{/if}}
         <AuButton
           @skin={{if this.latestDiagram.isBpmnFile "primary" "secondary"}}
-          @disabled={{and
-            this.latestDiagram.isVisioFile
-            (not this.latestDiagram.bpmnFile)
-          }}
           {{on "click" (perform this.downloadLatestDiagram "bpmn")}}
         >
           BPMN
@@ -613,10 +594,7 @@
         </AuButton>
         <AuButton
           @skin="secondary"
-          @disabled={{and
-            this.latestDiagram.isVisioFile
-            (not this.latestDiagram.bpmnFile)
-          }}
+          @disabled={{not this.latestDiagramAsSvg}}
           {{on "click" (perform this.downloadLatestDiagram "png")}}
         >
           Afbeelding
@@ -624,10 +602,7 @@
         </AuButton>
         <AuButton
           @skin="secondary"
-          @disabled={{and
-            this.latestDiagram.isVisioFile
-            (not this.latestDiagram.bpmnFile)
-          }}
+          @disabled={{not this.latestDiagramAsSvg}}
           {{on "click" (perform this.downloadLatestDiagram "svg")}}
         >
           Vectorafbeelding
@@ -635,10 +610,6 @@
         </AuButton>
         <AuButton
           @skin="secondary"
-          @disabled={{and
-            this.latestDiagram.isVisioFile
-            (not this.latestDiagram.bpmnFile)
-          }}
           {{on "click" (perform this.downloadLatestDiagram "pdf")}}
         >
           PDF
