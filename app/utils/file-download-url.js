@@ -8,5 +8,5 @@ export function generateVisioConversionUrl(
   targetExtension = 'pdf'
 ) {
   if (!visioFileId) return null;
-  return `/visio/convert?id=${visioFileId}&target=${targetExtension}`;
+  return `/visio/convert?id=${visioFileId}&extension=${targetExtension}`;
 }
