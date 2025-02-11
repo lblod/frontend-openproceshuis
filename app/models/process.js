@@ -18,6 +18,7 @@ export default class ProcessModel extends Model {
   @attr('number') svgDownloads;
   @attr('number') bpmnDownloads;
   @attr('number') pngDownloads;
+  @attr('number') processViews;
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @hasMany('file', { inverse: 'processes', async: false }) files;
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
