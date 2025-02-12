@@ -203,9 +203,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @task
   *loadFileDownloads(targetExtension) {
-    const process = yield this.store.findRecord('process', this.process.id, {
-      reload: true,
-    });
+    const process = yield this.store.findRecord('process', this.process.id);
 
     switch (targetExtension) {
       case 'bpmn':
