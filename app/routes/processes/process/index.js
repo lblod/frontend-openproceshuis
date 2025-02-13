@@ -22,19 +22,28 @@ export default class ProcessesProcessIndexRoute extends Route {
     const query = {
       reload: true,
       include:
-        'files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-products',
+        'process-statistics,files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-products',
       'filter[files][:not:status]': ENV.resourceStates.archived,
     };
 
     const process = yield this.store.findRecord('process', processId, query);
+
+    let stats = process.processStatistics?.firstObject;
+
+    if (!stats) {
+      stats = this.store.createRecord('process-statistic', {
+        process,
+      });
+    }
+    console.log('stats', stats);
     this.plausible.trackEvent('Raadpleeg proces', {
       'Proces-ID': process?.id,
       Procesnaam: process?.title,
       'Bestuur-ID': process?.publisher?.id,
       Bestuursnaam: process?.publisher?.name,
     });
-    process.processViews = (process.processViews || 0) + 1;
-    yield process.save();
+    stats.processViews += 1;
+    yield stats.save();
     return process;
   }
 

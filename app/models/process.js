@@ -14,14 +14,12 @@ export default class ProcessModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
-  @attr('number') pdfDownloads;
-  @attr('number') svgDownloads;
-  @attr('number') bpmnDownloads;
-  @attr('number') pngDownloads;
-  @attr('number') processViews;
+
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @hasMany('file', { inverse: 'processes', async: false }) files;
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
+  @hasMany('process-statistic', { inverse: 'process', async: false })
+  processStatistics;
 
   validations = {
     title: {
