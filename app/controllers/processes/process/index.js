@@ -206,7 +206,6 @@ export default class ProcessesProcessIndexController extends Controller {
     const process = yield this.store.findRecord('process', this.process.id);
     const stats = process.processStatistics?.firstObject;
 
-    console.log('stats', stats);
     switch (targetExtension) {
       case 'bpmn':
         stats.bpmnDownloads += 1;
