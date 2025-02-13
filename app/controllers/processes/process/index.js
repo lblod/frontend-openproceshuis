@@ -204,25 +204,27 @@ export default class ProcessesProcessIndexController extends Controller {
   @task
   *loadFileDownloads(targetExtension) {
     const process = yield this.store.findRecord('process', this.process.id);
+    const stats = process.processStatistics?.firstObject;
 
+    console.log('stats', stats);
     switch (targetExtension) {
       case 'bpmn':
-        process.bpmnDownloads = (process.bpmnDownloads || 0) + 1;
+        stats.bpmnDownloads += 1;
         break;
       case 'pdf':
-        process.pdfDownloads = (process.pdfDownloads || 0) + 1;
+        stats.pdfDownloads += 1;
         break;
       case 'png':
-        process.pngDownloads = (process.pngDownloads || 0) + 1;
+        stats.pngDownloads += 1;
         break;
       case 'svg':
-        process.svgDownloads = (process.svgDownloads || 0) + 1;
+        stats.svgDownloads += 1;
         break;
       default:
         console.error('fileExtension', targetExtension, 'not recognized');
         return;
     }
-    yield process.save();
+    yield stats.save();
   }
 
   @dropTask
