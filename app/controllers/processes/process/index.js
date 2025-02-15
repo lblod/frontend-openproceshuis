@@ -204,7 +204,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @enqueueTask
   *loadFileDownloads(targetExtension) {
     const process = yield this.store.findRecord('process', this.process.id);
-    const stats = process.processStatistics?.firstObject;
+    const stats = process.processStatistics;
 
     switch (targetExtension) {
       case 'bpmn':

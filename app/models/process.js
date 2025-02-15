@@ -16,10 +16,11 @@ export default class ProcessModel extends Model {
   @attr('string') status;
 
   @belongsTo('group', { inverse: null, async: false }) publisher;
-  @hasMany('file', { inverse: 'processes', async: false }) files;
-  @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
-  @hasMany('process-statistic', { inverse: 'process', async: false })
+  @belongsTo('process-statistic', { inverse: 'process', async: false })
   processStatistics;
+  @hasMany('file', { inverse: 'processes', async: false })
+  files;
+  @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
 
   validations = {
     title: {
