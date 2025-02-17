@@ -9,7 +9,6 @@ export default class ProcessesProcessIndexRoute extends Route {
 
   async model() {
     const { id: processId } = this.paramsFor('processes.process');
-
     return {
       processId,
       loadProcessTaskInstance: this.loadProcessTask.perform(),
@@ -23,19 +22,25 @@ export default class ProcessesProcessIndexRoute extends Route {
     const query = {
       reload: true,
       include:
-        'files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-products',
+        'process-statistics,files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-products',
       'filter[files][:not:status]': ENV.resourceStates.archived,
     };
 
     const process = yield this.store.findRecord('process', processId, query);
-
+    let stats = process.processStatistics;
+    if (!stats) {
+      stats = this.store.createRecord('process-statistic', {
+        process,
+      });
+    }
     this.plausible.trackEvent('Raadpleeg proces', {
       'Proces-ID': process?.id,
       Procesnaam: process?.title,
       'Bestuur-ID': process?.publisher?.id,
       Bestuursnaam: process?.publisher?.name,
     });
-
+    stats.processViews += 1;
+    yield stats.save();
     return process;
   }
 

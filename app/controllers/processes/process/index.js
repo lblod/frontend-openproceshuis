@@ -215,6 +215,39 @@ export default class ProcessesProcessIndexController extends Controller {
       'Bestuur-ID': this.process?.publisher?.id,
       Bestuursnaam: this.process?.publisher?.name,
     });
+    try {
+      this.loadFileDownloads.perform(targetExtension);
+    } catch (error) {
+      console.error(
+        `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
+        error
+      );
+    }
+  }
+
+  @enqueueTask
+  *loadFileDownloads(targetExtension) {
+    const process = yield this.store.findRecord('process', this.process.id);
+    const stats = process.processStatistics;
+
+    switch (targetExtension) {
+      case 'bpmn':
+        stats.bpmnDownloads += 1;
+        break;
+      case 'pdf':
+        stats.pdfDownloads += 1;
+        break;
+      case 'png':
+        stats.pngDownloads += 1;
+        break;
+      case 'svg':
+        stats.svgDownloads += 1;
+        break;
+      default:
+        console.error('fileExtension', targetExtension, 'not recognized');
+        return;
+    }
+    yield stats.save();
   }
 
   @dropTask

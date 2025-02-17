@@ -14,8 +14,12 @@ export default class ProcessModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+
   @belongsTo('group', { inverse: null, async: false }) publisher;
-  @hasMany('file', { inverse: 'processes', async: false }) files;
+  @belongsTo('process-statistic', { inverse: 'process', async: false })
+  processStatistics;
+  @hasMany('file', { inverse: 'processes', async: false })
+  files;
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
 
   validations = {

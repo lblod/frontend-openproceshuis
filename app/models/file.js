@@ -9,6 +9,7 @@ export default class FileModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+
   @hasMany('process', { inverse: 'files', async: false }) processes;
 
   get process() {
