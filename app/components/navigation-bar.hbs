@@ -6,13 +6,13 @@
           Processen
         </AuLink>
       </Tab>
+      {{#if this.currentSession.canEdit}}
+        <Tab>
+          <AuLink @route="shared-processes" @icon="unordered-list">
+            Gedeelde processen
+          </AuLink>
+        </Tab>
+      {{/if}}
     </AuTabs>
   </Group>
-  {{#if this.currentSession.canEdit}}
-    <Group>
-      <AuLink @route="shared-processes" @skin="button-secondary">
-        Gedeelde processen
-      </AuLink>
-    </Group>
-  {{/if}}
 </AuToolbar>
