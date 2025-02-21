@@ -330,6 +330,7 @@ export default class ProcessesProcessIndexController extends Controller {
     if (!this.process) return;
 
     if (this.formIsValid) {
+      console.log('this.process', this.process);
       this.process.modified = new Date();
 
       try {
@@ -352,7 +353,7 @@ export default class ProcessesProcessIndexController extends Controller {
           })
         );
 
-        yield this.process.save();
+        // yield this.process.save();
 
         this.edit = false;
 
@@ -426,6 +427,13 @@ export default class ProcessesProcessIndexController extends Controller {
   closeDeleteModal() {
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
+  }
+  c;
+
+  @action
+  toggleBlueprintStatus(event) {
+    this.process.isBlueprint = event;
+    console.log('this.process.isBlueprint', this.process.isBlueprint);
   }
 
   @dropTask
