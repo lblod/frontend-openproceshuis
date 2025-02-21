@@ -144,8 +144,6 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @dropTask
   *downloadLatestDiagram(targetExtension) {
-    console.log('latest diagram:', this.latestDiagram);
-    console.log('target extension:', targetExtension);
     if (!this.latestDiagram) return;
 
     let blob = undefined;
@@ -330,7 +328,6 @@ export default class ProcessesProcessIndexController extends Controller {
     if (!this.process) return;
 
     if (this.formIsValid) {
-      console.log('this.process', this.process);
       this.process.modified = new Date();
 
       try {
@@ -433,7 +430,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   toggleBlueprintStatus(event) {
     this.process.isBlueprint = event;
-    console.log('this.process.isBlueprint', this.process.isBlueprint);
   }
 
   @dropTask
