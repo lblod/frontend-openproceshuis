@@ -328,7 +328,6 @@ export default class ProcessesProcessIndexController extends Controller {
     if (!this.process) return;
 
     if (this.formIsValid) {
-      console.log('this.process', this.process);
       this.process.modified = new Date();
 
       try {
