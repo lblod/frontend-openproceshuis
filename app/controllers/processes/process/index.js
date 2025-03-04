@@ -350,7 +350,7 @@ export default class ProcessesProcessIndexController extends Controller {
           })
         );
 
-        // yield this.process.save();
+        yield this.process.save();
 
         this.edit = false;
 
