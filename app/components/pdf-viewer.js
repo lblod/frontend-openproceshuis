@@ -26,6 +26,7 @@ export default class PdfViewerComponent extends Component {
   zoomScrollEnabled = false;
 
   currentRenderTask = null;
+  padding = 5; // The extra gap around the document
 
   @action
   async setupViewer(container) {
@@ -74,8 +75,9 @@ export default class PdfViewerComponent extends Component {
     const pdfWidth = unscaledViewport.width;
     const pdfHeight = unscaledViewport.height;
 
-    const containerWidth = this.container.clientWidth;
-    const containerHeight = this.container.clientHeight;
+    // Reduce available space by 10px (5px padding on both sides)
+    const containerWidth = this.container.clientWidth - this.padding;
+    const containerHeight = this.container.clientHeight - this.padding;
 
     const scaleX = containerWidth / pdfWidth;
     const scaleY = containerHeight / pdfHeight;
@@ -83,8 +85,10 @@ export default class PdfViewerComponent extends Component {
 
     await this.renderPdfAtScale(this.scale);
 
-    this.offsetX = 0;
-    this.offsetY = 0;
+    // Position the PDF at the top-left with a 5px margin
+    this.offsetX = this.padding;
+    this.offsetY = this.padding;
+
     this.updateCanvasTransform();
   }
 
@@ -95,13 +99,26 @@ export default class PdfViewerComponent extends Component {
     }
 
     const viewport = this.page.getViewport({ scale: newScale });
-    this.canvas.width = viewport.width;
-    this.canvas.height = viewport.height;
+
+    const baseDPR = window.devicePixelRatio || 1;
+    const outputScale = baseDPR * 1.5;
+
+    this.canvas.style.width = `${viewport.width}px`;
+    this.canvas.style.height = `${viewport.height}px`;
+    this.canvas.width = Math.floor(viewport.width * outputScale);
+    this.canvas.height = Math.floor(viewport.height * outputScale);
 
     const context = this.canvas.getContext('2d');
+
+    let transform = null;
+    if (outputScale !== 1) {
+      transform = [outputScale, 0, 0, outputScale, 0, 0];
+    }
+
     const renderTask = this.page.render({
       canvasContext: context,
       viewport,
+      transform,
     });
     this.currentRenderTask = renderTask;
 
