@@ -25,6 +25,8 @@ export default class PdfViewerComponent extends Component {
   zoomStep = 0.2;
   zoomScrollEnabled = false;
 
+  currentRenderTask = null;
+
   @action
   async setupViewer(container) {
     container.tabIndex = 0;
@@ -64,7 +66,7 @@ export default class PdfViewerComponent extends Component {
     this.pdf = yield pdfjsLib.getDocument(url).promise;
     this.page = yield this.pdf.getPage(1);
 
-    this.fitPdfToContainer();
+    yield this.fitPdfToContainer();
   }
 
   async fitPdfToContainer() {
@@ -87,15 +89,33 @@ export default class PdfViewerComponent extends Component {
   }
 
   async renderPdfAtScale(newScale) {
+    if (this.currentRenderTask) {
+      this.currentRenderTask.cancel();
+      this.currentRenderTask = null;
+    }
+
     const viewport = this.page.getViewport({ scale: newScale });
     this.canvas.width = viewport.width;
     this.canvas.height = viewport.height;
 
     const context = this.canvas.getContext('2d');
-    await this.page.render({
+    const renderTask = this.page.render({
       canvasContext: context,
       viewport,
-    }).promise;
+    });
+    this.currentRenderTask = renderTask;
+
+    try {
+      await renderTask.promise;
+    } catch (err) {
+      if (err && err.name !== 'RenderingCancelledException') {
+        throw err;
+      }
+    } finally {
+      if (this.currentRenderTask === renderTask) {
+        this.currentRenderTask = null;
+      }
+    }
   }
 
   updateCanvasTransform() {
