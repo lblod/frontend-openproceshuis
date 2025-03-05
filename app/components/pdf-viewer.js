@@ -66,6 +66,7 @@ export default class PdfViewerComponent extends Component {
     this.canvas.style.transform = `translate(${this.lastX}px, ${this.lastY}px)`;
 
     this.setupPanEvents(container);
+    this.setupScrollEvents(container);
   }
 
   @action
@@ -96,5 +97,22 @@ export default class PdfViewerComponent extends Component {
     container.addEventListener('mousemove', onMouseMove);
     container.addEventListener('mouseup', onMouseUp);
     container.addEventListener('mouseleave', onMouseUp);
+  }
+
+  @action
+  setupScrollEvents(container) {
+    container.addEventListener('wheel', (event) => {
+      event.preventDefault(); // Prevent page scrolling
+
+      if (event.shiftKey) {
+        // Shift + Scroll → Move Left/Right
+        this.lastX -= event.deltaY; // Reverse Y to move horizontally
+      } else {
+        // Normal Scroll → Move Up/Down
+        this.lastY -= event.deltaY;
+      }
+
+      this.canvas.style.transform = `translate(${this.lastX}px, ${this.lastY}px)`;
+    });
   }
 }
