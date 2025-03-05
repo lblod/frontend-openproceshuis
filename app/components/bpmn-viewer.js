@@ -9,7 +9,7 @@ export default class BpmnViewerComponent extends Component {
 
   @action
   async setupViewer(container) {
-    container.tabIndex = 0; // Make container focusable
+    container.tabIndex = 0;
     this.viewer = new NavigatedViewer({ container: container });
 
     const bpmnFileId = this.args.diagram?.isBpmnFile
