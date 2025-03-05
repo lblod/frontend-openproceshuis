@@ -8,9 +8,9 @@ export default class BpmnViewerComponent extends Component {
   viewer = null;
 
   @action
-  async setupViewer(element) {
-    element.tabIndex = 0; // Make element focusable
-    this.viewer = new NavigatedViewer({ container: element });
+  async setupViewer(container) {
+    container.tabIndex = 0; // Make container focusable
+    this.viewer = new NavigatedViewer({ container: container });
 
     const bpmnFileId = this.args.diagram?.isBpmnFile
       ? this.args.diagram.id
@@ -24,11 +24,11 @@ export default class BpmnViewerComponent extends Component {
     this.viewer.get('canvas').zoom('fit-viewport');
     this.disableZoomScroll();
 
-    element.addEventListener('focus', () => {
+    container.addEventListener('focus', () => {
       this.enableZoomScroll();
     });
 
-    element.addEventListener('blur', () => {
+    container.addEventListener('blur', () => {
       this.disableZoomScroll();
     });
 
