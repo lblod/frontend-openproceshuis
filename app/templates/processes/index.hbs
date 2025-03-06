@@ -7,10 +7,7 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          <div class="au-u-flex au-u-flex--between">
-            <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
-            <AuCheckbox />
-          </div>
+          <ProcessFilterByBlueprint @onChange={{this.filterByBlueprint}} />
           <div>
             <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
