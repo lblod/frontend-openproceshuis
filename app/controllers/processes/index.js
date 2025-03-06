@@ -62,9 +62,9 @@ export default class ProcessesIndexController extends Controller {
   }
 
   @action
-  filterByBlueprint(isBlueprint) {
+  toggleBlueprintFilter(event) {
     this.page = null;
-    this.blueprint = isBlueprint;
+    this.blueprint = event;
   }
 
   @action
