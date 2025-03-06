@@ -86,6 +86,9 @@
         {{else}}
           <c.body as |process|>
             <td>
+              {{#if process.isBlueprint}}
+                <CustomIcon @icon={{"Blauwdruk-icon"}} @size="large" />
+              {{/if}}
               <LinkTo
                 class="au-c-link"
                 @model={{process.id}}
