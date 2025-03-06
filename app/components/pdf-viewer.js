@@ -14,6 +14,7 @@ export default class PdfViewerComponent extends Component {
   container = null;
   canvas = null;
   currentRenderTask = null;
+  @tracked isLoading = true;
 
   @tracked currentPage = 1;
   @tracked totalPages = 1;
@@ -52,6 +53,11 @@ export default class PdfViewerComponent extends Component {
     if (!visioFileId) return;
 
     await this.loadPdfTask.perform(visioFileId);
+    console.log('loading pdf done');
+
+    await this.fitPdfToContainer();
+    console.log('fitting pdf done');
+    this.isLoading = false;
 
     this.disableZoomScroll();
 
@@ -71,8 +77,6 @@ export default class PdfViewerComponent extends Component {
 
     this.currentPage = 1;
     this.page = yield this.pdf.getPage(this.currentPage);
-
-    yield this.fitPdfToContainer();
   }
 
   async fitPdfToContainer() {
