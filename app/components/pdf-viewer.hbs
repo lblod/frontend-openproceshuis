@@ -1,4 +1,31 @@
 <div
   class="bpmn-container au-u-margin-top-small"
   {{did-insert this.setupViewer}}
-></div>
+>
+  <AuButtonGroup
+    @inline="true"
+    class="pdf-navigation au-u-padding au-u-padding-small"
+  >
+    <AuButton
+      @icon="chevron-left"
+      @iconAlignment="left"
+      @hideText="true"
+      {{on "click" this.goToPreviousPage}}
+    >
+      Vorige
+    </AuButton>
+    <AuButton @skin="secondary" class="navigation-counter au-u-regular">
+      {{this.currentPage}}
+      /
+      {{this.totalPages}}
+    </AuButton>
+    <AuButton
+      @icon="chevron-right"
+      @iconAlignment="right"
+      @hideText="true"
+      {{on "click" this.goToNextPage}}
+    >
+      Volgende
+    </AuButton>
+  </AuButtonGroup>
+</div>

@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { restartableTask } from 'ember-concurrency';
 import pdfjsLib from 'pdfjs-dist/build/pdf';
 import { generateVisioConversionUrl } from 'frontend-openproceshuis/utils/file-download-url';
@@ -12,21 +13,23 @@ export default class PdfViewerComponent extends Component {
   page = null;
   container = null;
   canvas = null;
+  currentRenderTask = null;
+
+  @tracked currentPage = 1;
+  @tracked totalPages = 1;
 
   isPanning = false;
   panStartX = 0;
   panStartY = 0;
   offsetX = 0;
   offsetY = 0;
+  initialPadding = 3;
 
   scale = 1;
   minScale = 0.5;
   maxScale = 4;
   zoomStep = 0.2;
   zoomScrollEnabled = false;
-
-  currentRenderTask = null;
-  padding = 5; // The extra gap around the document
 
   @action
   async setupViewer(container) {
@@ -55,7 +58,6 @@ export default class PdfViewerComponent extends Component {
     container.addEventListener('focus', () => {
       this.enableZoomScroll();
     });
-
     container.addEventListener('blur', () => {
       this.disableZoomScroll();
     });
@@ -65,7 +67,10 @@ export default class PdfViewerComponent extends Component {
   *loadPdfTask(fileId) {
     const url = generateVisioConversionUrl(fileId);
     this.pdf = yield pdfjsLib.getDocument(url).promise;
-    this.page = yield this.pdf.getPage(1);
+    this.totalPages = this.pdf.numPages;
+
+    this.currentPage = 1;
+    this.page = yield this.pdf.getPage(this.currentPage);
 
     yield this.fitPdfToContainer();
   }
@@ -75,9 +80,8 @@ export default class PdfViewerComponent extends Component {
     const pdfWidth = unscaledViewport.width;
     const pdfHeight = unscaledViewport.height;
 
-    // Reduce available space by 10px (5px padding on both sides)
-    const containerWidth = this.container.clientWidth - this.padding;
-    const containerHeight = this.container.clientHeight - this.padding;
+    const containerWidth = this.container.clientWidth - this.initialPadding;
+    const containerHeight = this.container.clientHeight - this.initialPadding;
 
     const scaleX = containerWidth / pdfWidth;
     const scaleY = containerHeight / pdfHeight;
@@ -85,10 +89,8 @@ export default class PdfViewerComponent extends Component {
 
     await this.renderPdfAtScale(this.scale);
 
-    // Position the PDF at the top-left with a 5px margin
-    this.offsetX = this.padding;
-    this.offsetY = this.padding;
-
+    this.offsetX = this.initialPadding;
+    this.offsetY = this.initialPadding;
     this.updateCanvasTransform();
   }
 
@@ -99,22 +101,21 @@ export default class PdfViewerComponent extends Component {
     }
 
     const viewport = this.page.getViewport({ scale: newScale });
-
     const baseDPR = window.devicePixelRatio || 1;
     const outputScale = baseDPR * 1.5;
 
     this.canvas.style.width = `${viewport.width}px`;
     this.canvas.style.height = `${viewport.height}px`;
+
     this.canvas.width = Math.floor(viewport.width * outputScale);
     this.canvas.height = Math.floor(viewport.height * outputScale);
-
-    const context = this.canvas.getContext('2d');
 
     let transform = null;
     if (outputScale !== 1) {
       transform = [outputScale, 0, 0, outputScale, 0, 0];
     }
 
+    const context = this.canvas.getContext('2d');
     const renderTask = this.page.render({
       canvasContext: context,
       viewport,
@@ -137,6 +138,35 @@ export default class PdfViewerComponent extends Component {
 
   updateCanvasTransform() {
     this.canvas.style.transform = `translate(${this.offsetX}px, ${this.offsetY}px)`;
+  }
+
+  @action
+  async goToPreviousPage() {
+    if (!this.pdf) return;
+    const prevPage = this.currentPage - 1;
+    if (prevPage < 1) return;
+
+    await this.goToPage(prevPage);
+  }
+
+  @action
+  async goToNextPage() {
+    if (!this.pdf) return;
+    const nextPage = this.currentPage + 1;
+    if (nextPage > this.totalPages) return;
+
+    await this.goToPage(nextPage);
+  }
+
+  async goToPage(pageNumber) {
+    this.currentPage = pageNumber;
+    this.page = await this.pdf.getPage(pageNumber);
+
+    await this.renderPdfAtScale(this.scale);
+
+    this.offsetX = this.initialPadding;
+    this.offsetY = this.initialPadding;
+    this.updateCanvasTransform();
   }
 
   @action
@@ -169,7 +199,6 @@ export default class PdfViewerComponent extends Component {
 
   onMouseMove = (event) => {
     if (!this.isPanning) return;
-
     this.offsetX = event.clientX - this.panStartX;
     this.offsetY = event.clientY - this.panStartY;
     this.updateCanvasTransform();
