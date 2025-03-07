@@ -4,6 +4,23 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
+    autoImport: {
+      webpack: {
+        module: {
+          rules: [
+            {
+              test: /pdf.js/,
+              use: {
+                loader: 'babel-loader',
+                options: {
+                  presets: [['@babel/preset-env', { targets: 'defaults' }]],
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
     'ember-simple-auth': {
       useSessionSetupMethod: true,
     },
