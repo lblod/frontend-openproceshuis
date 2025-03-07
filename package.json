@@ -85,6 +85,7 @@
     "husky": "^4.3.8",
     "lint-staged": "^11.2.3",
     "loader.js": "^4.7.0",
+    "pdfjs-dist": "3.11.174",
     "prettier": "^2.8.7",
     "qunit": "^2.19.4",
     "qunit-dom": "^2.0.0",
