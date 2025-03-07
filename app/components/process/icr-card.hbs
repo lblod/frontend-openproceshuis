@@ -1,0 +1,144 @@
+{{#if this.edit}}
+  <form {{on "submit" (perform this.updateModel)}}>
+    <DataCard>
+      <:title>
+        Informatieclassificatie
+      </:title>
+      <:header>
+        <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+          <AuButton
+            @skin="secondary"
+            {{on "click" this.resetModel}}
+          >Annuleer</AuButton>
+          <AuButton
+            @skin="primary"
+            type="submit"
+            @loading={{this.updateModel.isRunning}}
+            @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+          >Bewaar</AuButton>
+        </div>
+      </:header>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Beschikbaarheid</:label>
+              <:content>
+                1-2-3-4-5
+              </:content>
+            </Item>
+            <Item>
+              <:label>Integriteit</:label>
+              <:content>
+                1-2-3-4-5
+              </:content>
+            </Item>
+            <Item>
+              <:label>Vertrouwelijkheid</:label>
+              <:content>
+                1-2-3-4-5
+              </:content>
+            </Item>
+            <Item>
+              <:label>Persoonsgegevens</:label>
+              <:content>
+                Lorem
+              </:content>
+            </Item>
+          </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Motivering of bijkomende informatie</:label>
+              <:content>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Nesciunt, nam temporibus, maxime totam commodi id inventore
+                repudiandae optio quia laudantium dolorum. Eius quas ratione
+                optio harum architecto atque accusamus voluptatem.
+              </:content>
+            </Item>
+            <Item>
+              <:label>Informatieassets</:label>
+              <:content>
+                Lorem
+              </:content>
+            </Item>
+            <Item>
+              <:label>Link naar maatregelen</:label>
+              <:content>
+                Lorem
+              </:content>
+            </Item>
+          </:right>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  </form>
+{{else}}
+  <DataCard>
+    <:title>
+      Informatieclassificatie
+    </:title>
+    <:header>
+      {{#if @canEdit}}
+        <AuButton
+          @skin="naked"
+          @icon="pencil"
+          {{on "click" this.toggleEdit}}
+        >Wijzig</AuButton>
+      {{/if}}
+    </:header>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Beschikbaarheid</:label>
+            <:content>
+              1-2-3-4-5
+            </:content>
+          </Item>
+          <Item>
+            <:label>Integriteit</:label>
+            <:content>
+              1-2-3-4-5
+            </:content>
+          </Item>
+          <Item>
+            <:label>Vertrouwelijkheid</:label>
+            <:content>
+              1-2-3-4-5
+            </:content>
+          </Item>
+          <Item>
+            <:label>Persoonsgegevens</:label>
+            <:content>
+              Lorem
+            </:content>
+          </Item>
+        </:left>
+        <:right as |Item|>
+          <Item>
+            <:label>Motivering of bijkomende informatie</:label>
+            <:content>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
+              nam temporibus, maxime totam commodi id inventore repudiandae
+              optio quia laudantium dolorum. Eius quas ratione optio harum
+              architecto atque accusamus voluptatem.
+            </:content>
+          </Item>
+          <Item>
+            <:label>Informatieassets</:label>
+            <:content>
+              Lorem
+            </:content>
+          </Item>
+          <Item>
+            <:label>Link naar maatregelen</:label>
+            <:content>
+              Lorem
+            </:content>
+          </Item>
+        </:right>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+{{/if}}
