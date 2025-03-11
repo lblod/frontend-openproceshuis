@@ -1,0 +1,12 @@
+<div class="icr-score">
+  {{#each this.shapes as |shape|}}
+    {{! template-lint-disable no-invalid-interactive }}
+    <img
+      src={{this.getSvgPath shape}}
+      alt="Shape {{shape}}"
+      {{on "mouseenter" (fn this.onMouseEnter shape)}}
+      {{on "mouseleave" this.onMouseLeave}}
+      {{on "click" (fn this.onClickShape shape)}}
+    />
+  {{/each}}
+</div>
