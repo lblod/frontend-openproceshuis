@@ -127,15 +127,42 @@
                   {{date-format this.process.created true}}
                 </:content>
               </Item>
-              <Item>
-                <:label>Blauwdruk</:label>
-                <:content>
-                  <AuToggleSwitch
-                    @onChange={{this.toggleBlueprintStatus}}
-                    @checked={{this.process.isBlueprint}}
-                  />
-                </:content>
-              </Item>
+              {{#if this.currentSession.isAdmin}}
+                <Item>
+                  <:label>Blauwdruk</:label>
+                  <:content>
+                    <AuToggleSwitch
+                      @onChange={{this.toggleBlueprintStatus}}
+                      @checked={{this.process.isBlueprint}}
+                    />
+                  </:content>
+                </Item>
+                {{#unless this.process.isBlueprint}}
+                  <Item>
+                    <:label>Link naar Blauwdruk</:label>
+                    <:content>
+                      <BlueprintMultipleSelect
+                        @selected={{this.draftIpdcProducts}}
+                        @onChange={{this.setDraftIpdcProducts}}
+                      />
+                      <div class="au-u-flex au-u-flex--between">
+                        <AuHelpText
+                          @skin="secondary"
+                          class="au-u-margin-top-none au-u-flex-self-start"
+                        >
+                          Link dit proces naar een blauwdruk proces
+                        </AuHelpText>
+                        <AuLinkExternal
+                          class="au-u-flex-self-start"
+                          href="https://productencatalogus-v3.vlaanderen.be/nl/producten"
+                        >
+                          Zoek naar blauwdrukken
+                        </AuLinkExternal>
+                      </div>
+                    </:content>
+                  </Item>
+                {{/unless}}
+              {{/if}}
             </:right>
           </Card.Columns>
         </:card>

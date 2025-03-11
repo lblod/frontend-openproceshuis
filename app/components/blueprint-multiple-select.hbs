@@ -1,0 +1,15 @@
+<div class={{if @error "ember-power-select--error"}}>
+  <PowerSelectMultiple
+    @searchEnabled="true"
+    @searchMessage="Typ om te zoeken"
+    @loadingMessage="Aan het laden ..."
+    @noMatchesMessage="Geen resultaten"
+    @search={{perform this.loadIpdcProductsTask}}
+    @selected={{@selected}}
+    @onChange={{@onChange}}
+    as |draftIpdcProduct|
+  >
+    {{language-string-set-nl draftIpdcProduct.name}}
+    ({{draftIpdcProduct.productNumber}})
+  </PowerSelectMultiple>
+</div>
