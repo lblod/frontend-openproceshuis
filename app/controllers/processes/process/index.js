@@ -144,57 +144,60 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @dropTask
   *downloadLatestDiagram(targetExtension) {
-    console.log('latest diagram:', this.latestDiagram);
-    console.log('target extension:', targetExtension);
-    if (!this.latestDiagram) return;
+    try {
+      if (!this.latestDiagram) throw Error;
 
-    let blob = undefined;
-    if (targetExtension === 'vsdx' && this.latestDiagram.isVisioFile) {
-      const url = generateFileDownloadUrl(this.latestDiagram.id);
-      const response = yield fetch(url);
-      if (!response.ok) throw Error(response.status);
-      blob = yield response.blob();
-    } else if (targetExtension === 'bpmn') {
-      if (this.latestDiagramAsBpmn) {
-        blob = new Blob([this.latestDiagramAsBpmn], {
-          type: 'application/xml;charset=utf-8',
+      let blob = undefined;
+      if (targetExtension === 'vsdx' && this.latestDiagram.isVisioFile) {
+        const url = generateFileDownloadUrl(this.latestDiagram.id);
+        const response = yield fetch(url);
+        if (!response.ok) throw Error(response.status);
+        blob = yield response.blob();
+      } else if (targetExtension === 'bpmn') {
+        if (this.latestDiagramAsBpmn) {
+          blob = new Blob([this.latestDiagramAsBpmn], {
+            type: 'application/xml;charset=utf-8',
+          });
+        } else if (this.latestDiagram.isVisioFile) {
+          const url = generateVisioConversionUrl(
+            this.latestDiagram.id,
+            targetExtension
+          );
+          const response = yield fetch(url);
+          if (!response.ok) throw Error(response.status);
+          blob = yield response.blob();
+        }
+      } else if (targetExtension === 'svg' && this.latestDiagramAsSvg) {
+        blob = new Blob([this.latestDiagramAsSvg], {
+          type: 'image/svg+xml;charset=utf-8',
         });
-      } else if (this.latestDiagram.isVisioFile) {
-        const url = generateVisioConversionUrl(
-          this.latestDiagram.id,
-          targetExtension
-        );
-        const response = yield fetch(url);
-        if (!response.ok) throw Error(response.status);
-        blob = yield response.blob();
+      } else if (targetExtension === 'pdf') {
+        if (this.latestDiagramAsSvg) {
+          blob = yield convertSvgToPdf(this.latestDiagramAsSvg);
+        } else if (this.latestDiagram.isVisioFile) {
+          const url = generateVisioConversionUrl(
+            this.latestDiagram.id,
+            targetExtension
+          );
+          const response = yield fetch(url);
+          if (!response.ok) throw Error(response.status);
+          blob = yield response.blob();
+        }
+      } else if (targetExtension === 'png' && this.latestDiagramAsSvg) {
+        blob = yield convertSvgToPng(this.latestDiagramAsSvg);
       }
-    } else if (targetExtension === 'svg' && this.latestDiagramAsSvg) {
-      blob = new Blob([this.latestDiagramAsSvg], {
-        type: 'image/svg+xml;charset=utf-8',
-      });
-    } else if (targetExtension === 'pdf') {
-      if (this.latestDiagramAsSvg) {
-        blob = yield convertSvgToPdf(this.latestDiagramAsSvg);
-      } else if (this.latestDiagram.isVisioFile) {
-        const url = generateVisioConversionUrl(
-          this.latestDiagram.id,
-          targetExtension
-        );
-        const response = yield fetch(url);
-        if (!response.ok) throw Error(response.status);
-        blob = yield response.blob();
-      }
-    } else if (targetExtension === 'png' && this.latestDiagramAsSvg) {
-      blob = yield convertSvgToPng(this.latestDiagramAsSvg);
+      if (!blob) throw Error;
+
+      const fileName = `${removeFileNameExtension(
+        this.latestDiagram.name,
+        this.latestDiagram.extension
+      )}.${targetExtension}`;
+
+      FileSaver.saveAs(blob, fileName);
+    } catch {
+      this.toaster.error('Bestand kon niet worden opgehaald', 'Fout');
+      return;
     }
-    if (!blob) return;
-
-    const fileName = `${removeFileNameExtension(
-      this.latestDiagram.name,
-      this.latestDiagram.extension
-    )}.${targetExtension}`;
-
-    FileSaver.saveAs(blob, fileName);
 
     this.trackDownloadFileEvent(
       this.latestDiagram.id,
