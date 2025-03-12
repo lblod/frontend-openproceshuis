@@ -8,9 +8,11 @@
 
 
 
-## 1.3.0 (2025-03-11)
+
+## 1.3.0 (2025-03-12)
 
 #### :rocket: Enhancement
+* [#75](https://github.com/lblod/frontend-openproceshuis/pull/75) Don't show disabled download options ([@MartijnBogaert](https://github.com/MartijnBogaert))
 * [#74](https://github.com/lblod/frontend-openproceshuis/pull/74) Visualise Visio files in custom PDF viewer ([@MartijnBogaert](https://github.com/MartijnBogaert))
 * [#71](https://github.com/lblod/frontend-openproceshuis/pull/71) OPH-472: Move gedeelde processen button ([@andreo141](https://github.com/andreo141))
 * [#67](https://github.com/lblod/frontend-openproceshuis/pull/67) OPH-444: Add download count for each filetype ([@andreo141](https://github.com/andreo141))
@@ -24,6 +26,7 @@
 * [#60](https://github.com/lblod/frontend-openproceshuis/pull/60) Keep track of IPDC instances ([@MartijnBogaert](https://github.com/MartijnBogaert))
 
 #### :bug: Bug Fix
+* [#76](https://github.com/lblod/frontend-openproceshuis/pull/76) Show error message on download failure ([@MartijnBogaert](https://github.com/MartijnBogaert))
 * [#73](https://github.com/lblod/frontend-openproceshuis/pull/73) Bring back favicon ([@MartijnBogaert](https://github.com/MartijnBogaert))
 * [#69](https://github.com/lblod/frontend-openproceshuis/pull/69) Fix wrong visio api call ([@MartijnBogaert](https://github.com/MartijnBogaert))
 * [#64](https://github.com/lblod/frontend-openproceshuis/pull/64) Differentiate between IPDC instances and products ([@MartijnBogaert](https://github.com/MartijnBogaert))
