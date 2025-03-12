@@ -142,8 +142,8 @@
                     <:label>Link naar Blauwdruk</:label>
                     <:content>
                       <BlueprintMultipleSelect
-                        @selected={{this.draftIpdcProducts}}
-                        @onChange={{this.setDraftIpdcProducts}}
+                        @selected={{this.process.linkedBlueprints}}
+                        @onChange={{this.setLinkedBlueprints}}
                       />
                       <div class="au-u-flex au-u-flex--between">
                         <AuHelpText
@@ -152,12 +152,6 @@
                         >
                           Link dit proces naar een blauwdruk proces
                         </AuHelpText>
-                        <AuLinkExternal
-                          class="au-u-flex-self-start"
-                          href="https://productencatalogus-v3.vlaanderen.be/nl/producten"
-                        >
-                          Zoek naar blauwdrukken
-                        </AuLinkExternal>
                       </div>
                     </:content>
                   </Item>

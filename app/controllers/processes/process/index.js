@@ -426,11 +426,18 @@ export default class ProcessesProcessIndexController extends Controller {
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
   }
-  c;
 
   @action
   toggleBlueprintStatus(event) {
     this.process.isBlueprint = event;
+    this.validateForm();
+  }
+
+  @action
+  setLinkedBlueprints(blueprintArray) {
+    console.log('blueprintArray', blueprintArray);
+    console.log('this.process.linkedBlueprints', this.process.linkedBlueprints);
+    this.process.linkedBlueprints = blueprintArray;
     this.validateForm();
   }
 

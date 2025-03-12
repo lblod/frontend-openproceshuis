@@ -4,12 +4,11 @@
     @searchMessage="Typ om te zoeken"
     @loadingMessage="Aan het laden ..."
     @noMatchesMessage="Geen resultaten"
-    @search={{perform this.loadIpdcProductsTask}}
+    @search={{perform this.loadBlueprintProcessesTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
-    as |draftIpdcProduct|
+    as |blueprintProcess|
   >
-    {{language-string-set-nl draftIpdcProduct.name}}
-    ({{draftIpdcProduct.productNumber}})
+    {{blueprintProcess.title}}
   </PowerSelectMultiple>
 </div>
