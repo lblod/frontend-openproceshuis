@@ -144,8 +144,6 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @dropTask
   *downloadLatestDiagram(targetExtension) {
-    console.log('latest diagram:', this.latestDiagram);
-    console.log('target extension:', targetExtension);
     if (!this.latestDiagram) return;
 
     let blob = undefined;
