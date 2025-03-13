@@ -183,24 +183,32 @@
         <:right as |Item|>
           <Item>
             <:label>Motivering of bijkomende informatie</:label>
-            <:content>{{this.additionalInformation}}</:content>
+            <:content>{{or this.additionalInformation "/"}}</:content>
           </Item>
           <Item>
             <:label>Informatieassets</:label>
             <:content>
-              <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
-                {{#each this.informationAssets as |asset|}}
-                  <AuPill>{{asset.label}}</AuPill>
-                {{/each}}
-              </div>
+              {{#if this.informationAssets.length}}
+                <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
+                  {{#each this.informationAssets as |asset|}}
+                    <AuPill>{{asset.label}}</AuPill>
+                  {{/each}}
+                </div>
+              {{else}}
+                /
+              {{/if}}
             </:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>
             <:content>
-              <AuLinkExternal href="{{this.hasControlMeasure}}">
-                {{this.hasControlMeasure}}
-              </AuLinkExternal>
+              {{#if this.hasControlMeasure}}
+                <AuLinkExternal href="{{this.hasControlMeasure}}">
+                  {{this.hasControlMeasure}}
+                </AuLinkExternal>
+              {{else}}
+                /
+              {{/if}}
             </:content>
           </Item>
         </:right>
