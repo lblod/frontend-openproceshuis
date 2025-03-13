@@ -102,28 +102,19 @@
           <Item>
             <:label>Beschikbaarheid</:label>
             <:content>
-              <IcrScore
-                @selectedScore={{this.availabilityScore}}
-                @onScoreChange={{this.setAvailabilityScore}}
-              />
+              <IcrScore @selectedScore={{this.availabilityScore}} />
             </:content>
           </Item>
           <Item>
             <:label>Integriteit</:label>
             <:content>
-              <IcrScore
-                @selectedScore={{this.integrityScore}}
-                @onScoreChange={{this.setIntegrityScore}}
-              />
+              <IcrScore @selectedScore={{this.integrityScore}} />
             </:content>
           </Item>
           <Item>
             <:label>Vertrouwelijkheid</:label>
             <:content>
-              <IcrScore
-                @selectedScore={{this.confidentialityScore}}
-                @onScoreChange={{this.setConfidentialityScore}}
-              />
+              <IcrScore @selectedScore={{this.confidentialityScore}} />
             </:content>
           </Item>
           <Item>
