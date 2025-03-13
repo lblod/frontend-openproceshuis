@@ -7,6 +7,14 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
+          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+            <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
+            <AuCheckbox
+              id="filter-blueprint"
+              @checked={{this.isBlueprint}}
+              @onChange={{this.toggleBlueprintFilter}}
+            />
+          </div>
           <div>
             <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
@@ -105,7 +113,12 @@
           </TableMessage>
         {{else}}
           <c.body as |process|>
-            <td>
+            <td
+              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+            >
+              {{#if process.isBlueprint}}
+                <CustomIcon @icon={{"blueprint"}} @size="large" />
+              {{/if}}
               <LinkTo
                 class="au-c-link"
                 @model={{process.id}}
