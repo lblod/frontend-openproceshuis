@@ -128,15 +128,6 @@
                 </:content>
               </Item>
               {{#if this.currentSession.isAdmin}}
-                <Item>
-                  <:label>Blauwdruk</:label>
-                  <:content>
-                    <AuToggleSwitch
-                      @onChange={{this.toggleBlueprintStatus}}
-                      @checked={{this.process.isBlueprint}}
-                    />
-                  </:content>
-                </Item>
                 {{#unless this.process.isBlueprint}}
                   <Item>
                     <:label>Gekoppeld aan</:label>
