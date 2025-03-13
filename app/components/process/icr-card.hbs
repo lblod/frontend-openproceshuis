@@ -92,7 +92,14 @@
             <Item>
               <:label>Informatieassets</:label>
               <:content>
-                Lorem
+                {{#each this.informationAssets as |asset|}}
+                  <AuPill
+                    @actionIcon="cross"
+                    @onClickAction={{fn this.removeInformationAsset asset.id}}
+                  >
+                    {{asset.label}}
+                  </AuPill>
+                {{/each}}
               </:content>
             </Item>
             <Item>
@@ -175,7 +182,9 @@
           <Item>
             <:label>Informatieassets</:label>
             <:content>
-              Lorem
+              {{#each this.informationAssets as |asset|}}
+                <AuPill>{{asset.label}}</AuPill>
+              {{/each}}
             </:content>
           </Item>
           <Item>

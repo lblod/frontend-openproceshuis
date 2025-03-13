@@ -14,7 +14,14 @@ export default class IcrCardComponent extends Component {
   @tracked additionalInformation =
     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, nam temporibus, maxime totam commodi id inventore repudiandae optio quia laudantium dolorum. Eius quas ratione optio harum architecto atque accusamus voluptatem. Lorem ipsum dolor sit amet consectetur adipisicing elit.'; // string
   @tracked hasControlMeasure; // url
-  @tracked informationAssets; // array
+  @tracked informationAssets = [
+    { id: '5e89f94e-0569-4fd4-873c-dad047f14175', label: 'abonnement' },
+    { id: '076f0d37-52ba-4844-88fd-93a420d4b812', label: 'abonnementsplaats' },
+    {
+      id: 'ae79a6b7-ae35-4b82-91d6-55638711c3cf',
+      label: 'ambulante activiteit',
+    },
+  ]; // array
 
   @tracked edit = false;
   @tracked formIsValid = false;
@@ -81,5 +88,12 @@ export default class IcrCardComponent extends Component {
   @action
   setAdditionalInformation(event) {
     this.additionalInformation = event.target.value;
+  }
+
+  @action
+  removeInformationAsset(assetId) {
+    this.informationAssets = this.informationAssets.filter(
+      (asset) => asset.id !== assetId
+    );
   }
 }
