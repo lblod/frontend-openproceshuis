@@ -2,15 +2,7 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 export default class ProcessesIndexController extends Controller {
-  queryParams = [
-    'page',
-    'size',
-    'sort',
-    'title',
-    'classification',
-    'group',
-    'blueprint',
-  ];
+  queryParams = ['page', 'size', 'sort', 'title', 'classification', 'group'];
 
   @tracked page = 0;
   size = 20;
@@ -19,7 +11,6 @@ export default class ProcessesIndexController extends Controller {
   @tracked classification = '';
   @tracked selectedClassification = '';
   @tracked group = '';
-  @tracked blueprint = false;
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished
@@ -62,12 +53,6 @@ export default class ProcessesIndexController extends Controller {
   }
 
   @action
-  toggleBlueprintFilter(event) {
-    this.page = null;
-    this.blueprint = event;
-  }
-
-  @action
   resetFilters() {
     this.title = '';
     this.classification = '';
@@ -75,8 +60,6 @@ export default class ProcessesIndexController extends Controller {
     this.group = '';
     this.page = 0;
     this.sort = 'title';
-    this.blueprint = false;
-
     // Triggers a refresh of the model
     this.page = null;
   }
