@@ -435,12 +435,6 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  toggleBlueprintStatus(event) {
-    this.process.isBlueprint = event;
-    this.validateForm();
-  }
-
-  @action
   setLinkedBlueprints(blueprintArray) {
     this.process.linkedBlueprints = blueprintArray;
     this.linkedBlueprintsChanged = true;
