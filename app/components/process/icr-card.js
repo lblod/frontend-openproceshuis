@@ -8,9 +8,9 @@ export default class IcrCardComponent extends Component {
   @tracked confidentialityScore = 1; // number
   @tracked integrityScore = 2; // number
   @tracked availabilityScore = 3; // number
-  @tracked containsPersonalData; // boolean
-  @tracked containsProfessionalData; // boolean
-  @tracked containsSensitiveData; // boolean
+  @tracked containsPersonalData = true; // boolean
+  @tracked containsProfessionalData = true; // boolean
+  @tracked containsSensitivePersonalData = false; // boolean
   @tracked additionalInformation; // string
   @tracked hasControlMeasure; // url
   @tracked informationAssets; // array
@@ -50,5 +50,30 @@ export default class IcrCardComponent extends Component {
   @action
   setConfidentialityScore(score) {
     this.confidentialityScore = score;
+  }
+
+  @action
+  setContainsPersonalData(value) {
+    this.containsPersonalData = value;
+
+    if (!value) {
+      this.containsProfessionalData = false;
+      this.containsSensitivePersonalData = false;
+    }
+  }
+
+  @action
+  setContainsProfessionalData(value) {
+    if (!this.containsPersonalData) return;
+
+    this.containsProfessionalData = value;
+  }
+
+  @action
+  setContainsSensitivePersonalData(value) {
+    if (!this.containsPersonalData) return;
+
+    this.containsSensitivePersonalData = value;
+    if (value) this.containsProfessionalData = true;
   }
 }

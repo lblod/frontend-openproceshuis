@@ -51,7 +51,29 @@
             <Item>
               <:label>Persoonsgegevens</:label>
               <:content>
-                Lorem
+                <div
+                  class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
+                >
+                  <AuToggleSwitch
+                    @checked={{this.containsPersonalData}}
+                    @onChange={{this.setContainsPersonalData}}
+                  />
+                  {{#if this.containsPersonalData}}
+                    <AuCheckbox
+                      @checked={{this.containsProfessionalData}}
+                      @onChange={{this.setContainsProfessionalData}}
+                      @disabled={{this.containsSensitivePersonalData}}
+                    >
+                      Professionele gegevens
+                    </AuCheckbox>
+                    <AuCheckbox
+                      @checked={{this.containsSensitivePersonalData}}
+                      @onChange={{this.setContainsSensitivePersonalData}}
+                    >
+                      Bijzonderer persoonsgegevens
+                    </AuCheckbox>
+                  {{/if}}
+                </div>
               </:content>
             </Item>
           </:left>
@@ -120,7 +142,26 @@
           <Item>
             <:label>Persoonsgegevens</:label>
             <:content>
-              Lorem
+              <div class="au-u-flex au-u-flex--column au-u-flex--spaced-small">
+                <AuToggleSwitch
+                  @checked={{this.containsPersonalData}}
+                  @disabled="true"
+                />
+                {{#if this.containsPersonalData}}
+                  <AuCheckbox
+                    @checked={{this.containsProfessionalData}}
+                    @disabled="true"
+                  >
+                    Professionele gegevens
+                  </AuCheckbox>
+                  <AuCheckbox
+                    @checked={{this.containsSensitivePersonalData}}
+                    @disabled="true"
+                  >
+                    Bijzonderer persoonsgegevens
+                  </AuCheckbox>
+                {{/if}}
+              </div>
             </:content>
           </Item>
         </:left>
