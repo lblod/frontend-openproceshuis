@@ -9,7 +9,6 @@ export default class ProcessesIndexController extends Controller {
     'title',
     'classification',
     'group',
-    'blueprint',
   ];
 
   @tracked page = 0;
@@ -19,7 +18,6 @@ export default class ProcessesIndexController extends Controller {
   @tracked classification = '';
   @tracked selectedClassification = '';
   @tracked group = '';
-  @tracked blueprint = false;
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished
@@ -62,12 +60,6 @@ export default class ProcessesIndexController extends Controller {
   }
 
   @action
-  toggleBlueprintFilter(event) {
-    this.page = null;
-    this.blueprint = event;
-  }
-
-  @action
   resetFilters() {
     this.title = '';
     this.classification = '';
@@ -75,8 +67,6 @@ export default class ProcessesIndexController extends Controller {
     this.group = '';
     this.page = 0;
     this.sort = 'title';
-    this.blueprint = false;
-
     // Triggers a refresh of the model
     this.page = null;
   }
