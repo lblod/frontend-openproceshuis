@@ -5,22 +5,24 @@ import { action } from '@ember/object';
 export default class IcrScoreComponent extends Component {
   allowedScores = [1, 2, 3, 4, 5];
 
+  // Use the parent's initial selected score if provided; otherwise, default to null.
+  @tracked selectedScore = this.args.selectedScore || null;
   @tracked hoveredShape = null;
-  @tracked selectedShape = null;
 
-  getSvgPath = (shapeNumber) => {
-    if (shapeNumber === this.selectedShape) {
-      return `/assets/images/icr/fill-${shapeNumber}.svg`;
-    } else if (shapeNumber === this.hoveredShape) {
-      return `/assets/images/icr/outline-${shapeNumber}.svg`;
+  // Returns the appropriate image path based on state
+  getSvgPath = (score) => {
+    if (score === this.selectedScore) {
+      return `/assets/images/icr/fill-${score}.svg`;
+    } else if (score === this.hoveredShape) {
+      return `/assets/images/icr/outline-${score}.svg`;
     } else {
-      return `/assets/images/icr/neutral-${shapeNumber}.svg`;
+      return `/assets/images/icr/neutral-${score}.svg`;
     }
   };
 
   @action
-  onMouseEnter(shapeNumber) {
-    this.hoveredShape = shapeNumber;
+  onMouseEnter(score) {
+    this.hoveredShape = score;
   }
 
   @action
@@ -29,7 +31,11 @@ export default class IcrScoreComponent extends Component {
   }
 
   @action
-  onClickShape(shapeNumber) {
-    this.selectedShape = shapeNumber;
+  onClickShape(score) {
+    this.selectedScore = score;
+    // Notify the parent component of the new score
+    if (this.args.onScoreChange) {
+      this.args.onScoreChange(score);
+    }
   }
 }

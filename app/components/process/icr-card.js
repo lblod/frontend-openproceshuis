@@ -36,4 +36,19 @@ export default class IcrCardComponent extends Component {
     yield timeout(100);
     console.log('Saved!');
   }
+
+  @action
+  setAvailabilityScore(score) {
+    this.availabilityScore = score;
+  }
+
+  @action
+  setIntegrityScore(score) {
+    this.integrityScore = score;
+  }
+
+  @action
+  setConfidentialityScore(score) {
+    this.confidentialityScore = score;
+  }
 }

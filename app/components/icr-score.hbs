@@ -3,7 +3,7 @@
     {{! template-lint-disable no-invalid-interactive }}
     <img
       src={{this.getSvgPath score}}
-      alt="Shape {{score}}"
+      alt="Score {{score}}"
       {{on "mouseenter" (fn this.onMouseEnter score)}}
       {{on "mouseleave" this.onMouseLeave}}
       {{on "click" (fn this.onClickShape score)}}

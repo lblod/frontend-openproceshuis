@@ -24,19 +24,28 @@
             <Item>
               <:label>Beschikbaarheid</:label>
               <:content>
-                <IcrScore />
+                <IcrScore
+                  @selectedScore={{this.availabilityScore}}
+                  @onScoreChange={{this.setAvailabilityScore}}
+                />
               </:content>
             </Item>
             <Item>
               <:label>Integriteit</:label>
               <:content>
-                <IcrScore />
+                <IcrScore
+                  @selectedScore={{this.integrityScore}}
+                  @onScoreChange={{this.setIntegrityScore}}
+                />
               </:content>
             </Item>
             <Item>
               <:label>Vertrouwelijkheid</:label>
               <:content>
-                <IcrScore />
+                <IcrScore
+                  @selectedScore={{this.confidentialityScore}}
+                  @onScoreChange={{this.setConfidentialityScore}}
+                />
               </:content>
             </Item>
             <Item>
@@ -93,19 +102,28 @@
           <Item>
             <:label>Beschikbaarheid</:label>
             <:content>
-              <IcrScore />
+              <IcrScore
+                @selectedScore={{this.availabilityScore}}
+                @onScoreChange={{this.setAvailabilityScore}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Integriteit</:label>
             <:content>
-              <IcrScore />
+              <IcrScore
+                @selectedScore={{this.integrityScore}}
+                @onScoreChange={{this.setIntegrityScore}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Vertrouwelijkheid</:label>
             <:content>
-              <IcrScore />
+              <IcrScore
+                @selectedScore={{this.confidentialityScore}}
+                @onScoreChange={{this.setConfidentialityScore}}
+              />
             </:content>
           </Item>
           <Item>
