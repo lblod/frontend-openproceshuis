@@ -5,15 +5,15 @@ import { dropTask, timeout } from 'ember-concurrency';
 
 export default class IcrCardComponent extends Component {
   // Temp ICR
-  @tracked confidentialityScore = 1; // number
-  @tracked integrityScore = 2; // number
-  @tracked availabilityScore = 3; // number
-  @tracked containsPersonalData = true; // boolean
-  @tracked containsProfessionalData = true; // boolean
-  @tracked containsSensitivePersonalData = false; // boolean
+  @tracked confidentialityScore = 1;
+  @tracked integrityScore = 2;
+  @tracked availabilityScore = 3;
+  @tracked containsPersonalData = true;
+  @tracked containsProfessionalData = true;
+  @tracked containsSensitivePersonalData = false;
   @tracked additionalInformation =
     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, nam temporibus, maxime totam commodi id inventore repudiandae optio quia laudantium dolorum. Eius quas ratione optio harum architecto atque accusamus voluptatem. Lorem ipsum dolor sit amet consectetur adipisicing elit.'; // string
-  @tracked hasControlMeasure; // url
+  @tracked hasControlMeasure = 'https://www.vlaanderen.be/';
   @tracked informationAssets = [
     { id: '5e89f94e-0569-4fd4-873c-dad047f14175', label: 'abonnement' },
     { id: '076f0d37-52ba-4844-88fd-93a420d4b812', label: 'abonnementsplaats' },
@@ -21,7 +21,11 @@ export default class IcrCardComponent extends Component {
       id: 'ae79a6b7-ae35-4b82-91d6-55638711c3cf',
       label: 'ambulante activiteit',
     },
-  ]; // array
+    {
+      id: '99c21667-f98c-4b60-a721-faef1a0ca67a',
+      label: 'lang label om te testen',
+    },
+  ];
 
   @tracked edit = false;
   @tracked formIsValid = false;
@@ -88,6 +92,12 @@ export default class IcrCardComponent extends Component {
   @action
   setAdditionalInformation(event) {
     this.additionalInformation = event.target.value;
+  }
+
+  @action
+  setControlMeasure(event) {
+    this.hasControlMeasure = event.target.value;
+    console.log(this.hasControlMeasure);
   }
 
   @action

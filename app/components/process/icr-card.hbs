@@ -70,7 +70,7 @@
                       @checked={{this.containsSensitivePersonalData}}
                       @onChange={{this.setContainsSensitivePersonalData}}
                     >
-                      Bijzonderer persoonsgegevens
+                      Bijzondere persoonsgegevens
                     </AuCheckbox>
                   {{/if}}
                 </div>
@@ -92,20 +92,26 @@
             <Item>
               <:label>Informatieassets</:label>
               <:content>
-                {{#each this.informationAssets as |asset|}}
-                  <AuPill
-                    @actionIcon="cross"
-                    @onClickAction={{fn this.removeInformationAsset asset.id}}
-                  >
-                    {{asset.label}}
-                  </AuPill>
-                {{/each}}
+                <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
+                  {{#each this.informationAssets as |asset|}}
+                    <AuPill
+                      @actionIcon="cross"
+                      @onClickAction={{fn this.removeInformationAsset asset.id}}
+                    >
+                      {{asset.label}}
+                    </AuPill>
+                  {{/each}}
+                </div>
               </:content>
             </Item>
             <Item>
               <:label>Link naar maatregelen</:label>
               <:content>
-                Lorem
+                <AuInput
+                  value={{this.hasControlMeasure}}
+                  {{on "input" this.setControlMeasure}}
+                  @width="block"
+                />
               </:content>
             </Item>
           </:right>
@@ -167,7 +173,7 @@
                     @checked={{this.containsSensitivePersonalData}}
                     @disabled="true"
                   >
-                    Bijzonderer persoonsgegevens
+                    Bijzondere persoonsgegevens
                   </AuCheckbox>
                 {{/if}}
               </div>
@@ -182,15 +188,19 @@
           <Item>
             <:label>Informatieassets</:label>
             <:content>
-              {{#each this.informationAssets as |asset|}}
-                <AuPill>{{asset.label}}</AuPill>
-              {{/each}}
+              <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
+                {{#each this.informationAssets as |asset|}}
+                  <AuPill>{{asset.label}}</AuPill>
+                {{/each}}
+              </div>
             </:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>
             <:content>
-              Lorem
+              <AuLinkExternal href="{{this.hasControlMeasure}}">
+                {{this.hasControlMeasure}}
+              </AuLinkExternal>
             </:content>
           </Item>
         </:right>
