@@ -12,7 +12,6 @@ export default class ProcessesIndexRoute extends Route {
     title: { refreshModel: true, replace: true },
     classification: { refreshModel: true, replace: true },
     group: { refreshModel: true, replace: true },
-    blueprint: { refreshModel: true },
   };
 
   async model(params) {
@@ -59,9 +58,6 @@ export default class ProcessesIndexRoute extends Route {
 
     if (params.group) query['filter[publisher][:exact:name]'] = params.group;
 
-    if (params.blueprint) {
-      query['filter[is-blueprint]'] = params.blueprint;
-    }
 
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
