@@ -5,9 +5,9 @@ import { dropTask, timeout } from 'ember-concurrency';
 
 export default class IcrCardComponent extends Component {
   // Temp ICR
-  @tracked confidentialityScore; // number
-  @tracked integrityScore; // number
-  @tracked availabilityScore; // number
+  @tracked confidentialityScore = 1; // number
+  @tracked integrityScore = 2; // number
+  @tracked availabilityScore = 3; // number
   @tracked containsPersonalData; // boolean
   @tracked containsProfessionalData; // boolean
   @tracked containsSensitiveData; // boolean
