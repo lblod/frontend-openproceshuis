@@ -267,13 +267,17 @@
             Er ging iets mis bij het ophalen van het diagram. Probeer later
             opnieuw.
           </AuAlert>
-        {{else if this.latestDiagram}}
+        {{else if
+          (and
+            this.latestDiagram
+            (or this.latestDiagram.isBpmnFile this.latestDiagram.isVisioFile)
+          )
+        }}
+          <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
+            Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
+            om in en uit te zoomen. Klik elders om bediening uit te schakelen.
+          </AuHelpText>
           {{#if this.latestDiagram.isBpmnFile}}
-            <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
-              Klik en hou vast om diagram te bedienen. Gebruik ctrl en
-              scrollwiel om in en uit te zoomen. Klik elders om bediening uit te
-              schakelen.
-            </AuHelpText>
             <BpmnViewer
               @diagram={{this.latestDiagram}}
               @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
@@ -281,11 +285,6 @@
             />
           {{else if this.latestDiagram.isVisioFile}}
             <PdfViewer @diagram={{this.latestDiagram}} />
-          {{else}}
-            <AuAlert @title="Mislukt" @skin="warning" @icon="alert-triangle">
-              Visualisatie mislukt
-              {{! TODO: improve }}
-            </AuAlert>
           {{/if}}
           <DataCard class="au-u-margin-top-small">
             <:header></:header>
@@ -607,22 +606,22 @@
           BPMN
           <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
         </AuButton>
-        <AuButton
-          @skin="secondary"
-          @disabled={{not this.latestDiagramAsSvg}}
-          {{on "click" (perform this.downloadLatestDiagram "png")}}
-        >
-          Afbeelding
-          <span class="au-u-para-tiny au-u-regular">(.png)</span>
-        </AuButton>
-        <AuButton
-          @skin="secondary"
-          @disabled={{not this.latestDiagramAsSvg}}
-          {{on "click" (perform this.downloadLatestDiagram "svg")}}
-        >
-          Vectorafbeelding
-          <span class="au-u-para-tiny au-u-regular">(.svg)</span>
-        </AuButton>
+        {{#if this.latestDiagramAsSvg}}
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform this.downloadLatestDiagram "png")}}
+          >
+            Afbeelding
+            <span class="au-u-para-tiny au-u-regular">(.png)</span>
+          </AuButton>
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform this.downloadLatestDiagram "svg")}}
+          >
+            Vectorafbeelding
+            <span class="au-u-para-tiny au-u-regular">(.svg)</span>
+          </AuButton>
+        {{/if}}
         <AuButton
           @skin="secondary"
           {{on "click" (perform this.downloadLatestDiagram "pdf")}}

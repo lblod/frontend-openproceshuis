@@ -7,6 +7,35 @@
 
 
 
+
+
+## 1.3.0 (2025-03-12)
+
+#### :rocket: Enhancement
+* [#75](https://github.com/lblod/frontend-openproceshuis/pull/75) Don't show disabled download options ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#74](https://github.com/lblod/frontend-openproceshuis/pull/74) Visualise Visio files in custom PDF viewer ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#71](https://github.com/lblod/frontend-openproceshuis/pull/71) OPH-472: Move gedeelde processen button ([@andreo141](https://github.com/andreo141))
+* [#67](https://github.com/lblod/frontend-openproceshuis/pull/67) OPH-444: Add download count for each filetype ([@andreo141](https://github.com/andreo141))
+* [#70](https://github.com/lblod/frontend-openproceshuis/pull/70) Update IPDC/LPDC help text ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#68](https://github.com/lblod/frontend-openproceshuis/pull/68) Display Visio files as PDF ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#66](https://github.com/lblod/frontend-openproceshuis/pull/66) OPH-456: Finetune 'filter on group' ([@andreo141](https://github.com/andreo141))
+* [#57](https://github.com/lblod/frontend-openproceshuis/pull/57) Allow Visio file as process diagram ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#65](https://github.com/lblod/frontend-openproceshuis/pull/65) Add check for admin before displaying "No write rights" banner ([@andreo141](https://github.com/andreo141))
+* [#63](https://github.com/lblod/frontend-openproceshuis/pull/63) Remove process steps ([@andreo141](https://github.com/andreo141))
+* [#61](https://github.com/lblod/frontend-openproceshuis/pull/61) Filter processes on government ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#60](https://github.com/lblod/frontend-openproceshuis/pull/60) Keep track of IPDC instances ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### :bug: Bug Fix
+* [#76](https://github.com/lblod/frontend-openproceshuis/pull/76) Show error message on download failure ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#73](https://github.com/lblod/frontend-openproceshuis/pull/73) Bring back favicon ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#69](https://github.com/lblod/frontend-openproceshuis/pull/69) Fix wrong visio api call ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#64](https://github.com/lblod/frontend-openproceshuis/pull/64) Differentiate between IPDC instances and products ([@MartijnBogaert](https://github.com/MartijnBogaert))
+* [#62](https://github.com/lblod/frontend-openproceshuis/pull/62) Governement type filter fixes ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
+#### Committers: 2
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+- [@andreo141](https://github.com/andreo141)
+
 ## 1.2.0 (2025-01-08)
 
 #### :rocket: Enhancement
