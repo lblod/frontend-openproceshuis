@@ -324,8 +324,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-    console.log('this.process', this.process);
-    console.log('this.formIsValid', this.formIsValid);
     if (!this.process) return;
 
     if (this.formIsValid) {
