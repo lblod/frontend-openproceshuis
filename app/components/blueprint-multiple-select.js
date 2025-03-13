@@ -9,11 +9,14 @@ export default class BlueprintMultipleSelectComponent extends Component {
   *loadBlueprintProcessesTask(params) {
     const query = {
       filter: {
-        title: params,
         'is-blueprint': true,
+        title: params,
       },
     };
 
-    return yield this.store.query('process', query);
+    return yield this.store.query('process', query).then(
+      // fixme: frontend workaround because booleans are not interpreted correctly by the query
+      (results) => results.filter((process) => process.isBlueprint === true)
+    );
   }
 }

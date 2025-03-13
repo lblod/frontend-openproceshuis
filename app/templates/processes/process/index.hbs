@@ -139,7 +139,7 @@
                 </Item>
                 {{#unless this.process.isBlueprint}}
                   <Item>
-                    <:label>Link naar Blauwdruk</:label>
+                    <:label>Gekoppeld aan</:label>
                     <:content>
                       <BlueprintMultipleSelect
                         @selected={{this.process.linkedBlueprints}}
@@ -246,6 +246,18 @@
                 {{if this.process.isBlueprint "Ja" "Neen"}}
               </:content>
             </Item>
+            {{#if this.process.linkedBlueprints}}
+              <Item>
+                <:label>Gekoppeld aan</:label>
+                <:content>
+                  <ul>
+                    {{#each this.process.linkedBlueprints as |linkedBlueprint|}}
+                      <li>{{linkedBlueprint.title}}</li>
+                    {{/each}}
+                  </ul>
+                </:content>
+              </Item>
+            {{/if}}
           </:right>
         </Card.Columns>
       </:card>

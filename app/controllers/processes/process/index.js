@@ -43,6 +43,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
   @tracked draftIpdcProducts = undefined;
+  @tracked linkedBlueprintsChanged = false;
 
   // Process
 
@@ -324,12 +325,16 @@ export default class ProcessesProcessIndexController extends Controller {
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-    console.log('this.process', this.process);
-    console.log('this.formIsValid', this.formIsValid);
+
     if (!this.process) return;
 
     if (this.formIsValid) {
       this.process.modified = new Date();
+
+      // remove existing links if child process becomes blueprint
+      if (this.process.isBlueprint) {
+        this.process.linkedBlueprints = [];
+      }
 
       try {
         this.process.ipdcProducts = yield Promise.all(
@@ -372,6 +377,7 @@ export default class ProcessesProcessIndexController extends Controller {
   resetModel() {
     this.process?.rollbackAttributes();
     this.draftIpdcProducts = this.process?.ipdcProducts;
+    this.linkedBlueprintsChanged = false;
     this.edit = false;
   }
 
@@ -411,6 +417,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.formIsValid =
       this.process?.validate() &&
       (this.process?.hasDirtyAttributes ||
+        this.linkedBlueprintsChanged ||
         this.draftIpdcProducts?.length < this.process?.ipdcProducts?.length ||
         this.draftIpdcProducts?.some((product) => product.isDraft));
   }
@@ -435,9 +442,8 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   setLinkedBlueprints(blueprintArray) {
-    console.log('blueprintArray', blueprintArray);
-    console.log('this.process.linkedBlueprints', this.process.linkedBlueprints);
     this.process.linkedBlueprints = blueprintArray;
+    this.linkedBlueprintsChanged = true;
     this.validateForm();
   }
 
