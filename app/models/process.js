@@ -14,6 +14,7 @@ export default class ProcessModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+  @attr('boolean') isBlueprint;
 
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @belongsTo('process-statistic', { inverse: 'process', async: false })

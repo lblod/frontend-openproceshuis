@@ -127,27 +127,15 @@
                   {{date-format this.process.created true}}
                 </:content>
               </Item>
-              {{#if this.currentSession.isAdmin}}
-                {{#unless this.process.isBlueprint}}
-                  <Item>
-                    <:label>Gekoppeld aan</:label>
-                    <:content>
-                      <BlueprintMultipleSelect
-                        @selected={{this.process.linkedBlueprints}}
-                        @onChange={{this.setLinkedBlueprints}}
-                      />
-                      <div class="au-u-flex au-u-flex--between">
-                        <AuHelpText
-                          @skin="secondary"
-                          class="au-u-margin-top-none au-u-flex-self-start"
-                        >
-                          Link dit proces naar een blauwdruk proces
-                        </AuHelpText>
-                      </div>
-                    </:content>
-                  </Item>
-                {{/unless}}
-              {{/if}}
+              <Item>
+                <:label>Blauwdruk</:label>
+                <:content>
+                  <AuToggleSwitch
+                    @onChange={{this.toggleBlueprintStatus}}
+                    @checked={{this.process.isBlueprint}}
+                  />
+                </:content>
+              </Item>
             </:right>
           </Card.Columns>
         </:card>
@@ -231,18 +219,12 @@
                 {{date-format this.process.created true}}
               </:content>
             </Item>
-            {{#if this.process.linkedBlueprints}}
-              <Item>
-                <:label>Gekoppeld aan</:label>
-                <:content>
-                  <ul>
-                    {{#each this.process.linkedBlueprints as |linkedBlueprint|}}
-                      <li>{{linkedBlueprint.title}}</li>
-                    {{/each}}
-                  </ul>
-                </:content>
-              </Item>
-            {{/if}}
+            <Item>
+              <:label>Blauwdruk</:label>
+              <:content>
+                {{if this.process.isBlueprint "Ja" "Neen"}}
+              </:content>
+            </Item>
           </:right>
         </Card.Columns>
       </:card>
