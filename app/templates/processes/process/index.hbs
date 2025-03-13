@@ -240,12 +240,6 @@
                 {{date-format this.process.created true}}
               </:content>
             </Item>
-            <Item>
-              <:label>Blauwdruk</:label>
-              <:content>
-                {{if this.process.isBlueprint "Ja" "Neen"}}
-              </:content>
-            </Item>
             {{#if this.process.linkedBlueprints}}
               <Item>
                 <:label>Gekoppeld aan</:label>
