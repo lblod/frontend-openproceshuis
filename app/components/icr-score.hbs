@@ -1,12 +1,12 @@
 <div class="icr-score">
-  {{#each this.shapes as |shape|}}
+  {{#each this.allowedScores as |score|}}
     {{! template-lint-disable no-invalid-interactive }}
     <img
-      src={{this.getSvgPath shape}}
-      alt="Shape {{shape}}"
-      {{on "mouseenter" (fn this.onMouseEnter shape)}}
+      src={{this.getSvgPath score}}
+      alt="Shape {{score}}"
+      {{on "mouseenter" (fn this.onMouseEnter score)}}
       {{on "mouseleave" this.onMouseLeave}}
-      {{on "click" (fn this.onClickShape shape)}}
+      {{on "click" (fn this.onClickShape score)}}
     />
   {{/each}}
 </div>

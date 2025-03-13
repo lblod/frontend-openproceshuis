@@ -10,11 +10,11 @@ export default class IcrScoreComponent extends Component {
 
   getSvgPath = (shapeNumber) => {
     if (shapeNumber === this.selectedShape) {
-      return `/assets/images/icr/fill/${shapeNumber}.svg`;
+      return `/assets/images/icr/fill-${shapeNumber}.svg`;
     } else if (shapeNumber === this.hoveredShape) {
-      return `/assets/images/icr/outline/${shapeNumber}.svg`;
+      return `/assets/images/icr/outline-${shapeNumber}.svg`;
     } else {
-      return `/assets/images/icr/neutral/${shapeNumber}.svg`;
+      return `/assets/images/icr/neutral-${shapeNumber}.svg`;
     }
   };
 
