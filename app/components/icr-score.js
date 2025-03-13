@@ -32,6 +32,8 @@ export default class IcrScoreComponent extends Component {
 
   @action
   onMouseClick(score) {
+    if (this.selectedScore === score) score = undefined;
+
     this.selectedScore = score;
     if (this.args.onScoreChange) {
       this.args.onScoreChange(score);
