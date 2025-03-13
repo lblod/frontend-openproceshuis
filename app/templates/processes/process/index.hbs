@@ -127,6 +127,15 @@
                   {{date-format this.process.created true}}
                 </:content>
               </Item>
+              <Item>
+                <:label>Blauwdruk</:label>
+                <:content>
+                  <AuToggleSwitch
+                    @onChange={{this.toggleBlueprintStatus}}
+                    @checked={{this.process.isBlueprint}}
+                  />
+                </:content>
+              </Item>
             </:right>
           </Card.Columns>
         </:card>
@@ -208,6 +217,12 @@
               <:label>Aangemaakt op</:label>
               <:content>
                 {{date-format this.process.created true}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Blauwdruk</:label>
+              <:content>
+                {{if this.process.isBlueprint "Ja" "Neen"}}
               </:content>
             </Item>
           </:right>

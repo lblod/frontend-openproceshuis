@@ -329,7 +329,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-
     if (!this.process) return;
 
     if (this.formIsValid) {
@@ -429,6 +428,13 @@ export default class ProcessesProcessIndexController extends Controller {
   closeDeleteModal() {
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
+  }
+  c;
+
+  @action
+  toggleBlueprintStatus(event) {
+    this.process.isBlueprint = event;
+    this.validateForm();
   }
 
   @dropTask
