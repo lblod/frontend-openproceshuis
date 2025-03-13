@@ -81,10 +81,12 @@
             <Item>
               <:label>Motivering of bijkomende informatie</:label>
               <:content>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt, nam temporibus, maxime totam commodi id inventore
-                repudiandae optio quia laudantium dolorum. Eius quas ratione
-                optio harum architecto atque accusamus voluptatem.
+                <AuTextarea
+                  value={{this.additionalInformation}}
+                  {{on "input" this.setAdditionalInformation}}
+                  rows="5"
+                  @width="block"
+                />
               </:content>
             </Item>
             <Item>
@@ -168,12 +170,7 @@
         <:right as |Item|>
           <Item>
             <:label>Motivering of bijkomende informatie</:label>
-            <:content>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,
-              nam temporibus, maxime totam commodi id inventore repudiandae
-              optio quia laudantium dolorum. Eius quas ratione optio harum
-              architecto atque accusamus voluptatem.
-            </:content>
+            <:content>{{this.additionalInformation}}</:content>
           </Item>
           <Item>
             <:label>Informatieassets</:label>

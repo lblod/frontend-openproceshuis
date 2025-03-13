@@ -11,7 +11,8 @@ export default class IcrCardComponent extends Component {
   @tracked containsPersonalData = true; // boolean
   @tracked containsProfessionalData = true; // boolean
   @tracked containsSensitivePersonalData = false; // boolean
-  @tracked additionalInformation; // string
+  @tracked additionalInformation =
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, nam temporibus, maxime totam commodi id inventore repudiandae optio quia laudantium dolorum. Eius quas ratione optio harum architecto atque accusamus voluptatem. Lorem ipsum dolor sit amet consectetur adipisicing elit.'; // string
   @tracked hasControlMeasure; // url
   @tracked informationAssets; // array
 
@@ -38,18 +39,18 @@ export default class IcrCardComponent extends Component {
   }
 
   @action
-  setAvailabilityScore(score) {
-    this.availabilityScore = score;
+  setAvailabilityScore(value) {
+    this.availabilityScore = value;
   }
 
   @action
-  setIntegrityScore(score) {
-    this.integrityScore = score;
+  setIntegrityScore(value) {
+    this.integrityScore = value;
   }
 
   @action
-  setConfidentialityScore(score) {
-    this.confidentialityScore = score;
+  setConfidentialityScore(value) {
+    this.confidentialityScore = value;
   }
 
   @action
@@ -75,5 +76,10 @@ export default class IcrCardComponent extends Component {
 
     this.containsSensitivePersonalData = value;
     if (value) this.containsProfessionalData = true;
+  }
+
+  @action
+  setAdditionalInformation(event) {
+    this.additionalInformation = event.target.value;
   }
 }
