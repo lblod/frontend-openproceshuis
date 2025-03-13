@@ -53,7 +53,6 @@ export default class PdfViewerComponent extends Component {
     if (!visioFileId) return;
 
     await this.loadPdfTask.perform(visioFileId);
-
     await this.fitPdfToContainer();
     this.isLoading = false;
 

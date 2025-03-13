@@ -330,7 +330,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-
     if (!this.process) return;
 
     if (this.formIsValid) {
