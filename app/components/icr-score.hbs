@@ -1,0 +1,16 @@
+<div class="icr-score">
+  {{#each this.allowedScores as |score|}}
+    {{#if @onScoreChange}}
+      {{! template-lint-disable no-invalid-interactive }}
+      <img
+        src={{this.getSvgPath score}}
+        alt={{score}}
+        {{on "mouseenter" (fn this.onMouseEnter score)}}
+        {{on "mouseleave" this.onMouseLeave}}
+        {{on "click" (fn this.onMouseClick score)}}
+      />
+    {{else}}
+      <img src={{this.getSvgPath score}} alt={{score}} />
+    {{/if}}
+  {{/each}}
+</div>

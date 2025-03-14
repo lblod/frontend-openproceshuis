@@ -334,6 +334,11 @@ export default class ProcessesProcessIndexController extends Controller {
     if (this.formIsValid) {
       this.process.modified = new Date();
 
+      // remove existing links if child process becomes blueprint
+      if (this.process.isBlueprint) {
+        this.process.linkedBlueprints = [];
+      }
+
       try {
         this.process.ipdcProducts = yield Promise.all(
           this.draftIpdcProducts.map(async (product) => {
@@ -375,6 +380,7 @@ export default class ProcessesProcessIndexController extends Controller {
   resetModel() {
     this.process?.rollbackAttributes();
     this.draftIpdcProducts = this.process?.ipdcProducts;
+    this.linkedBlueprintsChanged = false;
     this.edit = false;
   }
 
@@ -414,6 +420,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.formIsValid =
       this.process?.validate() &&
       (this.process?.hasDirtyAttributes ||
+        this.linkedBlueprintsChanged ||
         this.draftIpdcProducts?.length < this.process?.ipdcProducts?.length ||
         this.draftIpdcProducts?.some((product) => product.isDraft));
   }

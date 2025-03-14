@@ -22,6 +22,8 @@ export default class ProcessModel extends Model {
   @hasMany('file', { inverse: 'processes', async: false })
   files;
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
+  @hasMany('process', { inverse: 'linkedBlueprints', async: true })
+  linkedBlueprints;
 
   validations = {
     title: {

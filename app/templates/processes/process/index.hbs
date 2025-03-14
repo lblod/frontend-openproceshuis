@@ -342,6 +342,18 @@
       </div>
     </div>
 
+    {{! ICR }}
+    <div class="au-o-grid__item">
+      {{#if this.process.isBlueprint}}
+        <Process::IcrCard @canEdit={{this.canEdit}} />
+      {{else}}
+        <Process::BlueprintCard
+          @canEdit={{this.canEdit}}
+          @process={{this.process}}
+        />
+      {{/if}}
+    </div>
+
     {{! Diagrams }}
     <div class="au-o-grid__item au-u-margin-top">
 
