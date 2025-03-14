@@ -615,22 +615,22 @@
           BPMN
           <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
         </AuButton>
-        <AuButton
-          @skin="secondary"
-          @disabled={{not this.latestDiagramAsSvg}}
-          {{on "click" (perform this.downloadLatestDiagram "png")}}
-        >
-          Afbeelding
-          <span class="au-u-para-tiny au-u-regular">(.png)</span>
-        </AuButton>
-        <AuButton
-          @skin="secondary"
-          @disabled={{not this.latestDiagramAsSvg}}
-          {{on "click" (perform this.downloadLatestDiagram "svg")}}
-        >
-          Vectorafbeelding
-          <span class="au-u-para-tiny au-u-regular">(.svg)</span>
-        </AuButton>
+        {{#if this.latestDiagramAsSvg}}
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform this.downloadLatestDiagram "png")}}
+          >
+            Afbeelding
+            <span class="au-u-para-tiny au-u-regular">(.png)</span>
+          </AuButton>
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform this.downloadLatestDiagram "svg")}}
+          >
+            Vectorafbeelding
+            <span class="au-u-para-tiny au-u-regular">(.svg)</span>
+          </AuButton>
+        {{/if}}
         <AuButton
           @skin="secondary"
           {{on "click" (perform this.downloadLatestDiagram "pdf")}}
