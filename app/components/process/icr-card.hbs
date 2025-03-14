@@ -24,7 +24,7 @@
             <Item>
               <:label>Beschikbaarheid</:label>
               <:content>
-                <IcrScore
+                <Process::IcrCard::IcrScore
                   @selectedScore={{this.availabilityScore}}
                   @onScoreChange={{this.setAvailabilityScore}}
                 />
@@ -33,7 +33,7 @@
             <Item>
               <:label>Integriteit</:label>
               <:content>
-                <IcrScore
+                <Process::IcrCard::IcrScore
                   @selectedScore={{this.integrityScore}}
                   @onScoreChange={{this.setIntegrityScore}}
                 />
@@ -42,7 +42,7 @@
             <Item>
               <:label>Vertrouwelijkheid</:label>
               <:content>
-                <IcrScore
+                <Process::IcrCard::IcrScore
                   @selectedScore={{this.confidentialityScore}}
                   @onScoreChange={{this.setConfidentialityScore}}
                 />
@@ -139,19 +139,25 @@
           <Item>
             <:label>Beschikbaarheid</:label>
             <:content>
-              <IcrScore @selectedScore={{this.availabilityScore}} />
+              <Process::IcrCard::IcrScore
+                @selectedScore={{this.availabilityScore}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Integriteit</:label>
             <:content>
-              <IcrScore @selectedScore={{this.integrityScore}} />
+              <Process::IcrCard::IcrScore
+                @selectedScore={{this.integrityScore}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Vertrouwelijkheid</:label>
             <:content>
-              <IcrScore @selectedScore={{this.confidentialityScore}} />
+              <Process::IcrCard::IcrScore
+                @selectedScore={{this.confidentialityScore}}
+              />
             </:content>
           </Item>
           <Item>
