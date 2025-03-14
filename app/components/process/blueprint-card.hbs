@@ -1,20 +1,74 @@
-<DataCard>
-  <:title>
-    Informatieclassificatie
-  </:title>
-  <:header>
-  </:header>
-  <:card as |Card|>
-    <Card.Columns>
-      <:left as |Item|>
-        <Item>
-          <:label>Gekoppeld aan</:label>
-          <:content>
-            Naam van het proces
-          </:content>
-        </Item>
+{{#if this.edit}}
+  <form {{on "submit" (perform this.updateModel)}}>
+    <DataCard>
+      <:title>
+        Informatieclassificatie
+      </:title>
+      <:header>
+        <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+          <AuButton
+            @skin="secondary"
+            {{on "click" this.resetModel}}
+          >Annuleer</AuButton>
+          <AuButton
+            @skin="primary"
+            type="submit"
+            @loading={{this.updateModel.isRunning}}
+            @disabled={{or
+              this.updateModel.isRunning
+              (not this.linkedBlueprintsChanged)
+            }}
+          >Bewaar</AuButton>
+        </div>
+      </:header>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Gekoppeld aan</:label>
+              <:content>
+                <BlueprintMultipleSelect
+                  @selected={{@process.linkedBlueprints}}
+                  @onChange={{this.setLinkedBlueprints}}
+                />
+              </:content>
+            </Item>
 
-      </:left>
-    </Card.Columns>
-  </:card>
-</DataCard>
+          </:left>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  </form>
+{{else}}
+  <DataCard>
+    <:title>
+      Informatieclassificatie
+    </:title>
+    <:header>
+      {{#if @canEdit}}
+        <AuButton
+          @skin="naked"
+          @icon="pencil"
+          {{on "click" this.toggleEdit}}
+        >Wijzig</AuButton>
+      {{/if}}
+    </:header>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Gekoppeld aan</:label>
+            <:content>
+              <ul>
+                {{#each @process.linkedBlueprints as |blueprint|}}
+                  <li>{{blueprint.title}}</li>
+                {{/each}}
+              </ul>
+            </:content>
+          </Item>
+
+        </:left>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+{{/if}}

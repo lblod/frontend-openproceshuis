@@ -39,10 +39,7 @@ export default class IcrCardComponent extends Component {
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-
-    console.log('Saving ...');
     yield timeout(100);
-    console.log('Saved!');
   }
 
   @action
