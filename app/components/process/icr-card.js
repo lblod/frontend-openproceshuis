@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { dropTask, timeout } from 'ember-concurrency';
 
-export default class IcrCardComponent extends Component {
+export default class ProcessIcrCardComponent extends Component {
   // Temp ICR
   @tracked confidentialityScore = 1;
   @tracked integrityScore = 2;
