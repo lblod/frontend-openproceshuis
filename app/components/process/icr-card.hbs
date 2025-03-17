@@ -1,0 +1,200 @@
+{{#if this.edit}}
+  <form {{on "submit" (perform this.updateModel)}}>
+    <DataCard>
+      <:title>
+        Informatieclassificatie
+      </:title>
+      <:header>
+        <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+          <AuButton
+            @skin="secondary"
+            {{on "click" this.resetModel}}
+          >Annuleer</AuButton>
+          <AuButton
+            @skin="primary"
+            type="submit"
+            @loading={{this.updateModel.isRunning}}
+            @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+          >Bewaar</AuButton>
+        </div>
+      </:header>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Beschikbaarheid</:label>
+              <:content>
+                <IcrScore
+                  @selectedScore={{this.availabilityScore}}
+                  @onScoreChange={{this.setAvailabilityScore}}
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Integriteit</:label>
+              <:content>
+                <IcrScore
+                  @selectedScore={{this.integrityScore}}
+                  @onScoreChange={{this.setIntegrityScore}}
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Vertrouwelijkheid</:label>
+              <:content>
+                <IcrScore
+                  @selectedScore={{this.confidentialityScore}}
+                  @onScoreChange={{this.setConfidentialityScore}}
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Persoonsgegevens</:label>
+              <:content>
+                <div
+                  class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
+                >
+                  <AuToggleSwitch
+                    @checked={{this.containsPersonalData}}
+                    @onChange={{this.setContainsPersonalData}}
+                  />
+                  {{#if this.containsPersonalData}}
+                    <AuCheckbox
+                      @checked={{this.containsProfessionalData}}
+                      @onChange={{this.setContainsProfessionalData}}
+                      @disabled={{this.containsSensitivePersonalData}}
+                    >
+                      Professionele gegevens
+                    </AuCheckbox>
+                    <AuCheckbox
+                      @checked={{this.containsSensitivePersonalData}}
+                      @onChange={{this.setContainsSensitivePersonalData}}
+                    >
+                      Bijzonderer persoonsgegevens
+                    </AuCheckbox>
+                  {{/if}}
+                </div>
+              </:content>
+            </Item>
+          </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Motivering of bijkomende informatie</:label>
+              <:content>
+                <AuTextarea
+                  value={{this.additionalInformation}}
+                  {{on "input" this.setAdditionalInformation}}
+                  rows="5"
+                  @width="block"
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Informatieassets</:label>
+              <:content>
+                {{#each this.informationAssets as |asset|}}
+                  <AuPill
+                    @actionIcon="cross"
+                    @onClickAction={{fn this.removeInformationAsset asset.id}}
+                  >
+                    {{asset.label}}
+                  </AuPill>
+                {{/each}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Link naar maatregelen</:label>
+              <:content>
+                Lorem
+              </:content>
+            </Item>
+          </:right>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  </form>
+{{else}}
+  <DataCard>
+    <:title>
+      Informatieclassificatie
+    </:title>
+    <:header>
+      {{#if @canEdit}}
+        <AuButton
+          @skin="naked"
+          @icon="pencil"
+          {{on "click" this.toggleEdit}}
+        >Wijzig</AuButton>
+      {{/if}}
+    </:header>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Beschikbaarheid</:label>
+            <:content>
+              <IcrScore @selectedScore={{this.availabilityScore}} />
+            </:content>
+          </Item>
+          <Item>
+            <:label>Integriteit</:label>
+            <:content>
+              <IcrScore @selectedScore={{this.integrityScore}} />
+            </:content>
+          </Item>
+          <Item>
+            <:label>Vertrouwelijkheid</:label>
+            <:content>
+              <IcrScore @selectedScore={{this.confidentialityScore}} />
+            </:content>
+          </Item>
+          <Item>
+            <:label>Persoonsgegevens</:label>
+            <:content>
+              <div class="au-u-flex au-u-flex--column au-u-flex--spaced-small">
+                <AuToggleSwitch
+                  @checked={{this.containsPersonalData}}
+                  @disabled="true"
+                />
+                {{#if this.containsPersonalData}}
+                  <AuCheckbox
+                    @checked={{this.containsProfessionalData}}
+                    @disabled="true"
+                  >
+                    Professionele gegevens
+                  </AuCheckbox>
+                  <AuCheckbox
+                    @checked={{this.containsSensitivePersonalData}}
+                    @disabled="true"
+                  >
+                    Bijzonderer persoonsgegevens
+                  </AuCheckbox>
+                {{/if}}
+              </div>
+            </:content>
+          </Item>
+        </:left>
+        <:right as |Item|>
+          <Item>
+            <:label>Motivering of bijkomende informatie</:label>
+            <:content>{{this.additionalInformation}}</:content>
+          </Item>
+          <Item>
+            <:label>Informatieassets</:label>
+            <:content>
+              {{#each this.informationAssets as |asset|}}
+                <AuPill>{{asset.label}}</AuPill>
+              {{/each}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Link naar maatregelen</:label>
+            <:content>
+              Lorem
+            </:content>
+          </Item>
+        </:right>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+{{/if}}
