@@ -32,27 +32,7 @@
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
             <div class="au-o-grid__item au-u-1-2@medium">
-              <AuCard @flex={{true}} as |c|>
-                <c.header
-                  @badgeSkin="brand"
-                  @badgeIcon="sitemap"
-                  @badgeSize="small"
-                >
-                  <AuHeading @level="2" @skin="4">
-                    Processenbibliotheek
-                  </AuHeading>
-                </c.header>
-                <c.content>
-                  <AuList @divider={{true}} as |Item|>
-                    <Item>Raadpleeg processen</Item>
-                  </AuList>
-                </c.content>
-                <c.footer>
-                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                    <AuLink @skin="button" @route="processes">Toon Processen</AuLink>
-                  </div>
-                </c.footer>
-              </AuCard>
+              <AuLink @skin="button" @route="auth.login">Log in</AuLink>
             </div>
             {{#if this.currentSession.canEdit}}
               <div class="au-o-grid__item au-u-1-2@medium">
