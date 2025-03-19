@@ -2,57 +2,94 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { dropTask, timeout } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
 
 export default class ProcessIcrCardComponent extends Component {
+  @service toaster;
+
   // Temp ICR
   @tracked informationAssets;
 
   @tracked draftInformationAssets = [];
 
   @tracked edit = false;
-  @tracked formIsValid = true;
+  @tracked formIsValid = false;
 
   @action
   toggleEdit() {
-    this.draftIpdcProducts = this.process?.ipdcProducts;
+    this.draftInformationAssets = this.informationAssets ?? [];
     this.edit = !this.edit;
+    this.validateForm();
   }
 
   @action
   resetModel() {
+    this.args.process?.rollbackAttributes();
     this.draftInformationAssets = this.informationAssets;
     this.edit = false;
+  }
+
+  validateForm() {
+    this.formIsValid =
+      this.args.process?.validate() && this.args.process?.hasDirtyAttributes;
   }
 
   @dropTask
   *updateModel(event) {
     event.preventDefault();
+    if (!this.args.process) return;
 
-    console.log('Saving ...');
-    yield timeout(100);
+    if (this.formIsValid) {
+      this.args.process.modified = new Date();
 
-    this.informationAssets = this.draftInformationAssets;
-    console.log('Saved!');
+      try {
+        this.informationAssets = this.draftInformationAssets;
 
-    this.edit = false;
+        console.log('Saving ...');
+        yield timeout(100);
+        console.log('Saved!');
+
+        this.edit = false;
+
+        this.toaster.success(
+          'Informatieclassificatie succesvol bijgewerkt',
+          'Gelukt!',
+          {
+            timeOut: 5000,
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        this.toaster.error(
+          'Informatieclassificatie kon niet worden bijgewerkt',
+          'Fout'
+        );
+        this.resetModel();
+      }
+    } else {
+      this.resetModel();
+    }
   }
 
   @action
   setAvailabilityScore(value) {
     if (!this.args.process) return;
     this.args.process.availabilityScore = value;
+    this.validateForm();
   }
 
   @action
   setIntegrityScore(value) {
     if (!this.args.process) return;
     this.args.process.integrityScore = value;
+    this.validateForm();
   }
 
   @action
   setConfidentialityScore(value) {
     if (!this.args.process) return;
     this.args.process.confidentialityScore = value;
+    this.validateForm();
   }
 
   @action
@@ -65,6 +102,8 @@ export default class ProcessIcrCardComponent extends Component {
       this.args.process.containsProfessionalData = false;
       this.args.process.containsSensitivePersonalData = false;
     }
+
+    this.validateForm();
   }
 
   @action
@@ -73,6 +112,7 @@ export default class ProcessIcrCardComponent extends Component {
     if (!this.args.process.containsPersonalData) return;
 
     this.args.process.containsProfessionalData = value;
+    this.validateForm();
   }
 
   @action
@@ -82,18 +122,21 @@ export default class ProcessIcrCardComponent extends Component {
 
     this.args.process.containsSensitivePersonalData = value;
     if (value) this.args.process.containsProfessionalData = true;
+    this.validateForm();
   }
 
   @action
   setAdditionalInformation(event) {
     if (!this.args.process) return;
     this.args.process.additionalInformation = event.target.value;
+    this.validateForm();
   }
 
   @action
   setControlMeasure(event) {
     if (!this.args.process) return;
     this.args.process.hasControlMeasure = event.target.value;
+    this.validateForm();
   }
 
   @action
@@ -103,12 +146,6 @@ export default class ProcessIcrCardComponent extends Component {
     if (hasDuplicates) return;
 
     this.draftInformationAssets = event;
-  }
-
-  @action
-  removeInformationAsset(assetId) {
-    this.informationAssets = this.informationAssets.filter(
-      (asset) => asset.id !== assetId
-    );
+    this.validateForm();
   }
 }
