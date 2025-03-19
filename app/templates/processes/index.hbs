@@ -135,7 +135,7 @@
             <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.modified}}</td>
             <td>
-              {{#if (contains process.users this.currentUser)}}
+              {{#if (this.processIsUsedBy process.users)}}
                 <AuIcon @icon="check" />
               {{/if}}
             </td>

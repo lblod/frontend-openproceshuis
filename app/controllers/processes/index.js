@@ -45,10 +45,6 @@ export default class ProcessesIndexController extends Controller {
     return this.model.loadProcessesTaskInstance.isError;
   }
 
-  get currentUser() {
-    return this.currentSession.group;
-  }
-
   @action
   setTitle(selection) {
     this.page = null;
@@ -72,6 +68,11 @@ export default class ProcessesIndexController extends Controller {
   toggleBlueprintFilter(event) {
     this.page = null;
     this.blueprint = event;
+  }
+
+  @action
+  processIsUsedBy(usersArray) {
+    return usersArray.includes(this.currentSession.group);
   }
 
   @action
