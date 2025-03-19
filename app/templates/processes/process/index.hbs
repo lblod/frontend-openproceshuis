@@ -128,6 +128,15 @@
                 </:content>
               </Item>
               <Item>
+                <:label>Wij gebruiken dit proces</:label>
+                <:content>
+                  <AuCheckbox
+                    @checked={{this.processUsedByUs}}
+                    @onChange={{this.setProcessUsedByUs}}
+                  />
+                </:content>
+              </Item>
+              <Item>
                 <:label>Blauwdruk</:label>
                 <:content>
                   <AuToggleSwitch
@@ -220,9 +229,21 @@
               </:content>
             </Item>
             <Item>
+              <:label>Wij gebruiken dit proces</:label>
+              <:content>
+                <AuCheckbox
+                  @disabled={{not this.edit}}
+                  @checked={{this.processUsedByUs}}
+                />
+              </:content>
+            </Item>
+            <Item>
               <:label>Blauwdruk</:label>
               <:content>
-                {{if this.process.isBlueprint "Ja" "Neen"}}
+                <AuToggleSwitch
+                  @disabled={{not this.edit}}
+                  @checked={{this.process.isBlueprint}}
+                />
               </:content>
             </Item>
           </:right>

@@ -24,6 +24,8 @@ export default class ProcessModel extends Model {
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
   linkedBlueprints;
+  @hasMany('group', { inverse: null, async: false })
+  users;
 
   validations = {
     title: {

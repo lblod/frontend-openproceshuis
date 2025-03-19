@@ -43,6 +43,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
   @tracked draftIpdcProducts = undefined;
+  @tracked processUserChanged = undefined;
 
   // Process
 
@@ -58,6 +59,10 @@ export default class ProcessesProcessIndexController extends Controller {
 
   get processHasErrored() {
     return this.model.loadProcessTaskInstance.isError;
+  }
+
+  get processUsedByUs() {
+    return this.process?.users?.includes(this.currentSession.group);
   }
 
   // Latest diagram
@@ -421,6 +426,7 @@ export default class ProcessesProcessIndexController extends Controller {
       this.process?.validate() &&
       (this.process?.hasDirtyAttributes ||
         this.linkedBlueprintsChanged ||
+        this.processUserChanged ||
         this.draftIpdcProducts?.length < this.process?.ipdcProducts?.length ||
         this.draftIpdcProducts?.some((product) => product.isDraft));
   }
@@ -436,11 +442,23 @@ export default class ProcessesProcessIndexController extends Controller {
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
   }
-  c;
 
   @action
   toggleBlueprintStatus(event) {
     this.process.isBlueprint = event;
+    this.validateForm();
+  }
+
+  @action
+  async setProcessUsedByUs(isChecked) {
+    this.processUserChanged = true;
+    const currentUser = this.currentSession.group;
+    const users = await this.process.users;
+    if (isChecked) {
+      users.pushObject(currentUser);
+    } else {
+      users.removeObject(currentUser);
+    }
     this.validateForm();
   }
 
