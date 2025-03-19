@@ -1,4 +1,4 @@
-{{#if this.edit}}
+{{#if this.isEditing}}
   <PageHeader>
     <:title>
       Wijzig proces
@@ -21,7 +21,7 @@
 {{/if}}
 
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
-  {{#if this.edit}}
+  {{#if this.isEditing}}
     <form {{on "submit" (perform this.updateModel)}}>
       <DataCard>
         <:title>
@@ -51,6 +51,7 @@
                     value={{this.process.title}}
                     {{on "input" this.setProcessTitle}}
                     @width="block"
+                    @disabled={{not this.canEdit}}
                   />
                 </:content>
               </Item>
@@ -62,6 +63,7 @@
                     {{on "input" this.setProcessDescription}}
                     rows="4"
                     @width="block"
+                    @disabled={{not this.canEdit}}
                   />
                 </:content>
               </Item>
@@ -72,6 +74,7 @@
                     value={{this.process.email}}
                     {{on "input" this.setProcessEmail}}
                     @width="block"
+                    @disabled={{not this.canEdit}}
                   />
                 </:content>
               </Item>
@@ -81,6 +84,7 @@
                   <IpdcMultipleSelect
                     @selected={{this.draftIpdcProducts}}
                     @onChange={{this.setDraftIpdcProducts}}
+                    @disabled={{not this.canEdit}}
                   />
                   <div class="au-u-flex au-u-flex--between">
                     <AuHelpText
@@ -142,6 +146,7 @@
                   <AuToggleSwitch
                     @onChange={{this.toggleBlueprintStatus}}
                     @checked={{this.process.isBlueprint}}
+                    @disabled={{not this.canEdit}}
                   />
                 </:content>
               </Item>
@@ -156,13 +161,11 @@
         Algemene informatie
       </:title>
       <:header>
-        {{#if this.canEdit}}
-          <AuButton
-            @skin="naked"
-            @icon="pencil"
-            {{on "click" this.toggleEdit}}
-          >Wijzig</AuButton>
-        {{/if}}
+        <AuButton
+          @skin="naked"
+          @icon="pencil"
+          {{on "click" this.toggleEdit}}
+        >Wijzig</AuButton>
       </:header>
       <:card as |Card|>
         <Card.Columns>
@@ -232,7 +235,7 @@
               <:label>Wij gebruiken dit proces</:label>
               <:content>
                 <AuCheckbox
-                  @disabled={{not this.edit}}
+                  @disabled={{not this.isEditing}}
                   @checked={{this.processUsedByUs}}
                 />
               </:content>
@@ -241,7 +244,7 @@
               <:label>Blauwdruk</:label>
               <:content>
                 <AuToggleSwitch
-                  @disabled={{not this.edit}}
+                  @disabled={{not this.isEditing}}
                   @checked={{this.process.isBlueprint}}
                 />
               </:content>

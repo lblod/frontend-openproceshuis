@@ -39,7 +39,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked addModalOpened = false;
   @tracked deleteModalOpened = false;
 
-  @tracked edit = false;
+  @tracked isEditing = false;
   @tracked formIsValid = false;
   @tracked fileToDelete = undefined;
   @tracked draftIpdcProducts = undefined;
@@ -327,7 +327,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   toggleEdit() {
     this.draftIpdcProducts = this.process?.ipdcProducts;
-    this.edit = !this.edit;
+    this.isEditing = !this.isEditing;
     this.validateForm();
   }
 
@@ -366,7 +366,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
         yield this.process.save();
 
-        this.edit = false;
+        this.isEditing = false;
 
         this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
           timeOut: 5000,
@@ -382,11 +382,11 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  resetModel() {
+  async resetModel() {
     this.process?.rollbackAttributes();
     this.draftIpdcProducts = this.process?.ipdcProducts;
     this.linkedBlueprintsChanged = false;
-    this.edit = false;
+    this.isEditing = false;
   }
 
   @action
