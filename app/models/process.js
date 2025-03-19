@@ -15,6 +15,14 @@ export default class ProcessModel extends Model {
   @attr('iso-date') modified;
   @attr('string') status;
   @attr('boolean') isBlueprint;
+  @attr('number') confidentialityScore;
+  @attr('number') integrityScore;
+  @attr('number') availabilityScore;
+  @attr('boolean') containsPersonalData;
+  @attr('boolean') containsProfessionalData;
+  @attr('boolean') containsSensitivePersonalData;
+  @attr('string') additionalInformation;
+  @attr('string') hasControlMeasure;
 
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @belongsTo('process-statistic', { inverse: 'process', async: false })

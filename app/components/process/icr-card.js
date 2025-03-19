@@ -5,15 +5,6 @@ import { dropTask, timeout } from 'ember-concurrency';
 
 export default class ProcessIcrCardComponent extends Component {
   // Temp ICR
-  @tracked confidentialityScore = 1;
-  @tracked integrityScore = 2;
-  @tracked availabilityScore = 3;
-  @tracked containsPersonalData = true;
-  @tracked containsProfessionalData = true;
-  @tracked containsSensitivePersonalData = false;
-  @tracked additionalInformation =
-    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, nam temporibus, maxime totam commodi id inventore repudiandae optio quia laudantium dolorum. Eius quas ratione optio harum architecto atque accusamus voluptatem. Lorem ipsum dolor sit amet consectetur adipisicing elit.'; // string
-  @tracked hasControlMeasure = 'https://www.vlaanderen.be/';
   @tracked informationAssets;
 
   @tracked draftInformationAssets = [];
@@ -48,52 +39,61 @@ export default class ProcessIcrCardComponent extends Component {
 
   @action
   setAvailabilityScore(value) {
-    this.availabilityScore = value;
+    if (!this.args.process) return;
+    this.args.process.availabilityScore = value;
   }
 
   @action
   setIntegrityScore(value) {
-    this.integrityScore = value;
+    if (!this.args.process) return;
+    this.args.process.integrityScore = value;
   }
 
   @action
   setConfidentialityScore(value) {
-    this.confidentialityScore = value;
+    if (!this.args.process) return;
+    this.args.process.confidentialityScore = value;
   }
 
   @action
   setContainsPersonalData(value) {
-    this.containsPersonalData = value;
+    if (!this.args.process) return;
+
+    this.args.process.containsPersonalData = value;
 
     if (!value) {
-      this.containsProfessionalData = false;
-      this.containsSensitivePersonalData = false;
+      this.args.process.containsProfessionalData = false;
+      this.args.process.containsSensitivePersonalData = false;
     }
   }
 
   @action
   setContainsProfessionalData(value) {
-    if (!this.containsPersonalData) return;
+    if (!this.args.process) return;
+    if (!this.args.process.containsPersonalData) return;
 
-    this.containsProfessionalData = value;
+    this.args.process.containsProfessionalData = value;
   }
 
   @action
   setContainsSensitivePersonalData(value) {
-    if (!this.containsPersonalData) return;
+    if (!this.args.process) return;
+    if (!this.args.process.containsPersonalData) return;
 
-    this.containsSensitivePersonalData = value;
-    if (value) this.containsProfessionalData = true;
+    this.args.process.containsSensitivePersonalData = value;
+    if (value) this.args.process.containsProfessionalData = true;
   }
 
   @action
   setAdditionalInformation(event) {
-    this.additionalInformation = event.target.value;
+    if (!this.args.process) return;
+    this.args.process.additionalInformation = event.target.value;
   }
 
   @action
   setControlMeasure(event) {
-    this.hasControlMeasure = event.target.value;
+    if (!this.args.process) return;
+    this.args.process.hasControlMeasure = event.target.value;
   }
 
   @action
