@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask, timeout } from 'ember-concurrency';
+import { dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 
 export default class ProcessIcrCardComponent extends Component {
@@ -45,9 +45,7 @@ export default class ProcessIcrCardComponent extends Component {
       try {
         this.informationAssets = this.draftInformationAssets;
 
-        console.log('Saving ...');
-        yield timeout(100);
-        console.log('Saved!');
+        yield this.args.process.save();
 
         this.edit = false;
 
