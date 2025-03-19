@@ -44,6 +44,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked fileToDelete = undefined;
   @tracked draftIpdcProducts = undefined;
   @tracked processUserChanged = undefined;
+  @tracked originalUsers = undefined;
 
   // Process
 
@@ -327,6 +328,9 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   toggleEdit() {
     this.draftIpdcProducts = this.process?.ipdcProducts;
+    if (!this.isEditing) {
+      this.originalUsers = this.process?.users?.slice() || [];
+    }
     this.isEditing = !this.isEditing;
     this.validateForm();
   }
@@ -382,10 +386,18 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  async resetModel() {
+  resetModel() {
     this.process?.rollbackAttributes();
     this.draftIpdcProducts = this.process?.ipdcProducts;
     this.linkedBlueprintsChanged = false;
+
+    // Restore original users state when canceling form
+    if (this.processUserChanged && this.originalUsers) {
+      const users = this.process.users;
+      users.clear();
+      this.originalUsers.forEach((user) => users.pushObject(user));
+      this.processUserChanged = false;
+    }
     this.isEditing = false;
   }
 
