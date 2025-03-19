@@ -344,10 +344,13 @@
 
     {{! ICR }}
     <div class="au-o-grid__item">
-      {{#if true}}{{! temp --> if isBlueprint}}
+      {{#if this.process.isBlueprint}}
         <Process::IcrCard @canEdit={{this.canEdit}} />
       {{else}}
-        <Process::BlueprintCard />
+        <Process::BlueprintCard
+          @canEdit={{this.canEdit}}
+          @process={{this.process}}
+        />
       {{/if}}
     </div>
 
