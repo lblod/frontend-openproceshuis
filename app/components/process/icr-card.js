@@ -14,29 +14,22 @@ export default class ProcessIcrCardComponent extends Component {
   @tracked additionalInformation =
     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, nam temporibus, maxime totam commodi id inventore repudiandae optio quia laudantium dolorum. Eius quas ratione optio harum architecto atque accusamus voluptatem. Lorem ipsum dolor sit amet consectetur adipisicing elit.'; // string
   @tracked hasControlMeasure = 'https://www.vlaanderen.be/';
-  @tracked informationAssets = [
-    { id: '5e89f94e-0569-4fd4-873c-dad047f14175', label: 'abonnement' },
-    { id: '076f0d37-52ba-4844-88fd-93a420d4b812', label: 'abonnementsplaats' },
-    {
-      id: 'ae79a6b7-ae35-4b82-91d6-55638711c3cf',
-      label: 'ambulante activiteit',
-    },
-    {
-      id: '99c21667-f98c-4b60-a721-faef1a0ca67a',
-      label: 'lang label om te testen',
-    },
-  ];
+  @tracked informationAssets;
+
+  @tracked draftInformationAssets = [];
 
   @tracked edit = false;
-  @tracked formIsValid = false;
+  @tracked formIsValid = true;
 
   @action
   toggleEdit() {
+    this.draftIpdcProducts = this.process?.ipdcProducts;
     this.edit = !this.edit;
   }
 
   @action
   resetModel() {
+    this.draftInformationAssets = this.informationAssets;
     this.edit = false;
   }
 
@@ -46,7 +39,11 @@ export default class ProcessIcrCardComponent extends Component {
 
     console.log('Saving ...');
     yield timeout(100);
+
+    this.informationAssets = this.draftInformationAssets;
     console.log('Saved!');
+
+    this.edit = false;
   }
 
   @action
@@ -97,7 +94,15 @@ export default class ProcessIcrCardComponent extends Component {
   @action
   setControlMeasure(event) {
     this.hasControlMeasure = event.target.value;
-    console.log(this.hasControlMeasure);
+  }
+
+  @action
+  setDraftInformationAssets(event) {
+    const assetIds = event.map((asset) => asset.id);
+    const hasDuplicates = new Set(assetIds).size !== assetIds.length;
+    if (hasDuplicates) return;
+
+    this.draftInformationAssets = event;
   }
 
   @action

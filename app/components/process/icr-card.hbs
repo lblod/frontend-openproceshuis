@@ -92,16 +92,10 @@
             <Item>
               <:label>Informatieassets</:label>
               <:content>
-                <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
-                  {{#each this.informationAssets as |asset|}}
-                    <AuPill
-                      @actionIcon="cross"
-                      @onClickAction={{fn this.removeInformationAsset asset.id}}
-                    >
-                      {{asset.label}}
-                    </AuPill>
-                  {{/each}}
-                </div>
+                <Process::IcrCard::AssetsMultipleSelect
+                  @selected={{this.draftInformationAssets}}
+                  @onChange={{this.setDraftInformationAssets}}
+                />
               </:content>
             </Item>
             <Item>
