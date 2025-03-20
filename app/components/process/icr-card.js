@@ -3,8 +3,10 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessIcrCardComponent extends Component {
+  @service store;
   @service toaster;
 
   @tracked draftInformationAssets = [];
@@ -44,7 +46,20 @@ export default class ProcessIcrCardComponent extends Component {
       this.args.process.modified = new Date();
 
       try {
-        this.informationAssets = this.draftInformationAssets;
+        this.args.process.informationAssets = yield Promise.all(
+          this.draftInformationAssets.map(async (asset) => {
+            if (!asset.id) {
+              const newAsset = this.store.createRecord('information-asset', {
+                label: asset.label,
+                scheme: ENV.conceptSchemes.informationAssets,
+              });
+              await newAsset.save();
+              return newAsset;
+            }
+            delete asset.isDraft;
+            return asset;
+          })
+        );
 
         yield this.args.process.save();
 
