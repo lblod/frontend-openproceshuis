@@ -93,6 +93,11 @@
             @label="Laatst aangepast op"
           />
           <AuDataTableThSortable
+            @field="users"
+            @currentSorting={{this.sort}}
+            @label="Gebruikt door ons"
+          />
+          <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
             @label="Type bestuur"
@@ -129,6 +134,12 @@
             </td>
             <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.modified}}</td>
+            <td>
+              {{#if (this.processIsUsedBy process.users)}}
+                <AuIcon @icon="check" />
+              {{/if}}
+            </td>
+
             <td>{{process.publisher.classification.label}}</td>
             <td>{{process.publisher.name}}</td>
           </c.body>
