@@ -31,7 +31,11 @@ export default class ProcessIcrCardComponent extends Component {
 
   validateForm() {
     this.formIsValid =
-      this.args.process?.validate() && this.args.process?.hasDirtyAttributes;
+      this.args.process?.validate() &&
+      (this.args.process?.hasDirtyAttributes ||
+        this.draftInformationAssets.length <
+          this.args.process?.informationAssets?.length ||
+        this.draftInformationAssets.some((asset) => asset.isDraft));
   }
 
   @dropTask

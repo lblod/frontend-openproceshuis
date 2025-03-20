@@ -23,15 +23,20 @@ export default class ProcessIcrCardAssetsMultipleSelectComponent extends Compone
 
     let assets;
     try {
-      const result = yield this.store.query('information-asset', query) ?? [];
+      const result = yield this.store.query('information-asset', query);
 
-      if (
-        result.some((r) => r.label.toLowerCase() === searchLabel.toLowerCase())
-      ) {
-        assets = result;
-      } else {
-        assets = [{ label: searchLabel, isDraft: true }, ...result];
-      }
+      let assetExists = false;
+      assets = result.map((asset) => {
+        if (asset.label.toLowerCase() === searchLabel.toLowerCase()) {
+          assetExists = true;
+          asset.isDraft = true;
+          return asset;
+        }
+        return asset;
+      });
+
+      if (!assetExists)
+        assets = [{ label: searchLabel, isDraft: true }, ...assets];
     } catch {
       assets = [];
     }
