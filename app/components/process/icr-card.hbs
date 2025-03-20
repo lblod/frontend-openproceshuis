@@ -188,9 +188,9 @@
           <Item>
             <:label>Informatieassets</:label>
             <:content>
-              {{#if this.informationAssets.length}}
+              {{#if @process.informationAssets.length}}
                 <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
-                  {{#each this.informationAssets as |asset|}}
+                  {{#each @process.informationAssets as |asset|}}
                     <AuPill>{{asset.label}}</AuPill>
                   {{/each}}
                 </div>
