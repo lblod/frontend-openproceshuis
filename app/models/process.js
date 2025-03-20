@@ -31,6 +31,8 @@ export default class ProcessModel extends Model {
   @hasMany('file', { inverse: 'processes', async: false })
   files;
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
+  @hasMany('information-asset', { inverse: null, async: false })
+  informationAssets;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
   linkedBlueprints;
 

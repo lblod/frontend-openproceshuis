@@ -7,9 +7,6 @@ import { inject as service } from '@ember/service';
 export default class ProcessIcrCardComponent extends Component {
   @service toaster;
 
-  // Temp ICR
-  @tracked informationAssets;
-
   @tracked draftInformationAssets = [];
 
   @tracked edit = false;
@@ -17,7 +14,7 @@ export default class ProcessIcrCardComponent extends Component {
 
   @action
   toggleEdit() {
-    this.draftInformationAssets = this.informationAssets ?? [];
+    this.draftInformationAssets = this.args.process?.informationAssets ?? [];
     this.edit = !this.edit;
     this.validateForm();
   }
@@ -25,7 +22,7 @@ export default class ProcessIcrCardComponent extends Component {
   @action
   resetModel() {
     this.args.process?.rollbackAttributes();
-    this.draftInformationAssets = this.informationAssets;
+    this.draftInformationAssets = this.args.process?.informationAssets ?? [];
     this.edit = false;
   }
 
