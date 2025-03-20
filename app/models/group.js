@@ -1,4 +1,4 @@
-import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import Model, { attr, belongsTo } from '@ember-data/model';
 
 export default class GroupModel extends Model {
   @attr name;
@@ -8,5 +8,4 @@ export default class GroupModel extends Model {
     inverse: null,
   })
   classification;
-  @hasMany('process', { inverse: null, async: false }) processes;
 }
