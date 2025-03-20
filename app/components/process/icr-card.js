@@ -155,8 +155,8 @@ export default class ProcessIcrCardComponent extends Component {
 
   @action
   setDraftInformationAssets(event) {
-    const assetIds = event.map((asset) => asset.id);
-    const hasDuplicates = new Set(assetIds).size !== assetIds.length;
+    const assetLabels = event.map((asset) => asset.label.toLowerCase());
+    const hasDuplicates = new Set(assetLabels).size !== assetLabels.length;
     if (hasDuplicates) return;
 
     this.draftInformationAssets = event;
