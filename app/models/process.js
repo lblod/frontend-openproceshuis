@@ -4,6 +4,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 import {
   isOnlyWhitespace,
   isEmptyOrEmail,
+  isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
 
 @modelValidator
@@ -48,6 +49,14 @@ export default class ProcessModel extends Model {
     },
     email: {
       custom: (_, value) => isEmptyOrEmail(value),
+    },
+    additionalInformation: {
+      length: {
+        maximum: 3000,
+      },
+    },
+    hasControlMeasure: {
+      custom: (_, value) => isEmptyOrUrl(value),
     },
   };
 
