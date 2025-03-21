@@ -21,6 +21,13 @@ module.exports = function (environment) {
 
     appName: 'Open Proces Huis',
 
+    conceptSchemes: {
+      bpmnElementTypes:
+        'http://lblod.data.gift/concept-schemes/d4259f0b-6d6e-4a46-b9e1-114b774e0f1e',
+      informationAssets:
+        'http://lblod.data.gift/concept-schemes/4c0f0408-01b9-4902-9640-477b667bd086',
+    },
+
     resourceStates: {
       archived: 'http://lblod.data.gift/concepts/concept-status/gearchiveerd',
     },

@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 
-export default class BlueprintCardComponent extends Component {
+export default class ProcessBlueprintCardComponent extends Component {
   @service toaster;
   @tracked edit = false;
   @tracked linkedBlueprintsChanged = false;

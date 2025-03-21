@@ -24,8 +24,8 @@
             <Item>
               <:label>Beschikbaarheid</:label>
               <:content>
-                <IcrScore
-                  @selectedScore={{this.availabilityScore}}
+                <Process::IcrCard::Score
+                  @selectedScore={{@process.availabilityScore}}
                   @onScoreChange={{this.setAvailabilityScore}}
                 />
               </:content>
@@ -33,8 +33,8 @@
             <Item>
               <:label>Integriteit</:label>
               <:content>
-                <IcrScore
-                  @selectedScore={{this.integrityScore}}
+                <Process::IcrCard::Score
+                  @selectedScore={{@process.integrityScore}}
                   @onScoreChange={{this.setIntegrityScore}}
                 />
               </:content>
@@ -42,8 +42,8 @@
             <Item>
               <:label>Vertrouwelijkheid</:label>
               <:content>
-                <IcrScore
-                  @selectedScore={{this.confidentialityScore}}
+                <Process::IcrCard::Score
+                  @selectedScore={{@process.confidentialityScore}}
                   @onScoreChange={{this.setConfidentialityScore}}
                 />
               </:content>
@@ -55,22 +55,22 @@
                   class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
                 >
                   <AuToggleSwitch
-                    @checked={{this.containsPersonalData}}
+                    @checked={{@process.containsPersonalData}}
                     @onChange={{this.setContainsPersonalData}}
                   />
-                  {{#if this.containsPersonalData}}
+                  {{#if @process.containsPersonalData}}
                     <AuCheckbox
-                      @checked={{this.containsProfessionalData}}
+                      @checked={{@process.containsProfessionalData}}
                       @onChange={{this.setContainsProfessionalData}}
-                      @disabled={{this.containsSensitivePersonalData}}
+                      @disabled={{@process.containsSensitivePersonalData}}
                     >
                       Professionele gegevens
                     </AuCheckbox>
                     <AuCheckbox
-                      @checked={{this.containsSensitivePersonalData}}
+                      @checked={{@process.containsSensitivePersonalData}}
                       @onChange={{this.setContainsSensitivePersonalData}}
                     >
-                      Bijzonderer persoonsgegevens
+                      Bijzondere persoonsgegevens
                     </AuCheckbox>
                   {{/if}}
                 </div>
@@ -82,7 +82,7 @@
               <:label>Motivering of bijkomende informatie</:label>
               <:content>
                 <AuTextarea
-                  value={{this.additionalInformation}}
+                  value={{@process.additionalInformation}}
                   {{on "input" this.setAdditionalInformation}}
                   rows="5"
                   @width="block"
@@ -92,20 +92,20 @@
             <Item>
               <:label>Informatieassets</:label>
               <:content>
-                {{#each this.informationAssets as |asset|}}
-                  <AuPill
-                    @actionIcon="cross"
-                    @onClickAction={{fn this.removeInformationAsset asset.id}}
-                  >
-                    {{asset.label}}
-                  </AuPill>
-                {{/each}}
+                <Process::IcrCard::AssetsMultipleSelect
+                  @selected={{this.draftInformationAssets}}
+                  @onChange={{this.setDraftInformationAssets}}
+                />
               </:content>
             </Item>
             <Item>
               <:label>Link naar maatregelen</:label>
               <:content>
-                Lorem
+                <AuInput
+                  value={{@process.hasControlMeasure}}
+                  {{on "input" this.setControlMeasure}}
+                  @width="block"
+                />
               </:content>
             </Item>
           </:right>
@@ -133,19 +133,25 @@
           <Item>
             <:label>Beschikbaarheid</:label>
             <:content>
-              <IcrScore @selectedScore={{this.availabilityScore}} />
+              <Process::IcrCard::Score
+                @selectedScore={{@process.availabilityScore}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Integriteit</:label>
             <:content>
-              <IcrScore @selectedScore={{this.integrityScore}} />
+              <Process::IcrCard::Score
+                @selectedScore={{@process.integrityScore}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Vertrouwelijkheid</:label>
             <:content>
-              <IcrScore @selectedScore={{this.confidentialityScore}} />
+              <Process::IcrCard::Score
+                @selectedScore={{@process.confidentialityScore}}
+              />
             </:content>
           </Item>
           <Item>
@@ -153,21 +159,21 @@
             <:content>
               <div class="au-u-flex au-u-flex--column au-u-flex--spaced-small">
                 <AuToggleSwitch
-                  @checked={{this.containsPersonalData}}
+                  @checked={{@process.containsPersonalData}}
                   @disabled="true"
                 />
-                {{#if this.containsPersonalData}}
+                {{#if @process.containsPersonalData}}
                   <AuCheckbox
-                    @checked={{this.containsProfessionalData}}
+                    @checked={{@process.containsProfessionalData}}
                     @disabled="true"
                   >
                     Professionele gegevens
                   </AuCheckbox>
                   <AuCheckbox
-                    @checked={{this.containsSensitivePersonalData}}
+                    @checked={{@process.containsSensitivePersonalData}}
                     @disabled="true"
                   >
-                    Bijzonderer persoonsgegevens
+                    Bijzondere persoonsgegevens
                   </AuCheckbox>
                 {{/if}}
               </div>
@@ -177,20 +183,32 @@
         <:right as |Item|>
           <Item>
             <:label>Motivering of bijkomende informatie</:label>
-            <:content>{{this.additionalInformation}}</:content>
+            <:content>{{or @process.additionalInformation "/"}}</:content>
           </Item>
           <Item>
             <:label>Informatieassets</:label>
             <:content>
-              {{#each this.informationAssets as |asset|}}
-                <AuPill>{{asset.label}}</AuPill>
-              {{/each}}
+              {{#if @process.informationAssets.length}}
+                <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
+                  {{#each @process.informationAssets as |asset|}}
+                    <AuPill>{{asset.label}}</AuPill>
+                  {{/each}}
+                </div>
+              {{else}}
+                /
+              {{/if}}
             </:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>
             <:content>
-              Lorem
+              {{#if @process.hasControlMeasure}}
+                <AuLinkExternal href="{{@process.hasControlMeasure}}">
+                  {{@process.hasControlMeasure}}
+                </AuLinkExternal>
+              {{else}}
+                /
+              {{/if}}
             </:content>
           </Item>
         </:right>

@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessStepSelectByTypeComponent extends Component {
   @service router;
@@ -17,8 +18,7 @@ export default class ProcessStepSelectByTypeComponent extends Component {
         size: 45,
       },
       sort: ':no-case:label',
-      'filter[scheme]':
-        'http://lblod.data.gift/concept-schemes/d4259f0b-6d6e-4a46-b9e1-114b774e0f1e',
+      'filter[:exact:scheme]': ENV.conceptSchemes.bpmnElementTypes,
     };
 
     const result = yield this.store.query('bpmn-element-type', query);

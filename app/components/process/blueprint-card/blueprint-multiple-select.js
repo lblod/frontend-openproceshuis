@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { task } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 
-export default class BlueprintMultipleSelectComponent extends Component {
+export default class ProcessIcrCardBlueprintMultipleSelectComponent extends Component {
   @service store;
 
   @task

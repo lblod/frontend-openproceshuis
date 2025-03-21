@@ -1,96 +1,165 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask, timeout } from 'ember-concurrency';
+import { dropTask } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
-export default class IcrCardComponent extends Component {
-  // Temp ICR
-  @tracked confidentialityScore = 1; // number
-  @tracked integrityScore = 2; // number
-  @tracked availabilityScore = 3; // number
-  @tracked containsPersonalData = true; // boolean
-  @tracked containsProfessionalData = true; // boolean
-  @tracked containsSensitivePersonalData = false; // boolean
-  @tracked additionalInformation =
-    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, nam temporibus, maxime totam commodi id inventore repudiandae optio quia laudantium dolorum. Eius quas ratione optio harum architecto atque accusamus voluptatem. Lorem ipsum dolor sit amet consectetur adipisicing elit.'; // string
-  @tracked hasControlMeasure; // url
-  @tracked informationAssets = [
-    { id: '5e89f94e-0569-4fd4-873c-dad047f14175', label: 'abonnement' },
-    { id: '076f0d37-52ba-4844-88fd-93a420d4b812', label: 'abonnementsplaats' },
-    {
-      id: 'ae79a6b7-ae35-4b82-91d6-55638711c3cf',
-      label: 'ambulante activiteit',
-    },
-  ]; // array
+export default class ProcessIcrCardComponent extends Component {
+  @service store;
+  @service toaster;
+
+  @tracked draftInformationAssets = [];
 
   @tracked edit = false;
   @tracked formIsValid = false;
 
   @action
   toggleEdit() {
+    this.draftInformationAssets = this.args.process?.informationAssets ?? [];
     this.edit = !this.edit;
+    this.validateForm();
   }
 
   @action
   resetModel() {
+    this.args.process?.rollbackAttributes();
+    this.draftInformationAssets = this.args.process?.informationAssets ?? [];
     this.edit = false;
+  }
+
+  validateForm() {
+    this.formIsValid =
+      this.args.process?.validate() &&
+      (this.args.process?.hasDirtyAttributes ||
+        this.draftInformationAssets.length <
+          this.args.process?.informationAssets?.length ||
+        this.draftInformationAssets.some((asset) => asset.isDraft));
   }
 
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-    yield timeout(100);
-  }
+    if (!this.args.process) return;
 
-  @action
-  setAvailabilityScore(value) {
-    this.availabilityScore = value;
-  }
+    if (this.formIsValid) {
+      this.args.process.modified = new Date();
 
-  @action
-  setIntegrityScore(value) {
-    this.integrityScore = value;
-  }
+      try {
+        this.args.process.informationAssets = yield Promise.all(
+          this.draftInformationAssets.map(async (asset) => {
+            if (!asset.id) {
+              const newAsset = this.store.createRecord('information-asset', {
+                label: asset.label,
+                scheme: ENV.conceptSchemes.informationAssets,
+              });
+              await newAsset.save();
+              return newAsset;
+            }
+            delete asset.isDraft;
+            return asset;
+          })
+        );
 
-  @action
-  setConfidentialityScore(value) {
-    this.confidentialityScore = value;
-  }
+        yield this.args.process.save();
 
-  @action
-  setContainsPersonalData(value) {
-    this.containsPersonalData = value;
+        this.edit = false;
 
-    if (!value) {
-      this.containsProfessionalData = false;
-      this.containsSensitivePersonalData = false;
+        this.toaster.success(
+          'Informatieclassificatie succesvol bijgewerkt',
+          'Gelukt!',
+          {
+            timeOut: 5000,
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        this.toaster.error(
+          'Informatieclassificatie kon niet worden bijgewerkt',
+          'Fout'
+        );
+        this.resetModel();
+      }
+    } else {
+      this.resetModel();
     }
   }
 
   @action
-  setContainsProfessionalData(value) {
-    if (!this.containsPersonalData) return;
+  setAvailabilityScore(value) {
+    if (!this.args.process) return;
+    this.args.process.availabilityScore = value;
+    this.validateForm();
+  }
 
-    this.containsProfessionalData = value;
+  @action
+  setIntegrityScore(value) {
+    if (!this.args.process) return;
+    this.args.process.integrityScore = value;
+    this.validateForm();
+  }
+
+  @action
+  setConfidentialityScore(value) {
+    if (!this.args.process) return;
+    this.args.process.confidentialityScore = value;
+    this.validateForm();
+  }
+
+  @action
+  setContainsPersonalData(value) {
+    if (!this.args.process) return;
+
+    this.args.process.containsPersonalData = value;
+
+    if (!value) {
+      this.args.process.containsProfessionalData = false;
+      this.args.process.containsSensitivePersonalData = false;
+    }
+
+    this.validateForm();
+  }
+
+  @action
+  setContainsProfessionalData(value) {
+    if (!this.args.process) return;
+    if (!this.args.process.containsPersonalData) return;
+
+    this.args.process.containsProfessionalData = value;
+    this.validateForm();
   }
 
   @action
   setContainsSensitivePersonalData(value) {
-    if (!this.containsPersonalData) return;
+    if (!this.args.process) return;
+    if (!this.args.process.containsPersonalData) return;
 
-    this.containsSensitivePersonalData = value;
-    if (value) this.containsProfessionalData = true;
+    this.args.process.containsSensitivePersonalData = value;
+    if (value) this.args.process.containsProfessionalData = true;
+    this.validateForm();
   }
 
   @action
   setAdditionalInformation(event) {
-    this.additionalInformation = event.target.value;
+    if (!this.args.process) return;
+    this.args.process.additionalInformation = event.target.value;
+    this.validateForm();
   }
 
   @action
-  removeInformationAsset(assetId) {
-    this.informationAssets = this.informationAssets.filter(
-      (asset) => asset.id !== assetId
-    );
+  setControlMeasure(event) {
+    if (!this.args.process) return;
+    this.args.process.hasControlMeasure = event.target.value;
+    this.validateForm();
+  }
+
+  @action
+  setDraftInformationAssets(event) {
+    const assetLabels = event.map((asset) => asset.label.toLowerCase());
+    const hasDuplicates = new Set(assetLabels).size !== assetLabels.length;
+    if (hasDuplicates) return;
+
+    this.draftInformationAssets = event;
+    this.validateForm();
   }
 }
