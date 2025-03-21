@@ -37,6 +37,14 @@ Router.map(function () {
     this.route('index', { path: '' });
   });
 
+  this.route(
+    'my-local-government',
+    { path: 'mijn-lokaal-bestuur' },
+    function () {
+      this.route('index', { path: '' });
+    }
+  );
+
   this.route('legal', { path: '/legaal' }, function () {
     this.route('disclaimer');
     this.route('cookiestatement', { path: '/cookieverklaring' });
