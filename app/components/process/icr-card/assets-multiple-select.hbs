@@ -1,0 +1,14 @@
+<div class={{if @error "ember-power-select--error"}}>
+  <PowerSelectMultiple
+    @searchEnabled="true"
+    @searchMessage="Typ om te zoeken"
+    @loadingMessage="Aan het laden ..."
+    @noMatchesMessage="Geen resultaten"
+    @search={{perform this.loadInformationAssetsTask}}
+    @selected={{@selected}}
+    @onChange={{@onChange}}
+    as |asset|
+  >
+    {{asset.label}}
+  </PowerSelectMultiple>
+</div>

@@ -27,7 +27,7 @@
             <Item>
               <:label>Gekoppeld aan</:label>
               <:content>
-                <BlueprintMultipleSelect
+                <Process::BlueprintCard::BlueprintMultipleSelect
                   @selected={{@process.linkedBlueprints}}
                   @onChange={{this.setLinkedBlueprints}}
                 />

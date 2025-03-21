@@ -4,6 +4,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 import {
   isOnlyWhitespace,
   isEmptyOrEmail,
+  isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
 
 @modelValidator
@@ -15,6 +16,14 @@ export default class ProcessModel extends Model {
   @attr('iso-date') modified;
   @attr('string') status;
   @attr('boolean') isBlueprint;
+  @attr('number') confidentialityScore;
+  @attr('number') integrityScore;
+  @attr('number') availabilityScore;
+  @attr('boolean') containsPersonalData;
+  @attr('boolean') containsProfessionalData;
+  @attr('boolean') containsSensitivePersonalData;
+  @attr('string') additionalInformation;
+  @attr('string') hasControlMeasure;
 
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @belongsTo('process-statistic', { inverse: 'process', async: false })
@@ -22,6 +31,8 @@ export default class ProcessModel extends Model {
   @hasMany('file', { inverse: 'processes', async: false })
   files;
   @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
+  @hasMany('information-asset', { inverse: null, async: false })
+  informationAssets;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
   linkedBlueprints;
   @hasMany('group', { inverse: null, async: false })
@@ -42,6 +53,14 @@ export default class ProcessModel extends Model {
     },
     email: {
       custom: (_, value) => isEmptyOrEmail(value),
+    },
+    additionalInformation: {
+      length: {
+        maximum: 3000,
+      },
+    },
+    hasControlMeasure: {
+      custom: (_, value) => isEmptyOrUrl(value),
     },
   };
 
