@@ -35,6 +35,8 @@ export default class ProcessModel extends Model {
   informationAssets;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
   linkedBlueprints;
+  @hasMany('group', { inverse: null, async: false })
+  users;
 
   validations = {
     title: {
