@@ -32,11 +32,6 @@ export default class MyLocalGovernmentIndexRoute extends Route {
       },
       include:
         'publisher,users,publisher.primary-site,publisher.primary-site.contacts,publisher.classification',
-      filter: {
-        users: {
-          id: this.currentSession.group.id,
-        },
-      },
     };
 
     if (params.sort) {
@@ -69,6 +64,8 @@ export default class MyLocalGovernmentIndexRoute extends Route {
       query['filter[is-blueprint]'] = params.blueprint;
     }
 
+    query['filter[:or:][users][id]'] = this.currentSession.group.id;
+    query['filter[:or:][publisher][id]'] = this.currentSession.group.id;
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
     return yield this.store.query('process', query);
