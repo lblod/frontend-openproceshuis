@@ -11,12 +11,15 @@
       lokale beheerder (ICT).
     </AuAlert>
   {{/if}}
+
   <AuBodyContainer class="au-u-background-gray-100">
     <section class="c-home">
       <div class="au-o-flow">
         <AuContent>
-          <AuHeading @level="1" @skin="2">Welkom bij Open Proces Huis, jouw
-            centrale bron voor het ontdekken en delen van processen.</AuHeading>
+          <AuHeading @level="1" @skin="2">
+            Welkom bij Open Proces Huis, jouw centrale bron voor het ontdekken
+            en delen van processen.
+          </AuHeading>
           <div class="c-home__visual">
             <img
               src="/assets/images/homepage-visual.svg"
@@ -25,13 +28,15 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <p>Raadpleeg, doorzoek en upload processen als originele BPMN- of
+          <p>
+            Raadpleeg, doorzoek en upload processen als originele BPMN- of
             Visiobestanden naar het Open Proces Huis, de centrale bron voor
-            lokale besturen in Vlaanderen om processen te ontdekken en te delen.</p>
+            lokale besturen in Vlaanderen om processen te ontdekken en te delen.
+          </p>
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
-            {{#if this.currentSession.canEdit}}
+            {{#if this.currentSession.isAdmin}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuCard @flex={{true}} as |c|>
                   <c.header
@@ -39,9 +44,10 @@
                     @badgeIcon="sitemap"
                     @badgeSize="small"
                   >
-                    <AuHeading @level="2" @skin="4">
-                      Processenbibliotheek
-                    </AuHeading>
+                    <AuHeading
+                      @level="2"
+                      @skin="4"
+                    >Processenbibliotheek</AuHeading>
                   </c.header>
                   <c.content>
                     <AuList @divider={{true}} as |Item|>
@@ -62,9 +68,7 @@
                     @badgeIcon="upload"
                     @badgeSize="small"
                   >
-                    <AuHeading @level="2" @skin="4">
-                      Deel jouw processen
-                    </AuHeading>
+                    <AuHeading @level="2" @skin="4">Deel jouw processen</AuHeading>
                   </c.header>
                   <c.content>
                     <AuList @divider={{true}} as |Item|>
@@ -80,12 +84,6 @@
                   </c.footer>
                 </AuCard>
               </div>
-            {{else}}
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuLink @skin="button" @route="auth.login">Log in</AuLink>
-              </div>
-            {{/if}}
-            {{#if this.currentSession.isAdmin}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuCard @flex={{true}} as |c|>
                   <c.header
@@ -93,9 +91,7 @@
                     @badgeIcon="upload"
                     @badgeSize="small"
                   >
-                    <AuHeading @level="2" @skin="4">
-                      Administratie
-                    </AuHeading>
+                    <AuHeading @level="2" @skin="4">Administratie</AuHeading>
                   </c.header>
                   <c.content>
                     <AuList @divider={{true}} as |Item|>
@@ -116,6 +112,58 @@
                     </div>
                   </c.footer>
                 </AuCard>
+              </div>
+            {{else if this.currentSession.canEdit}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="sitemap"
+                    @badgeSize="small"
+                  >
+                    <AuHeading
+                      @level="2"
+                      @skin="4"
+                    >Processenbibliotheek</AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Raadpleeg processen</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink @skin="button" @route="processes">Toon Processen</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="upload"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">Deel jouw processen</AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Upload processen</Item>
+                      <Item>Beheer gedeelde processen</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink @skin="button" @route="shared-processes">Deel jouw
+                        processen</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{else}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuLink @skin="button" @route="auth.login">Log in</AuLink>
               </div>
             {{/if}}
           </div>
