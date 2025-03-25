@@ -31,7 +31,7 @@
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
-            {{#if this.currentSession.canEdit}}
+            {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuCard @flex={{true}} as |c|>
                   <c.header
