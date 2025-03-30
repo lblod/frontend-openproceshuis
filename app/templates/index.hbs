@@ -1,5 +1,5 @@
 <LayoutHome>
-  {{#if this.currentSession.canOnlyReadWhileAuthenticated}}
+  {{#if this.currentSession.readOnly}}
     <AuAlert
       @skin="warning"
       @icon="alert-triangle"
@@ -31,7 +31,7 @@
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
-            {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
+            {{#if this.currentSession.isAuthenticated}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuCard @flex={{true}} as |c|>
                   <c.header
@@ -55,6 +55,8 @@
                   </c.footer>
                 </AuCard>
               </div>
+            {{/if}}
+            {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuCard @flex={{true}} as |c|>
                   <c.header
@@ -80,45 +82,45 @@
                   </c.footer>
                 </AuCard>
               </div>
-              {{#if this.currentSession.isAdmin}}
-                <div class="au-o-grid__item au-u-1-2@medium">
-                  <AuCard @flex={{true}} as |c|>
-                    <c.header
-                      @badgeSkin="brand"
-                      @badgeIcon="upload"
-                      @badgeSize="small"
-                    >
-                      <AuHeading @level="2" @skin="4">
-                        Administratie
-                      </AuHeading>
-                    </c.header>
-                    <c.content>
-                      <AuList @divider={{true}} as |Item|>
-                        <Item>Raadpleeg rapporten</Item>
-                        <Item>Bevraag de databank</Item>
-                      </AuList>
-                    </c.content>
-                    <c.footer>
-                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                        <AuLink
-                          @skin="button"
-                          @route="reporting"
-                        >Rapportering</AuLink>
-                        <AuLink
-                          @skin="button-secondary"
-                          @route="sparql"
-                        >SPARQL</AuLink>
-                      </div>
-                    </c.footer>
-                  </AuCard>
-                </div>
-              {{/if}}
-            {{else}}
+            {{/if}}
+            {{#if this.currentSession.isAdmin}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="upload"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Administratie
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Raadpleeg rapporten</Item>
+                      <Item>Bevraag de databank</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink
+                        @skin="button"
+                        @route="reporting"
+                      >Rapportering</AuLink>
+                      <AuLink
+                        @skin="button-secondary"
+                        @route="sparql"
+                      >SPARQL</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
+            {{#unless this.currentSession}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuLink @skin="button" @route="auth.login">Log in</AuLink>
               </div>
-            {{/if}}
-
+            {{/unless}}
           </div>
           <p class="au-u-text-center">
             <AuLinkExternal
