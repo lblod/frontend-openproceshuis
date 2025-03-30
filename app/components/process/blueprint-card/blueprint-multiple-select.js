@@ -1,16 +1,18 @@
 import Component from '@glimmer/component';
 import { task } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessIcrCardBlueprintMultipleSelectComponent extends Component {
   @service store;
 
   @task
   *loadBlueprintProcessesTask(params) {
-    const query = {
+    let query = {
+      title: params,
       filter: {
         'is-blueprint': true,
-        title: params,
+        ':not:status': ENV.resourceStates.archived,
       },
     };
 
