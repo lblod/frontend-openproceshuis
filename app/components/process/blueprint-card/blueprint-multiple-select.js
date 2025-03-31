@@ -8,9 +8,9 @@ export default class ProcessIcrCardBlueprintMultipleSelectComponent extends Comp
 
   @task
   *loadBlueprintProcessesTask(params) {
-    let query = {
-      title: params,
+    const query = {
       filter: {
+        title: params,
         'is-blueprint': true,
         ':not:status': ENV.resourceStates.archived,
       },
