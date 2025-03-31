@@ -42,6 +42,5 @@ As with any Ember project, [router.js](./app/router.js) holds all possible route
 
 - `/mock-login`: log in using a mock user (every user is part of a _lokaal bestuur_)
 - `/processen`: list all processes of all _lokale besturen_
-- `/processen/<id>`: consult the details, the latest BPMN file, the latest BPMN file's process steps, all BPMN file versions, and attachments of a specific process
+- `/processen/<id>`: consult the details, the latest BPMN file, all BPMN file versions, and attachments of a specific process
 - `/gedeelde-processen`: list all processes of the current user's _lokaal bestuur_ and upload a new one (a BPMN file is always the starting point for the creation of a process)
-- `/processtappen`: list all process steps of all _lokale besturen_ (process steps correspond to the BPMN elements found in a BPMN file)
