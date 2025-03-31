@@ -18,8 +18,7 @@ export default class SharedProcessesIndexRoute extends Route {
   async beforeModel(transition) {
     this.session.requireAuthentication(transition, 'index');
 
-    if (this.currentSession.canOnlyRead)
-      this.router.transitionTo('unauthorized');
+    if (this.currentSession.readOnly) this.router.transitionTo('unauthorized');
   }
 
   async model(params) {

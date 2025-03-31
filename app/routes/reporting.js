@@ -4,11 +4,20 @@ import { keepLatestTask } from 'ember-concurrency';
 
 export default class ReportingRoute extends Route {
   @service store;
+  @service currentSession;
+  @service session;
+  @service router;
 
   queryParams = {
     page: { refreshModel: true },
     sort: { refreshModel: true },
   };
+
+  async beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'index');
+
+    if (!this.currentSession.isAdmin) this.router.transitionTo('unauthorized');
+  }
 
   async model(params) {
     return {

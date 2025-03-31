@@ -6,6 +6,8 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class MyLocalGovernmentIndexRoute extends Route {
   @service currentSession;
   @service store;
+  @service session;
+  @service router;
 
   queryParams = {
     page: { refreshModel: true },
@@ -15,6 +17,12 @@ export default class MyLocalGovernmentIndexRoute extends Route {
     group: { refreshModel: true, replace: true },
     blueprint: { refreshModel: true },
   };
+
+  async beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'index');
+
+    if (this.currentSession.readOnly) this.router.transitionTo('unauthorized');
+  }
 
   async model(params) {
     return {
