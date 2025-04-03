@@ -1,7 +1,10 @@
 import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
-const EDITOR_ROLES = ['LoketLB-OpenProcesHuisGebruiker'];
+const EDITOR_ROLES = [
+  'LoketLB-OpenProcesHuisGebruiker',
+  'LoketLB-OpenProcesHuisAfnemer',
+];
 const ADMIN_ROLE = 'LoketLB-admin';
 
 export default class CurrentSessionService extends Service {
