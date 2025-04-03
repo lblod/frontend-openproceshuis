@@ -2,6 +2,7 @@ import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 
 export default class GroupModel extends Model {
   @attr name;
+  @attr identifier;
   @belongsTo('site', { inverse: null, async: false }) primarySite;
   @belongsTo('administrative-unit-classification-code', {
     async: false,

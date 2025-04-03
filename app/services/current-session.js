@@ -45,12 +45,26 @@ export default class CurrentSessionService extends Service {
     return this.roles.some((role) => EDITOR_ROLES.includes(role));
   }
 
+  get hasIcrRole() {
+    // Agentschap Binnenalands Bestuur or Digitaal Vlaanderen
+    return ['OVO001835', 'OVO002949'].includes(this.group.identifier);
+  }
+
   get canEdit() {
     return this.isAuthenticated && this.hasEditorRole;
   }
 
+  get canEditIcr() {
+    return this.isAuthenticated && this.hasIcrRole;
+  }
+
   get readOnly() {
-    return !this.isAdmin && this.isAuthenticated && !this.hasEditorRole;
+    return (
+      this.isAuthenticated &&
+      !this.isAdmin &&
+      !this.hasEditorRole &&
+      !this.hasIcrRole
+    );
   }
 
   get isAdmin() {
