@@ -146,7 +146,7 @@
                   <AuToggleSwitch
                     @onChange={{this.toggleBlueprintStatus}}
                     @checked={{this.process.isBlueprint}}
-                    @disabled={{not this.canEdit}}
+                    @disabled={{not this.currentSession.canEditIcr}}
                   />
                 </:content>
               </Item>
@@ -371,7 +371,7 @@
     {{! ICR }}
     <div class="au-o-grid__item">
       {{#if this.process.isBlueprint}}
-        <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
+        <Process::IcrCard @process={{this.process}} />
       {{else}}
         <Process::BlueprintCard
           @canEdit={{this.canEdit}}

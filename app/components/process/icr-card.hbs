@@ -119,7 +119,7 @@
       Informatieclassificatie
     </:title>
     <:header>
-      {{#if @canEdit}}
+      {{#if this.currentSession.canEditIcr}}
         <AuButton
           @skin="naked"
           @icon="pencil"

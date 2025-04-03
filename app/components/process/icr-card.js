@@ -8,6 +8,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class ProcessIcrCardComponent extends Component {
   @service store;
   @service toaster;
+  @service currentSession;
 
   @tracked draftInformationAssets = [];
 
