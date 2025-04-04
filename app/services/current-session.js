@@ -1,11 +1,13 @@
 import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 const EDITOR_ROLES = [
   'LoketLB-OpenProcesHuisGebruiker',
   'LoketLB-OpenProcesHuisAfnemer',
 ];
 const ADMIN_ROLE = 'LoketLB-admin';
+const ABB_DV_IDENTIFIERS = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
 
 export default class CurrentSessionService extends Service {
   @service session;
@@ -48,12 +50,16 @@ export default class CurrentSessionService extends Service {
     return this.roles.some((role) => EDITOR_ROLES.includes(role));
   }
 
+  get isAbbOrDv() {
+    return ABB_DV_IDENTIFIERS.includes(this.group?.identifier);
+  }
+
   get canEdit() {
     return this.isAuthenticated && this.hasEditorRole;
   }
 
   get readOnly() {
-    return !this.isAdmin && this.isAuthenticated && !this.hasEditorRole;
+    return this.isAuthenticated && !this.isAdmin && !this.hasEditorRole;
   }
 
   get isAdmin() {
