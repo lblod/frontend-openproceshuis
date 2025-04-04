@@ -85,4 +85,9 @@ export default class ProcessModel extends Model {
     );
     return diagramsSorted[0];
   }
+
+  get isPublishedByAbbOrDv() {
+    const ovoCodes = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
+    return ovoCodes.includes(this.publisher?.identifier);
+  }
 }

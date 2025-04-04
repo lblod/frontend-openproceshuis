@@ -124,18 +124,12 @@ export default class ProcessesProcessIndexController extends Controller {
   // Other
 
   get canEdit() {
-    const publishedByAbb =
-      this.process?.publisher?.identifier === ENV.ovoCodes.abb;
-    const publishedByDv =
-      this.process?.publisher?.identifier === ENV.ovoCodes.dv;
-
     return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
       this.process?.publisher &&
       (this.process.publisher.id === this.currentSession.group.id ||
-        (publishedByAbb && this.currentSession.isAbbOrDv) ||
-        (publishedByDv && this.currentSession.isAbbOrDv))
+        (this.process.isPublishedByAbbOrDv && this.currentSession.isAbbOrDv))
     );
   }
 
