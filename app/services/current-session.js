@@ -50,25 +50,16 @@ export default class CurrentSessionService extends Service {
     return this.roles.some((role) => EDITOR_ROLES.includes(role));
   }
 
-  get hasIcrRole() {
-    return ABB_DV_IDENTIFIERS.includes(this.group.identifier);
+  get isAbbOrDv() {
+    return ABB_DV_IDENTIFIERS.includes(this.group?.identifier);
   }
 
   get canEdit() {
     return this.isAuthenticated && this.hasEditorRole;
   }
 
-  get canEditIcr() {
-    return this.isAuthenticated && this.hasIcrRole;
-  }
-
   get readOnly() {
-    return (
-      this.isAuthenticated &&
-      !this.isAdmin &&
-      !this.hasEditorRole &&
-      !this.hasIcrRole
-    );
+    return this.isAuthenticated && !this.isAdmin && !this.hasEditorRole;
   }
 
   get isAdmin() {
