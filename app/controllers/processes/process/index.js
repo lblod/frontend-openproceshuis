@@ -128,7 +128,8 @@ export default class ProcessesProcessIndexController extends Controller {
       this.currentSession.canEdit &&
       this.currentSession.group &&
       this.process?.publisher &&
-      this.process.publisher.id === this.currentSession.group.id
+      (this.process.publisher.id === this.currentSession.group.id ||
+        (this.process.isPublishedByAbbOrDv && this.currentSession.isAbbOrDv))
     );
   }
 
