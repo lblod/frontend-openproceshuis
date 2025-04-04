@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 
 const EDITOR_ROLES = ['LoketLB-OpenProcesHuisGebruiker'];
 const ADMIN_ROLE = 'LoketLB-admin';
+const ABB_DV_IDENTIFIERS = ['OVO001835', 'OVO002949'];
 
 export default class CurrentSessionService extends Service {
   @service session;
@@ -46,8 +47,7 @@ export default class CurrentSessionService extends Service {
   }
 
   get hasIcrRole() {
-    // Agentschap Binnenalands Bestuur or Digitaal Vlaanderen
-    return ICR_ROLES.includes(this.group.identifier);
+    return ABB_DV_IDENTIFIERS.includes(this.group.identifier);
   }
 
   get canEdit() {
