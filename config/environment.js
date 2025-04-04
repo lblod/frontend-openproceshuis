@@ -21,6 +21,11 @@ module.exports = function (environment) {
 
     appName: 'Open Proces Huis',
 
+    ovoCodes: {
+      abb: 'OVO001835',
+      dv: 'OVO002949',
+    },
+
     conceptSchemes: {
       bpmnElementTypes:
         'http://lblod.data.gift/concept-schemes/d4259f0b-6d6e-4a46-b9e1-114b774e0f1e',

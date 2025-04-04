@@ -1,12 +1,13 @@
 import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 const EDITOR_ROLES = [
   'LoketLB-OpenProcesHuisGebruiker',
   'LoketLB-OpenProcesHuisAfnemer',
 ];
 const ADMIN_ROLE = 'LoketLB-admin';
-const ABB_DV_IDENTIFIERS = ['OVO001835', 'OVO002949'];
+const ABB_DV_IDENTIFIERS = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
 
 export default class CurrentSessionService extends Service {
   @service session;
