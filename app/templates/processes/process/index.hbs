@@ -140,16 +140,18 @@
                   />
                 </:content>
               </Item>
-              <Item>
-                <:label>Blauwdruk</:label>
-                <:content>
-                  <AuToggleSwitch
-                    @onChange={{this.toggleBlueprintStatus}}
-                    @checked={{this.process.isBlueprint}}
-                    @disabled={{not this.canEdit}}
-                  />
-                </:content>
-              </Item>
+              {{#if this.process.isPublishedByAbbOrDv}}
+                <Item>
+                  <:label>Blauwdruk</:label>
+                  <:content>
+                    <AuToggleSwitch
+                      @onChange={{this.toggleBlueprintStatus}}
+                      @checked={{this.process.isBlueprint}}
+                      @disabled={{not this.canEdit}}
+                    />
+                  </:content>
+                </Item>
+              {{/if}}
             </:right>
           </Card.Columns>
         </:card>
@@ -242,15 +244,17 @@
                 />
               </:content>
             </Item>
-            <Item>
-              <:label>Blauwdruk</:label>
-              <:content>
-                <AuToggleSwitch
-                  @disabled={{not this.isEditing}}
-                  @checked={{this.process.isBlueprint}}
-                />
-              </:content>
-            </Item>
+            {{#if this.process.isPublishedByAbbOrDv}}
+              <Item>
+                <:label>Blauwdruk</:label>
+                <:content>
+                  <AuToggleSwitch
+                    @disabled={{not this.isEditing}}
+                    @checked={{this.process.isBlueprint}}
+                  />
+                </:content>
+              </Item>
+            {{/if}}
           </:right>
         </Card.Columns>
       </:card>
@@ -370,7 +374,7 @@
 
     {{! ICR }}
     <div class="au-o-grid__item">
-      {{#if this.process.isBlueprint}}
+      {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
         <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
       {{else}}
         <Process::BlueprintCard
