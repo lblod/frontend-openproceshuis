@@ -47,7 +47,7 @@ export default class CurrentSessionService extends Service {
 
   get hasIcrRole() {
     // Agentschap Binnenalands Bestuur or Digitaal Vlaanderen
-    return ['OVO001835', 'OVO002949'].includes(this.group.identifier);
+    return ICR_ROLES.includes(this.group.identifier);
   }
 
   get canEdit() {
