@@ -27,13 +27,16 @@ export default class ProcessSelectByClassificationComponent extends Component {
     );
     this.classifications = result;
 
-    const selectedClassificationLabel =
-      this.router.currentRoute.queryParams.classification;
-    if (selectedClassificationLabel) {
-      const selectedClassification = this.classifications.find(
-        (classification) => classification.label === selectedClassificationLabel
+    const classificationsParam =
+      this.router.currentRoute.queryParams.classifications;
+    if (classificationsParam) {
+      const classificationLabels = classificationsParam.split(',');
+      const selectedClassifications = this.classifications.filter(
+        (classification) => classificationLabels.includes(classification.label)
       );
-      this.args.onChange(selectedClassification);
+      if (selectedClassifications.length > 0) {
+        this.args.onChange(selectedClassifications);
+      }
     }
   }
 }

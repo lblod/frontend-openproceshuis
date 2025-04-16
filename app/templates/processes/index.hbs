@@ -28,8 +28,8 @@
             <AuLabel for="filter-classification">Type bestuur</AuLabel>
             <ProcessSelectByClassification
               @id="filter-classification"
-              @selected={{this.selectedClassification}}
-              @onChange={{this.setClassification}}
+              @selected={{this.selectedClassifications}}
+              @onChange={{this.setClassifications}}
               class="grow"
             />
           </div>
@@ -100,7 +100,7 @@
           <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
-            @label="Type bestuur"
+            @label="Relevant voor type bestuur"
           />
           <AuDataTableThSortable
             @field="organization"

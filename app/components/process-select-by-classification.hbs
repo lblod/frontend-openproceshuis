@@ -1,7 +1,6 @@
 <div class={{if @error "ember-power-select--error"}} ...attributes>
-  <PowerSelect
+  <PowerSelectMultiple
     {{did-insert this.loadProcessClassificationsTask.perform}}
-    @allowClear={{true}}
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @options={{this.classifications}}
@@ -11,5 +10,5 @@
     as |classification|
   >
     {{classification.label}}
-  </PowerSelect>
+  </PowerSelectMultiple>
 </div>
