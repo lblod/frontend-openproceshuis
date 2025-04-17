@@ -38,7 +38,7 @@ export default class ProcessModel extends Model {
   @hasMany('group', { inverse: null, async: false })
   users;
   @hasMany('administrative-unit-classification-code', {
-    inverse: null,
+    inverse: 'processes',
     async: false,
   })
   relevantAdministrativeUnits;
