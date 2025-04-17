@@ -140,7 +140,11 @@
               {{/if}}
             </td>
 
-            <td>{{process.publisher.classification.label}}</td>
+            <td>{{#each
+                process.relevantAdministrativeUnits
+                as |relevantAdministrativeUnit|
+              }}<ul><li>{{relevantAdministrativeUnit.label}}</li></ul>
+              {{/each}}</td>
             <td>{{process.publisher.name}}</td>
           </c.body>
         {{/if}}
