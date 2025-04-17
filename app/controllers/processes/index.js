@@ -57,7 +57,6 @@ export default class ProcessesIndexController extends Controller {
     this.selectedClassifications = selection;
     this.classifications = selection
       .map((classification) => {
-        console.log('classification', classification);
         return classification.id;
       })
       .join(',');
