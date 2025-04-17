@@ -11,32 +11,41 @@ export default class ProcessSelectByClassificationComponent extends Component {
 
   @restartableTask
   *loadProcessClassificationsTask() {
-    const query = {
-      page: {
-        number: 0,
-        size: 20,
-      },
-      'filter[:has:groups]': true,
-      'filter[groups][:has:processes]': true,
+    const baseQuery = {
+      page: { number: 0, size: 100 },
       sort: ':no-case:label',
     };
 
-    const result = yield this.store.query(
-      'administrative-unit-classification-code',
-      query
-    );
-    this.classifications = result;
+    const publisherGroupQuery = {
+      ...baseQuery,
+      'filter[groups][:has:processes]': true,
+    };
 
-    const classificationsParam =
-      this.router.currentRoute.queryParams.classifications;
-    if (classificationsParam) {
-      const classificationLabels = classificationsParam.split(',');
-      const selectedClassifications = this.classifications.filter(
-        (classification) => classificationLabels.includes(classification.label)
-      );
-      if (selectedClassifications.length > 0) {
-        this.args.onChange(selectedClassifications);
-      }
-    }
+    const relevantUnitQuery = {
+      ...baseQuery,
+      'filter[:has:processes]': true,
+    };
+
+    const [fromPublisherGroups, fromRelevantUnits] = yield Promise.all([
+      this.store.query(
+        'administrative-unit-classification-code',
+        publisherGroupQuery
+      ),
+      this.store.query(
+        'administrative-unit-classification-code',
+        relevantUnitQuery
+      ),
+    ]);
+
+    const merged = [
+      ...fromPublisherGroups.toArray(),
+      ...fromRelevantUnits.toArray(),
+    ];
+
+    const uniqueById = Array.from(
+      new Map(merged.map((item) => [item.id, item])).values()
+    );
+
+    this.classifications = uniqueById;
   }
 }

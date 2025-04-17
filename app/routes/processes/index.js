@@ -54,7 +54,10 @@ export default class ProcessesIndexRoute extends Route {
     }
 
     if (params.classifications) {
-      query['filter[publisher][classification][:id:]'] = params.classifications;
+      query['filter[:or:][publisher][classification][:id:]'] =
+        params.classifications;
+      query['filter[:or:][relevant-administrative-units][:id:]'] =
+        params.classifications;
     }
 
     if (params.group) query['filter[publisher][:exact:name]'] = params.group;
