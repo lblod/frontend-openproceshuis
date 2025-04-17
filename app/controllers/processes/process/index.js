@@ -45,6 +45,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked draftIpdcProducts = undefined;
   @tracked processUserChanged = undefined;
   @tracked originalUsers = undefined;
+  @tracked relevantAdministrativeUnitsChanged = false;
 
   // Process
 
@@ -391,6 +392,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.process?.rollbackAttributes();
     this.draftIpdcProducts = this.process?.ipdcProducts;
     this.linkedBlueprintsChanged = false;
+    this.relevantAdministrativeUnitsChanged = false;
 
     // Restore original users state when canceling form
     if (this.processUserChanged && this.originalUsers) {
@@ -434,12 +436,20 @@ export default class ProcessesProcessIndexController extends Controller {
     this.validateForm();
   }
 
+  @action
+  setRelevantAdministrativeUnit(selection) {
+    this.process.relevantAdministrativeUnits = selection;
+    this.relevantAdministrativeUnitsChanged = true;
+    this.validateForm();
+  }
+
   validateForm() {
     this.formIsValid =
       this.process?.validate() &&
       (this.process?.hasDirtyAttributes ||
         this.linkedBlueprintsChanged ||
         this.processUserChanged ||
+        this.relevantAdministrativeUnitsChanged ||
         this.draftIpdcProducts?.length < this.process?.ipdcProducts?.length ||
         this.draftIpdcProducts?.some((product) => product.isDraft));
   }
