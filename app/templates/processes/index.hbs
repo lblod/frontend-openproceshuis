@@ -118,19 +118,21 @@
           </TableMessage>
         {{else}}
           <c.body as |process|>
-            <td
-              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-            >
-              {{#if process.isBlueprint}}
-                <CustomIcon @icon={{"blueprint"}} @size="large" />
-              {{/if}}
-              <LinkTo
-                class="au-c-link"
-                @model={{process.id}}
-                @route="processes.process"
+            <td>
+              <div
+                class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
               >
-                {{process.title}}
-              </LinkTo>
+                {{#if process.isBlueprint}}
+                  <CustomIcon @icon={{"blueprint"}} @size="large" />
+                {{/if}}
+                <LinkTo
+                  class="au-c-link"
+                  @model={{process.id}}
+                  @route="processes.process"
+                >
+                  {{process.title}}
+                </LinkTo>
+              </div>
             </td>
             <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.modified}}</td>
@@ -140,11 +142,13 @@
               {{/if}}
             </td>
 
-            <td>{{#each
-                process.relevantAdministrativeUnits
-                as |relevantAdministrativeUnit|
-              }}<ul><li>{{relevantAdministrativeUnit.label}}</li></ul>
-              {{/each}}</td>
+            <td><ul>
+                <li>{{process.publisher.classification.label}}</li>
+                {{#each
+                  process.relevantAdministrativeUnits
+                  as |relevantAdministrativeUnit|
+                }}<li>{{relevantAdministrativeUnit.label}}</li>
+                {{/each}}</ul></td>
             <td>{{process.publisher.name}}</td>
           </c.body>
         {{/if}}
