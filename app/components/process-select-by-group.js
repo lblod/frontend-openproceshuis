@@ -25,6 +25,11 @@ export default class ProcessSelectByGroupComponent extends Component {
     if (this.args.classification)
       query['filter[classification][:exact:label]'] = this.args.classification;
 
+    if (this.args.publisher) {
+      query['filter[:or:][processes][publisher][id]'] = this.args.publisher;
+      query['filter[:or:][processes][users][id]'] = this.args.publisher;
+    }
+
     const result = yield this.store.query('group', query);
 
     if (result) return [...new Set(result.map((r) => r.name))];
