@@ -11,41 +11,27 @@ export default class ProcessSelectByClassificationComponent extends Component {
 
   @restartableTask
   *loadProcessClassificationsTask() {
-    const baseQuery = {
-      page: { number: 0, size: 100 },
+    const query = {
+      page: {
+        number: 0,
+        size: 20,
+      },
       sort: ':no-case:label',
     };
 
-    const publisherGroupQuery = {
-      ...baseQuery,
-      'filter[groups][:has:processes]': true,
-    };
+    if (this.args.publisher) {
+      query['filter[:or:][processes][publisher][id]'] = this.args.publisher;
+      query['filter[:or:][processes][users][id]'] = this.args.publisher;
+      query['filter[:or:][groups][:has:processes]'] = true;
+    } else {
+      query['filter[:or:][groups][:has:processes]'] = true;
+      query['filter[:or:][:has:processes]'] = true;
+    }
 
-    const relevantUnitQuery = {
-      ...baseQuery,
-      'filter[:has:processes]': true,
-    };
-
-    const [fromPublisherGroups, fromRelevantUnits] = yield Promise.all([
-      this.store.query(
-        'administrative-unit-classification-code',
-        publisherGroupQuery
-      ),
-      this.store.query(
-        'administrative-unit-classification-code',
-        relevantUnitQuery
-      ),
-    ]);
-
-    const merged = [
-      ...fromPublisherGroups.toArray(),
-      ...fromRelevantUnits.toArray(),
-    ];
-
-    const uniqueById = Array.from(
-      new Map(merged.map((item) => [item.id, item])).values()
+    const result = yield this.store.query(
+      'administrative-unit-classification-code',
+      query
     );
-
-    this.classifications = uniqueById;
+    this.classifications = result;
   }
 }

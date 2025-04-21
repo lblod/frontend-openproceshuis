@@ -21,6 +21,7 @@
               @id="filter-title"
               @selected={{this.title}}
               @onChange={{this.setTitle}}
+              @publisher={{this.currentSession.group.id}}
               class="grow"
             />
           </div>
@@ -30,6 +31,7 @@
               @id="filter-classification"
               @selected={{this.selectedClassification}}
               @onChange={{this.setClassification}}
+              @publisher={{this.currentSession.group.id}}
               class="grow"
             />
           </div>
@@ -91,7 +93,7 @@
           <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
-            @label="Type bestuur"
+            @label="Relevant voor type bestuur"
           />
           <AuDataTableThSortable
             @field="organization"
@@ -129,7 +131,14 @@
               </LinkTo>
             </td>
             <td>{{or (truncate process.description 150 true) "/"}}</td>
-            <td>{{process.publisher.classification.label}}</td>
+            <td>
+              <ul>
+                <li>{{process.publisher.classification.label}}</li>
+                {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+                  <li>{{adminUnit.label}}</li>
+                {{/each}}
+              </ul>
+            </td>
             <td>{{process.publisher.name}}</td>
             <td>{{date-format process.modified}}</td>
 
