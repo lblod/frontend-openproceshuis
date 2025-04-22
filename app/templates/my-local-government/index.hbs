@@ -7,41 +7,12 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
-            <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
-            <AuCheckbox
-              id="filter-blueprint"
-              @checked={{this.isBlueprint}}
-              @onChange={{this.toggleBlueprintFilter}}
-            />
-          </div>
           <div>
             <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
               @id="filter-title"
               @selected={{this.title}}
               @onChange={{this.setTitle}}
-              @publisher={{this.currentSession.group.id}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-classification">Type bestuur</AuLabel>
-            <ProcessSelectByClassification
-              @id="filter-classification"
-              @selected={{this.selectedClassification}}
-              @onChange={{this.setClassification}}
-              @publisher={{this.currentSession.group.id}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-group">Naam bestuur</AuLabel>
-            <ProcessSelectByGroup
-              @id="filter-group"
-              @selected={{this.group}}
-              @onChange={{this.setGroup}}
-              @classification={{this.classification}}
               @publisher={{this.currentSession.group.id}}
               class="grow"
             />

@@ -15,20 +15,15 @@ export default class ProcessSelectByGroupComponent extends Component {
       page: {
         size: 50,
       },
-      'filter[:has:processes]': true,
       filter: {
         name: searchParams,
+        ':has:processes': true,
       },
       sort: ':no-case:name',
     };
 
     if (this.args.classification)
       query['filter[classification][:exact:label]'] = this.args.classification;
-
-    if (this.args.publisher) {
-      query['filter[:or:][processes][publisher][id]'] = this.args.publisher;
-      query['filter[:or:][processes][users][id]'] = this.args.publisher;
-    }
 
     const result = yield this.store.query('group', query);
 

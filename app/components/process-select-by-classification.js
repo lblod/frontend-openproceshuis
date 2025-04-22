@@ -19,14 +19,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
       sort: ':no-case:label',
     };
 
-    if (this.args.publisher) {
-      query['filter[:or:][processes][publisher][id]'] = this.args.publisher;
-      query['filter[:or:][processes][users][id]'] = this.args.publisher;
-      query['filter[:or:][groups][:has:processes]'] = true;
-    } else {
-      query['filter[:or:][groups][:has:processes]'] = true;
-      query['filter[:or:][:has:processes]'] = true;
-    }
+    query['filter[:has:processes]'] = true;
 
     const result = yield this.store.query(
       'administrative-unit-classification-code',
