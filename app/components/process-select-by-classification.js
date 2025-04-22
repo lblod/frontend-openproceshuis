@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessSelectByClassificationComponent extends Component {
   @service router;
@@ -19,12 +20,26 @@ export default class ProcessSelectByClassificationComponent extends Component {
       sort: ':no-case:label',
     };
 
-    query['filter[:has:processes]'] = true;
+    const activeProcesses = yield this.store.query('process', {
+      'filter[:not:status]': ENV.resourceStates.archived,
+      include: 'relevant-administrative-units',
+    });
+
+    const classificationIds = new Set();
+    activeProcesses.forEach((process) => {
+      classificationIds.add(process.publisher.classification.id);
+      process.relevantAdministrativeUnits.forEach((unit) => {
+        classificationIds.add(unit.id);
+      });
+    });
+
+    query['filter[id]'] = Array.from(classificationIds).join(',');
 
     const result = yield this.store.query(
       'administrative-unit-classification-code',
       query
     );
+
     this.classifications = result;
   }
 }
