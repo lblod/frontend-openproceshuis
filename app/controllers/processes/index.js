@@ -19,7 +19,7 @@ export default class ProcessesIndexController extends Controller {
   @tracked sort = 'title';
   @tracked title = '';
   @tracked classifications = undefined;
-  @tracked selectedClassifications = [];
+  @tracked selectedClassifications = undefined;
   @tracked group = '';
   @tracked blueprint = false;
   @service currentSession;
@@ -55,11 +55,15 @@ export default class ProcessesIndexController extends Controller {
   setClassifications(selection) {
     this.page = null;
     this.selectedClassifications = selection;
-    this.classifications = selection
-      .map((classification) => {
-        return classification.id;
-      })
-      .join(',');
+    if (selection.length === 0) {
+      this.classifications = undefined;
+    } else {
+      this.classifications = selection
+        .map((classification) => {
+          return classification.id;
+        })
+        .join(',');
+    }
   }
 
   @action
@@ -83,7 +87,7 @@ export default class ProcessesIndexController extends Controller {
   resetFilters() {
     this.title = '';
     this.classifications = undefined;
-    this.selectedClassifications = [];
+    this.selectedClassifications = undefined;
     this.group = '';
     this.page = 0;
     this.sort = 'title';
