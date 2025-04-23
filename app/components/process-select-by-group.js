@@ -34,9 +34,6 @@ export default class ProcessSelectByGroupComponent extends Component {
       }
     });
 
-    if (groupIds.size === 0) return [];
-
-    // Query matching groups
     const groupQuery = {
       page: {
         size: 50,
