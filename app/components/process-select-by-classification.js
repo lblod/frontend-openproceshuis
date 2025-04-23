@@ -27,7 +27,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
 
     const classificationIds = new Set();
     activeProcesses.forEach((process) => {
-      classificationIds.add(process.publisher.classification.id);
+      classificationIds.add(process.publisher?.classification.id);
       process.relevantAdministrativeUnits.forEach((unit) => {
         classificationIds.add(unit.id);
       });

@@ -18,7 +18,7 @@ export default class ProcessesIndexController extends Controller {
   size = 20;
   @tracked sort = 'title';
   @tracked title = '';
-  @tracked classifications = '';
+  @tracked classifications = undefined;
   @tracked selectedClassifications = [];
   @tracked group = '';
   @tracked blueprint = false;
@@ -82,8 +82,8 @@ export default class ProcessesIndexController extends Controller {
   @action
   resetFilters() {
     this.title = '';
-    this.classification = '';
-    this.selectedClassification = '';
+    this.classifications = undefined;
+    this.selectedClassifications = [];
     this.group = '';
     this.page = 0;
     this.sort = 'title';
