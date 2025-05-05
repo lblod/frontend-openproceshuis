@@ -202,7 +202,12 @@ export default class ProcessesProcessIndexController extends Controller {
 
       FileSaver.saveAs(blob, fileName);
     } catch {
-      this.toaster.error('Bestand kon niet worden opgehaald', 'Fout');
+      let message = 'Bestand kon niet worden opgehaald';
+      if (this.latestDiagram.isVisioFile && targetExtension === 'bpmn')
+        message =
+          'Het is helaas niet gelukt om dit Visio-bestand om te zetten naar BPMN. Stuur ons gerust een e-mail via loketlokaalbestuur@vlaanderen.be zodat we de applicatie verder kunnen verbeteren.';
+
+      this.toaster.error(message, 'Fout');
       return;
     }
 
