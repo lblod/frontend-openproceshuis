@@ -206,8 +206,13 @@ export default class ProcessesProcessIndexController extends Controller {
       let message = 'Bestand kon niet worden opgehaald';
 
       if (this.latestDiagram.isVisioFile && targetExtension === 'bpmn') {
-        const linkHtml =
-          '<a href="mailto:loketlokaalbestuur@vlaanderen.be">loketlokaalbestuur@vlaanderen.be</a>';
+        const mailto =
+          'mailto:loketlokaalbestuur@vlaanderen.be' +
+          `?subject=${encodeURIComponent(
+            'Open Proces Huis conversieprobleem'
+          )}` +
+          `?body=${encodeURIComponent(window.location.href)}`;
+        const linkHtml = `<a href="${mailto}">loketlokaalbestuur@vlaanderen.be</a>`;
         message = htmlSafe(
           `Dit Visio-bestand kon helaas niet worden omgezet naar BPMN. Stuur ons een e-mail via ${linkHtml} zodat we de applicatie verder kunnen verbeteren.`
         );
