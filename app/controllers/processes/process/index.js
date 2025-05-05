@@ -209,12 +209,12 @@ export default class ProcessesProcessIndexController extends Controller {
         const mailto =
           'mailto:loketlokaalbestuur@vlaanderen.be' +
           `?subject=${encodeURIComponent(
-            'Open Proces Huis conversieprobleem'
+            'Visio kan niet downloaden als BPMN'
           )}` +
           `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
-        const linkHtml = `<a href="${mailto}">loketlokaalbestuur@vlaanderen.be</a>`;
+        const linkHtml = `<a href="${mailto}">Stuur ons een mailtje</a>`;
         message = htmlSafe(
-          `Dit Visio-bestand kon helaas niet worden omgezet naar BPMN. Stuur ons een e-mail via ${linkHtml} zodat we de applicatie verder kunnen verbeteren.`
+          `Dit visio-bestand kan niet worden gedownload als BPMN. ${linkHtml} met het proces waarover het gaat en een korte beschrijving van wat niet lukt. Dan kunnen we nagaan wat fout gaat en Open Proces Huis verder verbeteren.`
         );
       }
 
