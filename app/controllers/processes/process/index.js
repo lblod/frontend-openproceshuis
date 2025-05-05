@@ -211,7 +211,7 @@ export default class ProcessesProcessIndexController extends Controller {
           `?subject=${encodeURIComponent(
             'Open Proces Huis conversieprobleem'
           )}` +
-          `?body=${encodeURIComponent(window.location.href)}`;
+          `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
         const linkHtml = `<a href="${mailto}">loketlokaalbestuur@vlaanderen.be</a>`;
         message = htmlSafe(
           `Dit Visio-bestand kon helaas niet worden omgezet naar BPMN. Stuur ons een e-mail via ${linkHtml} zodat we de applicatie verder kunnen verbeteren.`
