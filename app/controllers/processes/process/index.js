@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import { htmlSafe } from '@ember/template';
 import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
@@ -203,9 +204,14 @@ export default class ProcessesProcessIndexController extends Controller {
       FileSaver.saveAs(blob, fileName);
     } catch {
       let message = 'Bestand kon niet worden opgehaald';
-      if (this.latestDiagram.isVisioFile && targetExtension === 'bpmn')
-        message =
-          'Het is helaas niet gelukt om dit Visio-bestand om te zetten naar BPMN. Stuur ons gerust een e-mail via loketlokaalbestuur@vlaanderen.be zodat we de applicatie verder kunnen verbeteren.';
+
+      if (this.latestDiagram.isVisioFile && targetExtension === 'bpmn') {
+        const linkHtml =
+          '<a href="mailto:loketlokaalbestuur@vlaanderen.be">loketlokaalbestuur@vlaanderen.be</a>';
+        message = htmlSafe(
+          `Dit Visio-bestand kon helaas niet worden omgezet naar BPMN. Stuur ons een e-mail via ${linkHtml} zodat we de applicatie verder kunnen verbeteren.`
+        );
+      }
 
       this.toaster.error(message, 'Fout');
       return;
