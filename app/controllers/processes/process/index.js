@@ -624,11 +624,7 @@ export default class ProcessesProcessIndexController extends Controller {
         ? this.sortAttachments.substring(1)
         : this.sortAttachments;
 
-      if (
-        sortValue === 'name' ||
-        sortValue === 'extension' ||
-        sortValue === 'format'
-      )
+      if (sortValue === 'name' || sortValue === 'extension')
         sortValue = `:no-case:${sortValue}`;
       if (isDescending) sortValue = `-${sortValue}`;
 
