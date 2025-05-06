@@ -29,6 +29,7 @@
                   {{on "input" this.setProcessTitle}}
                   @width="block"
                   @disabled={{not @canEdit}}
+                  @error={{this.hasError "title"}}
                 />
               </:content>
             </Item>
@@ -41,6 +42,7 @@
                   rows="4"
                   @width="block"
                   @disabled={{not @canEdit}}
+                  @error={{this.hasError "description"}}
                 />
               </:content>
             </Item>
@@ -52,6 +54,7 @@
                   {{on "input" this.setProcessEmail}}
                   @width="block"
                   @disabled={{not @canEdit}}
+                  @error={{this.hasError "email"}}
                 />
               </:content>
             </Item>

@@ -162,4 +162,13 @@ export default class ProcessDetailsCardComponent extends Component {
     this.args.process.isBlueprint = event;
     this.validateForm();
   }
+
+  @action
+  hasError(attribute) {
+    if (!this.args.process) return false;
+    const errorsForAttribute = this.args.process
+      .get('errors')
+      .filter((error) => error.attribute === attribute);
+    return errorsForAttribute.length;
+  }
 }
