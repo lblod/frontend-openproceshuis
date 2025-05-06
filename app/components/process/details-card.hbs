@@ -58,7 +58,7 @@
             <Item>
               <:label>Link naar IPDC/LPDC</:label>
               <:content>
-                <IpdcMultipleSelect
+                <Process::DetailsCard::IpdcMultipleSelect
                   @selected={{this.draftIpdcProducts}}
                   @onChange={{this.setDraftIpdcProducts}}
                   @disabled={{not @canEdit}}
