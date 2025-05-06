@@ -31,6 +31,9 @@
                   @disabled={{not @canEdit}}
                   @error={{this.hasError "title"}}
                 />
+                {{#if (this.hasError "title")}}
+                  <div class="au-u-error">Verplicht</div>
+                {{/if}}
               </:content>
             </Item>
             <Item>
@@ -44,6 +47,10 @@
                   @disabled={{not @canEdit}}
                   @error={{this.hasError "description"}}
                 />
+                {{#if (this.hasError "description")}}
+                  <div class="au-u-error">Mag niet meer dan 3000 karakters
+                    bevatten</div>
+                {{/if}}
               </:content>
             </Item>
             <Item>
@@ -56,6 +63,9 @@
                   @disabled={{not @canEdit}}
                   @error={{this.hasError "email"}}
                 />
+                {{#if (this.hasError "email")}}
+                  <div class="au-u-error">Moet e-mailadres zijn</div>
+                {{/if}}
               </:content>
             </Item>
             <Item>
