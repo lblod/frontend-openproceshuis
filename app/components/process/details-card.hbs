@@ -1,0 +1,236 @@
+{{#if this.isEditing}}
+  <form {{on "submit" (perform this.updateModel)}}>
+    <DataCard>
+      <:title>
+        Algemene informatie
+      </:title>
+      <:header>
+        <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+          <AuButton
+            @skin="secondary"
+            {{on "click" this.resetModel}}
+          >Annuleer</AuButton>
+          <AuButton
+            @skin="primary"
+            type="submit"
+            @loading={{this.updateModel.isRunning}}
+            @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+          >Bewaar</AuButton>
+        </div>
+      </:header>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Titel</:label>
+              <:content>
+                <AuInput
+                  value={{@process.title}}
+                  {{on "input" this.setProcessTitle}}
+                  @width="block"
+                  @disabled={{not @canEdit}}
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Beschrijving</:label>
+              <:content>
+                <AuTextarea
+                  value={{@process.description}}
+                  {{on "input" this.setProcessDescription}}
+                  rows="4"
+                  @width="block"
+                  @disabled={{not @canEdit}}
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Contact proces</:label>
+              <:content>
+                <AuInput
+                  value={{@process.email}}
+                  {{on "input" this.setProcessEmail}}
+                  @width="block"
+                  @disabled={{not @canEdit}}
+                />
+              </:content>
+            </Item>
+            <Item>
+              <:label>Link naar IPDC/LPDC</:label>
+              <:content>
+                <IpdcMultipleSelect
+                  @selected={{this.draftIpdcProducts}}
+                  @onChange={{this.setDraftIpdcProducts}}
+                  @disabled={{not @canEdit}}
+                />
+                <div class="au-u-flex au-u-flex--between">
+                  <AuHelpText
+                    @skin="secondary"
+                    class="au-u-margin-top-none au-u-flex-self-start"
+                  >
+                    Vul hier IPDC-productcodes of -URLs in.
+                  </AuHelpText>
+                  <AuLinkExternal
+                    class="au-u-flex-self-start"
+                    href="https://productencatalogus-v3.vlaanderen.be/nl/producten"
+                  >
+                    Zoek in IPDC
+                  </AuLinkExternal>
+                </div>
+              </:content>
+            </Item>
+          </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Bestuur</:label>
+              <:content>
+                {{@process.publisher.name}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Type bestuur</:label>
+              <:content>
+                {{@process.publisher.classification.label}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Emailadres bestuur</:label>
+              <:content>
+                {{or
+                  (contact-email @process.publisher.primarySite.contacts)
+                  "/"
+                }}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Aangemaakt op</:label>
+              <:content>
+                {{date-format @process.created true}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Wij gebruiken dit proces</:label>
+              <:content>
+                <AuCheckbox
+                  @checked={{this.processUsedByUs}}
+                  @onChange={{this.setProcessUsedByUs}}
+                />
+              </:content>
+            </Item>
+            {{#if @process.isPublishedByAbbOrDv}}
+              <Item>
+                <:label>Blauwdruk</:label>
+                <:content>
+                  <AuToggleSwitch
+                    @onChange={{this.toggleBlueprintStatus}}
+                    @checked={{@process.isBlueprint}}
+                    @disabled={{not @canEdit}}
+                  />
+                </:content>
+              </Item>
+            {{/if}}
+          </:right>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  </form>
+{{else}}
+  <DataCard>
+    <:title>
+      Algemene informatie
+    </:title>
+    <:header>
+      {{#unless this.currentSession.readOnly}}
+        <AuButton
+          @skin="naked"
+          @icon="pencil"
+          {{on "click" this.toggleEdit}}
+        >Wijzig</AuButton>
+      {{/unless}}
+    </:header>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Titel</:label>
+            <:content>
+              {{@process.title}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Beschrijving</:label>
+            <:content>
+              {{or @process.description "/"}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Contact proces</:label>
+            <:content>
+              {{or @process.email "/"}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Link naar IPDC/LPDC</:label>
+            <:content>
+              {{#if @process.ipdcProducts.length}}
+                {{#each @process.ipdcProducts as |product|}}
+                  <AuLinkExternal href="{{product.url}}" class="au-u-flex">
+                    {{language-string-set-nl product.name}}
+                  </AuLinkExternal>
+                {{/each}}
+              {{else}}
+                /
+              {{/if}}
+            </:content>
+          </Item>
+        </:left>
+        <:right as |Item|>
+          <Item>
+            <:label>Bestuur</:label>
+            <:content>
+              {{@process.publisher.name}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Type bestuur</:label>
+            <:content>
+              {{@process.publisher.classification.label}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Emailadres bestuur</:label>
+            <:content>
+              {{or (contact-email @process.publisher.primarySite.contacts) "/"}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Aangemaakt op</:label>
+            <:content>
+              {{date-format @process.created true}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Wij gebruiken dit proces</:label>
+            <:content>
+              <AuCheckbox
+                @disabled={{not this.isEditing}}
+                @checked={{this.processUsedByUs}}
+              />
+            </:content>
+          </Item>
+          {{#if @process.isPublishedByAbbOrDv}}
+            <Item>
+              <:label>Blauwdruk</:label>
+              <:content>
+                <AuToggleSwitch
+                  @disabled={{not this.isEditing}}
+                  @checked={{@process.isBlueprint}}
+                />
+              </:content>
+            </Item>
+          {{/if}}
+        </:right>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+{{/if}}
