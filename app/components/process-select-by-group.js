@@ -15,6 +15,7 @@ export default class ProcessSelectByGroupComponent extends Component {
     const processQuery = {
       'filter[:not:status]': ENV.resourceStates.archived,
       include: 'publisher,relevant-administrative-units',
+      page: { number: 0, size: 1000 },
     };
 
     if (this.args.classifications) {
