@@ -25,7 +25,7 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-classification">Type bestuur</AuLabel>
+            <AuLabel for="filter-classification">Relevant voor</AuLabel>
             <ProcessSelectByClassification
               @id="filter-classification"
               @selected={{this.selectedClassifications}}
@@ -100,7 +100,7 @@
           <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
-            @label="Relevant voor type bestuur"
+            @label="Relevant voor"
           />
           <AuDataTableThSortable
             @field="organization"
