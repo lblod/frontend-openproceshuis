@@ -113,6 +113,7 @@ export default class SharedProcessesIndexController extends Controller {
       modified: created,
       publisher: this.currentSession.group,
       files: [diagram],
+      relevantAdministrativeUnits: [this.currentSession.group.classification],
     });
     yield process.save();
     this.newProcessId = process.id;
