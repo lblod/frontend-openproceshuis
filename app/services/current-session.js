@@ -36,8 +36,11 @@ export default class CurrentSessionService extends Service {
       this.user = this.account.user;
 
       let groupId = sessionData?.group?.data?.id;
-      this.group = await this.store.findRecord('group', groupId);
-
+      this.group = await this.store.findRecord('group', groupId, {
+        include: 'classification',
+        reload: true,
+      });
+      console.log('this.group', this.group);
       this.title = `${this.user.firstName} ${this.user.familyName} - ${this.group.name}`;
     }
   }
