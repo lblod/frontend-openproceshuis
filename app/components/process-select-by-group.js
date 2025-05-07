@@ -36,7 +36,7 @@ export default class ProcessSelectByGroupComponent extends Component {
 
     const groupQuery = {
       page: {
-        size: 50,
+        size: 1000,
       },
       'filter[id]': Array.from(groupIds).join(','),
       sort: ':no-case:name',

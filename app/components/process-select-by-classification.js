@@ -23,6 +23,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
     const activeProcesses = yield this.store.query('process', {
       'filter[:not:status]': ENV.resourceStates.archived,
       include: 'relevant-administrative-units',
+      page: { number: 0, size: 1000 },
     });
 
     const classificationIds = new Set();
