@@ -33,8 +33,4 @@ export default class ApplicationController extends Controller {
       this.environmentName && this.environmentName !== '{{ENVIRONMENT_NAME}}'
     );
   }
-
-  get showNavigation() {
-    return this.router.currentRouteName !== 'index';
-  }
 }
