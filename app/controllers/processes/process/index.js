@@ -50,17 +50,7 @@ export default class ProcessesProcessIndexController extends Controller {
   // Process
 
   get process() {
-    return this.model.loadProcessTaskInstance.isFinished
-      ? this.model.loadProcessTaskInstance.value
-      : this.model.loadedProcess;
-  }
-
-  get processIsLoading() {
-    return this.model.loadProcessTaskInstance.isRunning;
-  }
-
-  get processHasErrored() {
-    return this.model.loadProcessTaskInstance.isError;
+    return this.model.process;
   }
 
   get processUsedByUs() {
@@ -544,7 +534,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: 0,
         size: 1,
       },
-      'filter[processes][id]': this.model.processId,
+      'filter[processes][id]': this.model.process.id,
       'filter[:or:][extension]': ['bpmn', 'vsdx'],
       sort: '-created',
     };
@@ -590,7 +580,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: this.pageVersions,
         size: this.sizeVersions,
       },
-      'filter[processes][id]': this.model.processId,
+      'filter[processes][id]': this.model.process.id,
       'filter[:or:][extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
@@ -628,7 +618,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: this.pageAttachments,
         size: this.sizeAttachments,
       },
-      'filter[processes][id]': this.model.processId,
+      'filter[processes][id]': this.model.process.id,
       'filter[:not:extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
