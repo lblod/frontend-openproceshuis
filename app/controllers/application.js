@@ -1,5 +1,6 @@
 import Controller from '@ember/controller';
 import { getOwner } from '@ember/application';
+import { service } from '@ember/service';
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -8,6 +9,7 @@ const isLocalhost = Boolean(
 );
 
 export default class ApplicationController extends Controller {
+  @service router;
   get environmentName() {
     const thisEnvironmentValues = isLocalhost
       ? 'local'
@@ -30,5 +32,9 @@ export default class ApplicationController extends Controller {
     return (
       this.environmentName && this.environmentName !== '{{ENVIRONMENT_NAME}}'
     );
+  }
+
+  get showNavigation() {
+    return this.router.currentRouteName !== 'index';
   }
 }
