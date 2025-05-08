@@ -1,23 +1,29 @@
-<AuToolbar @border="bottom" @skin="tint" class="au-c-navigation" as |Group|>
-  <Group>
-    <AuTabs @reversed={{this.reversed}} as |Tab|>
-      <Tab>
-        <AuLink @route="processes" @icon="sitemap">
-          Processen
+<AuToolbar @border="bottom" @size="small" @skin="tint">
+  <nav aria-label="breadcrumbs">
+    <ol
+      class="au-c-list-horizontal au-c-list-horizontal--breadcrumbs au-u-margin-left-tiny"
+    >
+      <li class="au-c-list-horizontal__item">
+        <AuLink @route="index" @icon="arrow-left" @iconAlignment="left">
+          Overzicht
         </AuLink>
-      </Tab>
-      {{#if this.currentSession.canEdit}}
-        <Tab>
-          <AuLink @route="my-local-government" @icon="users-four-of-four">
-            Mijn lokaal bestuur
-          </AuLink>
-        </Tab>
-        <Tab>
-          <AuLink @route="shared-processes" @icon="unordered-list">
-            Gedeelde processen
-          </AuLink>
-        </Tab>
-      {{/if}}
-    </AuTabs>
-  </Group>
+      </li>
+      {{#each (breadcrumbs) as |breadcrumb|}}
+        <li class="au-c-list-horizontal__item">
+          {{#if (is-last breadcrumb (breadcrumbs))}}
+            {{breadcrumb.title}}
+          {{else}}
+            <AuLink
+              @route={{breadcrumb.data.route}}
+              @model={{breadcrumb.data.model}}
+              @models={{breadcrumb.data.models}}
+            >
+              {{breadcrumb.title}}
+            </AuLink>
+          {{/if}}
+        </li>
+      {{/each}}
+    </ol>
+  </nav>
+
 </AuToolbar>
