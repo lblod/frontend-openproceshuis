@@ -411,8 +411,8 @@ export default class ProcessesProcessIndexController extends Controller {
     // Restore original users state when canceling form
     if (this.processUserChanged && this.originalUsers) {
       const users = this.process.users;
-      users.clear();
-      this.originalUsers.forEach((user) => users.pushObject(user));
+      users.splice(0, users.length);
+      this.originalUsers.forEach((user) => users.push(user));
       this.processUserChanged = false;
     }
     this.isEditing = false;
@@ -484,9 +484,12 @@ export default class ProcessesProcessIndexController extends Controller {
     const currentUser = this.currentSession.group;
     const users = await this.process.users;
     if (isChecked) {
-      users.pushObject(currentUser);
+      users.push(currentUser);
     } else {
-      users.removeObject(currentUser);
+      const index = users.indexOf(currentUser);
+      if (index !== -1) {
+        users.splice(index, 1);
+      }
     }
     this.validateForm();
   }
