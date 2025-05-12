@@ -26,7 +26,7 @@ module.exports = function (defaults) {
     },
     sassOptions: {
       sourceMapEmbed: true,
-      includePaths: ['node_modules/@appuniversum/ember-appuniversum/'],
+      includePaths: ['node_modules/@appuniversum/ember-appuniversum'],
     },
     autoprefixer: {
       enabled: true,
