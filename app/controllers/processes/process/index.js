@@ -169,7 +169,7 @@ export default class ProcessesProcessIndexController extends Controller {
         } else if (this.latestDiagram.isVisioFile) {
           const url = generateVisioConversionUrl(
             this.latestDiagram.id,
-            targetExtension
+            targetExtension,
           );
           const response = yield fetch(url);
           if (!response.ok) throw Error(response.status);
@@ -185,7 +185,7 @@ export default class ProcessesProcessIndexController extends Controller {
         } else if (this.latestDiagram.isVisioFile) {
           const url = generateVisioConversionUrl(
             this.latestDiagram.id,
-            targetExtension
+            targetExtension,
           );
           const response = yield fetch(url);
           if (!response.ok) throw Error(response.status);
@@ -198,7 +198,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
       const fileName = `${removeFileNameExtension(
         this.latestDiagram.name,
-        this.latestDiagram.extension
+        this.latestDiagram.extension,
       )}.${targetExtension}`;
 
       FileSaver.saveAs(blob, fileName);
@@ -209,12 +209,12 @@ export default class ProcessesProcessIndexController extends Controller {
         const mailto =
           'mailto:loketlokaalbestuur@vlaanderen.be' +
           `?subject=${encodeURIComponent(
-            'Visio kan niet downloaden als BPMN'
+            'Visio kan niet downloaden als BPMN',
           )}` +
           `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
         const linkHtml = `<a href="${mailto}">Stuur ons een mailtje</a>`;
         message = htmlSafe(
-          `Dit visio-bestand kan niet worden gedownload als BPMN. ${linkHtml} met het proces waarover het gaat en een korte beschrijving van wat niet lukt. Dan kunnen we nagaan wat fout gaat en Open Proces Huis verder verbeteren.`
+          `Dit visio-bestand kan niet worden gedownload als BPMN. ${linkHtml} met het proces waarover het gaat en een korte beschrijving van wat niet lukt. Dan kunnen we nagaan wat fout gaat en Open Proces Huis verder verbeteren.`,
         );
       }
 
@@ -226,7 +226,7 @@ export default class ProcessesProcessIndexController extends Controller {
       this.latestDiagram.id,
       this.latestDiagram.name,
       'bpmn',
-      targetExtension
+      targetExtension,
     );
   }
 
@@ -246,7 +246,7 @@ export default class ProcessesProcessIndexController extends Controller {
     } catch (error) {
       console.error(
         `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
-        error
+        error,
       );
     }
   }
@@ -285,7 +285,7 @@ export default class ProcessesProcessIndexController extends Controller {
     else
       yield downloadFilesAsZip(
         this.attachments,
-        this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen'
+        this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
       );
   }
 
@@ -382,7 +382,7 @@ export default class ProcessesProcessIndexController extends Controller {
               return newProduct;
             }
             return product;
-          })
+          }),
         );
 
         yield this.process.save();

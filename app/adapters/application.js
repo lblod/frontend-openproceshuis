@@ -18,7 +18,7 @@ export default class ApplicationAdapter extends JSONAPIAdapter {
         if (Array.isArray(query[key])) {
           query[key].forEach((item) => {
             customParams.push(
-              `${encodeURIComponent(key)}=${encodeURIComponent(item)}`
+              `${encodeURIComponent(key)}=${encodeURIComponent(item)}`,
             );
           });
           delete query[key];

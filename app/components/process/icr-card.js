@@ -58,7 +58,7 @@ export default class ProcessIcrCardComponent extends Component {
             }
             delete asset.isDraft;
             return asset;
-          })
+          }),
         );
 
         yield this.args.process.save();
@@ -70,13 +70,13 @@ export default class ProcessIcrCardComponent extends Component {
           'Gelukt!',
           {
             timeOut: 5000,
-          }
+          },
         );
       } catch (error) {
         console.error(error);
         this.toaster.error(
           'Informatieclassificatie kon niet worden bijgewerkt',
-          'Fout'
+          'Fout',
         );
         this.resetModel();
       }

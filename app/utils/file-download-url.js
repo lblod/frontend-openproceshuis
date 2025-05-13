@@ -5,7 +5,7 @@ export default function generateFileDownloadUrl(fileId) {
 
 export function generateVisioConversionUrl(
   visioFileId,
-  targetExtension = 'pdf'
+  targetExtension = 'pdf',
 ) {
   if (!visioFileId) return null;
   return `/visio/convert?id=${visioFileId}&extension=${targetExtension}`;

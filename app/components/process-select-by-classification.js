@@ -23,7 +23,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
 
     const result = yield this.store.query(
       'administrative-unit-classification-code',
-      query
+      query,
     );
     this.classifications = result;
 
@@ -31,7 +31,8 @@ export default class ProcessSelectByClassificationComponent extends Component {
       this.router.currentRoute.queryParams.classification;
     if (selectedClassificationLabel) {
       const selectedClassification = this.classifications.find(
-        (classification) => classification.label === selectedClassificationLabel
+        (classification) =>
+          classification.label === selectedClassificationLabel,
       );
       this.args.onChange(selectedClassification);
     }
