@@ -107,6 +107,15 @@
               </:content>
             </Item>
             <Item>
+              <:label>Relevant voor</:label>
+              <:content>
+                <Process::RelevantAdminUnitSelector
+                  @selected={{@process.relevantAdministrativeUnits}}
+                  @onChange={{this.setRelevantAdministrativeUnit}}
+                />
+              </:content>
+            </Item>
+            <Item>
               <:label>Emailadres bestuur</:label>
               <:content>
                 {{or
@@ -208,6 +217,19 @@
             <:label>Type bestuur</:label>
             <:content>
               {{@process.publisher.classification.label}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Relevant voor</:label>
+            <:content>
+              {{#each
+                @process.relevantAdministrativeUnits
+                as |relevantAdministrativeUnit|
+              }}
+                <ul><li>
+                    {{relevantAdministrativeUnit.label}}
+                  </li></ul>
+              {{/each}}
             </:content>
           </Item>
           <Item>

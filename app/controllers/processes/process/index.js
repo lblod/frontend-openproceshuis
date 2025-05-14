@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import { htmlSafe } from '@ember/template';
 import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
@@ -45,17 +46,7 @@ export default class ProcessesProcessIndexController extends Controller {
   // Process
 
   get process() {
-    return this.model.loadProcessTaskInstance.isFinished
-      ? this.model.loadProcessTaskInstance.value
-      : this.model.loadedProcess;
-  }
-
-  get processIsLoading() {
-    return this.model.loadProcessTaskInstance.isRunning;
-  }
-
-  get processHasErrored() {
-    return this.model.loadProcessTaskInstance.isError;
+    return this.model.process;
   }
 
   // Latest diagram
@@ -199,7 +190,22 @@ export default class ProcessesProcessIndexController extends Controller {
 
       FileSaver.saveAs(blob, fileName);
     } catch {
-      this.toaster.error('Bestand kon niet worden opgehaald', 'Fout');
+      let message = 'Bestand kon niet worden opgehaald';
+
+      if (this.latestDiagram.isVisioFile && targetExtension === 'bpmn') {
+        const mailto =
+          'mailto:loketlokaalbestuur@vlaanderen.be' +
+          `?subject=${encodeURIComponent(
+            'Visio kan niet downloaden als BPMN'
+          )}` +
+          `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
+        const linkHtml = `<a href="${mailto}">Stuur ons een mailtje</a>`;
+        message = htmlSafe(
+          `Dit visio-bestand kan niet worden gedownload als BPMN. ${linkHtml} met het proces waarover het gaat en een korte beschrijving van wat niet lukt. Dan kunnen we nagaan wat fout gaat en Open Proces Huis verder verbeteren.`
+        );
+      }
+
+      this.toaster.error(message, 'Fout');
       return;
     }
 
@@ -388,7 +394,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: 0,
         size: 1,
       },
-      'filter[processes][id]': this.model.processId,
+      'filter[processes][id]': this.model.process.id,
       'filter[:or:][extension]': ['bpmn', 'vsdx'],
       sort: '-created',
     };
@@ -434,7 +440,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: this.pageVersions,
         size: this.sizeVersions,
       },
-      'filter[processes][id]': this.model.processId,
+      'filter[processes][id]': this.model.process.id,
       'filter[:or:][extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
@@ -472,7 +478,7 @@ export default class ProcessesProcessIndexController extends Controller {
         number: this.pageAttachments,
         size: this.sizeAttachments,
       },
-      'filter[processes][id]': this.model.processId,
+      'filter[processes][id]': this.model.process.id,
       'filter[:not:extension]': ['bpmn', 'vsdx'],
       'filter[:not:status]': ENV.resourceStates.archived,
     };
@@ -484,11 +490,7 @@ export default class ProcessesProcessIndexController extends Controller {
         ? this.sortAttachments.substring(1)
         : this.sortAttachments;
 
-      if (
-        sortValue === 'name' ||
-        sortValue === 'extension' ||
-        sortValue === 'format'
-      )
+      if (sortValue === 'name' || sortValue === 'extension')
         sortValue = `:no-case:${sortValue}`;
       if (isDescending) sortValue = `-${sortValue}`;
 

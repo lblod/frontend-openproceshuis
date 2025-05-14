@@ -37,6 +37,11 @@ export default class ProcessModel extends Model {
   linkedBlueprints;
   @hasMany('group', { inverse: null, async: false })
   users;
+  @hasMany('administrative-unit-classification-code', {
+    inverse: 'processes',
+    async: false,
+  })
+  relevantAdministrativeUnits;
 
   validations = {
     title: {

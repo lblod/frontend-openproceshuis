@@ -19,8 +19,10 @@ export default class ProcessSelectByTitleComponent extends Component {
       },
     };
 
-    if (this.args.publisher)
-      query['filter[publisher][id]'] = this.args.publisher;
+    if (this.args.publisher) {
+      query['filter[:or:][publisher][id]'] = this.args.publisher;
+      query['filter[:or:][users][id]'] = this.args.publisher;
+    }
 
     const result = yield this.store.query('process', query);
 

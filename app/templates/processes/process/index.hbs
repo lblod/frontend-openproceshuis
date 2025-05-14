@@ -304,11 +304,6 @@
                 @label="Extensie"
               />
               <AuDataTableThSortable
-                @field="format"
-                @currentSorting={{this.sortAttachments}}
-                @label="Formaat"
-              />
-              <AuDataTableThSortable
                 @field="created"
                 @currentSorting={{this.sortAttachments}}
                 @label="Toegevoegd op"
@@ -331,7 +326,6 @@
                 <td>{{attachment.name}}</td>
                 <td>{{file-size-format attachment.size}}</td>
                 <td>{{attachment.extension}}</td>
-                <td>{{attachment.format}}</td>
                 <td>{{date-format attachment.created true}}</td>
                 <td>
                   <AuButton

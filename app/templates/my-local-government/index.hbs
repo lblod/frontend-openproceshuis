@@ -7,39 +7,13 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
-            <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
-            <AuCheckbox
-              id="filter-blueprint"
-              @checked={{this.isBlueprint}}
-              @onChange={{this.toggleBlueprintFilter}}
-            />
-          </div>
           <div>
             <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
             <ProcessSelectByTitle
               @id="filter-title"
               @selected={{this.title}}
               @onChange={{this.setTitle}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-classification">Type bestuur</AuLabel>
-            <ProcessSelectByClassification
-              @id="filter-classification"
-              @selected={{this.selectedClassification}}
-              @onChange={{this.setClassification}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-group">Naam bestuur</AuLabel>
-            <ProcessSelectByGroup
-              @id="filter-group"
-              @selected={{this.group}}
-              @onChange={{this.setGroup}}
-              @classification={{this.classification}}
+              @publisher={{this.currentSession.group.id}}
               class="grow"
             />
           </div>
@@ -91,7 +65,7 @@
           <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
-            @label="Type bestuur"
+            @label="Relevant voor"
           />
           <AuDataTableThSortable
             @field="organization"
@@ -129,7 +103,14 @@
               </LinkTo>
             </td>
             <td>{{or (truncate process.description 150 true) "/"}}</td>
-            <td>{{process.publisher.classification.label}}</td>
+            <td>
+              <ul>
+                <li>{{process.publisher.classification.label}}</li>
+                {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+                  <li>{{adminUnit.label}}</li>
+                {{/each}}
+              </ul>
+            </td>
             <td>{{process.publisher.name}}</td>
             <td>{{date-format process.modified}}</td>
 

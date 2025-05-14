@@ -14,6 +14,7 @@ export default class ProcessDetailsCardComponent extends Component {
   @tracked draftIpdcProducts = [];
   @tracked processUserChanged = undefined;
   @tracked originalUsers = undefined;
+  @tracked relevantAdministrativeUnitsChanged = false;
 
   get processUsedByUs() {
     return this.args.process?.users?.includes(this.currentSession.group);
@@ -41,6 +42,7 @@ export default class ProcessDetailsCardComponent extends Component {
   resetModel() {
     this.args.process?.rollbackAttributes();
     this.draftIpdcProducts = this.args.process?.ipdcProducts ?? [];
+    this.relevantAdministrativeUnitsChanged = false;
 
     if (this.processUserChanged && this.originalUsers) {
       const users = this.args.process?.users;
@@ -57,6 +59,7 @@ export default class ProcessDetailsCardComponent extends Component {
       this.args.process?.validate() &&
       (this.args.process?.hasDirtyAttributes ||
         this.processUserChanged ||
+        this.relevantAdministrativeUnitsChanged ||
         this.draftIpdcProducts.length <
           this.args.process?.ipdcProducts?.length ||
         this.draftIpdcProducts.some((product) => product.isDraft));
@@ -140,6 +143,14 @@ export default class ProcessDetailsCardComponent extends Component {
     if (hasDuplicates) return;
 
     this.draftIpdcProducts = event;
+    this.validateForm();
+  }
+
+  @action
+  setRelevantAdministrativeUnit(selection) {
+    if (!this.args.process) return;
+    this.args.process.relevantAdministrativeUnits = selection;
+    this.relevantAdministrativeUnitsChanged = true;
     this.validateForm();
   }
 
