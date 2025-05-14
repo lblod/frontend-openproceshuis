@@ -153,7 +153,7 @@ export default class ProcessDetailsCardComponent extends Component {
     } else {
       const index = users.indexOf(currentUser);
       if (index !== -1) {
-      users.splice(index, 1);
+        users.splice(index, 1);
       }
     }
     this.validateForm();
