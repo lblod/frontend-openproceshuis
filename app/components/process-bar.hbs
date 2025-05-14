@@ -1,0 +1,23 @@
+<AuToolbar @border="bottom" @skin="tint" class="au-c-navigation" as |Group|>
+  <Group>
+    <AuTabs @reversed={{this.reversed}} as |Tab|>
+      <Tab>
+        <AuLink @route="processes" @icon="sitemap">
+          Processen
+        </AuLink>
+      </Tab>
+      {{#if this.currentSession.canEdit}}
+        <Tab>
+          <AuLink @route="my-local-government" @icon="users-four-of-four">
+            Mijn lokaal bestuur
+          </AuLink>
+        </Tab>
+        <Tab>
+          <AuLink @route="shared-processes" @icon="unordered-list">
+            Gedeelde processen
+          </AuLink>
+        </Tab>
+      {{/if}}
+    </AuTabs>
+  </Group>
+</AuToolbar>

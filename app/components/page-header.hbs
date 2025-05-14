@@ -3,21 +3,6 @@
     <AuToolbar @border="bottom" @size="medium" @nowrap={{true}} as |Group|>
       <Group>
         <div>
-          {{#each (breadcrumbs) as |breadcrumb|}}
-            <p class="au-u-h-functional">
-              {{#if (not (is-last breadcrumb (breadcrumbs)))}}
-                <AuLink
-                  @icon="arrow-left"
-                  @skin="secondary"
-                  @route={{breadcrumb.data.route}}
-                  @model={{breadcrumb.data.model}}
-                  @models={{breadcrumb.data.models}}
-                >
-                  {{breadcrumb.title}}
-                </AuLink>
-              {{/if}}
-            </p>
-          {{/each}}
           <AuHeading>
             {{yield to="title"}}
           </AuHeading>
