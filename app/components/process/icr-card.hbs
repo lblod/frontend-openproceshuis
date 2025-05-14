@@ -86,7 +86,12 @@
                   {{on "input" this.setAdditionalInformation}}
                   rows="5"
                   @width="block"
+                  @error={{this.hasError "additionalInformation"}}
                 />
+                {{#if (this.hasError "additionalInformation")}}
+                  <div class="au-u-error">Mag niet meer dan 3000 karakters
+                    bevatten</div>
+                {{/if}}
               </:content>
             </Item>
             <Item>
@@ -105,7 +110,11 @@
                   value={{@process.hasControlMeasure}}
                   {{on "input" this.setControlMeasure}}
                   @width="block"
+                  @error={{this.hasError "hasControlMeasure"}}
                 />
+                {{#if (this.hasError "hasControlMeasure")}}
+                  <div class="au-u-error">Moet URL zijn</div>
+                {{/if}}
               </:content>
             </Item>
           </:right>

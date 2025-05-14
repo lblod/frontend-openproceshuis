@@ -40,22 +40,13 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked addModalOpened = false;
   @tracked deleteModalOpened = false;
 
-  @tracked isEditing = false;
-  @tracked formIsValid = false;
+  @tracked isEditingDetails = false;
   @tracked fileToDelete = undefined;
-  @tracked draftIpdcProducts = undefined;
-  @tracked processUserChanged = undefined;
-  @tracked originalUsers = undefined;
-  @tracked relevantAdministrativeUnitsChanged = false;
 
   // Process
 
   get process() {
     return this.model.process;
-  }
-
-  get processUsedByUs() {
-    return this.process?.users?.includes(this.currentSession.group);
   }
 
   // Latest diagram
@@ -123,6 +114,11 @@ export default class ProcessesProcessIndexController extends Controller {
       (this.process.publisher.id === this.currentSession.group.id ||
         (this.process.isPublishedByAbbOrDv && this.currentSession.isAbbOrDv))
     );
+  }
+
+  @action
+  setIsEditingDetails(value) {
+    this.isEditingDetails = value;
   }
 
   @action
@@ -334,133 +330,6 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  toggleEdit() {
-    this.draftIpdcProducts = this.process?.ipdcProducts;
-    if (!this.isEditing) {
-      this.originalUsers = this.process?.users?.slice() || [];
-    }
-    this.isEditing = !this.isEditing;
-    this.validateForm();
-  }
-
-  @dropTask
-  *updateModel(event) {
-    event.preventDefault();
-    if (!this.process) return;
-
-    if (this.formIsValid) {
-      this.process.modified = new Date();
-
-      // remove existing links if child process becomes blueprint
-      if (this.process.isBlueprint) {
-        this.process.linkedBlueprints = [];
-      }
-
-      try {
-        this.process.ipdcProducts = yield Promise.all(
-          this.draftIpdcProducts.map(async (product) => {
-            if (product.isDraft) {
-              const existingProducts = await this.store.query(product.type, {
-                filter: { 'product-number': product.productNumber },
-              });
-              if (existingProducts.length) return existingProducts[0];
-
-              const newProduct = this.store.createRecord(product.type, {
-                name: product.name,
-                productNumber: product.productNumber,
-              });
-              await newProduct.save();
-              return newProduct;
-            }
-            return product;
-          })
-        );
-
-        yield this.process.save();
-
-        this.isEditing = false;
-
-        this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
-          timeOut: 5000,
-        });
-      } catch (error) {
-        console.error(error);
-        this.toaster.error('Proces kon niet worden bijgewerkt', 'Fout');
-        this.resetModel();
-      }
-    } else {
-      this.resetModel();
-    }
-  }
-
-  @action
-  resetModel() {
-    this.process?.rollbackAttributes();
-    this.draftIpdcProducts = this.process?.ipdcProducts;
-    this.linkedBlueprintsChanged = false;
-    this.relevantAdministrativeUnitsChanged = false;
-
-    // Restore original users state when canceling form
-    if (this.processUserChanged && this.originalUsers) {
-      const users = this.process.users;
-      users.clear();
-      this.originalUsers.forEach((user) => users.pushObject(user));
-      this.processUserChanged = false;
-    }
-    this.isEditing = false;
-  }
-
-  @action
-  setProcessTitle(event) {
-    if (!this.process) return;
-    this.process.title = event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setProcessDescription(event) {
-    if (!this.process) return;
-    this.process.description = event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setProcessEmail(event) {
-    if (!this.process) return;
-    this.process.email = event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setDraftIpdcProducts(event) {
-    const productNumbers = event.map((product) => product.productNumber);
-    const hasDuplicates =
-      new Set(productNumbers).size !== productNumbers.length;
-    if (hasDuplicates) return;
-
-    this.draftIpdcProducts = event;
-    this.validateForm();
-  }
-
-  @action
-  setRelevantAdministrativeUnit(selection) {
-    this.process.relevantAdministrativeUnits = selection;
-    this.relevantAdministrativeUnitsChanged = true;
-    this.validateForm();
-  }
-
-  validateForm() {
-    this.formIsValid =
-      this.process?.validate() &&
-      (this.process?.hasDirtyAttributes ||
-        this.linkedBlueprintsChanged ||
-        this.processUserChanged ||
-        this.relevantAdministrativeUnitsChanged ||
-        this.draftIpdcProducts?.length < this.process?.ipdcProducts?.length ||
-        this.draftIpdcProducts?.some((product) => product.isDraft));
-  }
-
-  @action
   openDeleteModal(fileToDelete) {
     this.fileToDelete = fileToDelete;
     this.deleteModalOpened = true;
@@ -470,25 +339,6 @@ export default class ProcessesProcessIndexController extends Controller {
   closeDeleteModal() {
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
-  }
-
-  @action
-  toggleBlueprintStatus(event) {
-    this.process.isBlueprint = event;
-    this.validateForm();
-  }
-
-  @action
-  async setProcessUsedByUs(isChecked) {
-    this.processUserChanged = true;
-    const currentUser = this.currentSession.group;
-    const users = await this.process.users;
-    if (isChecked) {
-      users.pushObject(currentUser);
-    } else {
-      users.removeObject(currentUser);
-    }
-    this.validateForm();
   }
 
   @dropTask
@@ -516,7 +366,7 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   reset() {
-    this.resetModel();
+    this.process?.rollbackAttributes();
 
     this.downloadModalOpened = false;
     this.replaceModalOpened = false;
