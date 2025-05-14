@@ -25,11 +25,11 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-classification">Type bestuur</AuLabel>
+            <AuLabel for="filter-classification">Relevant voor</AuLabel>
             <ProcessSelectByClassification
               @id="filter-classification"
-              @selected={{this.selectedClassification}}
-              @onChange={{this.setClassification}}
+              @selected={{this.selectedClassifications}}
+              @onChange={{this.setClassifications}}
               class="grow"
             />
           </div>
@@ -39,7 +39,7 @@
               @id="filter-group"
               @selected={{this.group}}
               @onChange={{this.setGroup}}
-              @classification={{this.classification}}
+              @classifications={{this.classifications}}
               class="grow"
             />
           </div>
@@ -100,7 +100,7 @@
           <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
-            @label="Type bestuur"
+            @label="Relevant voor"
           />
           <AuDataTableThSortable
             @field="organization"
@@ -118,19 +118,21 @@
           </TableMessage>
         {{else}}
           <c.body as |process|>
-            <td
-              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-            >
-              {{#if process.isBlueprint}}
-                <CustomIcon @icon={{"blueprint"}} @size="large" />
-              {{/if}}
-              <LinkTo
-                class="au-c-link"
-                @model={{process}}
-                @route="processes.process"
+            <td>
+              <div
+                class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
               >
-                {{process.title}}
-              </LinkTo>
+                {{#if process.isBlueprint}}
+                  <CustomIcon @icon={{"blueprint"}} @size="large" />
+                {{/if}}
+                <LinkTo
+                  class="au-c-link"
+                  @model={{process.id}}
+                  @route="processes.process"
+                >
+                  {{process.title}}
+                </LinkTo>
+              </div>
             </td>
             <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>{{date-format process.modified}}</td>
@@ -140,7 +142,12 @@
               {{/if}}
             </td>
 
-            <td>{{process.publisher.classification.label}}</td>
+            <td><ul>
+                {{#each
+                  process.relevantAdministrativeUnits
+                  as |relevantAdministrativeUnit|
+                }}<li>{{relevantAdministrativeUnit.label}}</li>
+                {{/each}}</ul></td>
             <td>{{process.publisher.name}}</td>
           </c.body>
         {{/if}}

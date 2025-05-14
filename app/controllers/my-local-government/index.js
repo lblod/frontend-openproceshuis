@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { service } from '@ember/service';
 
 export default class MyLocalGovernmentIndexController extends Controller {
   queryParams = [
@@ -21,6 +22,7 @@ export default class MyLocalGovernmentIndexController extends Controller {
   @tracked selectedClassification = '';
   @tracked group = '';
   @tracked blueprint = false;
+  @service currentSession;
 
   get processes() {
     return this.model.loadProcessesTaskInstance.isFinished

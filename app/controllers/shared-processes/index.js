@@ -105,7 +105,7 @@ export default class SharedProcessesIndexController extends Controller {
   @task
   *createProcess(diagramId) {
     const diagram = yield this.store.findRecord('file', diagramId);
-
+    const defaultRelevantUnit = yield this.currentSession.group.classification;
     const created = new Date();
     const process = this.store.createRecord('process', {
       title: removeFileNameExtension(diagram.name, diagram.extension),
@@ -113,6 +113,7 @@ export default class SharedProcessesIndexController extends Controller {
       modified: created,
       publisher: this.currentSession.group,
       files: [diagram],
+      relevantAdministrativeUnits: [defaultRelevantUnit],
     });
     yield process.save();
     this.newProcessId = process.id;
