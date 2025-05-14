@@ -44,7 +44,7 @@ export default class ProcessDetailsCardComponent extends Component {
 
     if (this.processUserChanged && this.originalUsers) {
       const users = this.args.process?.users;
-      users.clear();
+      users.splice(0, users.length);
       this.originalUsers.forEach((user) => users.pushObject(user));
       this.processUserChanged = false;
     }
@@ -149,9 +149,12 @@ export default class ProcessDetailsCardComponent extends Component {
     const currentUser = this.currentSession.group;
     const users = await this.args.process?.users;
     if (isChecked) {
-      users.pushObject(currentUser);
+      users.push(currentUser);
     } else {
-      users.removeObject(currentUser);
+      const index = users.indexOf(currentUser);
+      if (index !== -1) {
+      users.splice(index, 1);
+      }
     }
     this.validateForm();
   }
