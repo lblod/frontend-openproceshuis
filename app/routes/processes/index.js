@@ -10,7 +10,7 @@ export default class ProcessesIndexRoute extends Route {
     page: { refreshModel: true },
     sort: { refreshModel: true },
     title: { refreshModel: true, replace: true },
-    classification: { refreshModel: true, replace: true },
+    classifications: { refreshModel: true, replace: true },
     group: { refreshModel: true, replace: true },
     blueprint: { refreshModel: true },
   };
@@ -30,7 +30,7 @@ export default class ProcessesIndexRoute extends Route {
         size: params.size,
       },
       include:
-        'publisher,users,publisher.primary-site,publisher.primary-site.contacts,publisher.classification',
+        'publisher,users,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,relevant-administrative-units',
     };
 
     if (params.sort) {
@@ -53,9 +53,10 @@ export default class ProcessesIndexRoute extends Route {
       query['filter[:or:][description]'] = params.title;
     }
 
-    if (params.classification)
-      query['filter[publisher][classification][:exact:label]'] =
-        params.classification;
+    if (params.classifications) {
+      query['filter[relevant-administrative-units][:id:]'] =
+        params.classifications;
+    }
 
     if (params.group) query['filter[publisher][:exact:name]'] = params.group;
 

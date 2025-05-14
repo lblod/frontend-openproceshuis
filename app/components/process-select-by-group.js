@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask, timeout } from 'ember-concurrency';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessSelectByGroupComponent extends Component {
   @service store;
@@ -11,22 +12,42 @@ export default class ProcessSelectByGroupComponent extends Component {
 
     yield timeout(200);
 
-    const query = {
+    const processQuery = {
+      'filter[:not:status]': ENV.resourceStates.archived,
+      include: 'publisher,relevant-administrative-units',
+      page: { number: 0, size: 1000 }, //TODO: if OPH grows we should keep the size of this query in mind to prevent performance issues
+    };
+
+    if (this.args.classifications) {
+      processQuery['filter[:or:][publisher][classification][:id:]'] =
+        this.args.classifications;
+      processQuery['filter[:or:][relevant-administrative-units][:id:]'] =
+        this.args.classifications;
+    }
+
+    const processes = yield this.store.query('process', processQuery);
+
+    const groupIds = new Set();
+
+    processes.forEach((process) => {
+      if (process.publisher) {
+        groupIds.add(process.publisher.id);
+      }
+    });
+
+    const groupQuery = {
       page: {
-        size: 50,
+        size: 1000,
       },
-      'filter[:has:processes]': true,
-      filter: {
-        name: searchParams,
-      },
+      'filter[id]': Array.from(groupIds).join(','),
       sort: ':no-case:name',
     };
 
-    if (this.args.classification)
-      query['filter[classification][:exact:label]'] = this.args.classification;
+    if (searchParams) {
+      groupQuery['filter[name]'] = searchParams;
+    }
 
-    const result = yield this.store.query('group', query);
-
+    const result = yield this.store.query('group', groupQuery);
     if (result) return [...new Set(result.map((r) => r.name))];
   }
 }
