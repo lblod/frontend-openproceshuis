@@ -47,7 +47,7 @@ export default class ProcessDetailsCardComponent extends Component {
     if (this.processUserChanged && this.originalUsers) {
       const users = this.args.process?.users;
       users.splice(0, users.length);
-      this.originalUsers.forEach((user) => users.pushObject(user));
+      this.originalUsers.forEach((user) => users.push(user));
       this.processUserChanged = false;
     }
 
@@ -94,7 +94,7 @@ export default class ProcessDetailsCardComponent extends Component {
               return newProduct;
             }
             return product;
-          })
+          }),
         );
 
         yield this.args.process.save();
