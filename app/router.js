@@ -42,7 +42,7 @@ Router.map(function () {
     { path: 'mijn-lokaal-bestuur' },
     function () {
       this.route('index', { path: '' });
-    }
+    },
   );
 
   this.route('legal', { path: '/legaal' }, function () {

@@ -14,7 +14,7 @@ export async function downloadFilesAsZip(files, zipFileName) {
         name: file.name,
         input: fileBlob,
       };
-    })
+    }),
   );
   const zipBlob = await downloadZip(filesToZip).blob();
   initiateDownload(zipBlob, `${zipFileName}.zip`);

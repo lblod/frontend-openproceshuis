@@ -18,7 +18,7 @@ export default class ProcessIcrCardBlueprintMultipleSelectComponent extends Comp
 
     return yield this.store.query('process', query).then(
       // fixme: frontend workaround because booleans are not interpreted correctly by the query
-      (results) => results.filter((process) => process.isBlueprint === true)
+      (results) => results.filter((process) => process.isBlueprint === true),
     );
   }
 }

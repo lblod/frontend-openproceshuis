@@ -18,6 +18,6 @@ export function findPrimaryContact(contactList) {
 
 export function findSecondaryContact(contactList) {
   return contactList?.find(
-    (contact) => contact.type === CONTACT_TYPE.SECONDARY
+    (contact) => contact.type === CONTACT_TYPE.SECONDARY,
   );
 }

@@ -42,7 +42,7 @@ export default class MockLoginController extends Controller {
     await this.session.authenticate(
       'authenticator:mock-login',
       account.id,
-      groupId
+      groupId,
     );
   }
 

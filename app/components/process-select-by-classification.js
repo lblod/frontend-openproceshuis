@@ -37,7 +37,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
 
     const result = yield this.store.query(
       'administrative-unit-classification-code',
-      query
+      query,
     );
 
     this.classifications = result;
