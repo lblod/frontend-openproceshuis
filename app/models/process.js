@@ -30,7 +30,12 @@ export default class ProcessModel extends Model {
   processStatistics;
   @hasMany('file', { inverse: 'processes', async: false })
   files;
-  @hasMany('ipdc-product', { inverse: null, async: false }) ipdcProducts;
+  @hasMany('ipdc-product', {
+    inverse: 'processes',
+    async: false,
+    polymorphic: true,
+  })
+  ipdcProducts;
   @hasMany('information-asset', { inverse: null, async: false })
   informationAssets;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
@@ -81,12 +86,12 @@ export default class ProcessModel extends Model {
     const diagrams = this.files.filter(
       (file) =>
         (file.isBpmnFile || file.isVisioFile) &&
-        file.status !== ENV.resourceStates.archived
+        file.status !== ENV.resourceStates.archived,
     );
     if (diagrams.length === 0) return undefined;
 
     const diagramsSorted = diagrams.sort(
-      (fileA, fileB) => fileB.created - fileA.created
+      (fileA, fileB) => fileB.created - fileA.created,
     );
     return diagramsSorted[0];
   }

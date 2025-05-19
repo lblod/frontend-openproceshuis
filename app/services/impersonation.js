@@ -60,7 +60,7 @@ export default class ImpersonationService extends Service {
       const result = await response.json();
       throw new Error(
         'An exception occurred while trying to impersonate someone: ' +
-          JSON.stringify(result.errors)
+          JSON.stringify(result.errors),
       );
     }
   }

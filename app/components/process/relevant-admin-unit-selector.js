@@ -21,7 +21,7 @@ export default class RelevantAdminUnitSelector extends Component {
 
     const result = yield this.store.query(
       'administrative-unit-classification-code',
-      query
+      query,
     );
     this.relevantAdministrativeUnits = result;
   }

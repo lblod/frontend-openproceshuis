@@ -94,7 +94,7 @@ export default class ProcessDetailsCardComponent extends Component {
               return newProduct;
             }
             return product;
-          })
+          }),
         );
 
         yield this.args.process.save();

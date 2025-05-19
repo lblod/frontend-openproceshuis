@@ -13,9 +13,11 @@ export default class ContactPointModel extends Model {
 }
 
 export function findPrimaryContact(contactList) {
-  return contactList?.findBy('type', CONTACT_TYPE.PRIMARY);
+  return contactList?.find((contact) => contact.type === CONTACT_TYPE.PRIMARY);
 }
 
 export function findSecondaryContact(contactList) {
-  return contactList?.findBy('type', CONTACT_TYPE.SECONDARY);
+  return contactList?.find(
+    (contact) => contact.type === CONTACT_TYPE.SECONDARY,
+  );
 }
