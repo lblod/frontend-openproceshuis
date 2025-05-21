@@ -32,12 +32,10 @@ export default class ProcessSelectByClassificationComponent extends Component {
 
     query['filter[id]'] = Array.from(classificationIds).join(',');
 
-    const result = await this.store.query(
+    return await this.store.query(
       'administrative-unit-classification-code',
       query,
     );
-
-    return result;
   });
 
   classifications = trackedTask(this, this.loadClassificationsTask);
