@@ -126,6 +126,7 @@
     "client-zip": "^2.4.5",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
+    "reactiveweb": "^1.4.2",
     "svg64": "^2.0.0"
   }
 }
