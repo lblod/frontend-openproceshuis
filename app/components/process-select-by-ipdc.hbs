@@ -1,0 +1,15 @@
+{{! template-lint-disable no-at-ember-render-modifiers }}
+<div class={{if @error "ember-power-select--error"}} ...attributes>
+  <PowerSelectMultiple
+    {{did-insert this.loadProcessClassificationsTask.perform}}
+    @loadingMessage="Aan het laden..."
+    @noMatchesMessage="Geen resultaten"
+    @options={{this.ipdcProducts}}
+    @selected={{@selected}}
+    @onChange={{@onChange}}
+    @triggerId={{@id}}
+    as |ipdcProduct|
+  >
+    {{ipdcProduct.name}}
+  </PowerSelectMultiple>
+</div>

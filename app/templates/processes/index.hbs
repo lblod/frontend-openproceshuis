@@ -43,6 +43,15 @@
               class="grow"
             />
           </div>
+          <div>
+            <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
+            <ProcessSelectByIpdc
+              @id="filter-ipdc"
+              @selected={{this.selectedIpdcProducts}}
+              @onChange={{this.setIpdcProducts}}
+              class="grow"
+            />
+          </div>
           <div class="au-u-flex au-u-flex--end">
             <AuButton
               @icon="cross"

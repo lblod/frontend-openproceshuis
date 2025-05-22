@@ -13,6 +13,7 @@ export default class ProcessesIndexRoute extends Route {
     classifications: { refreshModel: true, replace: true },
     group: { refreshModel: true, replace: true },
     blueprint: { refreshModel: true },
+    ipdcProducts: { refreshModel: true, replace: true },
   };
 
   async model(params) {
@@ -30,7 +31,7 @@ export default class ProcessesIndexRoute extends Route {
         size: params.size,
       },
       include:
-        'publisher,users,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,relevant-administrative-units',
+        'publisher,users,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,relevant-administrative-units,ipdc-products',
     };
 
     if (params.sort) {
@@ -62,6 +63,10 @@ export default class ProcessesIndexRoute extends Route {
 
     if (params.blueprint) {
       query['filter[is-blueprint]'] = params.blueprint;
+    }
+
+    if (params.ipdcProducts) {
+      query['filter[ipdc-products][:id:]'] = params.ipdcProducts;
     }
 
     query['filter[:not:status]'] = ENV.resourceStates.archived;
