@@ -1,0 +1,108 @@
+{{! Attachments }}
+<div class="au-o-grid__item au-u-margin-top">
+
+  {{! Attachments - Title }}
+  <div class="au-u-margin-bottom-small">
+    <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+      <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
+      <AuButtonGroup>
+        {{#if @canEdit}}
+          <AuButton @skin="secondary" {{on "click" @openAddModal}}>
+            Voeg toe
+          </AuButton>
+        {{/if}}
+        <AuButton
+          @disabled={{not @attachments}}
+          {{on "click" (perform @downloadAttachments)}}
+        >
+          Download alles
+        </AuButton>
+      </AuButtonGroup>
+    </div>
+    <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+      Bijlagen kunnen worden toegevoegd om het diagram te verduidelijken in alle
+      bestandsformaten, behalve
+      <span class="au-u-italic">.bpmn</span>
+      en
+      <span class="au-u-italic">.vsdx</span>.
+    </AuHelpText>
+  </div>
+
+  {{! Attachments - Files }}
+  <div class="au-c-boxed-table au-u-margin-top-small">
+    <AuDataTable
+      @content={{@attachments}}
+      @isLoading={{@attachmentsAreLoading}}
+      @page={{@pageAttachments}}
+      @size={{@sizeAttachments}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{@sortAttachments}}
+            @label="Bestandsnaam"
+          />
+          <AuDataTableThSortable
+            @field="size"
+            @currentSorting={{@sortAttachments}}
+            @label="Grootte"
+          />
+          <AuDataTableThSortable
+            @field="extension"
+            @currentSorting={{@sortAttachments}}
+            @label="Extensie"
+          />
+          <AuDataTableThSortable
+            @field="created"
+            @currentSorting={{@sortAttachments}}
+            @label="Toegevoegd op"
+          />
+          <th></th>
+          {{#if @canEdit}}
+            <th></th>
+          {{/if}}
+        </c.header>
+        {{#if @attachmentsHaveErrored}}
+          <TableMessage::Error />
+        {{else if @attachmentsHaveNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |attachment|>
+            <td>{{attachment.name}}</td>
+            <td>{{file-size-format attachment.size}}</td>
+            <td>{{attachment.extension}}</td>
+            <td>{{date-format attachment.created true}}</td>
+            <td>
+              <AuButton
+                @icon="download"
+                @skin="link"
+                @width="block"
+                @hideText="true"
+                {{on "click" (fn @downloadFile attachment)}}
+              >Download</AuButton>
+            </td>
+            {{#if @canEdit}}
+              <td>
+                <AuButton
+                  @icon="bin"
+                  @skin="naked"
+                  @alert="true"
+                  @width="block"
+                  @hideText="true"
+                  {{on "click" (fn @openDeleteModal attachment)}}
+                >Verwijder</AuButton>
+              </td>
+            {{/if}}
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </div>
+
+</div>

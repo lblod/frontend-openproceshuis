@@ -1,0 +1,94 @@
+{{! Diagrams }}
+<div class="au-o-grid__item au-u-margin-top">
+
+  {{! Diagrams - Title }}
+  <div class="au-u-margin-bottom-small">
+    <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+      <AuHeading @level="2" @skin="3">Versies</AuHeading>
+    </div>
+    <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+      Ontdek hier vorige versies van het diagram van dit proces, geüpload in het
+      Open Proces Huis. Deze versies zijn beschikbaar om te downloaden.
+    </AuHelpText>
+  </div>
+  {{! Diagrams - Files }}
+  <div class="au-c-boxed-table au-u-margin-top-small">
+    <AuDataTable
+      @content={{@diagrams}}
+      @isLoading={{@diagramsAreLoading}}
+      @page={{@pageVersions}}
+      @size={{@sizeVersions}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="created"
+            @currentSorting={{@sortVersions}}
+            @label="Toegevoegd op"
+          />
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{@sortVersions}}
+            @label="Bestandsnaam"
+          />
+          <AuDataTableThSortable
+            @field="size"
+            @currentSorting={{@sortVersions}}
+            @label="Grootte"
+          />
+          <th></th>
+          {{#if @canEdit}}
+            <th></th>
+          {{/if}}
+        </c.header>
+        {{#if @diagramsHaveErrored}}
+          <TableMessage::Error />
+        {{else if @diagramsHaveNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |diagram|>
+            <td>{{date-format diagram.created true}}</td>
+            <td>
+              {{#if (eq diagram.id @latestDiagram.id)}}
+                <strong>
+                  {{diagram.name}}
+                  <AuIcon @icon="circle-check" />
+                </strong>
+              {{else}}
+                {{diagram.name}}
+              {{/if}}
+            </td>
+            <td>{{file-size-format diagram.size}}</td>
+            <td>
+              <AuButton
+                @icon="download"
+                @skin="link"
+                @width="block"
+                @hideText="true"
+                {{on "click" (fn @downloadFile diagram)}}
+              >Download</AuButton>
+            </td>
+            {{#if @canEdit}}
+              <td>
+                <AuButton
+                  @icon="bin"
+                  @skin="naked"
+                  @alert="true"
+                  @width="block"
+                  @hideText="true"
+                  @disabled={{eq diagram.id @latestDiagram.id}}
+                  {{on "click" (fn @openDeleteModal diagram)}}
+                >Verwijder</AuButton>
+              </td>
+            {{/if}}
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </div>
+</div>

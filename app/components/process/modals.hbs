@@ -1,0 +1,120 @@
+<AuModal @modalOpen={{@replaceModalOpened}} @closeModal={{@closeReplaceModal}}>
+  <:title>Vervang diagram</:title>
+  <:body>
+    <CustomFileUpload
+      @accept=".bpmn,.vsdx"
+      @title="BPMN- of Visiobestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+      @updateProcess={{@addFileToProcess}}
+      @extractBpmnElements={{@extractBpmnElements}}
+      @onFinishUpload={{@diagramUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" @closeReplaceModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{@downloadModalOpened}}
+  @closeModal={{@closeDownloadModal}}
+>
+  <:title>Download diagram</:title>
+  <:body>
+    <div class="au-o-flow">
+      <p>Het geselecteerde diagram is beschikbaar in verschillende formaten:</p>
+      <AuButtonGroup class="au-u-flex au-u-flex--around">
+        {{#if @latestDiagram.isVisioFile}}
+          <AuButton
+            @skin="primary"
+            {{on "click" (perform @downloadLatestDiagram "vsdx")}}
+          >
+            Visio
+            <span class="au-u-para-tiny au-u-regular">(.vsdx)</span>
+          </AuButton>
+        {{/if}}
+        <AuButton
+          @skin={{if @latestDiagram.isBpmnFile "primary" "secondary"}}
+          {{on "click" (perform @downloadLatestDiagram "bpmn")}}
+        >
+          BPMN
+          <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
+        </AuButton>
+        {{#if @latestDiagramAsSvg}}
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform @downloadLatestDiagram "png")}}
+          >
+            Afbeelding
+            <span class="au-u-para-tiny au-u-regular">(.png)</span>
+          </AuButton>
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform @downloadLatestDiagram "svg")}}
+          >
+            Vectorafbeelding
+            <span class="au-u-para-tiny au-u-regular">(.svg)</span>
+          </AuButton>
+        {{/if}}
+        <AuButton
+          @skin="secondary"
+          {{on "click" (perform @downloadLatestDiagram "pdf")}}
+        >
+          PDF
+          <span class="au-u-para-tiny au-u-regular">(.pdf)</span>
+        </AuButton>
+      </AuButtonGroup>
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" @closeDownloadModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal @modalOpen={{@addModalOpened}} @closeModal={{@closeAddModal}}>
+  <:title>Voeg bijlage toe</:title>
+  <:body>
+    <CustomFileUpload
+      @title="Bestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
+      @forbidden=".bpmn,.vsdx"
+      @multiple="true"
+      @updateProcess={{@addFileToProcess}}
+      @onFinishUpload={{@attachmentsUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton @skin="naked" {{on "click" @closeAddModal}}>Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal @modalOpen={{@deleteModalOpened}} @closeModal={{@closeDeleteModal}}>
+  <:title>Verwijder {{@fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" @closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" (perform @deleteFile)}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
