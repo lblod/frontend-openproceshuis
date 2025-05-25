@@ -1,10 +1,8 @@
-{{! Attachments }}
-<div class="au-o-grid__item au-u-margin-top">
+<DataCard>
+  <:title>Bijlagen</:title>
 
-  {{! Attachments - Title }}
-  <div class="au-u-margin-bottom-small">
-    <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-      <AuHeading @level="2" @skin="3">Bijlagen</AuHeading>
+  <:header>
+    <div class="au-u-flex au-u-flex--between">
       <AuButtonGroup>
         {{#if @canEdit}}
           <AuButton @skin="secondary" {{on "click" @openAddModal}}>
@@ -26,10 +24,9 @@
       en
       <span class="au-u-italic">.vsdx</span>.
     </AuHelpText>
-  </div>
+  </:header>
 
-  {{! Attachments - Files }}
-  <div class="au-c-boxed-table au-u-margin-top-small">
+  <:card>
     <AuDataTable
       @content={{@attachments}}
       @isLoading={{@attachmentsAreLoading}}
@@ -60,17 +57,14 @@
             @label="Toegevoegd op"
           />
           <th></th>
-          {{#if @canEdit}}
-            <th></th>
-          {{/if}}
+          {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
+
         {{#if @attachmentsHaveErrored}}
           <TableMessage::Error />
         {{else if @attachmentsHaveNoResults}}
           <TableMessage>
-            <p>
-              Er werden geen zoekresultaten gevonden.
-            </p>
+            <p>Er werden geen zoekresultaten gevonden.</p>
           </TableMessage>
         {{else}}
           <c.body as |attachment|>
@@ -103,6 +97,5 @@
         {{/if}}
       </t.content>
     </AuDataTable>
-  </div>
-
-</div>
+  </:card>
+</DataCard>

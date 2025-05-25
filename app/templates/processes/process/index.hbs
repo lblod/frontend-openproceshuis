@@ -28,58 +28,55 @@
     @setIsEditing={{this.setIsEditingDetails}}
   />
 
-  <div class="au-o-grid au-o-grid--tiny au-u-margin-top">
+  {{! <div class="au-o-grid au-o-grid--tiny au-u-margin-top"> }}
 
-    <Process::Diagram::Visual
+  <Process::Diagram::Visual
+    @canEdit={{this.canEdit}}
+    @latestDiagram={{this.latestDiagram}}
+    @openReplaceModal={{this.openReplaceModal}}
+    @openDownloadModal={{this.openDownloadModal}}
+    @setLatestDiagramAsBpmn={{this.setLatestDiagramAsBpmn}}
+    @setLatestDiagramAsSvg={{this.setLatestDiagramAsSvg}}
+  />
+
+  {{! ICR }}
+
+  {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
+    <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
+  {{else}}
+    <Process::BlueprintCard
       @canEdit={{this.canEdit}}
-      @latestDiagram={{this.latestDiagram}}
-      @openReplaceModal={{this.openReplaceModal}}
-      @openDownloadModal={{this.openDownloadModal}}
-      @latestDiagramIsLoading={{this.latestDiagramIsLoading}}
-      @latestDiagramHasErrored={{this.latestDiagramHasErrored}}
-      @setLatestDiagramAsBpmn={{this.setLatestDiagramAsBpmn}}
-      @setLatestDiagramAsSvg={{this.setLatestDiagramAsSvg}}
+      @process={{this.process}}
     />
+  {{/if}}
 
-    {{! ICR }}
-    <div class="au-o-grid__item">
-      {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
-        <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
-      {{else}}
-        <Process::BlueprintCard
-          @canEdit={{this.canEdit}}
-          @process={{this.process}}
-        />
-      {{/if}}
-    </div>
+  <Process::Diagram::Version
+    @diagrams={{this.diagrams}}
+    @diagramsAreLoading={{this.diagramsAreLoading}}
+    @pageVersions={{this.pageVersions}}
+    @sortVersions={{this.sortVersions}}
+    @sizeVersions={{this.sizeVersions}}
+    @diagramsHaveErrored={{this.diagramsHaveErrored}}
+    @diagramsHaveNoResults={{this.diagramsHaveNoResults}}
+    @latestDiagram={{this.latestDiagram}}
+    @downloadFile={{this.downloadFile}}
+    @openDeleteModal={{this.openDeleteModal}}
+  />
 
-    <Process::Diagram::Version
-      @diagrams={{this.diagrams}}
-      @diagramsAreLoading={{this.diagramsAreLoading}}
-      @pageVersions={{this.pageVersions}}
-      @sortVersions={{this.sortVersions}}
-      @sizeVersions={{this.sizeVersions}}
-      @diagramsHaveErrored={{this.diagramsHaveErrored}}
-      @diagramsHaveNoResults={{this.diagramsHaveNoResults}}
-      @latestDiagram={{this.latestDiagram}}
-      @downloadFile={{this.downloadFile}}
-      @openDeleteModal={{this.openDeleteModal}}
-    />
+  <Process::Attachments
+    @canEdit={{this.canEdit}}
+    @attachments={{this.attachments}}
+    @downloadAttachments={{this.downloadAttachments}}
+    @attachmentsAreLoading={{this.attachmentsAreLoading}}
+    @pageAttachments={{this.pageAttachments}}
+    sortAttachments={{this.sortAttachments}}
+    @attachmentsHaveErrored={{this.attachmentsHaveErrored}}
+    @attachmentsHaveNoResults={{this.attachmentsHaveNoResults}}
+    @downloadFile={{this.downloadFile}}
+    @openDeleteModal={{this.openDeleteModal}}
+  />
 
-    <Process::Attachments
-      @canEdit={{this.canEdit}}
-      @attachments={{this.attachments}}
-      @downloadAttachments={{this.downloadAttachments}}
-      @attachmentsAreLoading={{this.attachmentsAreLoading}}
-      @pageAttachments={{this.pageAttachments}}
-      sortAttachments={{this.sortAttachments}}
-      @attachmentsHaveErrored={{this.attachmentsHaveErrored}}
-      @attachmentsHaveNoResults={{this.attachmentsHaveNoResults}}
-      @downloadFile={{this.downloadFile}}
-      @openDeleteModal={{this.openDeleteModal}}
-    />
-
-  </div>
+  {{! </div> }}
 </AuBodyContainer>
 
 <Process::Modals

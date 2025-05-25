@@ -1,18 +1,13 @@
-{{! Diagrams }}
-<div class="au-o-grid__item au-u-margin-top">
-
-  {{! Diagrams - Title }}
-  <div class="au-u-margin-bottom-small">
-    <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-      <AuHeading @level="2" @skin="3">Versies</AuHeading>
-    </div>
+<DataCard>
+  <:title>Versies</:title>
+  <:header>
     <AuHelpText @skin="secondary" class="au-u-margin-top-none">
       Ontdek hier vorige versies van het diagram van dit proces, geüpload in het
       Open Proces Huis. Deze versies zijn beschikbaar om te downloaden.
     </AuHelpText>
-  </div>
-  {{! Diagrams - Files }}
-  <div class="au-c-boxed-table au-u-margin-top-small">
+
+  </:header>
+  <:card>
     <AuDataTable
       @content={{@diagrams}}
       @isLoading={{@diagramsAreLoading}}
@@ -38,17 +33,14 @@
             @label="Grootte"
           />
           <th></th>
-          {{#if @canEdit}}
-            <th></th>
-          {{/if}}
+          {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
+
         {{#if @diagramsHaveErrored}}
           <TableMessage::Error />
         {{else if @diagramsHaveNoResults}}
           <TableMessage>
-            <p>
-              Er werden geen zoekresultaten gevonden.
-            </p>
+            <p>Er werden geen zoekresultaten gevonden.</p>
           </TableMessage>
         {{else}}
           <c.body as |diagram|>
@@ -90,5 +82,5 @@
         {{/if}}
       </t.content>
     </AuDataTable>
-  </div>
-</div>
+  </:card>
+</DataCard>
