@@ -2,28 +2,32 @@
   <:title>Bijlagen</:title>
 
   <:header>
-    <div class="au-u-flex au-u-flex--between">
-      <AuButtonGroup>
-        {{#if @canEdit}}
-          <AuButton @skin="secondary" {{on "click" @openAddModal}}>
-            Voeg toe
+    <div class="au-u-flex au-u-flex--column">
+      <div class="au-u-flex au-u-flex--end au-u-margin-bottom-small">
+        <AuButtonGroup>
+          {{#if @canEdit}}
+            <AuButton @skin="secondary" {{on "click" @openAddModal}}>
+              Voeg toe
+            </AuButton>
+          {{/if}}
+          <AuButton
+            @disabled={{not @attachments}}
+            {{on "click" (perform @downloadAttachments)}}
+          >
+            Download alles
           </AuButton>
-        {{/if}}
-        <AuButton
-          @disabled={{not @attachments}}
-          {{on "click" (perform @downloadAttachments)}}
-        >
-          Download alles
-        </AuButton>
-      </AuButtonGroup>
+        </AuButtonGroup>
+      </div>
+      <div>
+        <AuHelpText @skin="secondary" class="au-u-margin-top-none">
+          Bijlagen kunnen worden toegevoegd om het diagram te verduidelijken in
+          alle bestandsformaten, behalve
+          <span class="au-u-italic">.bpmn</span>
+          en
+          <span class="au-u-italic">.vsdx</span>.
+        </AuHelpText></div>
+
     </div>
-    <AuHelpText @skin="secondary" class="au-u-margin-top-none">
-      Bijlagen kunnen worden toegevoegd om het diagram te verduidelijken in alle
-      bestandsformaten, behalve
-      <span class="au-u-italic">.bpmn</span>
-      en
-      <span class="au-u-italic">.vsdx</span>.
-    </AuHelpText>
   </:header>
 
   <:card>
