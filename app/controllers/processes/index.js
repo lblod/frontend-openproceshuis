@@ -12,6 +12,7 @@ export default class ProcessesIndexController extends Controller {
     'classifications',
     'group',
     'blueprint',
+    'ipdcProducts',
   ];
 
   @tracked page = 0;
@@ -20,6 +21,8 @@ export default class ProcessesIndexController extends Controller {
   @tracked title = '';
   @tracked classifications = undefined;
   @tracked selectedClassifications = undefined;
+  @tracked selectedIpdcProducts = undefined;
+  @tracked ipdcProducts = undefined;
   @tracked group = '';
   @tracked blueprint = false;
   @service currentSession;
@@ -67,6 +70,15 @@ export default class ProcessesIndexController extends Controller {
   }
 
   @action
+  setIpdcProducts(selection) {
+    this.page = null;
+    this.selectedIpdcProducts = selection;
+    this.ipdcProducts = selection.length
+      ? selection.map((ipdcProduct) => ipdcProduct.id).join(',')
+      : undefined;
+  }
+
+  @action
   setGroup(selection) {
     this.page = null;
     this.group = selection;
@@ -92,6 +104,7 @@ export default class ProcessesIndexController extends Controller {
     this.page = 0;
     this.sort = 'title';
     this.blueprint = false;
+    this.selectedIpdcProducts = undefined;
 
     // Triggers a refresh of the model
     this.page = null;
