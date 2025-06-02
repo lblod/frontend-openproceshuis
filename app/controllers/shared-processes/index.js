@@ -121,6 +121,7 @@ export default class SharedProcessesIndexController extends Controller {
 
   @task({ enqueue: true, maxConcurrency: 3 })
   *extractBpmnElements(bpmnFileId) {
+    // FIXME: When file upload succeeds but fetch fails, we get a success and error toast.
     yield fetch(`/bpmn?id=${bpmnFileId}`, {
       method: 'POST',
       headers: {
