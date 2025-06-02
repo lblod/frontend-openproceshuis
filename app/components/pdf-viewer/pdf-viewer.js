@@ -50,8 +50,15 @@ export default class PdfViewerModifier extends Modifier {
 
   async modify(
     container,
-    _positional,
-    { diagram, currentPage, onLoadingChange, onPageChange, onTotalPages },
+    _,
+    {
+      diagram,
+      currentPage,
+      onLoadingChange,
+      onPageChange,
+      onTotalPages,
+      onError,
+    },
   ) {
     container.tabIndex = 0;
     container.style.overflow = 'hidden';
@@ -76,6 +83,8 @@ export default class PdfViewerModifier extends Modifier {
     const fileId = diagram?.isVisioFile && diagram.id;
     if (!fileId) return;
 
+    onError?.(false);
+
     if (fileId !== this.lastFileId) {
       this.lastFileId = fileId;
       this.lastRenderedPage = null;
@@ -85,7 +94,12 @@ export default class PdfViewerModifier extends Modifier {
       onTotalPages(totalPages);
       onPageChange(1);
 
-      await this._fitPdf(container, firstPage);
+      try {
+        await this._fitPdf(container, firstPage);
+      } catch (err) {
+        console.error('Visio display error:', err);
+        onError?.(true);
+      }
       onLoadingChange(false);
     }
 
@@ -93,9 +107,14 @@ export default class PdfViewerModifier extends Modifier {
       this.lastRenderedPage = currentPage;
       onLoadingChange(true);
 
-      this.page = await this.pdf.getPage(currentPage);
-      await this._renderAtScale(this.scale);
-      this._updateCanvasTransform();
+      try {
+        this.page = await this.pdf.getPage(currentPage);
+        await this._renderAtScale(this.scale);
+        this._updateCanvasTransform();
+      } catch (err) {
+        console.error('Visio display error:', err);
+        onError?.(true);
+      }
 
       onLoadingChange(false);
     }
