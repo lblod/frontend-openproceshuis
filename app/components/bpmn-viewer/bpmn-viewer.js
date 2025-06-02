@@ -20,7 +20,7 @@ export default class BpmnViewerModifier extends Modifier {
     registerDestructor(this, () => this.viewer?.destroy());
   }
 
-  modify(container, _, { diagram, onBpmnLoaded, onSvgLoaded }) {
+  async modify(container, _, { diagram, onBpmnLoaded, onSvgLoaded }) {
     container.tabIndex = 0;
 
     if (!this.viewer) {
@@ -33,22 +33,18 @@ export default class BpmnViewerModifier extends Modifier {
     if (!fileId || fileId === this.lastFileId) return;
     this.lastFileId = fileId;
 
-    this.downloadXml
-      .perform(fileId)
-      .then(async (xml) => {
-        await this.viewer.importXML(xml);
+    const xml = await this.downloadXml.perform(fileId);
+    await this.viewer.importXML(xml);
 
-        this.viewer.get('canvas').zoom('fit-viewport');
-        this.disableZoomScroll();
+    this.viewer.get('canvas').zoom('fit-viewport');
+    this.disableZoomScroll();
 
-        onBpmnLoaded?.(xml);
+    onBpmnLoaded?.(xml);
 
-        if (onSvgLoaded) {
-          const { svg } = await this.viewer.saveSVG();
-          onSvgLoaded(svg);
-        }
-      })
-      .catch((err) => console.error('BPMN import failed', err));
+    if (onSvgLoaded) {
+      const { svg } = await this.viewer.saveSVG();
+      onSvgLoaded(svg);
+    }
   }
 
   enableZoomScroll() {
