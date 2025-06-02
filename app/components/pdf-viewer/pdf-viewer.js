@@ -85,38 +85,34 @@ export default class PdfViewerModifier extends Modifier {
 
     onError?.(false);
 
-    if (fileId !== this.lastFileId) {
-      this.lastFileId = fileId;
-      this.lastRenderedPage = null;
+    try {
+      if (fileId !== this.lastFileId) {
+        this.lastFileId = fileId;
+        this.lastRenderedPage = null;
 
-      onLoadingChange(true);
-      let { totalPages, firstPage } = await this.loadPdf.perform(fileId);
-      onTotalPages(totalPages);
-      onPageChange(1);
+        onLoadingChange(true);
+        let { totalPages, firstPage } = await this.loadPdf.perform(fileId);
+        onTotalPages(totalPages);
+        onPageChange(1);
 
-      try {
         await this._fitPdf(container, firstPage);
-      } catch (err) {
-        console.error('Visio display error:', err);
-        onError?.(true);
+
+        onLoadingChange(false);
       }
-      onLoadingChange(false);
-    }
 
-    if (currentPage && currentPage !== this.lastRenderedPage) {
-      this.lastRenderedPage = currentPage;
-      onLoadingChange(true);
+      if (currentPage && currentPage !== this.lastRenderedPage) {
+        this.lastRenderedPage = currentPage;
+        onLoadingChange(true);
 
-      try {
         this.page = await this.pdf.getPage(currentPage);
         await this._renderAtScale(this.scale);
         this._updateCanvasTransform();
-      } catch (err) {
-        console.error('Visio display error:', err);
-        onError?.(true);
-      }
 
-      onLoadingChange(false);
+        onLoadingChange(false);
+      }
+    } catch (err) {
+      console.error('Visio display error:', err);
+      onError?.(true);
     }
   }
 
