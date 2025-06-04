@@ -8,7 +8,6 @@ export default class SharedProcessesIndexRoute extends Route {
   @service session;
   @service currentSession;
   @service store;
-  @service toaster;
 
   queryParams = {
     page: { refreshModel: true },
