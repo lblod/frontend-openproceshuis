@@ -34,6 +34,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @service currentSession;
   @service toaster;
   @service plausible;
+  @service api;
 
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
@@ -308,7 +309,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @dropTask
   *extractBpmnElements(bpmnFileId) {
-    yield fetch(`/bpmn?id=${bpmnFileId}`, {
+    yield this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',

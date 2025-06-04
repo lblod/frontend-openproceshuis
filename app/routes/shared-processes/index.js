@@ -2,7 +2,6 @@ import Route from '@ember/routing/route';
 import { keepLatestTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
-import { getMessageForErrorCode } from '../../utils/error-codes';
 
 export default class SharedProcessesIndexRoute extends Route {
   @service router;
@@ -21,23 +20,6 @@ export default class SharedProcessesIndexRoute extends Route {
     this.session.requireAuthentication(transition, 'index');
 
     if (this.currentSession.readOnly) this.router.transitionTo('unauthorized');
-    this.monkeyPatchFetch();
-  }
-
-  monkeyPatchFetch() {
-    const originalFetch = window.fetch;
-    const toaster = this.toaster;
-    window.fetch = async function () {
-      const response = await originalFetch.apply(this, arguments);
-      if (!response.ok) {
-        const responseJson = await response.json();
-        const readableErrorMsg = getMessageForErrorCode(
-          responseJson?.errors?.[0]?.errorCode,
-        );
-        toaster.error(readableErrorMsg, 'Fout'); // TODO: toaster title
-      }
-      return response;
-    };
   }
 
   async model(params) {

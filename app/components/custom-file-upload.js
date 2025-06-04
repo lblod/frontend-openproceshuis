@@ -5,10 +5,10 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
-
 export default class AuFileUpload extends Component {
   fileQueueHelper = fileQueue;
   @service fileQueue;
+  @service api;
   @tracked uploadErrorData = [];
 
   get uploadingMsg() {
@@ -162,7 +162,7 @@ export default class AuFileUpload extends Component {
 
   @task
   *convertVisioToBpmn(visioFileId) {
-    const response = yield fetch(`/visio?id=${visioFileId}`, {
+    const response = yield this.api.fetch(`/visio?id=${visioFileId}`, {
       method: 'POST',
     });
     const body = yield response.json();
