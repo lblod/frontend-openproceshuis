@@ -26,18 +26,10 @@ export default class ApplicationController extends Controller {
   }
 
   get maintenanceEnabled() {
-    console.log(
-      'ENV.announce.maintenance.enabled',
-      ENV.announce.maintenance.enabled,
-    );
     return ENV.announce.maintenance.enabled;
   }
 
   get maintenanceMessage() {
-    console.log(
-      'ENV.announce.maintenance.message',
-      ENV.announce.maintenance.message,
-    );
     return ENV.announce.maintenance.message;
   }
 }
