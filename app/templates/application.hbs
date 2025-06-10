@@ -15,6 +15,15 @@
       id="content"
       tabindex="-1"
     >
+      {{#if this.maintenanceEnabled}}
+        <AuAlert
+          @skin="warning"
+          @icon="alert-triangle"
+          class="au-u-margin-bottom-none au-c-env-announcement"
+        >
+          <p>{{this.maintenanceMessage}}</p>
+        </AuAlert>
+      {{/if}}
       {{outlet}}
     </div>
   </main>
