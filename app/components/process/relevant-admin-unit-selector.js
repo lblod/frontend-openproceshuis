@@ -1,16 +1,13 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { restartableTask } from 'ember-concurrency';
-import { tracked } from '@glimmer/tracking';
+import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
-export default class RelevantAdminUnitSelector extends Component {
+export default class ProcessRelevantAdminUnitSelectorComponent extends Component {
   @service router;
   @service store;
 
-  @tracked relevantAdministrativeUnits = [];
-
-  @restartableTask
-  *loadProcessClassificationsTask() {
+  loadProcessClassificationsTask = restartableTask(async () => {
     const query = {
       page: {
         number: 0,
@@ -19,10 +16,14 @@ export default class RelevantAdminUnitSelector extends Component {
       sort: ':no-case:label',
     };
 
-    const result = yield this.store.query(
+    return await this.store.query(
       'administrative-unit-classification-code',
       query,
     );
-    this.relevantAdministrativeUnits = result;
-  }
+  });
+
+  relevantAdministrativeUnits = trackedTask(
+    this,
+    this.loadProcessClassificationsTask,
+  );
 }

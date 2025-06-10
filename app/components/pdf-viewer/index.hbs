@@ -1,7 +1,12 @@
-{{! template-lint-disable no-at-ember-render-modifiers }}
 <div
   class="bpmn-container au-u-margin-top-small au-u-flex au-u-flex--center au-u-flex--vertical-center"
-  {{did-insert this.setupViewer}}
+  {{this.pdfViewer
+    diagram=@diagram
+    currentPage=this.currentPage
+    onLoadingChange=this.setLoading
+    onPageChange=this.setPage
+    onTotalPages=this.setTotal
+  }}
 >
   {{#if this.isLoading}}
     <AuLoader />
@@ -14,20 +19,22 @@
         @icon="chevron-left"
         @iconAlignment="left"
         @hideText="true"
-        {{on "click" this.goToPreviousPage}}
+        {{on "click" this.goToPrevious}}
+        disabled={{lte this.currentPage 1}}
       >
         Vorige
       </AuButton>
+
       <AuButton @skin="secondary" class="navigation-counter au-u-regular">
-        {{this.currentPage}}
-        /
-        {{this.totalPages}}
+        {{this.currentPage}}/{{this.totalPages}}
       </AuButton>
+
       <AuButton
         @icon="chevron-right"
         @iconAlignment="right"
         @hideText="true"
-        {{on "click" this.goToNextPage}}
+        {{on "click" this.goToNext}}
+        disabled={{gte this.currentPage this.totalPages}}
       >
         Volgende
       </AuButton>
