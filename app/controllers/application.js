@@ -26,7 +26,7 @@ export default class ApplicationController extends Controller {
   }
 
   get maintenanceEnabled() {
-    return ENV.announce.maintenance.enabled;
+    return ENV.announce.maintenance.enabled === 'true';
   }
 
   get maintenanceMessage() {
