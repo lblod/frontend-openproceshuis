@@ -50,8 +50,15 @@ export default class PdfViewerModifier extends Modifier {
 
   async modify(
     container,
-    _positional,
-    { diagram, currentPage, onLoadingChange, onPageChange, onTotalPages },
+    _,
+    {
+      diagram,
+      currentPage,
+      onLoadingChange,
+      onPageChange,
+      onTotalPages,
+      onError,
+    },
   ) {
     container.tabIndex = 0;
     container.style.overflow = 'hidden';
@@ -76,28 +83,36 @@ export default class PdfViewerModifier extends Modifier {
     const fileId = diagram?.isVisioFile && diagram.id;
     if (!fileId) return;
 
-    if (fileId !== this.lastFileId) {
-      this.lastFileId = fileId;
-      this.lastRenderedPage = null;
+    onError?.(false);
 
-      onLoadingChange(true);
-      let { totalPages, firstPage } = await this.loadPdf.perform(fileId);
-      onTotalPages(totalPages);
-      onPageChange(1);
+    try {
+      if (fileId !== this.lastFileId) {
+        this.lastFileId = fileId;
+        this.lastRenderedPage = null;
 
-      await this._fitPdf(container, firstPage);
-      onLoadingChange(false);
-    }
+        onLoadingChange(true);
+        let { totalPages, firstPage } = await this.loadPdf.perform(fileId);
+        onTotalPages(totalPages);
+        onPageChange(1);
 
-    if (currentPage && currentPage !== this.lastRenderedPage) {
-      this.lastRenderedPage = currentPage;
-      onLoadingChange(true);
+        await this._fitPdf(container, firstPage);
 
-      this.page = await this.pdf.getPage(currentPage);
-      await this._renderAtScale(this.scale);
-      this._updateCanvasTransform();
+        onLoadingChange(false);
+      }
 
-      onLoadingChange(false);
+      if (currentPage && currentPage !== this.lastRenderedPage) {
+        this.lastRenderedPage = currentPage;
+        onLoadingChange(true);
+
+        this.page = await this.pdf.getPage(currentPage);
+        await this._renderAtScale(this.scale);
+        this._updateCanvasTransform();
+
+        onLoadingChange(false);
+      }
+    } catch (err) {
+      console.error('Visio display error:', err);
+      onError?.(true);
     }
   }
 
