@@ -3,13 +3,13 @@
     <AuTabs @reversed={{this.reversed}} as |Tab|>
       <Tab>
         <AuLink @route="processes" @icon="sitemap">
-          Processen
+          Alle processen
         </AuLink>
       </Tab>
       {{#if this.currentSession.canEdit}}
         <Tab>
           <AuLink @route="my-local-government" @icon="users-four-of-four">
-            Mijn lokaal bestuur
+            Processen mijn bestuur
           </AuLink>
         </Tab>
         <Tab>

@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
-import { getOwner } from '@ember/application';
 import { service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -10,27 +10,26 @@ const isLocalhost = Boolean(
 
 export default class ApplicationController extends Controller {
   @service router;
-  get environmentName() {
-    const thisEnvironmentValues = isLocalhost
-      ? 'local'
-      : getOwner(this).resolveRegistration('config:environment')
-          .environmentName;
 
-    return thisEnvironmentValues;
+  get environmentName() {
+    return isLocalhost ? 'local' : ENV.environmentName;
   }
 
   get environmentTitle() {
-    const thisEnvironmentValues = isLocalhost
-      ? 'lokalomgeving'
-      : getOwner(this).resolveRegistration('config:environment')
-          .environmentTitle;
-
-    return thisEnvironmentValues;
+    return isLocalhost ? 'lokalomgeving' : ENV.environmentTitle;
   }
 
   get showEnvironment() {
     return (
       this.environmentName && this.environmentName !== '{{ENVIRONMENT_NAME}}'
     );
+  }
+
+  get maintenanceEnabled() {
+    return ENV.announce.maintenance.enabled === 'true';
+  }
+
+  get maintenanceMessage() {
+    return ENV.announce.maintenance.message;
   }
 }

@@ -19,6 +19,13 @@ module.exports = function (environment) {
       // when it is created
     },
 
+    announce: {
+      maintenance: {
+        enabled: '{{ANNOUNCE_MAINTENANCE_ENABLED}}',
+        message: '{{ANNOUNCE_MAINTENANCE_MESSAGE}}',
+      },
+    },
+
     appName: 'Open Proces Huis',
 
     ovoCodes: {
