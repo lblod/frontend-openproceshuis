@@ -4,13 +4,13 @@
   <:header>
     <AuButtonGroup>
       {{#if @canEdit}}
-        <AuButton @skin="secondary" {{on "click" @openAddModal}}>
+        <AuButton @skin="secondary" {{on "click" this.openAddModal}}>
           Voeg toe
         </AuButton>
       {{/if}}
       <AuButton
-        @disabled={{not @attachments}}
-        {{on "click" (perform @downloadAttachments)}}
+        @disabled={{not this.attachments}}
+        {{on "click" (perform this.downloadAttachments)}}
       >
         Download alles
       </AuButton>
@@ -29,41 +29,41 @@
 
   <:card>
     <AuDataTable
-      @content={{@attachments}}
-      @isLoading={{@attachmentsAreLoading}}
-      @page={{@pageAttachments}}
-      @size={{@sizeAttachments}}
+      @content={{this.attachments}}
+      @isLoading={{this.attachmentsAreLoading}}
+      @page={{this.pageAttachments}}
+      @size={{this.sizeAttachments}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable
             @field="name"
-            @currentSorting={{@sortAttachments}}
+            @currentSorting={{this.sortAttachments}}
             @label="Bestandsnaam"
           />
           <AuDataTableThSortable
             @field="size"
-            @currentSorting={{@sortAttachments}}
+            @currentSorting={{this.sortAttachments}}
             @label="Grootte"
           />
           <AuDataTableThSortable
             @field="extension"
-            @currentSorting={{@sortAttachments}}
+            @currentSorting={{this.sortAttachments}}
             @label="Extensie"
           />
           <AuDataTableThSortable
             @field="created"
-            @currentSorting={{@sortAttachments}}
+            @currentSorting={{this.sortAttachments}}
             @label="Toegevoegd op"
           />
           <th></th>
           {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
 
-        {{#if @attachmentsHaveErrored}}
+        {{#if this.attachmentsHaveErrored}}
           <TableMessage::Error />
-        {{else if @attachmentsHaveNoResults}}
+        {{else if this.attachmentsHaveNoResults}}
           <TableMessage>
             <p>Er werden geen zoekresultaten gevonden.</p>
           </TableMessage>
@@ -79,7 +79,7 @@
                 @skin="link"
                 @width="block"
                 @hideText="true"
-                {{on "click" (fn @downloadFile attachment)}}
+                {{on "click" (fn this.downloadFile attachment)}}
               >Download</AuButton>
             </td>
             {{#if @canEdit}}
@@ -90,7 +90,7 @@
                   @alert="true"
                   @width="block"
                   @hideText="true"
-                  {{on "click" (fn @openDeleteModal attachment)}}
+                  {{on "click" (fn this.openDeleteModal attachment)}}
                 >Verwijder</AuButton>
               </td>
             {{/if}}
@@ -100,3 +100,47 @@
     </AuDataTable>
   </:card>
 </DataCard>
+
+<AuModal @modalOpen={{this.addModalOpened}} @closeModal={{this.closeAddModal}}>
+  <:title>Voeg bijlage toe</:title>
+  <:body>
+    <CustomFileUpload
+      @title="Bestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
+      @forbidden=".bpmn,.vsdx"
+      @multiple="true"
+      @updateProcess={{this.addFileToProcess}}
+      @onFinishUpload={{this.attachmentsUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeAddModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.deleteModalOpened}}
+  @closeModal={{this.closeDeleteModal}}
+>
+  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" (perform this.deleteFile)}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

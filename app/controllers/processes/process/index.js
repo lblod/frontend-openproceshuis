@@ -8,10 +8,6 @@ import FileSaver from 'file-saver';
 import ENV from 'frontend-openproceshuis/config/environment';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import {
-  downloadFileByUrl,
-  downloadFilesAsZip,
-} from 'frontend-openproceshuis/utils/file-downloader';
-import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
@@ -41,7 +37,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked deleteModalOpened = false;
 
   @tracked isEditingDetails = false;
-  @tracked fileToDelete = undefined;
 
   // Process
 
@@ -86,24 +81,6 @@ export default class ProcessesProcessIndexController extends Controller {
     );
   }
 
-  // Attachments
-
-  @tracked pageAttachments = 0;
-  @tracked sortAttachments = 'name';
-  sizeAttachments = 10;
-
-  @tracked attachments = undefined;
-  @tracked attachmentsAreLoading = true;
-  @tracked attachmentsHaveErrored = false;
-
-  get attachmentsHaveNoResults() {
-    return (
-      !this.attachmentsAreLoading &&
-      !this.attachmentsHaveErrored &&
-      this.attachments?.length === 0
-    );
-  }
-
   // Other
 
   get canEdit() {
@@ -129,12 +106,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   closeDownloadModal() {
     this.downloadModalOpened = false;
-  }
-
-  @action
-  async downloadFile(file) {
-    await downloadFileByUrl(file.id, file.name);
-    this.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
   @dropTask
@@ -263,19 +234,6 @@ export default class ProcessesProcessIndexController extends Controller {
     yield stats.save();
   }
 
-  @dropTask
-  *downloadAttachments() {
-    if (!this.attachments) return;
-
-    if (this.attachments.length === 1)
-      yield this.downloadOriginalFile(this.attachments[0]);
-    else
-      yield downloadFilesAsZip(
-        this.attachments,
-        this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
-      );
-  }
-
   @action
   openReplaceModal() {
     this.replaceModalOpened = true;
@@ -296,16 +254,6 @@ export default class ProcessesProcessIndexController extends Controller {
     this.addModalOpened = false;
   }
 
-  @enqueueTask
-  *addFileToProcess(newFileId) {
-    const newFile = yield this.store.findRecord('file', newFileId);
-
-    this.process.files.push(newFile);
-    this.process.modified = newFile.created;
-
-    yield this.process.save();
-  }
-
   @dropTask
   *extractBpmnElements(bpmnFileId) {
     yield fetch(`/bpmn?id=${bpmnFileId}`, {
@@ -323,13 +271,6 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  attachmentsUploaded(_, queueInfo) {
-    if (!queueInfo.isQueueEmpty) return;
-    this.addModalOpened = false;
-    this.fetchAttachments.perform();
-  }
-
-  @action
   openDeleteModal(fileToDelete) {
     this.fileToDelete = fileToDelete;
     this.deleteModalOpened = true;
@@ -339,30 +280,6 @@ export default class ProcessesProcessIndexController extends Controller {
   closeDeleteModal() {
     this.fileToDelete = undefined;
     this.deleteModalOpened = false;
-  }
-
-  @dropTask
-  *deleteFile() {
-    if (!this.fileToDelete) return;
-
-    this.fileToDelete.archive();
-
-    try {
-      yield this.fileToDelete.save();
-      this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
-        timeOut: 5000,
-      });
-    } catch (error) {
-      console.error(error);
-      this.toaster.error('Bestand kon niet worden verwijderd', 'Fout');
-      this.fileToDelete.rollbackAttributes();
-    }
-
-    if (this.fileToDelete.isBpmnFile || this.fileToDelete.isVisioFile)
-      this.fetchDiagrams.perform();
-    else this.fetchAttachments.perform();
-
-    this.closeDeleteModal();
   }
 
   reset() {
@@ -376,7 +293,6 @@ export default class ProcessesProcessIndexController extends Controller {
     this.latestDiagramAsBpmn = undefined;
     this.latestDiagramAsSvg = undefined;
 
-    this.attachments = undefined;
     this.diagrams = undefined;
     this.latestDiagram = undefined;
   }
@@ -465,44 +381,5 @@ export default class ProcessesProcessIndexController extends Controller {
     }
 
     this.diagramsAreLoading = false;
-  }
-
-  @keepLatestTask({ observes: ['pageAttachments', 'sortAttachments'] })
-  *fetchAttachments() {
-    this.attachmentsAreLoading = true;
-    this.attachmentsHaveErrored = false;
-
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageAttachments,
-        size: this.sizeAttachments,
-      },
-      'filter[processes][id]': this.model.process.id,
-      'filter[:not:extension]': ['bpmn', 'vsdx'],
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (this.sortAttachments) {
-      const isDescending = this.sortAttachments.startsWith('-');
-
-      let sortValue = isDescending
-        ? this.sortAttachments.substring(1)
-        : this.sortAttachments;
-
-      if (sortValue === 'name' || sortValue === 'extension')
-        sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    try {
-      this.attachments = yield this.store.query('file', query);
-    } catch {
-      this.attachmentsHaveErrored = true;
-    }
-
-    this.attachmentsAreLoading = false;
   }
 }

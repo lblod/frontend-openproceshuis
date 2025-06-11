@@ -63,20 +63,7 @@
     @openDeleteModal={{this.openDeleteModal}}
   />
 
-  <Process::Attachments
-    @canEdit={{this.canEdit}}
-    @attachments={{this.attachments}}
-    @downloadAttachments={{this.downloadAttachments}}
-    @attachmentsAreLoading={{this.attachmentsAreLoading}}
-    @pageAttachments={{this.pageAttachments}}
-    @sortAttachments={{this.sortAttachments}}
-    @sizeAttachments={{this.sizeAttachments}}
-    @attachmentsHaveErrored={{this.attachmentsHaveErrored}}
-    @attachmentsHaveNoResults={{this.attachmentsHaveNoResults}}
-    @downloadFile={{this.downloadFile}}
-    @openDeleteModal={{this.openDeleteModal}}
-    @openAddModal={{this.openAddModal}}
-  />
+  <Process::Attachments @canEdit={{this.canEdit}} @process={{this.process}} />
 
 </AuBodyContainer>
 
@@ -90,10 +77,8 @@
   @closeDownloadModal={{this.closeDownloadModal}}
   @closeAddModal={{this.closeAddModal}}
   @closeDeleteModal={{this.closeDeleteModal}}
-  @attachmentsUploaded={{this.attachmentsUploaded}}
   @diagramUploaded={{this.diagramUploaded}}
   @downloadLatestDiagram={{this.downloadLatestDiagram}}
-  @addFileToProcess={{this.addFileToProcess}}
   @extractBpmnElements={{this.extractBpmnElements}}
   @latestDiagramAsSvg={{this.latestDiagramAsSvg}}
   @fileToDelete={{this.fileToDelete}}
