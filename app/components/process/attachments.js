@@ -10,6 +10,10 @@ import {
 } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessAttachments extends Component {
+  constructor() {
+    super(...arguments);
+    this.fetchAttachments.perform();
+  }
   @service store;
   @service toaster;
   @tracked addModalOpened = false;
@@ -61,7 +65,7 @@ export default class ProcessAttachments extends Component {
   @action
   async downloadFile(file) {
     await downloadFileByUrl(file.id, file.name);
-    this.trackDownloadFileEvent(file.id, file.name, file.extension);
+    this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
   @enqueueTask
@@ -115,7 +119,6 @@ export default class ProcessAttachments extends Component {
     } catch {
       this.attachmentsHaveErrored = true;
     }
-
     this.attachmentsAreLoading = false;
   }
 
@@ -124,7 +127,7 @@ export default class ProcessAttachments extends Component {
     if (!this.attachments) return;
 
     if (this.attachments.length === 1)
-      yield this.downloadOriginalFile(this.attachments[0]);
+      this.downloadFile(this.attachments[0]); // Fixme: This function is nowhere defined?
     else
       yield downloadFilesAsZip(
         this.attachments,
