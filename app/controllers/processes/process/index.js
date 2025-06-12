@@ -21,11 +21,6 @@ export default class ProcessesProcessIndexController extends Controller {
   @service toaster;
   @service plausible;
 
-  @tracked downloadModalOpened = false;
-  @tracked replaceModalOpened = false;
-  @tracked addModalOpened = false;
-  @tracked deleteModalOpened = false;
-
   @tracked isEditingDetails = false;
 
   // Process
@@ -82,7 +77,7 @@ export default class ProcessesProcessIndexController extends Controller {
       Bestuursnaam: this.process?.publisher?.name,
     });
     try {
-      this.loadFileDownloads.perform(targetExtension);
+      this.incrementFileDownloads.perform(targetExtension);
     } catch (error) {
       console.error(
         `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
@@ -92,7 +87,7 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @enqueueTask
-  *loadFileDownloads(targetExtension) {
+  *incrementFileDownloads(targetExtension) {
     try {
       const process = yield this.store.findRecord('process', this.process.id);
       const stats = process.processStatistics;
@@ -120,21 +115,6 @@ export default class ProcessesProcessIndexController extends Controller {
         error,
       );
     }
-  }
-
-  reset() {
-    this.process?.rollbackAttributes();
-
-    this.downloadModalOpened = false;
-    this.replaceModalOpened = false;
-    this.addModalOpened = false;
-    this.deleteModalOpened = false;
-
-    this.latestDiagramAsBpmn = undefined;
-    this.latestDiagramAsSvg = undefined;
-
-    this.diagrams = undefined;
-    this.latestDiagram = undefined;
   }
 
   @keepLatestTask({
@@ -175,5 +155,20 @@ export default class ProcessesProcessIndexController extends Controller {
     }
 
     this.diagramsAreLoading = false;
+  }
+
+  reset() {
+    this.process?.rollbackAttributes();
+
+    this.downloadModalOpened = false;
+    this.replaceModalOpened = false;
+    this.addModalOpened = false;
+    this.deleteModalOpened = false;
+
+    this.latestDiagramAsBpmn = undefined;
+    this.latestDiagramAsSvg = undefined;
+
+    this.diagrams = undefined;
+    this.latestDiagram = undefined;
   }
 }

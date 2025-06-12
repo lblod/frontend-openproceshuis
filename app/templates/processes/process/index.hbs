@@ -21,22 +21,18 @@
 {{/if}}
 
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
-  {{! Details }}
+
   <Process::DetailsCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
     @setIsEditing={{this.setIsEditingDetails}}
   />
 
-  {{! <div class="au-o-grid au-o-grid--tiny au-u-margin-top"> }}
-
   <Process::Diagram::Visual
     @canEdit={{this.canEdit}}
     @process={{this.process}}
-    @trackDownloadEvent={{this.trackDownloadFileEvent}}
+    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
   />
-
-  {{! ICR }}
 
   {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
     <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
