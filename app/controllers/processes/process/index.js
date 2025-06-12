@@ -70,16 +70,6 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
-  openDownloadModal() {
-    this.downloadModalOpened = true;
-  }
-
-  @action
-  closeDownloadModal() {
-    this.downloadModalOpened = false;
-  }
-
-  @action
   trackDownloadFileEvent(fileId, fileName, fileExtension, targetExtension) {
     this.plausible.trackEvent('Download bestand', {
       'Bestand-ID': fileId,
@@ -130,38 +120,6 @@ export default class ProcessesProcessIndexController extends Controller {
         error,
       );
     }
-  }
-
-  @action
-  openReplaceModal() {
-    this.replaceModalOpened = true;
-  }
-
-  @action
-  closeReplaceModal() {
-    this.replaceModalOpened = false;
-  }
-
-  @action
-  openAddModal() {
-    this.addModalOpened = true;
-  }
-
-  @action
-  closeAddModal() {
-    this.addModalOpened = false;
-  }
-
-  @action
-  openDeleteModal(fileToDelete) {
-    this.fileToDelete = fileToDelete;
-    this.deleteModalOpened = true;
-  }
-
-  @action
-  closeDeleteModal() {
-    this.fileToDelete = undefined;
-    this.deleteModalOpened = false;
   }
 
   reset() {

@@ -32,11 +32,8 @@
 
   <Process::Diagram::Visual
     @canEdit={{this.canEdit}}
-    @latestDiagram={{this.latestDiagram}}
-    @openReplaceModal={{this.openReplaceModal}}
-    @openDownloadModal={{this.openDownloadModal}}
-    @setLatestDiagramAsBpmn={{this.setLatestDiagramAsBpmn}}
-    @setLatestDiagramAsSvg={{this.setLatestDiagramAsSvg}}
+    @process={{this.process}}
+    @trackDownloadEvent={{this.trackDownloadFileEvent}}
   />
 
   {{! ICR }}
@@ -52,17 +49,21 @@
 
   <Process::Diagram::Version
     @diagrams={{this.diagrams}}
+    @latestDiagram={{this.latestDiagram}}
+    @process={{this.process}}
     @diagramsAreLoading={{this.diagramsAreLoading}}
     @pageVersions={{this.pageVersions}}
     @sortVersions={{this.sortVersions}}
     @sizeVersions={{this.sizeVersions}}
     @diagramsHaveErrored={{this.diagramsHaveErrored}}
     @diagramsHaveNoResults={{this.diagramsHaveNoResults}}
-    @latestDiagram={{this.latestDiagram}}
-    @downloadFile={{this.downloadFile}}
-    @openDeleteModal={{this.openDeleteModal}}
+    @trackDownloadEvent={{this.trackDownloadFileEvent}}
   />
 
-  <Process::Attachments @canEdit={{this.canEdit}} @process={{this.process}} />
+  <Process::Attachments
+    @canEdit={{this.canEdit}}
+    @process={{this.process}}
+    @trackDownloadEvent={{this.trackDownloadFileEvent}}
+  />
 
 </AuBodyContainer>
