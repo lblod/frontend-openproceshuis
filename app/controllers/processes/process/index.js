@@ -1,9 +1,8 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { enqueueTask, keepLatestTask } from 'ember-concurrency';
+import { enqueueTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
-import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
@@ -23,31 +22,9 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @tracked isEditingDetails = false;
 
-  // Process
-
   get process() {
     return this.model.process;
   }
-
-  // Diagram versions
-
-  @tracked pageVersions = 0;
-  @tracked sortVersions = '-created';
-  sizeVersions = 10;
-
-  @tracked diagrams = undefined;
-  @tracked diagramsAreLoading = true;
-  @tracked diagramsHaveErrored = false;
-
-  get diagramsHaveNoResults() {
-    return (
-      !this.diagramsAreLoading &&
-      !this.diagramsHaveErrored &&
-      this.diagrams?.length === 0
-    );
-  }
-
-  // Other
 
   get canEdit() {
     return (
@@ -115,46 +92,6 @@ export default class ProcessesProcessIndexController extends Controller {
         error,
       );
     }
-  }
-
-  @keepLatestTask({
-    observes: ['latestDiagram', 'pageVersions', 'sortVersions'],
-  })
-  *fetchDiagrams() {
-    this.diagramsAreLoading = true;
-    this.diagramsHaveErrored = false;
-
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageVersions,
-        size: this.sizeVersions,
-      },
-      'filter[processes][id]': this.model.process.id,
-      'filter[:or:][extension]': ['bpmn', 'vsdx'],
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (this.sortVersions) {
-      const isDescending = this.sortVersions.startsWith('-');
-
-      let sortValue = isDescending
-        ? this.sortVersions.substring(1)
-        : this.sortVersions;
-
-      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    try {
-      this.diagrams = yield this.store.query('file', query);
-    } catch {
-      this.diagramsHaveErrored = true;
-    }
-
-    this.diagramsAreLoading = false;
   }
 
   reset() {

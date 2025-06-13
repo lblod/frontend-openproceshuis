@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
-import { dropTask, enqueueTask, keepLatestTask } from 'ember-concurrency';
+import { dropTask, enqueueTask } from 'ember-concurrency';
 import FileSaver from 'file-saver';
 import { htmlSafe } from '@ember/template';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
@@ -17,23 +17,25 @@ import generateFileDownloadUrl, {
 export default class ProcessDiagramVisual extends Component {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
-  @tracked latestDiagram = undefined;
-  @tracked latestDiagramIsLoading = true;
-  @tracked latestDiagramHasErrored = false;
   @service store;
   @service toaster;
   @service plausible;
+  @service diagram;
 
   latestDiagramAsBpmn = undefined;
   latestDiagramAsSvg = undefined;
 
   constructor() {
     super(...arguments);
-    this.fetchLatestDiagram.perform();
+    this.diagram.fetchLatest.perform(this.process.id);
   }
 
   get process() {
     return this.args.process;
+  }
+
+  get latestDiagram() {
+    return this.diagram.latestDiagram;
   }
 
   @action
@@ -88,51 +90,7 @@ export default class ProcessDiagramVisual extends Component {
   @action
   diagramUploaded(uploadedFileId) {
     this.replaceModalOpened = false;
-    this.fetchLatestDiagramById.perform(uploadedFileId);
-  }
-
-  @keepLatestTask
-  *fetchLatestDiagram() {
-    this.latestDiagramIsLoading = true;
-    this.latestDiagramHasErrored = false;
-
-    const query = {
-      reload: true,
-      page: {
-        number: 0,
-        size: 1,
-      },
-      'filter[processes][id]': this.process.id,
-      'filter[:or:][extension]': ['bpmn', 'vsdx'],
-      sort: '-created',
-    };
-
-    let diagrams;
-    try {
-      diagrams = yield this.store.query('file', query);
-    } catch {
-      this.latestDiagramHasErrored = true;
-    }
-    if (diagrams?.length) this.latestDiagram = diagrams[0];
-    else this.latestDiagramHasErrored = true;
-
-    this.latestDiagramIsLoading = false;
-  }
-
-  @keepLatestTask
-  *fetchLatestDiagramById(fileId) {
-    this.latestDiagramIsLoading = true;
-    this.latestDiagramHasErrored = false;
-
-    try {
-      this.latestDiagram = yield this.store.findRecord('file', fileId, {
-        reload: true,
-      });
-    } catch {
-      this.latestDiagramHasErrored = true;
-    }
-
-    this.latestDiagramIsLoading = false;
+    this.diagram.fetchLatestById.perform(uploadedFileId);
   }
 
   @dropTask

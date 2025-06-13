@@ -9,36 +9,35 @@
 
   <:card>
     <AuDataTable
-      @content={{@diagrams}}
-      @isLoading={{@diagramsAreLoading}}
-      @page={{@pageVersions}}
-      @size={{@sizeVersions}}
+      @content={{this.diagrams}}
+      @isLoading={{this.diagramsAreLoading}}
+      @page={{this.pageVersions}}
+      @size={{this.sizeVersions}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable
             @field="created"
-            @currentSorting={{@sortVersions}}
+            @currentSorting={{this.sortVersions}}
             @label="Toegevoegd op"
           />
           <AuDataTableThSortable
             @field="name"
-            @currentSorting={{@sortVersions}}
+            @currentSorting={{this.sortVersions}}
             @label="Bestandsnaam"
           />
           <AuDataTableThSortable
             @field="size"
-            @currentSorting={{@sortVersions}}
+            @currentSorting={{this.sortVersions}}
             @label="Grootte"
           />
           <th></th>
           {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
-
-        {{#if @diagramsHaveErrored}}
+        {{#if this.diagramsHaveErrored}}
           <TableMessage::Error />
-        {{else if @diagramsHaveNoResults}}
+        {{else if this.diagramsHaveNoResults}}
           <TableMessage>
             <p>Er werden geen zoekresultaten gevonden.</p>
           </TableMessage>
@@ -46,7 +45,7 @@
           <c.body as |diagram|>
             <td>{{date-format diagram.created true}}</td>
             <td>
-              {{#if (eq diagram.id @latestDiagram.id)}}
+              {{#if (eq diagram.id this.latestDiagram.id)}}
                 <strong>
                   {{diagram.name}}
                   <AuIcon @icon="circle-check" />
@@ -62,7 +61,7 @@
                 @skin="link"
                 @width="block"
                 @hideText="true"
-                {{on "click" (fn @downloadFile diagram)}}
+                {{on "click" (fn this.downloadFile diagram)}}
               >Download</AuButton>
             </td>
             {{#if @canEdit}}
@@ -73,8 +72,8 @@
                   @alert="true"
                   @width="block"
                   @hideText="true"
-                  @disabled={{eq diagram.id @latestDiagram.id}}
-                  {{on "click" (fn @openDeleteModal diagram)}}
+                  @disabled={{eq diagram.id this.latestDiagram.id}}
+                  {{on "click" (fn this.openDeleteModal diagram)}}
                 >Verwijder</AuButton>
               </td>
             {{/if}}
@@ -84,3 +83,25 @@
     </AuDataTable>
   </:card>
 </DataCard>
+
+<AuModal
+  @modalOpen={{this.deleteModalOpened}}
+  @closeModal={{this.closeDeleteModal}}
+>
+  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" (perform this.deleteFile)}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

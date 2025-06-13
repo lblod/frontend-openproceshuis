@@ -44,22 +44,15 @@
   {{/if}}
 
   <Process::Diagram::Version
-    @diagrams={{this.diagrams}}
-    @latestDiagram={{this.latestDiagram}}
+    @canEdit={{this.canEdit}}
     @process={{this.process}}
-    @diagramsAreLoading={{this.diagramsAreLoading}}
-    @pageVersions={{this.pageVersions}}
-    @sortVersions={{this.sortVersions}}
-    @sizeVersions={{this.sizeVersions}}
-    @diagramsHaveErrored={{this.diagramsHaveErrored}}
-    @diagramsHaveNoResults={{this.diagramsHaveNoResults}}
-    @trackDownloadEvent={{this.trackDownloadFileEvent}}
+    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
   />
 
   <Process::Attachments
     @canEdit={{this.canEdit}}
     @process={{this.process}}
-    @trackDownloadEvent={{this.trackDownloadFileEvent}}
+    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
   />
 
 </AuBodyContainer>
