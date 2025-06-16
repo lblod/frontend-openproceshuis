@@ -9,6 +9,7 @@ export default class PdfViewerComponent extends Component {
   @tracked isLoading = true;
   @tracked currentPage = 1;
   @tracked totalPages = 1;
+  @tracked hasError = false;
 
   setLoading = (flag) => {
     this.isLoading = flag;
@@ -18,6 +19,9 @@ export default class PdfViewerComponent extends Component {
   };
   setTotal = (num) => {
     this.totalPages = num;
+  };
+  setError = (flag) => {
+    this.hasError = flag;
   };
 
   @action

@@ -1,43 +1,57 @@
-<div
-  class="bpmn-container au-u-margin-top-small au-u-flex au-u-flex--center au-u-flex--vertical-center"
-  {{this.pdfViewer
-    diagram=@diagram
-    currentPage=this.currentPage
-    onLoadingChange=this.setLoading
-    onPageChange=this.setPage
-    onTotalPages=this.setTotal
-  }}
->
-  {{#if this.isLoading}}
-    <AuLoader />
-  {{else}}
-    <AuButtonGroup
-      @inline="true"
-      class="pdf-navigation au-u-padding au-u-padding-small"
-    >
-      <AuButton
-        @icon="chevron-left"
-        @iconAlignment="left"
-        @hideText="true"
-        {{on "click" this.goToPrevious}}
-        disabled={{lte this.currentPage 1}}
+{{#if this.hasError}}
+  <AuAlert
+    @title="Weergavefout"
+    @skin="warning"
+    @icon="alert-triangle"
+  >
+    Er ging iets mis tijdens het visualiseren van het diagram.
+  </AuAlert>
+{{else}}
+  <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
+    Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel
+    om in en uit te zoomen. Klik elders om bediening uit te schakelen.
+  </AuHelpText>
+  <div
+    class="bpmn-container au-u-margin-top-small au-u-flex au-u-flex--center au-u-flex--vertical-center"
+    {{this.pdfViewer
+      diagram=@diagram
+      currentPage=this.currentPage
+      onLoadingChange=this.setLoading
+      onPageChange=this.setPage
+      onTotalPages=this.setTotal
+    }}
+  >
+    {{#if this.isLoading}}
+      <AuLoader />
+    {{else}}
+      <AuButtonGroup
+        @inline="true"
+        class="pdf-navigation au-u-padding au-u-padding-small"
       >
-        Vorige
-      </AuButton>
-
-      <AuButton @skin="secondary" class="navigation-counter au-u-regular">
-        {{this.currentPage}}/{{this.totalPages}}
-      </AuButton>
-
-      <AuButton
-        @icon="chevron-right"
-        @iconAlignment="right"
-        @hideText="true"
-        {{on "click" this.goToNext}}
-        disabled={{gte this.currentPage this.totalPages}}
-      >
-        Volgende
-      </AuButton>
-    </AuButtonGroup>
-  {{/if}}
-</div>
+        <AuButton
+          @icon="chevron-left"
+          @iconAlignment="left"
+          @hideText="true"
+          {{on "click" this.goToPrevious}}
+          disabled={{lte this.currentPage 1}}
+        >
+          Vorige
+        </AuButton>
+  
+        <AuButton @skin="secondary" class="navigation-counter au-u-regular">
+          {{this.currentPage}}/{{this.totalPages}}
+        </AuButton>
+  
+        <AuButton
+          @icon="chevron-right"
+          @iconAlignment="right"
+          @hideText="true"
+          {{on "click" this.goToNext}}
+          disabled={{gte this.currentPage this.totalPages}}
+        >
+          Volgende
+        </AuButton>
+      </AuButtonGroup>
+    {{/if}}
+  </div>
+{{/if}}
