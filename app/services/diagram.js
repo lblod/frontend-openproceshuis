@@ -8,8 +8,6 @@ export default class DiagramService extends Service {
   @service store;
 
   @tracked latestDiagram;
-  @tracked isLoading = false;
-  @tracked hasErrored = false;
   @tracked latestDiagramIsLoading = true;
   @tracked latestDiagramHasErrored = false;
 
@@ -25,8 +23,8 @@ export default class DiagramService extends Service {
 
   @keepLatestTask
   *fetchLatest(processId) {
-    this.isLoading = true;
-    this.hasErrored = false;
+    this.latestDiagramIsLoading = true;
+    this.latestDiagramHasErrored = false;
 
     const query = {
       reload: true,
@@ -41,12 +39,12 @@ export default class DiagramService extends Service {
 
     try {
       const diagrams = yield this.store.query('file', query);
-      this.latestDiagram = diagrams?.[0];
+      this.latestDiagram = diagrams?.[0]; // may be undefined if none
     } catch (e) {
-      this.hasErrored = true;
+      this.latestDiagramHasErrored = true;
+    } finally {
+      this.latestDiagramIsLoading = false; // always clear the spinner
     }
-
-    this.isLoading = false;
   }
 
   @keepLatestTask

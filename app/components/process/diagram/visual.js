@@ -38,6 +38,14 @@ export default class ProcessDiagramVisual extends Component {
     return this.diagram.latestDiagram;
   }
 
+  get latestDiagramIsLoading() {
+    return this.diagram.latestDiagramIsLoading;
+  }
+
+  get latestDiagramHasErrored() {
+    return this.diagram.latestDiagramHasErrored;
+  }
+
   @action
   setLatestDiagramAsBpmn(value) {
     this.latestDiagramAsBpmn = value;
