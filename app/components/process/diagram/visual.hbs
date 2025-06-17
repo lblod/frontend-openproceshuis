@@ -1,0 +1,175 @@
+<div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+  <AuHeading @level="2" @skin="3">Diagram</AuHeading>
+  <AuButtonGroup>
+    {{#if @canEdit}}
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.openReplaceModal}}
+      >Vervang</AuButton>
+    {{/if}}
+    {{#if this.latestDiagram}}
+      <AuButton {{on "click" this.openDownloadModal}}>
+        Download
+      </AuButton>
+    {{/if}}
+  </AuButtonGroup>
+</div>
+
+<div class="au-u-margin-top-none">
+  {{#if this.latestDiagramIsLoading}}
+    <AuLoader />
+  {{else if this.latestDiagramHasErrored}}
+    <AuAlert @title="Niet gevonden" @skin="warning" @icon="alert-triangle">
+      Er ging iets mis bij het ophalen van het diagram. Probeer later opnieuw.
+    </AuAlert>
+  {{else if
+    (and
+      this.latestDiagram
+      (or this.latestDiagram.isBpmnFile this.latestDiagram.isVisioFile)
+    )
+  }}
+    {{#if this.latestDiagram.isBpmnFile}}
+      <BpmnViewer
+        @diagram={{this.latestDiagram}}
+        @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
+        @onSvgLoaded={{this.setLatestDiagramAsSvg}}
+      />
+    {{else if this.latestDiagram.isVisioFile}}
+      <PdfViewer @diagram={{this.latestDiagram}} />
+    {{/if}}
+    <DataCard class="au-u-margin-top-small">
+      <:header></:header>
+      <:title>
+        Metadata
+      </:title>
+      <:card as |Card|>
+        <Card.Columns>
+          <:left as |Item|>
+            <Item>
+              <:label>Bestandsnaam</:label>
+              <:content>
+                {{this.latestDiagram.name}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Toegevoegd op</:label>
+              <:content>
+                {{date-format this.latestDiagram.modified true}}
+              </:content>
+            </Item>
+          </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Grootte</:label>
+              <:content>
+                {{file-size-format this.latestDiagram.size}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Extensie</:label>
+              <:content>
+                {{this.latestDiagram.extension}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Formaat</:label>
+              <:content>
+                {{this.latestDiagram.format}}
+              </:content>
+            </Item>
+          </:right>
+        </Card.Columns>
+      </:card>
+    </DataCard>
+  {{else}}
+    <AuAlert @title="Niet gevonden" @skin="warning" @icon="alert-triangle">
+      Er werd geen diagram gevonden voor dit proces.
+    </AuAlert>
+  {{/if}}
+</div>
+
+<AuModal
+  @modalOpen={{this.replaceModalOpened}}
+  @closeModal={{this.closeReplaceModal}}
+>
+  <:title>Vervang diagram</:title>
+  <:body>
+    <CustomFileUpload
+      @accept=".bpmn,.vsdx"
+      @title="BPMN- of Visiobestand selecteren"
+      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+      @updateProcess={{this.addFileToProcess}}
+      @extractBpmnElements={{this.extractBpmnElements}}
+      @onFinishUpload={{this.diagramUploaded}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeReplaceModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.downloadModalOpened}}
+  @closeModal={{this.closeDownloadModal}}
+>
+  <:title>Download diagram</:title>
+  <:body>
+    <div class="au-o-flow">
+      <p>Het geselecteerde diagram is beschikbaar in verschillende formaten:</p>
+      <AuButtonGroup class="au-u-flex au-u-flex--around">
+        {{#if this.latestDiagram.isVisioFile}}
+          <AuButton
+            @skin="primary"
+            {{on "click" (perform this.downloadLatestDiagram "vsdx")}}
+          >
+            Visio
+            <span class="au-u-para-tiny au-u-regular">(.vsdx)</span>
+          </AuButton>
+        {{/if}}
+        <AuButton
+          @skin={{if this.latestDiagram.isBpmnFile "primary" "secondary"}}
+          {{on "click" (perform this.downloadLatestDiagram "bpmn")}}
+        >
+          BPMN
+          <span class="au-u-para-tiny au-u-regular">(.bpmn)</span>
+        </AuButton>
+        {{#if this.latestDiagramAsSvg}}
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform this.downloadLatestDiagram "png")}}
+          >
+            Afbeelding
+            <span class="au-u-para-tiny au-u-regular">(.png)</span>
+          </AuButton>
+          <AuButton
+            @skin="secondary"
+            {{on "click" (perform this.downloadLatestDiagram "svg")}}
+          >
+            Vectorafbeelding
+            <span class="au-u-para-tiny au-u-regular">(.svg)</span>
+          </AuButton>
+        {{/if}}
+        <AuButton
+          @skin="secondary"
+          {{on "click" (perform this.downloadLatestDiagram "pdf")}}
+        >
+          PDF
+          <span class="au-u-para-tiny au-u-regular">(.pdf)</span>
+        </AuButton>
+      </AuButtonGroup>
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" this.closeDownloadModal}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

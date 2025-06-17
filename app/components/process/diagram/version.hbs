@@ -1,0 +1,107 @@
+<DataCard>
+  <:title>Versies</:title>
+  <:header></:header>
+  <:subheader>
+    <AuHelpText @skin="secondary">
+      Ontdek hier vorige versies van het diagram van dit proces, geüpload in het
+      Open Proces Huis. Deze versies zijn beschikbaar om te downloaden.
+    </AuHelpText></:subheader>
+
+  <:card>
+    <AuDataTable
+      @content={{this.diagrams}}
+      @isLoading={{this.diagramsAreLoading}}
+      @page={{this.pageVersions}}
+      @size={{this.sizeVersions}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="created"
+            @currentSorting={{this.sortVersions}}
+            @label="Toegevoegd op"
+          />
+          <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sortVersions}}
+            @label="Bestandsnaam"
+          />
+          <AuDataTableThSortable
+            @field="size"
+            @currentSorting={{this.sortVersions}}
+            @label="Grootte"
+          />
+          <th></th>
+          {{#if @canEdit}}<th></th>{{/if}}
+        </c.header>
+        {{#if this.diagramsHaveErrored}}
+          <TableMessage::Error />
+        {{else if this.diagramsHaveNoResults}}
+          <TableMessage>
+            <p>Er werden geen zoekresultaten gevonden.</p>
+          </TableMessage>
+        {{else}}
+          <c.body as |diagram|>
+            <td>{{date-format diagram.created true}}</td>
+            <td>
+              {{#if (eq diagram.id this.latestDiagram.id)}}
+                <strong>
+                  {{diagram.name}}
+                  <AuIcon @icon="circle-check" />
+                </strong>
+              {{else}}
+                {{diagram.name}}
+              {{/if}}
+            </td>
+            <td>{{file-size-format diagram.size}}</td>
+            <td>
+              <AuButton
+                @icon="download"
+                @skin="link"
+                @width="block"
+                @hideText="true"
+                {{on "click" (fn this.downloadFile diagram)}}
+              >Download</AuButton>
+            </td>
+            {{#if @canEdit}}
+              <td>
+                <AuButton
+                  @icon="bin"
+                  @skin="naked"
+                  @alert="true"
+                  @width="block"
+                  @hideText="true"
+                  @disabled={{eq diagram.id this.latestDiagram.id}}
+                  {{on "click" (fn this.openDeleteModal diagram)}}
+                >Verwijder</AuButton>
+              </td>
+            {{/if}}
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:card>
+</DataCard>
+
+<AuModal
+  @modalOpen={{this.deleteModalOpened}}
+  @closeModal={{this.closeDeleteModal}}
+>
+  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" (perform this.deleteFile)}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
