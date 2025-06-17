@@ -15,7 +15,7 @@
   </AuButtonGroup>
 </div>
 
-<div>
+<div class="au-u-margin-top-none">
   {{#if this.latestDiagramIsLoading}}
     <AuLoader />
   {{else if this.latestDiagramHasErrored}}
@@ -28,10 +28,6 @@
       (or this.latestDiagram.isBpmnFile this.latestDiagram.isVisioFile)
     )
   }}
-    <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
-      Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel om in
-      en uit te zoomen. Klik elders om bediening uit te schakelen.
-    </AuHelpText>
     {{#if this.latestDiagram.isBpmnFile}}
       <BpmnViewer
         @diagram={{this.latestDiagram}}
