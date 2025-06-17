@@ -152,9 +152,7 @@ export default class ProcessAttachments extends Component {
       this.fileToDelete.rollbackAttributes();
     }
 
-    if (this.fileToDelete.isBpmnFile || this.fileToDelete.isVisioFile)
-      this.fetchDiagrams.perform();
-    else this.fetchAttachments.perform();
+    this.fetchAttachments.perform();
 
     this.closeDeleteModal();
   }
