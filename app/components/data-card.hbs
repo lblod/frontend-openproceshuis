@@ -1,42 +1,49 @@
 <div ...attributes>
   {{#if (has-block "header")}}
     <div class="au-o-box au-o-box--small au-c-card au-c-card--data">
-      <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
-        <button
-          type="button"
-          class="au-u-flex au-u-flex--spaced-tiny"
-          {{on "click" this.toggleCollapse}}
+      <div>
+        <div
+          class="au-u-flex au-u-flex--between au-u-flex--vertical-center au-u-margin-bottom-tiny"
         >
-          <AuIcon
-            @icon={{if this.isCollapsed "chevron-up" "chevron-down"}}
-            @size="large"
-            class="au-u-margin-top-tiny"
-          />
-          {{#if (has-block "title")}}
-            <AuHeading
-              @level={{or @headingLevel "3"}}
-              @skin={{or @headingSkin "4"}}
-              class="au-u-margin-bottom-tiny"
+          <div class="au-u-flex au-u-flex--vertical-center">
+            <button
+              type="button"
+              class="au-u-flex au-u-flex--spaced-tiny"
+              {{on "click" this.toggleCollapse}}
             >
-              {{yield to="title"}}
-            </AuHeading>
-          {{/if}}
-        </button>
-        {{#unless this.isCollapsed}}
-          {{yield to="header"}}
-        {{/unless}}
+              <AuIcon
+                @icon={{if this.isCollapsed "chevron-up" "chevron-down"}}
+                @size="large"
+              />
+            </button>
+            {{#if (has-block "title")}}
+              <AuHeading
+                @level={{or @headingLevel "3"}}
+                @skin={{or @headingSkin "4"}}
+              >
+                {{yield to="title"}}
+              </AuHeading>
+            {{/if}}
+          </div>
+          {{#unless this.isCollapsed}}
+            <div>
+              {{yield to="header"}}
+            </div>
+          {{/unless}}
+        </div>
       </div>
+      {{#unless this.isCollapsed}}
+        <div class="au-u-flex">
+          <div class="card-helptext"></div>
+          {{! width of the chevron button }}
+          <div class="au-u-flex-grow-1 au-u-margin-bottom-small">
+            {{yield to="subheader"}}
+          </div>
+        </div>
+        <AuHr @size="default" />
+      {{/unless}}
+
     </div>
-  {{else}}
-    {{#if (has-block "title")}}
-      <AuHeading
-        @level={{or @headingLevel "3"}}
-        @skin={{or @headingSkin "5"}}
-        class="au-u-margin-bottom-tiny"
-      >
-        {{yield to="title"}}
-      </AuHeading>
-    {{/if}}
   {{/if}}
 
   {{#unless this.isCollapsed}}
