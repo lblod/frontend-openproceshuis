@@ -2,25 +2,19 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { keepLatestTask, dropTask } from 'ember-concurrency';
-import ENV from 'frontend-openproceshuis/config/environment';
+import { dropTask } from 'ember-concurrency';
 import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessDiagramVersion extends Component {
   @service store;
   @service diagram;
   @service toaster;
-  @tracked pageVersions = 0;
-  @tracked sortVersions = '-created';
-  sizeVersions = 10;
-  @tracked diagrams = undefined;
-  @tracked diagramsAreLoading = true;
-  @tracked diagramsHaveErrored = false;
+
   @tracked deleteModalOpened = false;
 
   constructor() {
     super(...arguments);
-    this.fetchDiagrams.perform();
+    this.diagram.fetchVersions.perform(this.process.id);
   }
 
   get process() {
@@ -31,12 +25,28 @@ export default class ProcessDiagramVersion extends Component {
     return this.diagram.latestDiagram;
   }
 
+  get diagrams() {
+    return this.diagram.diagrams;
+  }
+
+  get diagramsAreLoading() {
+    return this.diagram.diagramsAreLoading;
+  }
+
+  get diagramsHaveErrored() {
+    return this.diagram.diagramsHaveErrored;
+  }
+
   get diagramsHaveNoResults() {
-    return (
-      !this.diagramsAreLoading &&
-      !this.diagramsHaveErrored &&
-      this.diagrams?.length === 0
-    );
+    return this.diagram.diagramsHaveNoResults;
+  }
+
+  get pageVersions() {
+    return this.diagram.pageVersions;
+  }
+
+  get sortVersions() {
+    return this.diagram.sortVersions;
   }
 
   @action
@@ -57,46 +67,6 @@ export default class ProcessDiagramVersion extends Component {
     this.deleteModalOpened = false;
   }
 
-  @keepLatestTask({
-    observes: ['latestDiagram', 'pageVersions', 'sortVersions'],
-  })
-  *fetchDiagrams() {
-    this.diagramsAreLoading = true;
-    this.diagramsHaveErrored = false;
-
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageVersions,
-        size: this.sizeVersions,
-      },
-      'filter[processes][id]': this.process.id,
-      'filter[:or:][extension]': ['bpmn', 'vsdx'],
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
-
-    if (this.sortVersions) {
-      const isDescending = this.sortVersions.startsWith('-');
-
-      let sortValue = isDescending
-        ? this.sortVersions.substring(1)
-        : this.sortVersions;
-
-      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
-
-      query.sort = sortValue;
-    }
-
-    try {
-      this.diagrams = yield this.store.query('file', query);
-    } catch {
-      this.diagramsHaveErrored = true;
-    }
-
-    this.diagramsAreLoading = false;
-  }
-
   @dropTask
   *deleteFile() {
     if (!this.fileToDelete) return;
@@ -114,9 +84,7 @@ export default class ProcessDiagramVersion extends Component {
       this.fileToDelete.rollbackAttributes();
     }
 
-    if (this.fileToDelete.isBpmnFile || this.fileToDelete.isVisioFile)
-      this.fetchDiagrams.perform();
-    else this.fetchAttachments.perform();
+    this.diagram.refreshVersions(this.process.id);
 
     this.closeDeleteModal();
   }

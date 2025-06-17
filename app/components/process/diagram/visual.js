@@ -13,7 +13,6 @@ import {
 import generateFileDownloadUrl, {
   generateVisioConversionUrl,
 } from 'frontend-openproceshuis/utils/file-download-url';
-
 export default class ProcessDiagramVisual extends Component {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
@@ -99,6 +98,7 @@ export default class ProcessDiagramVisual extends Component {
   diagramUploaded(uploadedFileId) {
     this.replaceModalOpened = false;
     this.diagram.fetchLatestById.perform(uploadedFileId);
+    this.diagram.refreshVersions(this.process.id);
   }
 
   @dropTask

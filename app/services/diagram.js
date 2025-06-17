@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { keepLatestTask } from 'ember-concurrency';
 import { action } from '@ember/object';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class DiagramService extends Service {
   @service store;
@@ -10,6 +11,22 @@ export default class DiagramService extends Service {
   @tracked latestDiagram;
   @tracked latestDiagramIsLoading = true;
   @tracked latestDiagramHasErrored = false;
+  @tracked pageVersions = 0;
+  @tracked sortVersions = '-created';
+  sizeVersions = 10;
+  @tracked diagrams = undefined;
+  @tracked diagramsAreLoading = true;
+  @tracked diagramsHaveErrored = false;
+
+  currentProcessId = null;
+
+  get diagramsHaveNoResults() {
+    return (
+      !this.diagramsAreLoading &&
+      !this.diagramsHaveErrored &&
+      this.diagrams?.length === 0
+    );
+  }
 
   @action
   openDownloadModal() {
@@ -39,11 +56,11 @@ export default class DiagramService extends Service {
 
     try {
       const diagrams = yield this.store.query('file', query);
-      this.latestDiagram = diagrams?.[0]; // may be undefined if none
+      this.latestDiagram = diagrams?.[0];
     } catch (e) {
       this.latestDiagramHasErrored = true;
     } finally {
-      this.latestDiagramIsLoading = false; // always clear the spinner
+      this.latestDiagramIsLoading = false;
     }
   }
 
@@ -61,5 +78,49 @@ export default class DiagramService extends Service {
     }
 
     this.latestDiagramIsLoading = false;
+  }
+
+  @keepLatestTask({
+    observes: ['pageVersions', 'sortVersions'],
+  })
+  *fetchVersions(processId) {
+    this.diagramsAreLoading = true;
+    this.diagramsHaveErrored = false;
+
+    const query = {
+      reload: true,
+      page: {
+        number: this.pageVersions,
+        size: this.sizeVersions,
+      },
+      'filter[processes][id]': processId,
+      'filter[:or:][extension]': ['bpmn', 'vsdx'],
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
+
+    if (this.sortVersions) {
+      const isDescending = this.sortVersions.startsWith('-');
+
+      let sortValue = isDescending
+        ? this.sortVersions.substring(1)
+        : this.sortVersions;
+
+      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
+
+      query.sort = sortValue;
+    }
+
+    try {
+      this.diagrams = yield this.store.query('file', query);
+    } catch {
+      this.diagramsHaveErrored = true;
+    }
+
+    this.diagramsAreLoading = false;
+  }
+
+  refreshVersions(processId) {
+    this.fetchVersions.perform(processId);
   }
 }
