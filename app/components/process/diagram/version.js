@@ -29,6 +29,10 @@ export default class ProcessDiagramVersion extends Component {
     return this.diagram.diagrams;
   }
 
+  get sizeVersions() {
+    return this.diagram.sizeVersions;
+  }
+
   get diagramsAreLoading() {
     return this.diagram.diagramsAreLoading;
   }
