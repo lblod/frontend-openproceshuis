@@ -35,9 +35,8 @@ export default class ApiService extends Service {
     'visio.fallBackError': 'Onbekende fout tijdens visio conversie',
   };
 
-  getMessageForErrorCode = (key) => {
-    return this.errorCodes[key] ?? 'Oeps, er is iets misgelopen!';
-  };
+  getMessageForErrorCode = (key) =>
+    this.errorCodes[key] ?? 'Oeps, er is iets misgelopen!';
 
   async fetch(url, options) {
     const res = await fetch(url, options);
