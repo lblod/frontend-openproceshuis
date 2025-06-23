@@ -12,7 +12,8 @@ export default class ApiService extends Service {
       'Bestand id ontbrak tijdens het uploaden van het bpmn bestand.',
     'bpmn.virtualFileIdNotFound':
       'Bestand id werd niet gevonden in onze server.',
-    'bpmn.physicalFileIdNotFound': 'Kan bestand in pad niet vinden.',
+    'bpmn.physicalFileIdNotFound':
+      'Kon de fysieke bestandslocatie niet achterhalen',
     'bpmn.emptyContent':
       'Ongeldige inhoud: Het meegeleverde bestand bevat geen inhoud.',
     'bpmn.invalidContent':
@@ -26,7 +27,7 @@ export default class ApiService extends Service {
     'visio.vsdxFileTypeExpected':
       'Ongeldig bestandsformaat: .vsdx-extensie verwacht.',
     'visio.physicalFileIdNotFound':
-      'Kon de fysieke bestandslocatie niet vinden.',
+      'Kon de fysieke bestandslocatie niet achterhalen.',
     'visio.targetExtensionNotSupported': 'Ongeldige doelformaat-extensie.',
     'visio.pdfConversionFailed': 'Conversie naar PDF is mislukt.',
     'visio.pdfConversionFilePathError':
