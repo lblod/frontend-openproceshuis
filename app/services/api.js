@@ -4,6 +4,7 @@ export default class ApiService extends Service {
   @service toaster;
 
   errorCodes = {
+    // BPMN
     'bpmn.sessionIdNotFound': 'Session ID header werd niet gevonden.',
     'bpmn.groupUriNotFound':
       'Gebruiker maakt geen deel uit van een organisatie.',
@@ -17,27 +18,35 @@ export default class ApiService extends Service {
     'bpmn.invalidContent':
       'Ongeldige inhoud: Het meegeleverde bestand heeft geen geldige inhoud.',
     'bpmn.errorDuringJobExecution': 'Error tijdens het uitvoeren van job',
+    'bpmn.fallBackError': 'Onbekende fout tijdens extraheren van processtappen',
+    // VISIO
+    'visio.emptyVirtualFileId':
+      'Bestand id ontbrak tijdens het uploaden van het bpmn bestand.',
+    'visio.virtualFileIdNotFound': 'Bestand-ID werd niet teruggevonden.',
+    'visio.vsdxFileTypeExpected':
+      'Ongeldig bestandsformaat: .vsdx-extensie verwacht.',
+    'visio.physicalFileIdNotFound':
+      'Kon de fysieke bestandslocatie niet vinden.',
+    'visio.targetExtensionNotSupported': 'Ongeldige doelformaat-extensie.',
+    'visio.pdfConversionFailed': 'Conversie naar PDF is mislukt.',
+    'visio.pdfConversionFilePathError':
+      'PDF-bestand werd niet gevonden na conversie.',
+    'visio.bpmnConversionFailed': 'Conversie naar BPMN is mislukt.',
+    'visio.fallBackError': 'Onbekende fout tijdens visio conversie',
   };
 
   getMessageForErrorCode = (key) => {
-    const message = this.errorCodes[key];
-    if (!message) {
-      return 'Oeps, er is iets fout gelopen.';
-    }
-    return message;
+    return this.errorCodes[key] ?? 'Oeps, er is iets misgelopen!';
   };
 
   async fetch(url, options) {
     const res = await fetch(url, options);
     if (!res.ok) {
       const resJson = await res.json();
-      this.toaster.error(
-        `API error: ${this.getMessageForErrorCode(resJson.errors[0].code)}`,
-        'Fout',
-        {
-          timeOut: 5000,
-        },
-      );
+      const errorMessage = this.getMessageForErrorCode(resJson.errors[0].code);
+      this.toaster.error(`API error: ${errorMessage}`, 'Fout', {
+        timeOut: 5000,
+      });
     }
     return res;
   }
