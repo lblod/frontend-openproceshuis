@@ -56,7 +56,7 @@ There’s a flow we follow in Jira to ensure everything is executed in the corre
 You can check the progress of your tickets here:
 https://binnenland.atlassian.net/jira/software/c/projects/OPH/boards/275
 
-Make sure that all tickets that are tagged with the `OPH Release...` tag are in the `Klaar voor ACC` column. Only then can we make a release
+Make sure that all tickets that are tagged with the `OPH Release...` tag are in the `Klaar voor ACC` column. Only then can we make a release.
 
 ### 1. Update the changelog
 
