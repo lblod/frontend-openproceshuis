@@ -49,6 +49,15 @@ As with any Ember project, [router.js](./app/router.js) holds all possible route
 
 Before you make a release. Here is a checklist to make sure you have everything ready before releasing. In this example we will simulate bumping from version `1.3.0` to `1.4.0`
 
+### Before the release
+
+There’s a flow we follow in Jira to ensure everything is executed in the correct order before a release. First, we need to make sure all tickets that need to be deployed to TEST have been tested and marked as OK. If that’s the case for every ticket, we can proceed with creating a QA release.
+
+You can check the progress of your tickets here:
+https://binnenland.atlassian.net/jira/software/c/projects/OPH/boards/275
+
+Make sure that all tickets that are tagged with the `OPH Release...` tag are in the `Klaar voor ACC` column. Only then can we make a release
+
 ### 1. Update the changelog
 
 - Go to the `CHANGELOG.md` and update according to the merged PR's since the latest release.
