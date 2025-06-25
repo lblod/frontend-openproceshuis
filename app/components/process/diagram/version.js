@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { dropTask } from 'ember-concurrency';
 import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessDiagramVersion extends Component {
   @service store;
@@ -84,7 +85,8 @@ export default class ProcessDiagramVersion extends Component {
       });
     } catch (error) {
       console.error(error);
-      this.toaster.error('Bestand kon niet worden verwijderd', 'Fout');
+      const errorMessage = getMessageForErrorCode('oph.fileDeletionError');
+      this.toaster.error(errorMessage, 'Fout');
       this.fileToDelete.rollbackAttributes();
     }
 

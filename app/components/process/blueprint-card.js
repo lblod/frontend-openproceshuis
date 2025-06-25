@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessBlueprintCardComponent extends Component {
   @service toaster;
@@ -38,7 +39,8 @@ export default class ProcessBlueprintCardComponent extends Component {
         });
       } catch (error) {
         console.error(error);
-        this.toaster.error('Proces kon niet worden bijgewerkt', 'Fout');
+        const errorMessage = getMessageForErrorCode('oph.updateModelFailed');
+        this.toaster.error(errorMessage, 'Fout');
         this.resetModel();
       }
     } else {

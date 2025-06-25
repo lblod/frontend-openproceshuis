@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { dropTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessIcrCardComponent extends Component {
   @service store;
@@ -74,10 +75,8 @@ export default class ProcessIcrCardComponent extends Component {
         );
       } catch (error) {
         console.error(error);
-        this.toaster.error(
-          'Informatieclassificatie kon niet worden bijgewerkt',
-          'Fout',
-        );
+        const errorMessage = getMessageForErrorCode('oph.icrDataUpdateFailed');
+        this.toaster.error(errorMessage, 'Fout');
         this.resetModel();
       }
     } else {
