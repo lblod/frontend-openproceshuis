@@ -44,3 +44,75 @@ As with any Ember project, [router.js](./app/router.js) holds all possible route
 - `/processen`: list all processes of all _lokale besturen_
 - `/processen/<id>`: consult the details, the latest BPMN file, all BPMN file versions, and attachments of a specific process
 - `/gedeelde-processen`: list all processes of the current user's _lokaal bestuur_ and upload a new one (a BPMN file is always the starting point for the creation of a process)
+
+## How to make a release
+
+Before you make a release. Here is a checklist to make sure you have everything ready before releasing. In this example we will simulate bumping from version `1.3.0` to `1.4.0`
+
+### Before the release
+
+There’s a flow we follow in Jira to ensure everything is executed in the correct order before a release. First, we need to make sure all tickets that need to be deployed to TEST have been tested and marked as OK. If that’s the case for every ticket, we can proceed with creating a QA release.
+
+You can check the progress of your tickets here:
+https://binnenland.atlassian.net/jira/software/c/projects/OPH/boards/275
+
+Make sure that all tickets that are tagged with the `OPH Release...` tag are in the `Klaar voor ACC` column. Only then can we make a release.
+
+> All following steps describe how to manually create a new release. However, this repo also allows to use `release-it` to automate the release process. To use `release-it`, first generate a Github Personal Access Token. Next, run the following command and follow along with the interactive terminal session it initiates: `GITHUB_AUTH=your_github_token_here release-it`.
+
+### 1. Update the changelog
+
+- Go to the `CHANGELOG.md` and update according to the merged PR's since the latest release.
+- Group into sections. Currently we use:
+  - :rocket: Enhancement (new features)
+  - :bug: Bugfixes
+  - :wrench: Maintenance
+- Format using the same style as previous entries (PR number, description, author mention).
+- Sort by PR number in descending order
+
+### 2. Bump the version
+
+- Go to the `package.json` and change the version like this:
+
+```diff
+-   "version": "1.3.0",
++   "version": "1.4.0",
+```
+
+- Commit and push:
+
+```sh
+git add CHANGELOG.md package.json
+git commit -m "Release v1.4.0"
+git push
+```
+
+### 3. Tag the release
+
+```sh
+git tag -a v1.4.0 -m "Release v1.4.0"
+git push origin v1.4.0
+```
+
+You could also do this in the Github UI.
+
+### 4. Merge previous tag to current tag
+
+Go to the Github UI and go to the releases page
+
+![alt text](image-1.png)
+
+Draft a new release
+
+![alt text](image-2.png)
+
+Choose the tag that you created
+
+![alt text](image-3.png)
+
+- Select the new tag in the first dropdown
+- Set `master` as the target branch
+- Set the previous tag
+- Set the release title (eg. Release 1.4.0)
+- Add the release notes in the description. As we currently are keeping track of the changes in our `CHANGELOG.md`, we can just copy and paste the changelog of the new version we previously created.
+- Check set as latest release and click on `Publish release`
