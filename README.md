@@ -58,6 +58,8 @@ https://binnenland.atlassian.net/jira/software/c/projects/OPH/boards/275
 
 Make sure that all tickets that are tagged with the `OPH Release...` tag are in the `Klaar voor ACC` column. Only then can we make a release.
 
+> All following steps describe how to manually create a new release. However, this repo also allows to use `release-it` to automate the release process. To use `release-it`, first generate a Github Personal Access Token. Next, run the following command and follow along with the interactive terminal session it initiates: `GITHUB_AUTH=your_github_token_here release-it`.
+
 ### 1. Update the changelog
 
 - Go to the `CHANGELOG.md` and update according to the merged PR's since the latest release.
