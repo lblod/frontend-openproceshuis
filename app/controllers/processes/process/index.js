@@ -19,6 +19,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @service currentSession;
   @service toaster;
   @service plausible;
+  @service api;
 
   @tracked isEditingDetails = false;
 

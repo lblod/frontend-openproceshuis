@@ -4,8 +4,9 @@ import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { dropTask, enqueueTask } from 'ember-concurrency';
 import FileSaver from 'file-saver';
-import { htmlSafe } from '@ember/template';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
+
 import {
   convertSvgToPdf,
   convertSvgToPng,
@@ -153,23 +154,17 @@ export default class ProcessDiagramVisual extends Component {
       )}.${targetExtension}`;
 
       FileSaver.saveAs(blob, fileName);
-    } catch {
-      let message = 'Bestand kon niet worden opgehaald';
-
+    } catch (error) {
+      console.error(error);
+      let errorMessage = getMessageForErrorCode(
+        'oph.downloadLatestDiagramFailed',
+      );
       if (this.latestDiagram.isVisioFile && targetExtension === 'bpmn') {
-        const mailto =
-          'mailto:loketlokaalbestuur@vlaanderen.be' +
-          `?subject=${encodeURIComponent(
-            'Visio kan niet downloaden als BPMN',
-          )}` +
-          `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
-        const linkHtml = `<a href="${mailto}">Stuur ons een mailtje</a>`;
-        message = htmlSafe(
-          `Dit visio-bestand kan niet worden gedownload als BPMN. ${linkHtml} met het proces waarover het gaat en een korte beschrijving van wat niet lukt. Dan kunnen we nagaan wat fout gaat en Open Proces Huis verder verbeteren.`,
+        errorMessage = getMessageForErrorCode(
+          'oph.visioLatestDiagramDownloadFailed',
         );
       }
-
-      this.toaster.error(message, 'Fout');
+      this.toaster.error(errorMessage, 'Fout');
       return;
     }
 

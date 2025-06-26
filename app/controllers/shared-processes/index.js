@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import removeFileNameExtension from '../../utils/file-extension-remover';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class SharedProcessesIndexController extends Controller {
   queryParams = ['page', 'size', 'sort', 'title'];
@@ -12,6 +13,7 @@ export default class SharedProcessesIndexController extends Controller {
   @service toaster;
   @service store;
   @service currentSession;
+  @service api;
 
   @tracked page = 0;
   size = 20;
@@ -83,7 +85,8 @@ export default class SharedProcessesIndexController extends Controller {
       });
     } catch (error) {
       console.error(error);
-      this.toaster.error('Proces kon niet worden verwijderd', 'Fout');
+      const errorMessage = getMessageForErrorCode('oph.processDeletionError');
+      this.toaster.error(errorMessage, 'Fout');
       this.processToDelete.rollbackAttributes();
     }
 
@@ -121,7 +124,7 @@ export default class SharedProcessesIndexController extends Controller {
 
   @task({ enqueue: true, maxConcurrency: 3 })
   *extractBpmnElements(bpmnFileId) {
-    yield fetch(`/bpmn?id=${bpmnFileId}`, {
+    yield this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',

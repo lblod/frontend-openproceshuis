@@ -8,12 +8,14 @@ import {
   downloadFileByUrl,
   downloadFilesAsZip,
 } from 'frontend-openproceshuis/utils/file-downloader';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessAttachments extends Component {
   constructor() {
     super(...arguments);
     this.fetchAttachments.perform();
   }
+  @service api;
   @service store;
   @service toaster;
   @tracked addModalOpened = false;
@@ -126,13 +128,11 @@ export default class ProcessAttachments extends Component {
   *downloadAttachments() {
     if (!this.attachments) return;
 
-    if (this.attachments.length === 1)
-      this.downloadFile(this.attachments[0]); // Fixme: This function is nowhere defined?
-    else
-      yield downloadFilesAsZip(
-        this.attachments,
-        this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
-      );
+    if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
+    yield downloadFilesAsZip(
+      this.attachments,
+      this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
+    );
   }
 
   @dropTask
@@ -148,7 +148,8 @@ export default class ProcessAttachments extends Component {
       });
     } catch (error) {
       console.error(error);
-      this.toaster.error('Bestand kon niet worden verwijderd', 'Fout');
+      const errorMessage = getMessageForErrorCode('oph.fileDeletionError');
+      this.toaster.error(errorMessage, 'Fout');
       this.fileToDelete.rollbackAttributes();
     }
 
