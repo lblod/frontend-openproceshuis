@@ -7,6 +7,7 @@ import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download
 export default class BpmnViewerModifier extends Modifier {
   viewer = null;
   lastFileId = null;
+  zoomStep = 0.2;
 
   downloadXml = restartableTask(async (fileId) => {
     const url = generateFileDownloadUrl(fileId);
@@ -73,9 +74,6 @@ export default class BpmnViewerModifier extends Modifier {
     this.viewer?.get('zoomScroll').toggle(false);
   }
 
-  //Zoom buttons
-  zoomFactor = 0.1;
-
   zoomIn = () => {
     const canvas = this.viewer?.get('canvas');
     if (!canvas) {
@@ -84,7 +82,7 @@ export default class BpmnViewerModifier extends Modifier {
 
     const currentZoom = canvas.zoom();
 
-    canvas.zoom(currentZoom + this.zoomFactor);
+    canvas.zoom(currentZoom + this.zoomStep);
   };
 
   zoomOut = () => {
@@ -92,6 +90,6 @@ export default class BpmnViewerModifier extends Modifier {
     if (!canvas) return;
 
     const currentZoom = canvas.zoom();
-    canvas.zoom(currentZoom - this.zoomFactor);
+    canvas.zoom(currentZoom - this.zoomStep);
   };
 }
