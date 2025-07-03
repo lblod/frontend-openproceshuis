@@ -76,12 +76,9 @@ export default class BpmnViewerModifier extends Modifier {
 
   zoomIn = () => {
     const canvas = this.viewer?.get('canvas');
-    if (!canvas) {
-      return;
-    }
+    if (!canvas) return;
 
     const currentZoom = canvas.zoom();
-
     canvas.zoom(currentZoom + this.zoomStep);
   };
 
