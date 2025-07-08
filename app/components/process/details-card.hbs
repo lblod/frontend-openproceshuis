@@ -112,6 +112,7 @@
                 <Process::RelevantAdminUnitSelector
                   @selected={{@process.relevantAdministrativeUnits}}
                   @onChange={{this.setRelevantAdministrativeUnit}}
+                  @disabled={{not @canEdit}}
                 />
               </:content>
             </Item>
