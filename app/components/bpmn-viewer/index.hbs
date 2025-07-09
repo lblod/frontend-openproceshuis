@@ -17,9 +17,12 @@
       registerApi=this.registerModifierApi
     }}
   >
+    <AuButtonGroup
+      @inline="true"
+      class="diagram-navigation au-u-padding au-u-padding-small"
+    >
+      <AuButton @skin="secondary" @icon="add" {{on "click" this.zoomIn}} />
+      <AuButton @skin="secondary" @icon="remove" {{on "click" this.zoomOut}} />
+    </AuButtonGroup>
   </div>
-  <AuButtonGroup class="au-u-flex au-u-flex--center au-u-margin-top-small">
-    <AuButton @skin="secondary" @icon="add" {{on "click" this.zoomIn}} />
-    <AuButton @skin="secondary" @icon="remove" {{on "click" this.zoomOut}} />
-  </AuButtonGroup>
 {{/if}}
