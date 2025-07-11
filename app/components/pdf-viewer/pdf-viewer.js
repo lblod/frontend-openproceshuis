@@ -58,6 +58,7 @@ export default class PdfViewerModifier extends Modifier {
       onPageChange,
       onTotalPages,
       onError,
+      registerApi,
     },
   ) {
     container.tabIndex = 0;
@@ -78,6 +79,13 @@ export default class PdfViewerModifier extends Modifier {
       window.addEventListener('mousemove', this.onMouseMove);
       window.addEventListener('mouseup', this.onMouseUp);
       this.canvas.addEventListener('wheel', this.onWheel, { passive: false });
+    }
+
+    if (registerApi) {
+      registerApi({
+        zoomIn: this.zoomIn.bind(this),
+        zoomOut: this.zoomOut.bind(this),
+      });
     }
 
     const fileId = diagram?.isVisioFile && diagram.id;
@@ -222,4 +230,22 @@ export default class PdfViewerModifier extends Modifier {
   _updateCanvasTransform() {
     this.canvas.style.transform = `translate(${this.offsetX}px, ${this.offsetY}px)`;
   }
+
+  zoomIn = async () => {
+    const newScale = Math.min(this.scale + this.zoomStep, this.maxScale);
+    if (newScale === this.scale) return;
+
+    this.scale = newScale;
+    await this._renderAtScale(newScale);
+    this._updateCanvasTransform();
+  };
+
+  zoomOut = async () => {
+    const newScale = Math.max(this.scale - this.zoomStep, this.minScale);
+    if (newScale === this.scale) return;
+
+    this.scale = newScale;
+    await this._renderAtScale(newScale);
+    this._updateCanvasTransform();
+  };
 }

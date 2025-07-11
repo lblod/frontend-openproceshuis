@@ -7,6 +7,7 @@ import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download
 export default class BpmnViewerModifier extends Modifier {
   viewer = null;
   lastFileId = null;
+  zoomStep = 0.2;
 
   downloadXml = restartableTask(async (fileId) => {
     const url = generateFileDownloadUrl(fileId);
@@ -20,13 +21,24 @@ export default class BpmnViewerModifier extends Modifier {
     registerDestructor(this, () => this.viewer?.destroy());
   }
 
-  async modify(container, _, { diagram, onBpmnLoaded, onSvgLoaded, onError }) {
+  async modify(
+    container,
+    _,
+    { diagram, onBpmnLoaded, onSvgLoaded, onError, registerApi },
+  ) {
     container.tabIndex = 0;
 
     if (!this.viewer) {
       this.viewer = new NavigatedViewer({ container });
       container.addEventListener('focus', () => this.enableZoomScroll());
       container.addEventListener('blur', () => this.disableZoomScroll());
+    }
+
+    if (registerApi) {
+      registerApi({
+        zoomIn: this.zoomIn.bind(this),
+        zoomOut: this.zoomOut.bind(this),
+      });
     }
 
     const fileId = diagram?.isBpmnFile && diagram.id;
@@ -61,4 +73,20 @@ export default class BpmnViewerModifier extends Modifier {
   disableZoomScroll() {
     this.viewer?.get('zoomScroll').toggle(false);
   }
+
+  zoomIn = () => {
+    const canvas = this.viewer?.get('canvas');
+    if (!canvas) return;
+
+    const currentZoom = canvas.zoom();
+    canvas.zoom(currentZoom + this.zoomStep);
+  };
+
+  zoomOut = () => {
+    const canvas = this.viewer?.get('canvas');
+    if (!canvas) return;
+
+    const currentZoom = canvas.zoom();
+    canvas.zoom(currentZoom - this.zoomStep);
+  };
 }

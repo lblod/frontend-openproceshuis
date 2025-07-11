@@ -4,8 +4,8 @@
   </AuAlert>
 {{else}}
   <AuHelpText @skin="tertiary" class="au-u-margin-top-none">
-    Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel om in
-    en uit te zoomen. Klik elders om bediening uit te schakelen.
+    Klik en hou vast om diagram te bedienen. Gebruik ctrl en scrollwiel om in en
+    uit te zoomen. Klik elders om bediening uit te schakelen.
   </AuHelpText>
   <div
     class="bpmn-container au-u-margin-top-small au-u-flex au-u-flex--center au-u-flex--vertical-center"
@@ -15,6 +15,7 @@
       onLoadingChange=this.setLoading
       onPageChange=this.setPage
       onTotalPages=this.setTotal
+      registerApi=this.registerModifierApi
     }}
   >
     {{#if this.isLoading}}
@@ -22,8 +23,16 @@
     {{else}}
       <AuButtonGroup
         @inline="true"
-        class="pdf-navigation au-u-padding au-u-padding-small"
+        class="diagram-navigation au-u-padding au-u-padding-small"
       >
+        <AuButton @skin="secondary" @icon="add" {{on "click" this.zoomIn}} />
+        <AuButton
+          @skin="secondary"
+          @icon="remove"
+          class="au-u-margin-right-small"
+          {{on "click" this.zoomOut}}
+        />
+
         <AuButton
           @icon="chevron-left"
           @iconAlignment="left"
@@ -48,6 +57,7 @@
           Volgende
         </AuButton>
       </AuButtonGroup>
+
     {{/if}}
   </div>
 {{/if}}

@@ -6,8 +6,21 @@ export default class BpmnViewerComponent extends Component {
   bpmnViewer = BpmnViewerModifier;
 
   @tracked hasError = false;
+  modifierApi = null;
 
   setError = (flag) => {
     this.hasError = flag;
+  };
+
+  registerModifierApi = (api) => {
+    this.modifierApi = api;
+  };
+
+  zoomIn = () => {
+    this.modifierApi?.zoomIn();
+  };
+
+  zoomOut = () => {
+    this.modifierApi?.zoomOut();
   };
 }

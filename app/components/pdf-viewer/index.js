@@ -10,6 +10,11 @@ export default class PdfViewerComponent extends Component {
   @tracked currentPage = 1;
   @tracked totalPages = 1;
   @tracked hasError = false;
+  modifierApi = null;
+
+  registerModifierApi = (api) => {
+    this.modifierApi = api;
+  };
 
   setLoading = (flag) => {
     this.isLoading = flag;
@@ -33,4 +38,12 @@ export default class PdfViewerComponent extends Component {
   goToNext() {
     if (this.currentPage < this.totalPages) this.setPage(this.currentPage + 1);
   }
+
+  zoomIn = () => {
+    this.modifierApi?.zoomIn();
+  };
+
+  zoomOut = () => {
+    this.modifierApi?.zoomOut();
+  };
 }

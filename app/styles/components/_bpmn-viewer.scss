@@ -1,5 +1,6 @@
 .bpmn-container {
   flex: none;
+  position: relative;
   height: 500px;
   width: 100%;
   border: 1px solid var(--au-gray-200);
@@ -17,7 +18,7 @@
   display: none;
 }
 
-.pdf-navigation {
+.diagram-navigation {
   position: absolute;
   bottom: 0;
   right: 0;
