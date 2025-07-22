@@ -106,6 +106,7 @@ export default class ProcessDiagramVisual extends Component {
   @action
   closeReplaceModal() {
     this.replaceModalOpened = false;
+    this.fileHasSensitiveInformation = false;
   }
 
   @enqueueTask

@@ -65,13 +65,11 @@ export default class SharedProcessesIndexController extends Controller {
   @action
   handleSensitiveDataSelection(result, isChecked) {
     if (isChecked) {
-      // Add the item to the list to be anonymized
       this.sensitiveDataToAnonymize = [
         ...this.sensitiveDataToAnonymize,
         result,
       ];
     } else {
-      // Remove the item from the list
       this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
         (item) => item !== result,
       );
@@ -81,8 +79,8 @@ export default class SharedProcessesIndexController extends Controller {
   @action
   handleAnonymization() {
     // TODO -> Submit file to anonymization endpoint
-    this.api.fetch('anonymization/anonymize');
     console.log('Anonymization triggered for:', this.sensitiveDataToAnonymize);
+    // this.api.fetch('anonymization/anonymize');
   }
 
   @action
@@ -137,6 +135,7 @@ export default class SharedProcessesIndexController extends Controller {
   @action
   closeUploadModal() {
     this.uploadModalOpened = false;
+    this.fileHasSensitiveInformation = false;
   }
 
   @task
