@@ -53,7 +53,6 @@ export default class BpmnViewerModifier extends Modifier {
         onError?.(false);
         xml = await this.downloadXml.perform(fileId);
       }
-      console.log('xml', xml);
       await this.viewer.importXML(xml);
 
       this.viewer.get('canvas').zoom('fit-viewport');

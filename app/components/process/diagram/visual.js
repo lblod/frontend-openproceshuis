@@ -73,8 +73,6 @@ export default class ProcessDiagramVisual extends Component {
   @action
   handleAnonymization() {
     console.log('Anonymization triggered for:', this.piiToAnonymize);
-    // When your endpoint is ready, you will call your service here:
-    // this.api.handleAnonymization(this.piiToAnonymize);
   }
 
   @action

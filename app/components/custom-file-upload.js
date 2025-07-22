@@ -132,11 +132,9 @@ export default class AuFileUpload extends Component {
     if (file.name.endsWith('.bpmn')) {
       try {
         const response = yield this.detectPiiInProcess.perform(file);
-        console.log('response', response);
         if (response['pii_results'].length > 0) {
           this.showDropzone = false;
           this.preview = yield file.file.text();
-          console.log('this.preview', this.preview);
           this.args.onPiiDetected(response['pii_results']);
           return;
         }

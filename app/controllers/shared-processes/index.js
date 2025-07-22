@@ -65,8 +65,10 @@ export default class SharedProcessesIndexController extends Controller {
   @action
   handlePiiSelection(result, isChecked) {
     if (isChecked) {
+      // Add the item to the list to be anonymized
       this.piiToAnonymize = [...this.piiToAnonymize, result];
     } else {
+      // Remove the item from the list
       this.piiToAnonymize = this.piiToAnonymize.filter(
         (item) => item !== result,
       );
@@ -75,9 +77,9 @@ export default class SharedProcessesIndexController extends Controller {
 
   @action
   handleAnonymization() {
+    // TODO -> Submit file to anonymization endpoint
+    this.api.fetch('anonymization/anonymize');
     console.log('Anonymization triggered for:', this.piiToAnonymize);
-    // When your endpoint is ready, you will call your service here:
-    // this.api.handleAnonymization(this.piiToAnonymize);
   }
 
   @action
