@@ -22,7 +22,9 @@ export default class SharedProcessesIndexController extends Controller {
   @tracked processToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
-  @tracked hasPiiResults = false;
+  @tracked piiResults = [];
+  @tracked piiToAnonymize = [];
+  @tracked fileHasPii = false;
 
   newProcessId = undefined;
 
@@ -54,8 +56,28 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  setPiiState(hasPii) {
-    this.hasPiiResults = hasPii;
+  setPiiState(piiData) {
+    this.piiResults = piiData;
+    this.fileHasPii = piiData.length > 0;
+    this.piiToAnonymize = [...piiData];
+  }
+
+  @action
+  handlePiiSelection(result, isChecked) {
+    if (isChecked) {
+      this.piiToAnonymize = [...this.piiToAnonymize, result];
+    } else {
+      this.piiToAnonymize = this.piiToAnonymize.filter(
+        (item) => item !== result,
+      );
+    }
+  }
+
+  @action
+  handleAnonymization() {
+    console.log('Anonymization triggered for:', this.piiToAnonymize);
+    // When your endpoint is ready, you will call your service here:
+    // this.api.handleAnonymization(this.piiToAnonymize);
   }
 
   @action

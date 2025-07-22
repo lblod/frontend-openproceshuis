@@ -10,10 +10,7 @@ export default class AuFileUpload extends Component {
   @service fileQueue;
   @service api;
   @tracked uploadErrorData = [];
-  @tracked piiResults = null;
-  @tracked fileHasPii = false;
   @tracked showDropzone = true;
-  @tracked selectedPii = [];
 
   get uploadingMsg() {
     if (this.queue.files.length && !this.detectPiiInProcess?.isRunning)
@@ -81,22 +78,6 @@ export default class AuFileUpload extends Component {
     );
   }
 
-  @action
-  handlePiiSelection(piiElement) {
-    if (this.selectedPii.includes(piiElement)) {
-      this.selectedPii = this.selectedPii.filter(
-        (element) => element !== piiElement,
-      );
-    } else {
-      this.selectedPii = [...this.selectedPii, piiElement];
-    }
-  }
-
-  @action
-  setSelectedPii(selection) {
-    this.selectedPii = selection;
-  }
-
   @task
   *detectPiiInProcess(process) {
     try {
@@ -149,10 +130,8 @@ export default class AuFileUpload extends Component {
         const response = yield this.detectPiiInProcess.perform(file);
         console.log('response', response);
         if (response['pii_results'].length > 0) {
-          this.args.onPiiDetected(true);
           this.showDropzone = false;
-          this.piiResults = response['pii_results'];
-          this.fileHasPii = true;
+          this.args.onPiiDetected(response['pii_results']);
           return;
         }
       } catch (error) {

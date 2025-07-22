@@ -102,6 +102,10 @@
       @extractBpmnElements={{this.extractBpmnElements}}
       @onFinishUpload={{this.diagramUploaded}}
       @onPiiDetected={{this.setPiiState}}
+      @piiResults={{this.piiResults}}
+      @piiToAnonymize={{this.piiToAnonymize}}
+      @onPiiSelectionChange={{this.handlePiiSelection}}
+      @fileHasPii={{this.fileHasPii}}
     />
   </:body>
   <:footer>
@@ -110,8 +114,9 @@
         @skin="naked"
         {{on "click" this.closeReplaceModal}}
       >Annuleer</AuButton>
-      {{#if this.hasPiiResults}}
-        <AuButton>Geselecteerde informatie anonimiseren</AuButton>
+      {{#if this.fileHasPii}}
+        <AuButton {{on "click" this.handleAnonymization}}>Geselecteerde
+          informatie anonimiseren</AuButton>
       {{/if}}
     </AuButtonGroup>
   </:footer>

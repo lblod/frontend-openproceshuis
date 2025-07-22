@@ -44,19 +44,19 @@
     </FileDropzone>
   {{/let}}
 {{else}}
-  {{#if this.fileHasPii}}
+  {{#if @fileHasPii}}
     <AuHeading class="au-u-h5">Er staat potentieel persoonsgebonden gevoelige
       informatie in dit document</AuHeading>
     <AuHelpText class="au-u-margin-bottom-small">Door informatie op te laden in
       Open Proces Huis deel je buiten jouw lokaal bestuur. Vink aan welke
       stukjes je wilt anonimiseren voor het gebruik in Open Proces Huis.
       Anonimiseren is niet verplicht.</AuHelpText>
-    {{#each this.piiResults as |result|}}
+    {{#each @piiResults as |result|}}
       <ul>
         <li class="au-u-flex--inline">
           <AuCheckbox
-            @checked={{true}}
-            @onChange={{fn this.handlePiiSelection result}}
+            @checked={{includes result @piiToAnonymize}}
+            @onChange={{fn @onPiiSelectionChange result}}
           />
           <p class="au-u-regular au-u-margin-left-tiny">{{result.match}}</p>
         </li>

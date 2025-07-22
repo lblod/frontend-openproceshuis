@@ -17,11 +17,14 @@ import generateFileDownloadUrl, {
 export default class ProcessDiagramVisual extends Component {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
-  @tracked hasPiiResults = false;
+  @tracked piiResults = [];
+  @tracked piiToAnonymize = [];
+  @tracked fileHasPii = false;
   @service store;
   @service toaster;
   @service plausible;
   @service diagram;
+  @service api;
 
   latestDiagramAsBpmn = undefined;
   latestDiagramAsSvg = undefined;
@@ -48,8 +51,30 @@ export default class ProcessDiagramVisual extends Component {
   }
 
   @action
-  setPiiState(hasPii) {
-    this.hasPiiResults = hasPii;
+  setPiiState(piiData) {
+    this.piiResults = piiData;
+    this.fileHasPii = piiData.length > 0;
+    this.piiToAnonymize = [...piiData];
+  }
+
+  @action
+  handlePiiSelection(result, isChecked) {
+    if (isChecked) {
+      // Add the item to the list to be anonymized
+      this.piiToAnonymize = [...this.piiToAnonymize, result];
+    } else {
+      // Remove the item from the list
+      this.piiToAnonymize = this.piiToAnonymize.filter(
+        (item) => item !== result,
+      );
+    }
+  }
+
+  @action
+  handleAnonymization() {
+    console.log('Anonymization triggered for:', this.piiToAnonymize);
+    // When your endpoint is ready, you will call your service here:
+    // this.api.handleAnonymization(this.piiToAnonymize);
   }
 
   @action
