@@ -132,11 +132,11 @@
       @createProcess={{this.createProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
       @onFinishUpload={{this.diagramUploaded}}
-      @onPiiDetected={{this.setPiiState}}
-      @piiResults={{this.piiResults}}
-      @piiToAnonymize={{this.piiToAnonymize}}
-      @onPiiSelectionChange={{this.handlePiiSelection}}
-      @fileHasPii={{this.fileHasPii}}
+      @onSensitiveDataDetected={{this.setSensitiveDataState}}
+      @sensitiveDataResults={{this.sensitiveDataResults}}
+      @sensitiveDataToAnonymize={{this.sensitiveDataToAnonymize}}
+      @onSensitiveDataSelectionChange={{this.handleSensitiveDataSelection}}
+      @fileHasSensitiveInformation={{this.fileHasSensitiveInformation}}
     />
   </:body>
   <:footer>
@@ -145,7 +145,7 @@
         @skin="secondary"
         {{on "click" this.closeUploadModal}}
       >Annuleer</AuButton>
-      {{#if this.fileHasPii}}
+      {{#if this.fileHasSensitiveInformation}}
         <AuButton
           @skin="primary"
           {{on "click" this.handleAnonymization}}

@@ -101,11 +101,11 @@
       @updateProcess={{this.addFileToProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
       @onFinishUpload={{this.diagramUploaded}}
-      @onPiiDetected={{this.setPiiState}}
-      @piiResults={{this.piiResults}}
-      @piiToAnonymize={{this.piiToAnonymize}}
-      @onPiiSelectionChange={{this.handlePiiSelection}}
-      @fileHasPii={{this.fileHasPii}}
+      @onSensitiveDataDetected={{this.setSensitiveDataState}}
+      @sensitiveDataResults={{this.sensitiveDataResults}}
+      @sensitiveDataToAnonymize={{this.sensitiveDataToAnonymize}}
+      @onSensitiveDataSelectionChange={{this.handleSensitiveDataSelection}}
+      @fileHasSensitiveInformation={{this.fileHasSensitiveInformation}}
     />
   </:body>
   <:footer>
@@ -114,7 +114,7 @@
         @skin="naked"
         {{on "click" this.closeReplaceModal}}
       >Annuleer</AuButton>
-      {{#if this.fileHasPii}}
+      {{#if this.fileHasSensitiveInformation}}
         <AuButton {{on "click" this.handleAnonymization}}>Geselecteerde
           informatie anonimiseren</AuButton>
       {{/if}}

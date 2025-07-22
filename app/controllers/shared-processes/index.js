@@ -22,9 +22,9 @@ export default class SharedProcessesIndexController extends Controller {
   @tracked processToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
-  @tracked piiResults = [];
-  @tracked piiToAnonymize = [];
-  @tracked fileHasPii = false;
+  @tracked sensitiveDataResults = [];
+  @tracked sensitiveDataToAnonymize = [];
+  @tracked fileHasSensitiveInformation = false;
 
   newProcessId = undefined;
 
@@ -56,20 +56,23 @@ export default class SharedProcessesIndexController extends Controller {
   }
 
   @action
-  setPiiState(piiData) {
-    this.piiResults = piiData;
-    this.fileHasPii = piiData.length > 0;
-    this.piiToAnonymize = [...piiData];
+  setSensitiveDataState(sensitiveData) {
+    this.sensitiveDataResults = sensitiveData;
+    this.fileHasSensitiveInformation = sensitiveData.length > 0;
+    this.sensitiveDataToAnonymize = [...sensitiveData];
   }
 
   @action
-  handlePiiSelection(result, isChecked) {
+  handleSensitiveDataSelection(result, isChecked) {
     if (isChecked) {
       // Add the item to the list to be anonymized
-      this.piiToAnonymize = [...this.piiToAnonymize, result];
+      this.sensitiveDataToAnonymize = [
+        ...this.sensitiveDataToAnonymize,
+        result,
+      ];
     } else {
       // Remove the item from the list
-      this.piiToAnonymize = this.piiToAnonymize.filter(
+      this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
         (item) => item !== result,
       );
     }
@@ -79,7 +82,7 @@ export default class SharedProcessesIndexController extends Controller {
   handleAnonymization() {
     // TODO -> Submit file to anonymization endpoint
     this.api.fetch('anonymization/anonymize');
-    console.log('Anonymization triggered for:', this.piiToAnonymize);
+    console.log('Anonymization triggered for:', this.sensitiveDataToAnonymize);
   }
 
   @action

@@ -17,7 +17,7 @@ export default class AuFileUpload extends Component {
   @tracked preview = undefined;
 
   get uploadingMsg() {
-    if (this.queue.files.length && !this.detectPiiInProcess?.isRunning)
+    if (this.queue.files.length && !this.detectSensitiveDataInFile?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
     if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
@@ -28,8 +28,8 @@ export default class AuFileUpload extends Component {
       return 'Processtappen extraheren ...';
     }
 
-    if (this.detectPiiInProcess?.isRunning) {
-      return 'Detecting PII in file ...';
+    if (this.detectSensitiveDataInFile?.isRunning) {
+      return 'Detecting sensitive information in file ...';
     }
 
     return 'Laden ...';
@@ -83,24 +83,26 @@ export default class AuFileUpload extends Component {
   }
 
   @task
-  *detectPiiInProcess(process) {
+  *detectSensitiveDataInFile(process) {
     try {
       const formData = new FormData();
       formData.append('file', process.file);
 
-      const response = yield fetch('/anonymization/bpmn', {
+      const response = yield this.api.fetch('/anonymization/bpmn', {
         method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error(`PII detection failed! Status: ${response.status}`);
+        throw new Error(
+          `Sensitive information detection failed! Status: ${response.status}`,
+        );
       }
 
-      const piiResults = yield response.json();
-      return piiResults;
+      const sensitiveDataResults = yield response.json();
+      return sensitiveDataResults;
     } catch (error) {
-      console.error('Error detecting PII:', error);
+      console.error('Error detecting sensitive data:', error);
       throw error;
     }
   }
@@ -131,15 +133,15 @@ export default class AuFileUpload extends Component {
 
     if (file.name.endsWith('.bpmn')) {
       try {
-        const response = yield this.detectPiiInProcess.perform(file);
+        const response = yield this.detectSensitiveDataInFile.perform(file);
         if (response['pii_results'].length > 0) {
           this.showDropzone = false;
           this.preview = yield file.file.text();
-          this.args.onPiiDetected(response['pii_results']);
+          this.args.onSensitiveDataDetected(response['pii_results']);
           return;
         }
       } catch (error) {
-        this.addError(file, 'Error during PII detection.');
+        this.addError(file, 'Error during sensitive data detection.');
         this.removeFileFromQueue(file);
         return;
       }
@@ -270,7 +272,7 @@ export default class AuFileUpload extends Component {
 
   resetErrors() {
     this.uploadErrorData = [];
-    this.piiResults = null;
+    this.sensitiveDataResults = null;
   }
 
   removeFileFromQueue(file) {

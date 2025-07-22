@@ -44,7 +44,7 @@
     </FileDropzone>
   {{/let}}
 {{else}}
-  {{#if @fileHasPii}}
+  {{#if @fileHasSensitiveInformation}}
     <BpmnViewer @diagram={{this.preview}} @modalClass="modal-diagram" />
     <AuHeading class="au-u-h5">Er staat potentieel persoonsgebonden gevoelige
       informatie in dit document</AuHeading>
@@ -52,12 +52,12 @@
       Open Proces Huis deel je buiten jouw lokaal bestuur. Vink aan welke
       stukjes je wilt anonimiseren voor het gebruik in Open Proces Huis.
       Anonimiseren is niet verplicht.</AuHelpText>
-    {{#each @piiResults as |result|}}
+    {{#each @sensitiveDataResults as |result|}}
       <ul>
         <li class="au-u-flex--inline">
           <AuCheckbox
-            @checked={{includes result @piiToAnonymize}}
-            @onChange={{fn @onPiiSelectionChange result}}
+            @checked={{includes result @sensitiveDataToAnonymize}}
+            @onChange={{fn @onSensitiveDataSelectionChange result}}
           />
           <p class="au-u-regular au-u-margin-left-tiny">{{result.match}}</p>
         </li>

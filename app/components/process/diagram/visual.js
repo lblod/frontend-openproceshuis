@@ -17,9 +17,9 @@ import generateFileDownloadUrl, {
 export default class ProcessDiagramVisual extends Component {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
-  @tracked piiResults = [];
-  @tracked piiToAnonymize = [];
-  @tracked fileHasPii = false;
+  @tracked sensitiveDataResults = [];
+  @tracked sensitiveDataToAnonymize = [];
+  @tracked fileHasSensitiveInformation = false;
   @service store;
   @service toaster;
   @service plausible;
@@ -51,20 +51,23 @@ export default class ProcessDiagramVisual extends Component {
   }
 
   @action
-  setPiiState(piiData) {
-    this.piiResults = piiData;
-    this.fileHasPii = piiData.length > 0;
-    this.piiToAnonymize = [...piiData];
+  setSensitiveDataState(sensitiveData) {
+    this.sensitiveDataResults = sensitiveData;
+    this.fileHasSensitiveInformation = sensitiveData.length > 0;
+    this.sensitiveDataToAnonymize = [...sensitiveData];
   }
 
   @action
-  handlePiiSelection(result, isChecked) {
+  handleSensitiveDataSelection(result, isChecked) {
     if (isChecked) {
       // Add the item to the list to be anonymized
-      this.piiToAnonymize = [...this.piiToAnonymize, result];
+      this.sensitiveDataToAnonymize = [
+        ...this.sensitiveDataToAnonymize,
+        result,
+      ];
     } else {
       // Remove the item from the list
-      this.piiToAnonymize = this.piiToAnonymize.filter(
+      this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
         (item) => item !== result,
       );
     }
@@ -72,7 +75,7 @@ export default class ProcessDiagramVisual extends Component {
 
   @action
   handleAnonymization() {
-    console.log('Anonymization triggered for:', this.piiToAnonymize);
+    console.log('Anonymization triggered for:', this.sensitiveDataToAnonymize);
   }
 
   @action
