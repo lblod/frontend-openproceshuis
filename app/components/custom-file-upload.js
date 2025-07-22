@@ -5,12 +5,16 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
+import BpmnViewerModifier from './bpmn-viewer';
+
 export default class AuFileUpload extends Component {
+  bpmnViewer = BpmnViewerModifier;
   fileQueueHelper = fileQueue;
   @service fileQueue;
   @service api;
   @tracked uploadErrorData = [];
   @tracked showDropzone = true;
+  @tracked preview = undefined;
 
   get uploadingMsg() {
     if (this.queue.files.length && !this.detectPiiInProcess?.isRunning)
@@ -131,6 +135,8 @@ export default class AuFileUpload extends Component {
         console.log('response', response);
         if (response['pii_results'].length > 0) {
           this.showDropzone = false;
+          this.preview = yield file.file.text();
+          console.log('this.preview', this.preview);
           this.args.onPiiDetected(response['pii_results']);
           return;
         }

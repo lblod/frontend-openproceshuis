@@ -45,6 +45,7 @@
   {{/let}}
 {{else}}
   {{#if @fileHasPii}}
+    <BpmnViewer @diagram={{this.preview}} />
     <AuHeading class="au-u-h5">Er staat potentieel persoonsgebonden gevoelige
       informatie in dit document</AuHeading>
     <AuHelpText class="au-u-margin-bottom-small">Door informatie op te laden in

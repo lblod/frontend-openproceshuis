@@ -41,15 +41,19 @@ export default class BpmnViewerModifier extends Modifier {
       });
     }
 
-    const fileId = diagram?.isBpmnFile && diagram.id;
-    if (!fileId || fileId === this.lastFileId) return;
-    this.lastFileId = fileId;
-
-    onError?.(false);
-
     try {
-      const xml = await this.downloadXml.perform(fileId);
+      let xml;
+      if (typeof diagram === 'string') {
+        xml = diagram;
+      } else {
+        const fileId = diagram?.isBpmnFile && diagram.id;
+        if (!fileId || fileId === this.lastFileId) return;
+        this.lastFileId = fileId;
 
+        onError?.(false);
+        xml = await this.downloadXml.perform(fileId);
+      }
+      console.log('xml', xml);
       await this.viewer.importXML(xml);
 
       this.viewer.get('canvas').zoom('fit-viewport');
