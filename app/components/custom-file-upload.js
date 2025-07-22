@@ -10,9 +10,13 @@ export default class AuFileUpload extends Component {
   @service fileQueue;
   @service api;
   @tracked uploadErrorData = [];
+  @tracked piiResults = null;
+  @tracked fileHasPii = false;
+  @tracked showDropzone = true;
+  @tracked selectedPii = [];
 
   get uploadingMsg() {
-    if (this.queue.files.length)
+    if (this.queue.files.length && !this.detectPiiInProcess?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
     if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
@@ -21,6 +25,10 @@ export default class AuFileUpload extends Component {
 
     if (this.args.extractBpmnElements?.isRunning) {
       return 'Processtappen extraheren ...';
+    }
+
+    if (this.detectPiiInProcess?.isRunning) {
+      return 'Detecting PII in file ...';
     }
 
     return 'Laden ...';
@@ -73,6 +81,45 @@ export default class AuFileUpload extends Component {
     );
   }
 
+  @action
+  handlePiiSelection(piiElement) {
+    if (this.selectedPii.includes(piiElement)) {
+      this.selectedPii = this.selectedPii.filter(
+        (element) => element !== piiElement,
+      );
+    } else {
+      this.selectedPii = [...this.selectedPii, piiElement];
+    }
+  }
+
+  @action
+  setSelectedPii(selection) {
+    this.selectedPii = selection;
+  }
+
+  @task
+  *detectPiiInProcess(process) {
+    try {
+      const formData = new FormData();
+      formData.append('file', process.file);
+
+      const response = yield fetch('/anonymization/bpmn', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`PII detection failed! Status: ${response.status}`);
+      }
+
+      const piiResults = yield response.json();
+      return piiResults;
+    } catch (error) {
+      console.error('Error detecting PII:', error);
+      throw error;
+    }
+  }
+
   @task
   *upload(file) {
     this.resetErrors();
@@ -95,15 +142,35 @@ export default class AuFileUpload extends Component {
       return;
     }
 
+    let checkedFile = file;
+
+    if (file.name.endsWith('.bpmn')) {
+      try {
+        const response = yield this.detectPiiInProcess.perform(file);
+        console.log('response', response);
+        if (response['pii_results'].length > 0) {
+          this.args.onPiiDetected(true);
+          this.showDropzone = false;
+          this.piiResults = response['pii_results'];
+          this.fileHasPii = true;
+          return;
+        }
+      } catch (error) {
+        this.addError(file, 'Error during PII detection.');
+        this.removeFileFromQueue(file);
+        return;
+      }
+    }
+
     let fileId;
     try {
-      fileId = yield this.uploadFileTask.perform(file);
+      fileId = yield this.uploadFileTask.perform(checkedFile);
     } catch {
       this.addError(
         file,
         'Er ging iets mis tijdens het opslaan van het bestand.',
       );
-      this.removeFileFromQueue(file);
+      this.removeFileFromQueue(checkedFile);
       return;
     }
 
@@ -112,7 +179,7 @@ export default class AuFileUpload extends Component {
         yield this.args.updateProcess.perform(fileId);
       } catch {
         this.addError(
-          file,
+          checkedFile,
           'Er ging iets mis tijdens het bijwerken van het proces.',
         );
         this.removeFileFromQueue(file);
@@ -123,10 +190,10 @@ export default class AuFileUpload extends Component {
         yield this.args.createProcess.perform(fileId);
       } catch {
         this.addError(
-          file,
+          checkedFile,
           'Er ging iets mis tijdens het aanmaken van het proces.',
         );
-        this.removeFileFromQueue(file);
+        this.removeFileFromQueue(checkedFile);
         return;
       }
     }
@@ -220,6 +287,7 @@ export default class AuFileUpload extends Component {
 
   resetErrors() {
     this.uploadErrorData = [];
+    this.piiResults = null;
   }
 
   removeFileFromQueue(file) {

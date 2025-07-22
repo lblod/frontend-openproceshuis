@@ -17,6 +17,7 @@ import generateFileDownloadUrl, {
 export default class ProcessDiagramVisual extends Component {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
+  @tracked hasPiiResults = false;
   @service store;
   @service toaster;
   @service plausible;
@@ -44,6 +45,11 @@ export default class ProcessDiagramVisual extends Component {
 
   get latestDiagramHasErrored() {
     return this.diagram.latestDiagramHasErrored;
+  }
+
+  @action
+  setPiiState(hasPii) {
+    this.hasPiiResults = hasPii;
   }
 
   @action

@@ -132,6 +132,7 @@
       @createProcess={{this.createProcess}}
       @extractBpmnElements={{this.extractBpmnElements}}
       @onFinishUpload={{this.diagramUploaded}}
+      @onPiiDetected={{this.setPiiState}}
     />
   </:body>
   <:footer>
@@ -140,6 +141,12 @@
         @skin="secondary"
         {{on "click" this.closeUploadModal}}
       >Annuleer</AuButton>
+      {{#if this.hasPiiResults}}
+        <AuButton
+          @skin="primary"
+          {{on "click" this.handlePiiAnonymization}}
+        >Geselecteerde informatie anonimiseren</AuButton>
+      {{/if}}
     </AuButtonGroup>
   </:footer>
 </AuModal>

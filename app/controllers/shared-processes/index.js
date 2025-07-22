@@ -22,6 +22,8 @@ export default class SharedProcessesIndexController extends Controller {
   @tracked processToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
+  @tracked hasPiiResults = false;
+
   newProcessId = undefined;
 
   get processes() {
@@ -49,6 +51,11 @@ export default class SharedProcessesIndexController extends Controller {
   setTitle(selection) {
     this.page = null;
     this.title = selection;
+  }
+
+  @action
+  setPiiState(hasPii) {
+    this.hasPiiResults = hasPii;
   }
 
   @action
