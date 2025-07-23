@@ -60,13 +60,11 @@ export default class ProcessDiagramVisual extends Component {
   @action
   handleSensitiveDataSelection(result, isChecked) {
     if (isChecked) {
-      // Add the item to the list to be anonymized
       this.sensitiveDataToAnonymize = [
         ...this.sensitiveDataToAnonymize,
         result,
       ];
     } else {
-      // Remove the item from the list
       this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
         (item) => item !== result,
       );
