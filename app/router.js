@@ -45,6 +45,10 @@ Router.map(function () {
     },
   );
 
+  this.route('inventory', { path: 'inventaris' }, function () {
+    this.route('index', { path: '' });
+  });
+
   this.route('legal', { path: '/legaal' }, function () {
     this.route('disclaimer');
     this.route('cookiestatement', { path: '/cookieverklaring' });
