@@ -36,6 +36,12 @@ export default class InventoryIndexRoute extends Route {
 
       let fieldName = isDescending ? params.sort.substring(1) : params.sort;
 
+      if (fieldName === 'group') fieldName = 'process-groups.label';
+      else if (fieldName === 'domain')
+        fieldName = 'process-groups.process-domains.label';
+      else if (fieldName === 'category')
+        fieldName = 'process-groups.process-domains.process-categories.label';
+
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;
 
