@@ -3,7 +3,9 @@
 
 <div class="au-c-body-container au-c-body-container--scroll">
   <NavigationBar />
-  <ProcessBar />
-  
+  {{#if this.currentSession.isAuthenticated}}
+    <ProcessBar />
+  {{/if}}
+
   {{outlet}}
 </div>
