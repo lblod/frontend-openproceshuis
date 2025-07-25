@@ -29,7 +29,7 @@ export default class AuFileUpload extends Component {
     }
 
     if (this.detectSensitiveDataInFile?.isRunning) {
-      return 'Detecting sensitive information in file ...';
+      return 'Detecteren van gevoelige informatie in bestand ...';
     }
 
     return 'Laden ...';
