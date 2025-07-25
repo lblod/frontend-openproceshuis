@@ -1,65 +1,90 @@
-{{#let
-  (this.fileQueueHelper name=this.queueName onFileAdded=(perform this.upload))
-  as |queue|
-}}
-  <FileDropzone
-    @queue={{queue}}
-    @filter={{this.filter}}
-    class="au-c-file-upload"
-    ...attributes
-    as |dropzone|
-  >
-    {{#if dropzone.active}}
-      <p class="au-c-file-upload-message">
-        <AuIcon @icon="attachment" @alignment="left" />
-        <AuHelpText @skin="secondary">{{this.helpTextDragDrop}}</AuHelpText>
-      </p>
-    {{else if this.isBusy}}
-      <p class="au-c-file-upload-message">
-        <small class="au-c-small-text">{{this.uploadingMsg}}</small>
-      </p>
-    {{else}}
-      <label>
-        <input
-          accept={{@accept}}
-          multiple={{@multiple}}
-          type="file"
-          hidden=""
-          {{queue.selectFile filter=this.filter}}
-        />
-        <span class="au-c-file-upload-label">
-          <span class="au-c-file-upload-label__title">
-            <AuIcon @icon="attachment" @alignment="left" />
-            {{this.title}}
+{{#if this.showDropzone}}
+  {{#let
+    (this.fileQueueHelper name=this.queueName onFileAdded=(perform this.upload))
+    as |queue|
+  }}
+    <FileDropzone
+      @queue={{queue}}
+      @filter={{this.filter}}
+      class="au-c-file-upload"
+      ...attributes
+      as |dropzone|
+    >
+      {{#if dropzone.active}}
+        <p class="au-c-file-upload-message">
+          <AuIcon @icon="attachment" @alignment="left" />
+          <AuHelpText @skin="secondary">{{this.helpTextDragDrop}}</AuHelpText>
+        </p>
+      {{else if this.isBusy}}
+        <p class="au-c-file-upload-message">
+          <small class="au-c-small-text">{{this.uploadingMsg}}</small>
+        </p>
+      {{else}}
+        <label>
+          <input
+            accept={{@accept}}
+            multiple={{@multiple}}
+            type="file"
+            hidden=""
+            {{queue.selectFile filter=this.filter}}
+          />
+          <span class="au-c-file-upload-label">
+            <span class="au-c-file-upload-label__title">
+              <AuIcon @icon="attachment" @alignment="left" />
+              {{this.title}}
+            </span>
+            {{#if dropzone.supported}}
+              <AuHelpText
+                @skin="secondary"
+              >{{this.helpTextDragDrop}}</AuHelpText>
+            {{/if}}
           </span>
-          {{#if dropzone.supported}}
-            <AuHelpText @skin="secondary">{{this.helpTextDragDrop}}</AuHelpText>
-          {{/if}}
-        </span>
-      </label>
-    {{/if}}
-  </FileDropzone>
-{{/let}}
-
-{{#if this.hasErrors}}
-  <AuAlert
-    @icon="alert-triangle"
-    @skin="error"
-    @size="small"
-    @closable={{false}}
-    class="au-u-margin-top-tiny"
-  >
-    <ul>
-      {{#each this.uploadErrorData as |data|}}
-        <li>
-          Fout bij het opladen van
-          {{data.filename}}.
-          {{#if data.error}}
-            (Foutmelding:
-            {{data.error}})
-          {{/if}}
+        </label>
+      {{/if}}
+    </FileDropzone>
+  {{/let}}
+{{else}}
+  {{#if @fileHasSensitiveInformation}}
+    <BpmnViewer @diagram={{this.preview}} @modalClass="modal-diagram" />
+    <AuHeading class="au-u-h5">Er staat potentieel persoonsgebonden gevoelige
+      informatie in dit document</AuHeading>
+    <AuHelpText class="au-u-margin-bottom-small">Door informatie op te laden in
+      Open Proces Huis deel je buiten jouw lokaal bestuur. Vink aan welke
+      stukjes je wilt anonimiseren voor het gebruik in Open Proces Huis.
+      Anonimiseren is niet verplicht.</AuHelpText>
+    {{#each @sensitiveDataResults as |result|}}
+      <ul>
+        <li class="au-u-flex--inline">
+          <AuCheckbox
+            @checked={{includes result @sensitiveDataToAnonymize}}
+            @onChange={{fn @onSensitiveDataSelectionChange result}}
+          />
+          <p class="au-u-regular au-u-margin-left-tiny">{{result.match}}</p>
         </li>
-      {{/each}}
-    </ul>
-  </AuAlert>
+      </ul>
+    {{/each}}
+  {{/if}}
+
+  {{#if this.hasErrors}}
+    <AuAlert
+      @icon="alert-triangle"
+      @skin="error"
+      @size="small"
+      @closable={{false}}
+      class="au-u-margin-top-tiny"
+    >
+      <ul>
+        {{#each this.uploadErrorData as |data|}}
+          <li>
+            Fout bij het opladen van
+            {{data.filename}}.
+            {{#if data.error}}
+              (Foutmelding:
+              {{data.error}})
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    </AuAlert>
+  {{/if}}
 {{/if}}
