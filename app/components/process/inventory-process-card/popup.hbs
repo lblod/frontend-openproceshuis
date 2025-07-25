@@ -1,4 +1,4 @@
-<AuModal @modalOpen={{true}}>
+<AuModal @modalOpen={{@openModal}} @closeModal={{@onClose}}>
   <:title>Een proces selecteren</:title>
   <:body>
     <SidebarContainer>
@@ -151,35 +151,37 @@
 
           <div class="au-u-flex au-u-flex--center au-u-margin-top">
             <AuButtonGroup>
-              <AuButton
-                @skin="link"
-                @icon="nav-left"
-                disabled={{not this.conceptualProcesses.meta.pagination.prev}}
-                {{on
-                  "click"
-                  (fn
-                    this.handlePageChange
-                    this.conceptualProcesses.meta.pagination.prev.number
-                  )
-                }}
-              >
-                Vorige
-              </AuButton>
-              <AuButton
-                @skin="link"
-                @icon="nav-right"
-                @iconAlignment="right"
-                disabled={{not this.conceptualProcesses.meta.pagination.next}}
-                {{on
-                  "click"
-                  (fn
-                    this.handlePageChange
-                    this.conceptualProcesses.meta.pagination.next.number
-                  )
-                }}
-              >
-                Volgende
-              </AuButton>
+              {{#if this.conceptualProcesses.meta.pagination.prev}}
+                <AuButton
+                  @skin="link"
+                  @icon="nav-left"
+                  {{on
+                    "click"
+                    (fn
+                      this.handlePageChange
+                      this.conceptualProcesses.meta.pagination.prev.number
+                    )
+                  }}
+                >
+                  Vorige
+                </AuButton>
+              {{/if}}
+              {{#if this.conceptualProcesses.meta.pagination.next}}
+                <AuButton
+                  @skin="link"
+                  @icon="nav-right"
+                  @iconAlignment="right"
+                  {{on
+                    "click"
+                    (fn
+                      this.handlePageChange
+                      this.conceptualProcesses.meta.pagination.next.number
+                    )
+                  }}
+                >
+                  Volgende
+                </AuButton>
+              {{/if}}
             </AuButtonGroup>
           </div>
         </div>
@@ -188,7 +190,7 @@
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton @skin="secondary" {{on "click" @closeModal}}>Annuleer</AuButton>
+      <AuButton @skin="secondary" {{on "click" @onClose}}>Annuleer</AuButton>
       <AuButton @skin="primary">Proces selecteren</AuButton>
     </AuButtonGroup>
   </:footer>
