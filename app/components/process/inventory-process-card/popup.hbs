@@ -1,0 +1,195 @@
+<AuModal @modalOpen={{true}}>
+  <:title>Een proces selecteren</:title>
+  <:body>
+    <SidebarContainer>
+      <:sidebar>
+        <div class="au-c-sidebar">
+          <div class="au-c-sidebar__content">
+            <form
+              {{on "reset" this.resetFilters}}
+              class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+            >
+              <div
+                class="au-u-flex au-u-flex--between au-u-flex--vertical-center"
+              >
+              </div>
+              <div>
+                <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+                <PowerSelect
+                  @allowClear={{true}}
+                  @searchEnabled={{true}}
+                  @loadingMessage="Aan het laden..."
+                  @noMatchesMessage="Geen resultaten"
+                  @searchMessage="Typ om te zoeken"
+                  @searchField="title"
+                  @selected={{@selected}}
+                  @onChange={{this.mockOnchange}}
+                  @triggerId={{@id}}
+                  as |title|
+                >
+                  {{title}}
+                </PowerSelect>
+              </div>
+              <div>
+                <AuLabel for="filter-classification">Categorie</AuLabel>
+                <PowerSelect
+                  @allowClear={{true}}
+                  @searchEnabled={{true}}
+                  @loadingMessage="Aan het laden..."
+                  @noMatchesMessage="Geen resultaten"
+                  @searchMessage="Typ om te zoeken"
+                  @searchField="title"
+                  @selected={{@selected}}
+                  @onChange={{this.mockOnchange}}
+                  @triggerId={{@id}}
+                  as |title|
+                >
+                  {{title}}
+                </PowerSelect>
+              </div>
+              <div>
+                <AuLabel for="filter-group">Procesdomein</AuLabel>
+                <PowerSelect
+                  @allowClear={{true}}
+                  @searchEnabled={{true}}
+                  @loadingMessage="Aan het laden..."
+                  @noMatchesMessage="Geen resultaten"
+                  @searchMessage="Typ om te zoeken"
+                  @searchField="title"
+                  @selected={{@selected}}
+                  @onChange={{this.mockOnchange}}
+                  @triggerId={{@id}}
+                  as |title|
+                >
+                  {{title}}
+                </PowerSelect>
+              </div>
+              <div>
+                <AuLabel for="filter-ipdc">Procesgroep</AuLabel>
+                <PowerSelect
+                  @allowClear={{true}}
+                  @searchEnabled={{true}}
+                  @loadingMessage="Aan het laden..."
+                  @noMatchesMessage="Geen resultaten"
+                  @searchMessage="Typ om te zoeken"
+                  @searchField="title"
+                  @selected={{@selected}}
+                  @onChange={{this.mockOnchange}}
+                  @triggerId={{@id}}
+                  as |title|
+                >
+                  {{title}}
+                </PowerSelect>
+              </div>
+              <div>
+                <AuLabel for="filter-ipdc">Conceptueel proces</AuLabel>
+                <PowerSelect
+                  @allowClear={{true}}
+                  @searchEnabled={{true}}
+                  @loadingMessage="Aan het laden..."
+                  @noMatchesMessage="Geen resultaten"
+                  @searchMessage="Typ om te zoeken"
+                  @searchField="title"
+                  @selected={{@selected}}
+                  @onChange={{this.mockOnchange}}
+                  @triggerId={{@id}}
+                  as |title|
+                >
+                  {{title}}
+                </PowerSelect>
+              </div>
+              <div>
+                <AuLabel for="filter-ipdc">Nummer</AuLabel>
+                <PowerSelect
+                  @allowClear={{true}}
+                  @searchEnabled={{true}}
+                  @loadingMessage="Aan het laden..."
+                  @noMatchesMessage="Geen resultaten"
+                  @searchMessage="Typ om te zoeken"
+                  @searchField="title"
+                  @selected={{@selected}}
+                  @onChange={{this.mockOnchange}}
+                  @triggerId={{@id}}
+                  as |title|
+                >
+                  {{title}}
+                </PowerSelect>
+              </div>
+              <div class="au-u-flex au-u-flex--end">
+                <AuButton
+                  @icon="cross"
+                  @skin="link"
+                  type="reset"
+                  class="au-u-padding-none au-u-medium"
+                >
+                  Herstel alle filters
+                </AuButton>
+              </div>
+            </form>
+          </div>
+        </div>
+      </:sidebar>
+      <:content>
+        <div class="data-table-container--fixed-height">
+          <AuDataTable
+            @content={{this.conceptualProcesses}}
+            @page={{this.page}}
+            @size={{this.size}}
+            @onPageChange={{this.handlePageChange}}
+            @onSizeChange={{this.handleSizeChange}}
+            @hidePagination={{true}}
+            @fields="title description"
+            @noDataMessage="Geen processen gevonden"
+            as |t|
+          >
+            <t.content as |c|>
+              <c.body as |process|>
+                <td>{{process.title}}</td>
+              </c.body>
+            </t.content>
+          </AuDataTable>
+
+          <div class="au-u-flex au-u-flex--center au-u-margin-top">
+            <AuButtonGroup>
+              <AuButton
+                @skin="link"
+                @icon="nav-left"
+                disabled={{not this.conceptualProcesses.meta.pagination.prev}}
+                {{on
+                  "click"
+                  (fn
+                    this.handlePageChange
+                    this.conceptualProcesses.meta.pagination.prev.number
+                  )
+                }}
+              >
+                Vorige
+              </AuButton>
+              <AuButton
+                @skin="link"
+                @icon="nav-right"
+                @iconAlignment="right"
+                disabled={{not this.conceptualProcesses.meta.pagination.next}}
+                {{on
+                  "click"
+                  (fn
+                    this.handlePageChange
+                    this.conceptualProcesses.meta.pagination.next.number
+                  )
+                }}
+              >
+                Volgende
+              </AuButton>
+            </AuButtonGroup>
+          </div>
+        </div>
+      </:content>
+    </SidebarContainer>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton @skin="secondary" {{on "click" @closeModal}}>Annuleer</AuButton>
+      <AuButton @skin="primary">Proces selecteren</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

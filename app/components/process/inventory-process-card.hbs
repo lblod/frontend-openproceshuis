@@ -1,0 +1,68 @@
+{{#if this.edit}}
+  <DataCard>
+    <:title>
+      Link met procesinventaris
+    </:title>
+    <:header>
+      <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
+        <AuButton
+          @skin="secondary"
+          {{on "click" this.resetModel}}
+        >Annuleer</AuButton>
+        <AuButton
+          @skin="primary"
+          type="submit"
+          @loading={{this.updateModel.isRunning}}
+          @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
+        >Bewaar</AuButton>
+      </div>
+    </:header>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Gelinkt proces</:label>
+            <:content>
+              <AuButton
+                @skin="secondary"
+                {{on "click" this.openConceptModal}}
+              >Een proces selecteren</AuButton>
+            </:content>
+          </Item>
+
+        </:left>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+
+  <Process::InventoryProcessCard::Popup />
+
+{{else}}
+  <DataCard>
+    <:title>
+      Link met procesinventaris
+    </:title>
+    <:header>
+      {{#unless this.currentSession.readOnly}}
+        <AuButton
+          @skin="naked"
+          @icon="pencil"
+          {{on "click" this.toggleEdit}}
+        >Wijzig</AuButton>
+      {{/unless}}
+    </:header>
+    <:card as |Card|>
+      <Card.Columns>
+        <:left as |Item|>
+          <Item>
+            <:label>Gelinkt proces</:label>
+            <:content>
+              {{@process.linkedConcept}}
+            </:content>
+          </Item>
+
+        </:left>
+      </Card.Columns>
+    </:card>
+  </DataCard>
+{{/if}}
