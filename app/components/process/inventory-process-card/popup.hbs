@@ -130,61 +130,17 @@
         </div>
       </:sidebar>
       <:content>
-        <div class="data-table-container--fixed-height">
-          <AuDataTable
-            @content={{this.conceptualProcesses}}
-            @page={{this.page}}
-            @size={{this.size}}
-            @onPageChange={{this.handlePageChange}}
-            @onSizeChange={{this.handleSizeChange}}
-            @hidePagination={{true}}
-            @fields="title description"
-            @noDataMessage="Geen processen gevonden"
-            as |t|
-          >
-            <t.content as |c|>
-              <c.body as |process|>
-                <td>{{process.title}}</td>
-              </c.body>
-            </t.content>
-          </AuDataTable>
-
-          <div class="au-u-flex au-u-flex--center au-u-margin-top">
-            <AuButtonGroup>
-              {{#if this.conceptualProcesses.meta.pagination.prev}}
-                <AuButton
-                  @skin="link"
-                  @icon="nav-left"
-                  {{on
-                    "click"
-                    (fn
-                      this.handlePageChange
-                      this.conceptualProcesses.meta.pagination.prev.number
-                    )
-                  }}
-                >
-                  Vorige
-                </AuButton>
-              {{/if}}
-              {{#if this.conceptualProcesses.meta.pagination.next}}
-                <AuButton
-                  @skin="link"
-                  @icon="nav-right"
-                  @iconAlignment="right"
-                  {{on
-                    "click"
-                    (fn
-                      this.handlePageChange
-                      this.conceptualProcesses.meta.pagination.next.number
-                    )
-                  }}
-                >
-                  Volgende
-                </AuButton>
-              {{/if}}
-            </AuButtonGroup>
-          </div>
-        </div>
+        <AuTable @size={{this.size}}>
+          <:body>
+            {{#each this.conceptualProcesses as |process|}}
+              <tr>
+                <td>
+                  {{process.title}}
+                </td>
+              </tr>
+            {{/each}}
+          </:body>
+        </AuTable>
       </:content>
     </SidebarContainer>
   </:body>
