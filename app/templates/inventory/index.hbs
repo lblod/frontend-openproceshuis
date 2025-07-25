@@ -1,0 +1,74 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+    </div>
+  </:sidebar>
+  <:content>
+    <PageHeader>
+      <:title>Inventaris processen Lokale Besturen</:title>
+      <:subtitle>
+        <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
+          Handleiding Open Proces Huis
+        </AuLinkExternal>
+      </:subtitle>
+      <:action>
+      </:action>
+    </PageHeader>
+
+    <AuDataTable
+      @content={{this.conceptualProcesses}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="category"
+            @currentSorting={{this.sort}}
+            @label="Categorie"
+          />
+          <AuDataTableThSortable
+            @field="domain"
+            @currentSorting={{this.sort}}
+            @label="Procesdomein"
+          />
+          <AuDataTableThSortable
+            @field="group"
+            @currentSorting={{this.sort}}
+            @label="Procesgroep"
+          />
+          <AuDataTableThSortable
+            @field="title"
+            @currentSorting={{this.sort}}
+            @label="Hoofdproces"
+          />
+          <AuDataTableThSortable
+            @field="number"
+            @currentSorting={{this.sort}}
+            @label="Nummer"
+          />
+          <th></th>
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |conceptualProcess|>
+            <td>{{conceptualProcess.processGroup.processDomain.processCategory.label}}</td>
+            <td>{{conceptualProcess.processGroup.processDomain.label}}</td>
+            <td>{{conceptualProcess.processGroup.label}}</td>
+            <td>{{conceptualProcess.title}}</td>
+            <td>{{conceptualProcess.number}}</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

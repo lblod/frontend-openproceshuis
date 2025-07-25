@@ -38,6 +38,12 @@ module.exports = function (environment) {
         'http://lblod.data.gift/concept-schemes/d4259f0b-6d6e-4a46-b9e1-114b774e0f1e',
       informationAssets:
         'http://lblod.data.gift/concept-schemes/4c0f0408-01b9-4902-9640-477b667bd086',
+      processGroups:
+        'http://lblod.data.gift/concept-schemes/324e775f-2a48-4daa-9de0-9f62ef8ab22e',
+      processDomains:
+        'http://lblod.data.gift/concept-schemes/a8108a43-44fa-4b08-9794-064941f00dc1',
+      processCategories:
+        'http://lblod.data.gift/concept-schemes/21fba7d7-d0f5-4133-a108-626d0eb62298',
     },
 
     resourceStates: {
