@@ -1,0 +1,52 @@
+.process-modal {
+  min-width: 900px;
+}
+
+.process-modal-link:focus {
+  outline: none;
+}
+
+.process-modal-table tr:focus-within {
+  outline: 3px solid var(--au-blue-500);
+  outline-offset: -3px;
+}
+
+.process-modal .au-c-modal__body {
+  display: flex;
+  height: 75vh;
+  overflow: hidden;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.process-modal-table tr {
+  position: relative;
+}
+
+.process-modal-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.process-modal .au-c-sidebar-container__content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.process-modal .au-c-sidebar-container__sidebar,
+.process-modal .au-c-sidebar-container__content {
+  overflow-y: auto;
+}
+
+.process-modal-link {
+  text-decoration: none;
+  color: black;
+}
+.change-process-concept-button {
+  flex-shrink: 0;
+}

@@ -8,12 +8,7 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 export default class ProcessInventoryProcessCard extends Component {
   @service toaster;
   @tracked edit = false;
-  @tracked linkedConceptChanged = false;
   @tracked conceptModalOpened = false;
-
-  get linkedConcept() {
-    return this.args.process.linkedConcept;
-  }
 
   @action
   toggleEdit() {
@@ -22,7 +17,6 @@ export default class ProcessInventoryProcessCard extends Component {
 
   @action
   resetModel() {
-    this.linkedConceptChanged = false;
     this.edit = false;
   }
 
@@ -34,27 +28,22 @@ export default class ProcessInventoryProcessCard extends Component {
   @action
   closeConceptModal() {
     this.conceptModalOpened = false;
+    this.edit = false;
   }
 
   @dropTask
   *updateModel(event) {
     event.preventDefault();
-
-    if (this.linkedConceptChanged) {
-      try {
-        yield this.args.process.save();
-        this.linkedConceptChanged = false;
-        this.edit = false;
-        this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
-          timeOut: 5000,
-        });
-      } catch (error) {
-        console.error(error);
-        const errorMessage = getMessageForErrorCode('oph.updateModelFailed');
-        this.toaster.error(errorMessage, 'Fout');
-        this.resetModel();
-      }
-    } else {
+    try {
+      yield this.args.process.save();
+      this.edit = false;
+      this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      console.error(error);
+      const errorMessage = getMessageForErrorCode('oph.updateModelFailed');
+      this.toaster.error(errorMessage, 'Fout');
       this.resetModel();
     }
   }

@@ -9,12 +9,6 @@
           @skin="secondary"
           {{on "click" this.resetModel}}
         >Annuleer</AuButton>
-        <AuButton
-          @skin="primary"
-          type="submit"
-          @loading={{this.updateModel.isRunning}}
-          @disabled={{or this.updateModel.isRunning (not this.formIsValid)}}
-        >Bewaar</AuButton>
       </div>
     </:header>
     <:card as |Card|>
@@ -23,10 +17,22 @@
           <Item>
             <:label>Gelinkt proces</:label>
             <:content>
-              <AuButton
-                @skin="secondary"
-                {{on "click" this.openConceptModal}}
-              >Een proces selecteren</AuButton>
+              <div class="au-u-flex au-u-flex--vertical-center">
+                {{#if @process.linkedConcept}}
+                  {{@process.linkedConcept.title}}
+                  <AuButton
+                    @skin="naked"
+                    class="change-process-concept-button"
+                    {{on "click" this.openConceptModal}}
+                  >Veranderen</AuButton>
+                {{else}}
+                  <AuButton
+                    @skin="secondary"
+                    class="change-process-concept-button"
+                    {{on "click" this.openConceptModal}}
+                  >Een proces selecteren</AuButton>
+                {{/if}}
+              </div>
             </:content>
           </Item>
 
@@ -37,7 +43,9 @@
 
   <Process::InventoryProcessCard::Popup
     @openModal={{this.conceptModalOpened}}
-    @onClose={{this.closeConceptModal}}
+    @closeModal={{this.closeConceptModal}}
+    @process={{@process}}
+    @isEditing={{this.edit}}
   />
 
 {{else}}
@@ -60,7 +68,7 @@
           <Item>
             <:label>Gelinkt proces</:label>
             <:content>
-              {{@process.linkedConcept}}
+              {{@process.linkedConcept.title}}
             </:content>
           </Item>
 
