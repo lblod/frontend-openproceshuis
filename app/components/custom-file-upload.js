@@ -88,7 +88,7 @@ export default class AuFileUpload extends Component {
       const formData = new FormData();
       formData.append('file', process.file);
 
-      const response = yield this.api.fetch('/anonymization/bpmn', {
+      const response = yield this.api.fetch('/anonymization/bpmn/identify', {
         method: 'POST',
         body: formData,
       });
