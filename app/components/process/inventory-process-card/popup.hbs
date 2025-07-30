@@ -1,8 +1,8 @@
 <AuModal
+  class="au-u-max-width-medium"
   @modalOpen={{@openModal}}
   @closeModal={{@closeModal}}
   @closable={{false}}
-  class="process-modal"
 >
   <:title>Een proces selecteren</:title>
   <:body>
@@ -144,22 +144,34 @@
             </div>
           </:sidebar>
           <:content>
-            <AuTable @size={{this.size}} class="process-modal-table">
-              <:body>
-                {{#each this.processConcepts as |process|}}
-                  <tr>
-                    <td>
-                      <AuLink
-                        class="process-modal-link"
-                        {{on "click" (fn this.selectProcessConcept process)}}
-                      >
-                        {{process.title}}
-                      </AuLink>
-                    </td>
-                  </tr>
-                {{/each}}
-              </:body>
-            </AuTable>
+            <div class="process-modal-table-wrapper">
+              <AuTable @size={{this.size}} class="process-modal-table">
+                <:body>
+                  {{#each this.processConcepts as |process|}}
+                    <tr>
+                      <td>
+                        <AuLink
+                          class="process-modal-link"
+                          {{on "click" (fn this.selectProcessConcept process)}}
+                        >
+                          {{process.title}}
+                        </AuLink>
+                      </td>
+                    </tr>
+                  {{/each}}
+                </:body>
+              </AuTable>
+            </div>
+            {{#if this.hasMore}}
+              <div class="au-u-margin-top">
+                <AuButton
+                  @loading={{this.loadMoreTask.isRunning}}
+                  {{on "click" (perform this.loadMoreTask)}}
+                >
+                  Meer laden
+                </AuButton>
+              </div>
+            {{/if}}
           </:content>
         </SidebarContainer>
       </form>

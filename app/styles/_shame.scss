@@ -71,3 +71,15 @@
 .card-helptext {
   width: 32px;
 }
+
+.process-modal-link:focus {
+  outline: none;
+}
+.process-modal-table tr:focus-within {
+  outline: 3px solid var(--au-blue-500);
+  outline-offset: -3px;
+}
+
+.process-modal-table-wrapper {
+  max-height: 554px;
+}
