@@ -94,6 +94,7 @@ export default class ProcessInventoryProcessCardPopup extends Component {
 
   @action
   mockOnchange() {
+    // TODO: Change this when filters are going to be created
     console.log('on change called');
   }
 
