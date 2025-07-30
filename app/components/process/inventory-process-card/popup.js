@@ -100,6 +100,7 @@ export default class ProcessInventoryProcessCardPopup extends Component {
 
   @action
   resetFilters() {
+    // TODO: Change this when filters are going to be created
     console.log('reset filters');
   }
 }
