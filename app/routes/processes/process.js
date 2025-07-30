@@ -9,7 +9,7 @@ export default class ProcessesProcessRoute extends Route {
     const query = {
       reload: true,
       include:
-        'process-statistics,files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-products,information-assets,linked-concept',
+        'process-statistics,files,publisher,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,ipdc-products,information-assets,linked-concept,linked-concept.process-groups.process-domains,linked-concept.process-groups.process-domains.process-categories',
       'filter[files][:not:status]': ENV.resourceStates.archived,
     };
     return await this.store.findRecord('process', params.id, query);

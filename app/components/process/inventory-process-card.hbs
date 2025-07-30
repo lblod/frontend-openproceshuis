@@ -17,26 +17,43 @@
           <Item>
             <:label>Gelinkt proces</:label>
             <:content>
-              <div class="au-u-flex au-u-flex--vertical-center">
+              <div class="au-u-flex au-u-flex--vertical-baseline">
                 {{#if @process.linkedConcept}}
                   {{@process.linkedConcept.title}}
                   <AuButton
                     @skin="naked"
-                    class="change-process-concept-button"
                     {{on "click" this.openConceptModal}}
                   >Veranderen</AuButton>
                 {{else}}
                   <AuButton
                     @skin="secondary"
-                    class="change-process-concept-button"
                     {{on "click" this.openConceptModal}}
                   >Een proces selecteren</AuButton>
                 {{/if}}
               </div>
             </:content>
           </Item>
-
         </:left>
+        <:right as |Item|>
+          <Item>
+            <:label>Procesgroep</:label>
+            <:content>
+              {{@process.linkedConcept.processGroup.label}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Procesdomein</:label>
+            <:content>
+              {{@process.linkedConcept.processGroup.processDomain.label}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Procescategorie</:label>
+            <:content>
+              {{@process.linkedConcept.processGroup.processDomain.processCategory.label}}
+            </:content>
+          </Item>
+        </:right>
       </Card.Columns>
     </:card>
   </DataCard>
@@ -65,14 +82,35 @@
     <:card as |Card|>
       <Card.Columns>
         <:left as |Item|>
+          {{! <div class="au-u-margin-bottom-small"> }}
           <Item>
             <:label>Gelinkt proces</:label>
             <:content>
               {{@process.linkedConcept.title}}
             </:content>
           </Item>
-
+          {{! </div> }}
         </:left>
+        <:right as |Item|>
+          <Item>
+            <:label>Procesgroep</:label>
+            <:content>
+              {{@process.linkedConcept.processGroup.label}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Procesdomein</:label>
+            <:content>
+              {{@process.linkedConcept.processGroup.processDomain.label}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Procescategorie</:label>
+            <:content>
+              {{@process.linkedConcept.processGroup.processDomain.processCategory.label}}
+            </:content>
+          </Item>
+        </:right>
       </Card.Columns>
     </:card>
   </DataCard>
