@@ -7,7 +7,7 @@ import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
 import BpmnViewerModifier from './bpmn-viewer';
 
-export default class AuFileUpload extends Component {
+export default class FileUploadModalComponent extends Component {
   bpmnViewer = BpmnViewerModifier;
   fileQueueHelper = fileQueue;
   @service fileQueue;
@@ -15,6 +15,10 @@ export default class AuFileUpload extends Component {
   @tracked uploadErrorData = [];
   @tracked showDropzone = true;
   @tracked preview = undefined;
+
+  @tracked fileHasSensitiveInformation = false;
+  @tracked sensitiveDataResults = [];
+  @tracked sensitiveDataToAnonymize = [];
 
   get uploadingMsg() {
     if (this.queue.files.length && !this.detectSensitiveDataInFile?.isRunning)
@@ -134,10 +138,14 @@ export default class AuFileUpload extends Component {
     if (file.name.endsWith('.bpmn')) {
       try {
         const response = yield this.detectSensitiveDataInFile.perform(file);
-        if (response['pii_results'].length > 0) {
+        const results = response['pii_results'];
+        if (results.length > 0) {
           this.showDropzone = false;
           this.preview = yield file.file.text();
-          this.args.onSensitiveDataDetected(response['pii_results']);
+
+          this.sensitiveDataResults = results;
+          this.fileHasSensitiveInformation = true;
+          this.sensitiveDataToAnonymize = [...results];
           return;
         }
       } catch (error) {
@@ -245,6 +253,25 @@ export default class AuFileUpload extends Component {
     }
 
     return true;
+  }
+
+  @action
+  handleSensitiveDataSelection(result, isChecked) {
+    if (isChecked) {
+      this.sensitiveDataToAnonymize = [
+        ...this.sensitiveDataToAnonymize,
+        result,
+      ];
+    } else {
+      this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
+        (item) => item !== result,
+      );
+    }
+  }
+
+  @action
+  handleAnonymization() {
+    console.log('anonymize...');
   }
 
   notifyQueueUpdate() {

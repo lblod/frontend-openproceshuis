@@ -101,27 +101,17 @@
   </:card>
 </DataCard>
 
-<AuModal @modalOpen={{this.addModalOpened}} @closeModal={{this.closeAddModal}}>
-  <:title>Voeg bijlage toe</:title>
-  <:body>
-    <CustomFileUpload
-      @title="Bestand selecteren"
-      @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
-      @forbidden=".bpmn,.vsdx"
-      @multiple="true"
-      @updateProcess={{this.addFileToProcess}}
-      @onFinishUpload={{this.attachmentsUploaded}}
-    />
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="naked"
-        {{on "click" this.closeAddModal}}
-      >Annuleer</AuButton>
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
+<FileUploadModal
+  @header="Voeg bijlage toe"
+  @title="Bestand selecteren"
+  @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
+  @forbidden=".bpmn,.vsdx"
+  @multiple="true"
+  @updateProcess={{this.addFileToProcess}}
+  @onFinishUpload={{this.attachmentsUploaded}}
+  @modalOpen={{this.addModalOpened}}
+  @closeModal={{this.closeAddModal}}
+/>
 
 <AuModal
   @modalOpen={{this.deleteModalOpened}}

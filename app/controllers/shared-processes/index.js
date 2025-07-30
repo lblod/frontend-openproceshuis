@@ -22,9 +22,6 @@ export default class SharedProcessesIndexController extends Controller {
   @tracked processToDelete = undefined;
   @tracked deleteModalOpened = false;
   @tracked uploadModalOpened = false;
-  @tracked sensitiveDataResults = [];
-  @tracked sensitiveDataToAnonymize = [];
-  @tracked fileHasSensitiveInformation = false;
 
   newProcessId = undefined;
 
@@ -53,34 +50,6 @@ export default class SharedProcessesIndexController extends Controller {
   setTitle(selection) {
     this.page = null;
     this.title = selection;
-  }
-
-  @action
-  setSensitiveDataState(sensitiveData) {
-    this.sensitiveDataResults = sensitiveData;
-    this.fileHasSensitiveInformation = sensitiveData.length > 0;
-    this.sensitiveDataToAnonymize = [...sensitiveData];
-  }
-
-  @action
-  handleSensitiveDataSelection(result, isChecked) {
-    if (isChecked) {
-      this.sensitiveDataToAnonymize = [
-        ...this.sensitiveDataToAnonymize,
-        result,
-      ];
-    } else {
-      this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
-        (item) => item !== result,
-      );
-    }
-  }
-
-  @action
-  handleAnonymization() {
-    // TODO -> Submit file to anonymization endpoint
-    console.log('Anonymization triggered for:', this.sensitiveDataToAnonymize);
-    // this.api.fetch('anonymization/anonymize');
   }
 
   @action

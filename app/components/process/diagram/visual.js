@@ -17,9 +17,6 @@ import generateFileDownloadUrl, {
 export default class ProcessDiagramVisual extends Component {
   @tracked downloadModalOpened = false;
   @tracked replaceModalOpened = false;
-  @tracked sensitiveDataResults = [];
-  @tracked sensitiveDataToAnonymize = [];
-  @tracked fileHasSensitiveInformation = false;
   @service store;
   @service toaster;
   @service plausible;
@@ -48,32 +45,6 @@ export default class ProcessDiagramVisual extends Component {
 
   get latestDiagramHasErrored() {
     return this.diagram.latestDiagramHasErrored;
-  }
-
-  @action
-  setSensitiveDataState(sensitiveData) {
-    this.sensitiveDataResults = sensitiveData;
-    this.fileHasSensitiveInformation = sensitiveData.length > 0;
-    this.sensitiveDataToAnonymize = [...sensitiveData];
-  }
-
-  @action
-  handleSensitiveDataSelection(result, isChecked) {
-    if (isChecked) {
-      this.sensitiveDataToAnonymize = [
-        ...this.sensitiveDataToAnonymize,
-        result,
-      ];
-    } else {
-      this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
-        (item) => item !== result,
-      );
-    }
-  }
-
-  @action
-  handleAnonymization() {
-    console.log('Anonymization triggered for:', this.sensitiveDataToAnonymize);
   }
 
   @action
