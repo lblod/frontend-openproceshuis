@@ -22,7 +22,7 @@ export default class FileUploadModalComponent extends Component {
   @tracked sensitiveDataToAnonymize = [];
 
   get uploadingMsg() {
-    if (this.queue.files.length && !this.detectSensitiveDataInFile?.isRunning)
+    if (this.queue.files.length && !this.detectSensitiveData?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
     if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
@@ -33,7 +33,7 @@ export default class FileUploadModalComponent extends Component {
       return 'Processtappen extraheren ...';
     }
 
-    if (this.detectSensitiveDataInFile?.isRunning) {
+    if (this.detectSensitiveData?.isRunning) {
       return 'Detecteren van gevoelige informatie in bestand ...';
     }
 
@@ -88,10 +88,10 @@ export default class FileUploadModalComponent extends Component {
   }
 
   @task
-  *detectSensitiveDataInFile(process) {
+  *detectSensitiveData(file) {
     try {
       const formData = new FormData();
-      formData.append('file', process.file);
+      formData.append('file', file);
 
       const response = yield this.api.fetch('/anonymization/bpmn/identify', {
         method: 'POST',
@@ -113,36 +113,41 @@ export default class FileUploadModalComponent extends Component {
   }
 
   @task
-  *upload(file) {
+  *upload(fileWrapper) {
     this.resetErrors();
 
     const forbidden = this.args.forbidden?.split(',') ?? [];
 
-    if (forbidden.includes('.bpmn') && file.name.endsWith('.bpmn')) {
+    if (forbidden.includes('.bpmn') && fileWrapper.name.endsWith('.bpmn')) {
       this.addError(
-        file,
+        fileWrapper,
         'BPMN-bestanden kunnen niet worden toegevoegd aan bijlagen.',
       );
-      this.removeFileFromQueue(file);
+      this.removeFileFromQueue(fileWrapper);
       return;
-    } else if (forbidden.includes('.vsdx') && file.name.endsWith('.vsdx')) {
+    } else if (
+      forbidden.includes('.vsdx') &&
+      fileWrapper.name.endsWith('.vsdx')
+    ) {
       this.addError(
-        file,
+        fileWrapper,
         'Visiobestanden kunnen niet worden toegevoegd aan bijlagen.',
       );
-      this.removeFileFromQueue(file);
+      this.removeFileFromQueue(fileWrapper);
       return;
     }
 
-    let checkedFile = file;
+    let checkedFile = fileWrapper;
 
-    if (file.name.endsWith('.bpmn')) {
+    if (fileWrapper.name.endsWith('.bpmn')) {
       try {
-        const response = yield this.detectSensitiveDataInFile.perform(file);
+        const response = yield this.detectSensitiveData.perform(
+          fileWrapper.file,
+        );
         const results = response['pii_results'];
         if (results.length > 0) {
           this.showDropzone = false;
-          this.preview = yield file.file.text();
+          this.preview = yield fileWrapper.file.text();
 
           this.sensitiveDataResults = results;
           this.fileHasSensitiveInformation = true;
@@ -150,8 +155,8 @@ export default class FileUploadModalComponent extends Component {
           return;
         }
       } catch (error) {
-        this.addError(file, 'Error during sensitive data detection.');
-        this.removeFileFromQueue(file);
+        this.addError(fileWrapper, 'Error during sensitive data detection.');
+        this.removeFileFromQueue(fileWrapper);
         return;
       }
     }
@@ -161,7 +166,7 @@ export default class FileUploadModalComponent extends Component {
       fileId = yield this.uploadFileTask.perform(checkedFile);
     } catch {
       this.addError(
-        file,
+        fileWrapper,
         'Er ging iets mis tijdens het opslaan van het bestand.',
       );
       this.removeFileFromQueue(checkedFile);
@@ -176,7 +181,7 @@ export default class FileUploadModalComponent extends Component {
           checkedFile,
           'Er ging iets mis tijdens het bijwerken van het proces.',
         );
-        this.removeFileFromQueue(file);
+        this.removeFileFromQueue(fileWrapper);
         return;
       }
     } else if (this.args.createProcess) {
@@ -193,7 +198,7 @@ export default class FileUploadModalComponent extends Component {
     }
 
     let bpmnFileId = fileId;
-    if (file.name.endsWith('.vsdx')) {
+    if (fileWrapper.name.endsWith('.vsdx')) {
       try {
         bpmnFileId = yield this.convertVisioToBpmn.perform(fileId);
       } catch (e) {
@@ -234,7 +239,7 @@ export default class FileUploadModalComponent extends Component {
   closeModal() {
     this.queue.files.slice().forEach((file) => this.removeFileFromQueue(file));
     this.upload.cancelAll();
-    this.detectSensitiveDataInFile.cancelAll();
+    this.detectSensitiveData.cancelAll();
 
     this.uploadErrorData = [];
     this.showDropzone = true;
