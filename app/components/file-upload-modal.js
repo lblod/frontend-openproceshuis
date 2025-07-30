@@ -5,6 +5,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
+import { UploadFile } from 'ember-file-upload';
 import BpmnViewerModifier from './bpmn-viewer';
 
 export default class FileUploadModalComponent extends Component {
@@ -88,31 +89,6 @@ export default class FileUploadModalComponent extends Component {
   }
 
   @task
-  *detectSensitiveData(file) {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = yield this.api.fetch('/anonymization/bpmn/identify', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Sensitive information detection failed! Status: ${response.status}`,
-        );
-      }
-
-      const sensitiveDataResults = yield response.json();
-      return sensitiveDataResults;
-    } catch (error) {
-      console.error('Error detecting sensitive data:', error);
-      throw error;
-    }
-  }
-
-  @task
   *upload(fileWrapper) {
     this.resetErrors();
 
@@ -137,8 +113,6 @@ export default class FileUploadModalComponent extends Component {
       return;
     }
 
-    let checkedFile = fileWrapper;
-
     if (fileWrapper.name.endsWith('.bpmn')) {
       try {
         const response = yield this.detectSensitiveData.perform(
@@ -152,24 +126,28 @@ export default class FileUploadModalComponent extends Component {
           this.sensitiveDataResults = results;
           this.fileHasSensitiveInformation = true;
           this.sensitiveDataToAnonymize = [...results];
-          return;
         }
       } catch (error) {
         this.addError(fileWrapper, 'Error during sensitive data detection.');
         this.removeFileFromQueue(fileWrapper);
-        return;
       }
+      return;
     }
 
+    yield this.processFile.perform(fileWrapper);
+  }
+
+  @task
+  *processFile(fileWrapper) {
     let fileId;
     try {
-      fileId = yield this.uploadFileTask.perform(checkedFile);
+      fileId = yield this.uploadFileTask.perform(fileWrapper);
     } catch {
       this.addError(
         fileWrapper,
         'Er ging iets mis tijdens het opslaan van het bestand.',
       );
-      this.removeFileFromQueue(checkedFile);
+      this.removeFileFromQueue(fileWrapper);
       return;
     }
 
@@ -178,7 +156,7 @@ export default class FileUploadModalComponent extends Component {
         yield this.args.updateProcess.perform(fileId);
       } catch {
         this.addError(
-          checkedFile,
+          fileWrapper,
           'Er ging iets mis tijdens het bijwerken van het proces.',
         );
         this.removeFileFromQueue(fileWrapper);
@@ -189,10 +167,10 @@ export default class FileUploadModalComponent extends Component {
         yield this.args.createProcess.perform(fileId);
       } catch {
         this.addError(
-          checkedFile,
+          fileWrapper,
           'Er ging iets mis tijdens het aanmaken van het proces.',
         );
-        this.removeFileFromQueue(checkedFile);
+        this.removeFileFromQueue(fileWrapper);
         return;
       }
     }
@@ -235,6 +213,46 @@ export default class FileUploadModalComponent extends Component {
     return body['bpmn-file-id'];
   }
 
+  @task
+  *detectSensitiveData(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = yield this.api.fetch('/anonymization/bpmn/identify', {
+      method: 'POST',
+      body: formData,
+    });
+    const sensitiveDataResults = yield response.json();
+    return sensitiveDataResults;
+  }
+
+  @task
+  *maskSensitiveData() {
+    const originalFileWrapper = this.queue.files[0];
+
+    const formData = new FormData();
+    formData.append('file', originalFileWrapper.file, originalFileWrapper.name);
+    formData.append('pointers', JSON.stringify(this.sensitiveDataToAnonymize));
+
+    const response = yield fetch('/anonymization/bpmn/anonymize', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const maskedFileWrapper = UploadFile.fromBlob(yield response.blob());
+    maskedFileWrapper.name = originalFileWrapper.name;
+
+    this.removeFileFromQueue(originalFileWrapper);
+    this.queue.add(maskedFileWrapper);
+
+    this.fileHasSensitiveInformation = false;
+    this.sensitiveDataResults = [];
+    this.sensitiveDataToAnonymize = [];
+    this.preview = undefined;
+    this.showDropzone = true;
+
+    yield this.processFile.perform(maskedFileWrapper);
+  }
+
   @action
   closeModal() {
     this.queue.files.slice().forEach((file) => this.removeFileFromQueue(file));
@@ -252,7 +270,7 @@ export default class FileUploadModalComponent extends Component {
   }
 
   @action
-  filter(file, files, index) {
+  filter(fileWrapper, files, index) {
     let isFirstFile = index === 0;
 
     if (isFirstFile) {
@@ -264,13 +282,16 @@ export default class FileUploadModalComponent extends Component {
       }
     }
 
-    if (!isValidFileSize(file.size, this.maxFileSizeMB)) {
-      this.addError(file, `Bestand is te groot (max ${this.maxFileSizeMB} MB)`);
+    if (!isValidFileSize(fileWrapper.size, this.maxFileSizeMB)) {
+      this.addError(
+        fileWrapper,
+        `Bestand is te groot (max ${this.maxFileSizeMB} MB)`,
+      );
       return false;
     }
 
-    if (!isValidFileType(file, this.args.accept)) {
-      this.addError(file, this.helpTextFileNotSupported);
+    if (!isValidFileType(fileWrapper, this.args.accept)) {
+      this.addError(fileWrapper, this.helpTextFileNotSupported);
       return false;
     }
 
@@ -291,11 +312,6 @@ export default class FileUploadModalComponent extends Component {
     }
   }
 
-  @action
-  handleAnonymization() {
-    console.log('anonymize...');
-  }
-
   notifyQueueUpdate() {
     if (this.args.onQueueUpdate) {
       this.args.onQueueUpdate(this.calculateQueueInfo());
@@ -309,11 +325,11 @@ export default class FileUploadModalComponent extends Component {
     return filesQueueInfo;
   }
 
-  addError(file, errorMessage) {
+  addError(fileWrapper, errorMessage) {
     this.uploadErrorData = [
       ...this.uploadErrorData,
       {
-        filename: file.name,
+        filename: fileWrapper.name,
         error: errorMessage,
       },
     ];
@@ -324,8 +340,8 @@ export default class FileUploadModalComponent extends Component {
     this.sensitiveDataResults = null;
   }
 
-  removeFileFromQueue(file) {
-    this.queue.remove(file);
+  removeFileFromQueue(fileWrapper) {
+    this.queue.remove(fileWrapper);
     this.notifyQueueUpdate();
   }
 }

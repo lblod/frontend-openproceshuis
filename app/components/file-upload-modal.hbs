@@ -102,7 +102,7 @@
       {{#if this.fileHasSensitiveInformation}}
         <AuButton
           @skin="primary"
-          {{on "click" this.handleAnonymization}}
+          {{on "click" (perform this.maskSensitiveData)}}
         >Geselecteerde informatie anonimiseren</AuButton>
       {{/if}}
     </AuButtonGroup>
