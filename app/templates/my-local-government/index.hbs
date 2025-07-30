@@ -120,28 +120,3 @@
     </AuDataTable>
   </:content>
 </SidebarContainer>
-
-<AuModal
-  @modalOpen={{this.uploadModalOpened}}
-  @closeModal={{this.closeUploadModal}}
->
-  <:title>Voeg proces toe</:title>
-  <:body>
-    <CustomFileUpload
-      @accept=".bpmn,.vsdx"
-      @title="BPMN- of Visiobestand selecteren"
-      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @createProcess={{this.createProcess}}
-      @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.diagramUploaded}}
-    />
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="secondary"
-        {{on "click" this.closeUploadModal}}
-      >Annuleer</AuButton>
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
