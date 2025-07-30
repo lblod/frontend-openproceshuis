@@ -12,6 +12,7 @@ export default class FileUploadModalComponent extends Component {
   fileQueueHelper = fileQueue;
   @service fileQueue;
   @service api;
+
   @tracked uploadErrorData = [];
   @tracked showDropzone = true;
   @tracked preview = undefined;
@@ -227,6 +228,22 @@ export default class FileUploadModalComponent extends Component {
     });
     const body = yield response.json();
     return body['bpmn-file-id'];
+  }
+
+  @action
+  closeModal() {
+    this.queue.files.slice().forEach((file) => this.removeFileFromQueue(file));
+    this.upload.cancelAll();
+    this.detectSensitiveDataInFile.cancelAll();
+
+    this.uploadErrorData = [];
+    this.showDropzone = true;
+    this.preview = undefined;
+    this.fileHasSensitiveInformation = false;
+    this.sensitiveDataResults = [];
+    this.sensitiveDataToAnonymize = [];
+
+    this.args.closeModal();
   }
 
   @action

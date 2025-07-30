@@ -1,4 +1,4 @@
-<AuModal @modalOpen={{@modalOpen}} @closeModal={{@closeModal}}>
+<AuModal @modalOpen={{@modalOpen}} @closeModal={{this.closeModal}}>
   <:title>{{@header}}</:title>
   <:body>
     {{#if this.showDropzone}}
@@ -98,7 +98,7 @@
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton @skin="secondary" {{on "click" @closeModal}}>Annuleer</AuButton>
+      <AuButton @skin="secondary" {{on "click" this.closeModal}}>Annuleer</AuButton>
       {{#if this.fileHasSensitiveInformation}}
         <AuButton
           @skin="primary"
