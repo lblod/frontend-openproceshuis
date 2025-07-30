@@ -42,10 +42,7 @@ export default class ProcessInventoryProcessCardPopup extends Component {
   }
 
   get saveButtonDisabled() {
-    return (
-      !this.selectedProcessConcept ||
-      this.linkedProcess === this.selectedProcessConcept
-    );
+    return !this.selectedProcessConcept;
   }
 
   @action
