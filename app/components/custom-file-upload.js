@@ -5,14 +5,19 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
+import BpmnViewerModifier from './bpmn-viewer';
+
 export default class AuFileUpload extends Component {
+  bpmnViewer = BpmnViewerModifier;
   fileQueueHelper = fileQueue;
   @service fileQueue;
   @service api;
   @tracked uploadErrorData = [];
+  @tracked showDropzone = true;
+  @tracked preview = undefined;
 
   get uploadingMsg() {
-    if (this.queue.files.length)
+    if (this.queue.files.length && !this.detectSensitiveDataInFile?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
     if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
@@ -21,6 +26,10 @@ export default class AuFileUpload extends Component {
 
     if (this.args.extractBpmnElements?.isRunning) {
       return 'Processtappen extraheren ...';
+    }
+
+    if (this.detectSensitiveDataInFile?.isRunning) {
+      return 'Detecteren van gevoelige informatie in bestand ...';
     }
 
     return 'Laden ...';
@@ -74,6 +83,31 @@ export default class AuFileUpload extends Component {
   }
 
   @task
+  *detectSensitiveDataInFile(process) {
+    try {
+      const formData = new FormData();
+      formData.append('file', process.file);
+
+      const response = yield this.api.fetch('/anonymization/bpmn', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Sensitive information detection failed! Status: ${response.status}`,
+        );
+      }
+
+      const sensitiveDataResults = yield response.json();
+      return sensitiveDataResults;
+    } catch (error) {
+      console.error('Error detecting sensitive data:', error);
+      throw error;
+    }
+  }
+
+  @task
   *upload(file) {
     this.resetErrors();
 
@@ -95,15 +129,33 @@ export default class AuFileUpload extends Component {
       return;
     }
 
+    let checkedFile = file;
+
+    if (file.name.endsWith('.bpmn')) {
+      try {
+        const response = yield this.detectSensitiveDataInFile.perform(file);
+        if (response['pii_results'].length > 0) {
+          this.showDropzone = false;
+          this.preview = yield file.file.text();
+          this.args.onSensitiveDataDetected(response['pii_results']);
+          return;
+        }
+      } catch (error) {
+        this.addError(file, 'Error during sensitive data detection.');
+        this.removeFileFromQueue(file);
+        return;
+      }
+    }
+
     let fileId;
     try {
-      fileId = yield this.uploadFileTask.perform(file);
+      fileId = yield this.uploadFileTask.perform(checkedFile);
     } catch {
       this.addError(
         file,
         'Er ging iets mis tijdens het opslaan van het bestand.',
       );
-      this.removeFileFromQueue(file);
+      this.removeFileFromQueue(checkedFile);
       return;
     }
 
@@ -112,7 +164,7 @@ export default class AuFileUpload extends Component {
         yield this.args.updateProcess.perform(fileId);
       } catch {
         this.addError(
-          file,
+          checkedFile,
           'Er ging iets mis tijdens het bijwerken van het proces.',
         );
         this.removeFileFromQueue(file);
@@ -123,10 +175,10 @@ export default class AuFileUpload extends Component {
         yield this.args.createProcess.perform(fileId);
       } catch {
         this.addError(
-          file,
+          checkedFile,
           'Er ging iets mis tijdens het aanmaken van het proces.',
         );
-        this.removeFileFromQueue(file);
+        this.removeFileFromQueue(checkedFile);
         return;
       }
     }
@@ -220,6 +272,7 @@ export default class AuFileUpload extends Component {
 
   resetErrors() {
     this.uploadErrorData = [];
+    this.sensitiveDataResults = null;
   }
 
   removeFileFromQueue(file) {
