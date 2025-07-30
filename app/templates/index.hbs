@@ -13,9 +13,21 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <p>Raadpleeg, doorzoek en upload processen als originele BPMN- of
-            Visiobestanden naar het Open Proces Huis, de centrale bron voor
-            lokale besturen in Vlaanderen om processen te ontdekken en te delen.</p>
+          <ul>
+            <li>Raadpleeg de inventaris van processen van lokale besturen in
+              Vlaanderen. Dit is een overzicht van alle processen die kunnen
+              voorkomen bij lokale besturen. Deze inventaris is toegankelijk
+              zonder toegangsrechten.
+            </li>
+
+            <li>
+              Raadpleeg, doorzoek of upload processen als BPMN- of
+              Visiobestanden, en eventueel aanvullende beschrijvende informatie
+              om processen te ontdekken en te delen. Deze processen zijn enkel
+              toegankelijk voor wie toegangsrechten heeft. Niet alle processen
+              uit de inventaris hebben reeds een BPMN- of Visiobestand.
+            </li>
+          </ul>
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
@@ -107,7 +119,14 @@
               {{/if}}
             {{else}}
               <div class="au-o-grid__item au-u-1-2@medium">
-                <AuLink @skin="button" @route="auth.login">Log in</AuLink>
+                <AuLink
+                  @skin="button"
+                  @route="auth.login"
+                  class="au-u-margin-right-tiny"
+                >Log in</AuLink>
+                <AuLink @skin="button-secondary" @route="inventory">Inventaris
+                  processen bekijken</AuLink>
+
               </div>
             {{/if}}
           </div>
