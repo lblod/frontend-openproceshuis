@@ -82,14 +82,14 @@
     <:card as |Card|>
       <Card.Columns>
         <:left as |Item|>
-          {{! <div class="au-u-margin-bottom-small"> }}
-          <Item>
-            <:label>Gelinkt proces</:label>
-            <:content>
-              {{@process.linkedConcept.title}}
-            </:content>
-          </Item>
-          {{! </div> }}
+          <div class="au-u-margin-bottom-small">
+            <Item>
+              <:label>Gelinkt proces</:label>
+              <:content>
+                {{@process.linkedConcept.title}}
+              </:content>
+            </Item>
+          </div>
         </:left>
         <:right as |Item|>
           <Item>
