@@ -13,21 +13,25 @@
               {{!template-lint-disable require-valid-alt-text}}
             />
           </div>
-          <ul>
-            <li>Raadpleeg de inventaris van processen van lokale besturen in
-              Vlaanderen. Dit is een overzicht van alle processen die kunnen
-              voorkomen bij lokale besturen. Deze inventaris is toegankelijk
-              zonder toegangsrechten.
-            </li>
-
-            <li>
-              Raadpleeg, doorzoek of upload processen als BPMN- of
-              Visiobestanden, en eventueel aanvullende beschrijvende informatie
-              om processen te ontdekken en te delen. Deze processen zijn enkel
-              toegankelijk voor wie toegangsrechten heeft. Niet alle processen
-              uit de inventaris hebben reeds een BPMN- of Visiobestand.
-            </li>
-          </ul>
+          {{#unless this.currentSession.isAuthenticated}}
+            <ul>
+              <li>
+                Raadpleeg, doorzoek of upload processen als BPMN- of
+                Visiobestanden, en eventueel aanvullende beschrijvende
+                informatie om processen te ontdekken en te delen. Deze processen
+                zijn enkel toegankelijk voor wie
+                <AuLinkExternal
+                  href="https://abb-vlaanderen.gitbook.io/informatie-oph/1.-handleiding-oph-module-in-loket-lokale-besturen/algemeen/welke-toegangsrechten-om-processen-op-te-laden"
+                >toegangsrechten heeft</AuLinkExternal>. Niet alle processen uit
+                de inventaris hebben reeds een BPMN- of Visiobestand.
+              </li>
+              <li>Raadpleeg de inventaris van processen van lokale besturen in
+                Vlaanderen. Dit is een overzicht van alle processen die kunnen
+                voorkomen bij lokale besturen. Deze inventaris is toegankelijk
+                zonder toegangsrechten.
+              </li>
+            </ul>
+          {{/unless}}
         </AuContent>
         <div class="au-c-home__form au-o-flow">
           <div class="au-o-grid au-o-grid--small">
@@ -45,12 +49,13 @@
                   </c.header>
                   <c.content>
                     <AuList @divider={{true}} as |Item|>
-                      <Item>Raadpleeg processen</Item>
+                      <Item>Raadpleeg alle processen</Item>
                     </AuList>
                   </c.content>
                   <c.footer>
                     <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink @skin="button" @route="processes">Toon Processen</AuLink>
+                      <AuLink @skin="button" @route="processes">Toon alle
+                        Processen</AuLink>
                     </div>
                   </c.footer>
                 </AuCard>
@@ -58,6 +63,31 @@
               {{#if
                 (or this.currentSession.canEdit this.currentSession.isAdmin)
               }}
+                <div class="au-o-grid__item au-u-1-2@medium">
+                  <AuCard @flex={{true}} as |c|>
+                    <c.header
+                      @badgeSkin="brand"
+                      @badgeIcon="users-four-of-four"
+                      @badgeSize="small"
+                    >
+                      <AuHeading @level="2" @skin="4">
+                        Processen mijn lokaal bestuur
+                      </AuHeading>
+                    </c.header>
+                    <c.content>
+                      <AuList @divider={{true}} as |Item|>
+                        <Item>Raadpleeg processen gelinkt aan mijn lokaal
+                          bestuur</Item>
+                      </AuList>
+                    </c.content>
+                    <c.footer>
+                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                        <AuLink @skin="button" @route="my-local-government">Toon
+                          mijn processen</AuLink>
+                      </div>
+                    </c.footer>
+                  </AuCard>
+                </div>
                 <div class="au-o-grid__item au-u-1-2@medium">
                   <AuCard @flex={{true}} as |c|>
                     <c.header
@@ -83,13 +113,37 @@
                     </c.footer>
                   </AuCard>
                 </div>
+                <div class="au-o-grid__item au-u-1-2@medium">
+                  <AuCard @flex={{true}} as |c|>
+                    <c.header
+                      @badgeSkin="brand"
+                      @badgeIcon="folder"
+                      @badgeSize="small"
+                    >
+                      <AuHeading @level="2" @skin="4">
+                        Processeninventaris
+                      </AuHeading>
+                    </c.header>
+                    <c.content>
+                      <AuList @divider={{true}} as |Item|>
+                        <Item>Toon processen uit de inventaris</Item>
+                      </AuList>
+                    </c.content>
+                    <c.footer>
+                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                        <AuLink @skin="button" @route="inventory">Ga naar
+                          inventaris</AuLink>
+                      </div>
+                    </c.footer>
+                  </AuCard>
+                </div>
               {{/if}}
               {{#if this.currentSession.isAdmin}}
                 <div class="au-o-grid__item au-u-1-2@medium">
                   <AuCard @flex={{true}} as |c|>
                     <c.header
                       @badgeSkin="brand"
-                      @badgeIcon="upload"
+                      @badgeIcon="user"
                       @badgeSize="small"
                     >
                       <AuHeading @level="2" @skin="4">
