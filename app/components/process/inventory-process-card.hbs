@@ -19,15 +19,17 @@
             <:content>
               <div class="au-u-flex au-u-flex--vertical-baseline">
                 {{#if @process.linkedConcept}}
-                  {{@process.linkedConcept.title}}
+                  {{this.processConceptTitle}}
                   <AuButton
                     @skin="naked"
                     {{on "click" this.openConceptModal}}
+                    class="process-change-button"
                   >Veranderen</AuButton>
                 {{else}}
                   <AuButton
                     @skin="secondary"
                     {{on "click" this.openConceptModal}}
+                    class="process-change-button"
                   >Een proces selecteren</AuButton>
                 {{/if}}
               </div>
@@ -37,21 +39,15 @@
         <:right as |Item|>
           <Item>
             <:label>Procesgroep</:label>
-            <:content>
-              {{@process.linkedConcept.processGroup.label}}
-            </:content>
+            <:content>{{this.processGroupLabel}}</:content>
           </Item>
           <Item>
             <:label>Procesdomein</:label>
-            <:content>
-              {{@process.linkedConcept.processGroup.processDomain.label}}
-            </:content>
+            <:content>{{this.processDomainLabel}}</:content>
           </Item>
           <Item>
             <:label>Procescategorie</:label>
-            <:content>
-              {{@process.linkedConcept.processGroup.processDomain.processCategory.label}}
-            </:content>
+            <:content>{{this.processCategoryLabel}}</:content>
           </Item>
         </:right>
       </Card.Columns>
@@ -86,7 +82,7 @@
             <Item>
               <:label>Gelinkt proces</:label>
               <:content>
-                {{@process.linkedConcept.title}}
+                {{this.processConceptTitle}}
               </:content>
             </Item>
           </div>
@@ -94,21 +90,15 @@
         <:right as |Item|>
           <Item>
             <:label>Procesgroep</:label>
-            <:content>
-              {{@process.linkedConcept.processGroup.label}}
-            </:content>
+            <:content>{{this.processGroupLabel}}</:content>
           </Item>
           <Item>
             <:label>Procesdomein</:label>
-            <:content>
-              {{@process.linkedConcept.processGroup.processDomain.label}}
-            </:content>
+            <:content>{{this.processDomainLabel}}</:content>
           </Item>
           <Item>
             <:label>Procescategorie</:label>
-            <:content>
-              {{@process.linkedConcept.processGroup.processDomain.processCategory.label}}
-            </:content>
+            <:content>{{this.processCategoryLabel}}</:content>
           </Item>
         </:right>
       </Card.Columns>

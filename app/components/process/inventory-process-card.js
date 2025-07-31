@@ -31,6 +31,27 @@ export default class ProcessInventoryProcessCard extends Component {
     this.edit = false;
   }
 
+  get processConceptTitle() {
+    return this.args.process.linkedConcept?.title || '-';
+  }
+
+  get processGroupLabel() {
+    return this.args.process.linkedConcept?.processGroup?.label || '-';
+  }
+
+  get processDomainLabel() {
+    return (
+      this.args.process.linkedConcept?.processGroup?.processDomain?.label || '-'
+    );
+  }
+
+  get processCategoryLabel() {
+    return (
+      this.args.process.linkedConcept?.processGroup?.processDomain
+        ?.processCategory?.label || '-'
+    );
+  }
+
   @dropTask
   *updateModel(event) {
     event.preventDefault();
