@@ -131,7 +131,13 @@
               <AuTable @size={{this.size}} class="process-modal-table">
                 <:body>
                   {{#each this.processConcepts as |process|}}
-                    <tr>
+                    <tr
+                      class="process-modal-row
+                        {{if
+                          (eq process this.selectedProcessConcept)
+                          'is-selected'
+                        }}"
+                    >
                       <td>
                         <AuLink
                           class="process-modal-link"
