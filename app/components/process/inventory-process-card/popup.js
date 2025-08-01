@@ -81,6 +81,7 @@ export default class ProcessInventoryProcessCardPopup extends Component {
     let query = {
       reload: true,
       page: { size: this.size },
+      sort: ':no-case:title',
       include:
         'process-groups,process-groups.process-domains,process-groups.process-domains.process-categories',
       'filter[:not:status]': ENV.resourceStates.archived,
