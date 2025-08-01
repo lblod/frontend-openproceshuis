@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { service } from 'reactiveweb/resource/service';
+import { action } from '@ember/object';
 
 export default class InventoryIndexRoute extends Controller {
   queryParams = ['page', 'size', 'sort'];
@@ -30,5 +31,10 @@ export default class InventoryIndexRoute extends Controller {
 
   get hasErrored() {
     return this.model.loadConceptualProcessesTaskInstance.isError;
+  }
+
+  @action
+  addNewInventoryProcess() {
+    console.log('add button pressed');
   }
 }

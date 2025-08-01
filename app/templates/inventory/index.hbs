@@ -12,6 +12,12 @@
         </AuLinkExternal>
       </:subtitle>
       <:action>
+        <AuButton
+          @skin="secondary"
+          @icon="add"
+          iconAlignment="left"
+          {{on "click" this.addNewInventoryProcess}}
+        >Nieuw hoofdproces</AuButton>
       </:action>
     </PageHeader>
 
@@ -61,7 +67,8 @@
           </TableMessage>
         {{else}}
           <c.body as |conceptualProcess|>
-            <td>{{conceptualProcess.processGroup.processDomain.processCategory.label}}</td>
+            <td
+            >{{conceptualProcess.processGroup.processDomain.processCategory.label}}</td>
             <td>{{conceptualProcess.processGroup.processDomain.label}}</td>
             <td>{{conceptualProcess.processGroup.label}}</td>
             <td>{{conceptualProcess.title}}</td>
