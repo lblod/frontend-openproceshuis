@@ -32,23 +32,23 @@ export default class ProcessInventoryProcessCard extends Component {
   }
 
   get processConceptTitle() {
-    return this.args.process.linkedConcept?.title || '-';
+    return this.args.process.linkedConcept?.title || '/';
   }
 
   get processGroupLabel() {
-    return this.args.process.linkedConcept?.processGroup?.label || '-';
+    return this.args.process.linkedConcept?.processGroup?.label || '/';
   }
 
   get processDomainLabel() {
     return (
-      this.args.process.linkedConcept?.processGroup?.processDomain?.label || '-'
+      this.args.process.linkedConcept?.processGroup?.processDomain?.label || '/'
     );
   }
 
   get processCategoryLabel() {
     return (
       this.args.process.linkedConcept?.processGroup?.processDomain
-        ?.processCategory?.label || '-'
+        ?.processCategory?.label || '/'
     );
   }
 

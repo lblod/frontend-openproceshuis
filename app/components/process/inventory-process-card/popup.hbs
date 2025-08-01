@@ -1,8 +1,8 @@
 <AuModal
-  class="au-u-max-width-medium"
   @modalOpen={{@openModal}}
   @closeModal={{@closeModal}}
   @closable={{false}}
+  @padding="none"
 >
   <:title>Een proces selecteren</:title>
   <:body>
@@ -28,7 +28,7 @@
                   >
                   </div>
                   <div>
-                    <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+                    <AuLabel for="filter-title">Titel</AuLabel>
                     <PowerSelect
                       @allowClear={{true}}
                       @searchEnabled={{true}}
@@ -80,23 +80,6 @@
                   </div>
                   <div>
                     <AuLabel for="filter-ipdc">Procesgroep</AuLabel>
-                    <PowerSelect
-                      @allowClear={{true}}
-                      @searchEnabled={{true}}
-                      @loadingMessage="Aan het laden..."
-                      @noMatchesMessage="Geen resultaten"
-                      @searchMessage="Typ om te zoeken"
-                      @searchField="title"
-                      @selected={{@selected}}
-                      @onChange={{this.mockOnchange}}
-                      @triggerId={{@id}}
-                      as |title|
-                    >
-                      {{title}}
-                    </PowerSelect>
-                  </div>
-                  <div>
-                    <AuLabel for="filter-ipdc">Conceptueel proces</AuLabel>
                     <PowerSelect
                       @allowClear={{true}}
                       @searchEnabled={{true}}
