@@ -17,6 +17,9 @@ export default class InventoryIndexRoute extends Route {
         this.loadConceptualProcessesTask.perform(params),
       loadedConceptualProcesses:
         this.loadConceptualProcessesTask.lastSuccesful?.value,
+      categories: this.store.findAll('process-category', { sort: 'label' }),
+      domains: this.store.findAll('process-domain', { sort: 'label' }),
+      groups: this.store.findAll('process-group', { sort: 'label' }),
     };
   }
 

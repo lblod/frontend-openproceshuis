@@ -28,6 +28,11 @@ export default class ProcessModel extends Model {
   @belongsTo('group', { inverse: null, async: false }) publisher;
   @belongsTo('process-statistic', { inverse: 'process', async: false })
   processStatistics;
+  @belongsTo('conceptual-process', {
+    inverse: null,
+    async: false,
+  })
+  linkedConcept;
   @hasMany('file', { inverse: 'processes', async: false })
   files;
   @hasMany('ipdc-product', {
