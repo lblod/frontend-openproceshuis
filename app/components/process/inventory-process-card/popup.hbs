@@ -6,127 +6,114 @@
 >
   <:title>Een proces selecteren</:title>
   <:body>
-    {{#if this.isLoading}}
-      <div class="au-u-flex au-u-flex--vertical-center au-u-flex--center">
-        <AuLoader @centered={{true}}>{{this.loadingMessage}}</AuLoader>
-      </div>
-    {{else}}
-      <form
-        {{on "reset" this.resetFilters}}
-        {{on "submit" (perform this.updateModel)}}
-        id="process-concept-selection-form"
-      >
-        <SidebarContainer>
-          <:sidebar>
-            <div class="au-c-sidebar">
-              <div class="au-c-sidebar__content">
+    <form
+      {{on "reset" this.resetFilters}}
+      {{on "submit" (perform this.updateModel)}}
+      id="process-concept-selection-form"
+    >
+      <SidebarContainer>
+        <:sidebar>
+          <div class="au-c-sidebar">
+            <div class="au-c-sidebar__content">
+              <div
+                class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+              >
                 <div
-                  class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+                  class="au-u-flex au-u-flex--between au-u-flex--vertical-center"
                 >
-                  <div
-                    class="au-u-flex au-u-flex--between au-u-flex--vertical-center"
+                </div>
+                <div>
+                  <AuLabel for="filter-title">Titel</AuLabel>
+                  <AuInput
+                    @value={{this.filterTitle}}
+                    {{on "input" this.updateFilterTitle}}
+                  />
+                </div>
+                <div>
+                  <AuLabel>Categorie</AuLabel>
+                  <PowerSelect
+                    @allowClear={{false}}
+                    @searchEnabled={{false}}
+                    @loadingMessage="Aan het laden..."
+                    @noMatchesMessage="Geen resultaten"
+                    @searchMessage="Typ om te zoeken"
+                    @selected={{this.filterCategory}}
+                    @options={{this.processCategories}}
+                    @onChange={{this.updateFilterCategory}}
+                    as |category|
                   >
-                  </div>
-                  <div>
-                    <AuLabel for="filter-title">Titel</AuLabel>
-                    <PowerSelect
-                      @allowClear={{true}}
-                      @searchEnabled={{true}}
-                      @loadingMessage="Aan het laden..."
-                      @noMatchesMessage="Geen resultaten"
-                      @searchMessage="Typ om te zoeken"
-                      @searchField="title"
-                      @selected={{@selected}}
-                      @onChange={{this.mockOnchange}}
-                      @triggerId={{@id}}
-                      as |title|
-                    >
-                      {{title}}
-                    </PowerSelect>
-                  </div>
-                  <div>
-                    <AuLabel for="filter-classification">Categorie</AuLabel>
-                    <PowerSelect
-                      @allowClear={{true}}
-                      @searchEnabled={{true}}
-                      @loadingMessage="Aan het laden..."
-                      @noMatchesMessage="Geen resultaten"
-                      @searchMessage="Typ om te zoeken"
-                      @searchField="title"
-                      @selected={{@selected}}
-                      @onChange={{this.mockOnchange}}
-                      @triggerId={{@id}}
-                      as |title|
-                    >
-                      {{title}}
-                    </PowerSelect>
-                  </div>
-                  <div>
-                    <AuLabel for="filter-group">Procesdomein</AuLabel>
-                    <PowerSelect
-                      @allowClear={{true}}
-                      @searchEnabled={{true}}
-                      @loadingMessage="Aan het laden..."
-                      @noMatchesMessage="Geen resultaten"
-                      @searchMessage="Typ om te zoeken"
-                      @searchField="title"
-                      @selected={{@selected}}
-                      @onChange={{this.mockOnchange}}
-                      @triggerId={{@id}}
-                      as |title|
-                    >
-                      {{title}}
-                    </PowerSelect>
-                  </div>
-                  <div>
-                    <AuLabel for="filter-ipdc">Procesgroep</AuLabel>
-                    <PowerSelect
-                      @allowClear={{true}}
-                      @searchEnabled={{true}}
-                      @loadingMessage="Aan het laden..."
-                      @noMatchesMessage="Geen resultaten"
-                      @searchMessage="Typ om te zoeken"
-                      @searchField="title"
-                      @selected={{@selected}}
-                      @onChange={{this.mockOnchange}}
-                      @triggerId={{@id}}
-                      as |title|
-                    >
-                      {{title}}
-                    </PowerSelect>
-                  </div>
-                  <div>
-                    <AuLabel for="filter-ipdc">Nummer</AuLabel>
-                    <PowerSelect
-                      @allowClear={{true}}
-                      @searchEnabled={{true}}
-                      @loadingMessage="Aan het laden..."
-                      @noMatchesMessage="Geen resultaten"
-                      @searchMessage="Typ om te zoeken"
-                      @searchField="title"
-                      @selected={{@selected}}
-                      @onChange={{this.mockOnchange}}
-                      @triggerId={{@id}}
-                      as |title|
-                    >
-                      {{title}}
-                    </PowerSelect>
-                  </div>
-                  <div class="au-u-flex au-u-flex--end">
-                    <AuButton
-                      @icon="cross"
-                      @skin="link"
-                      type="reset"
-                      class="au-u-padding-none au-u-medium"
-                    >
-                      Herstel alle filters
-                    </AuButton>
-                  </div>
+                    {{category}}
+                  </PowerSelect>
+                </div>
+                <div>
+                  <AuLabel for="filter-group">Procesdomein</AuLabel>
+                  <PowerSelect
+                    @allowClear={{false}}
+                    @searchEnabled={{true}}
+                    @loadingMessage="Aan het laden..."
+                    @noMatchesMessage="Geen resultaten"
+                    @searchMessage="Typ om te zoeken"
+                    @searchField="label"
+                    @selected={{this.filterDomain}}
+                    @options={{this.processDomains}}
+                    @onChange={{this.updateFilterDomain}}
+                    as |domain|
+                  >
+                    {{domain}}
+                  </PowerSelect>
+                </div>
+                <div>
+                  <AuLabel>Procesgroep</AuLabel>
+                  <PowerSelect
+                    @allowClear={{false}}
+                    @searchEnabled={{true}}
+                    @loadingMessage="Aan het laden..."
+                    @noMatchesMessage="Geen resultaten"
+                    @searchMessage="Typ om te zoeken"
+                    @searchField="title"
+                    @selected={{this.filterGroup}}
+                    @options={{this.processGroups}}
+                    @onChange={{this.updateFilterGroup}}
+                    as |group|
+                  >
+                    {{group}}
+                  </PowerSelect>
+                </div>
+                <div>
+                  <AuLabel>Nummer</AuLabel>
+                  <AuInput
+                    @value={{this.filterNumber}}
+                    {{au-inputmask options=(hash mask="9999" placeholder="")}}
+                    {{on "input" this.updateFilterNumber}}
+                  />
+                </div>
+                <div class="au-u-flex au-u-flex--end">
+                  <AuButton
+                    @icon="cross"
+                    @skin="link"
+                    type="reset"
+                    class="au-u-padding-none au-u-medium"
+                    {{on "click" this.resetFilters}}
+                  >
+                    Herstel alle filters
+                  </AuButton>
                 </div>
               </div>
             </div>
-          </:sidebar>
-          <:content>
+          </div>
+        </:sidebar>
+        <:content>
+          {{#if this.isLoading}}
+            <div class="au-u-flex au-u-flex--vertical-center au-u-flex--center">
+              <AuLoader @centered={{true}}>{{this.loadingMessage}}</AuLoader>
+            </div>
+          {{else if this.noResultsFound}}
+            <div class="au-u-flex au-u-flex--center au-u-flex--vertial-center">
+              <p>
+                Er werden geen zoekresultaten gevonden.
+              </p>
+            </div>
+          {{else}}
             <div class="process-modal-table-wrapper">
               <AuTable @size={{this.size}} class="process-modal-table">
                 <:body>
@@ -161,10 +148,10 @@
                 </AuButton>
               </div>
             {{/if}}
-          </:content>
-        </SidebarContainer>
-      </form>
-    {{/if}}
+          {{/if}}
+        </:content>
+      </SidebarContainer>
+    </form>
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
