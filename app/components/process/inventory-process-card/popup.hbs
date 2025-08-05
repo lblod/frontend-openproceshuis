@@ -138,16 +138,6 @@
                 </:body>
               </AuTable>
             </div>
-            {{#if this.hasMore}}
-              <div class="au-u-margin-top">
-                <AuButton
-                  @loading={{this.loadMoreTask.isRunning}}
-                  {{on "click" (perform this.loadMoreTask)}}
-                >
-                  Meer laden
-                </AuButton>
-              </div>
-            {{/if}}
           {{/if}}
         </:content>
       </SidebarContainer>

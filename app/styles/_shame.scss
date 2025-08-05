@@ -80,17 +80,22 @@
   display: none !important;
 }
 
-.process-modal-link {
+.process-modal-table {
+  min-width: auto;
+}
+
+.process-modal-table .au-c-link {
   text-decoration: none;
   color: var(--au-gray-1000);
+  outline: none;
+}
+
+.process-modal-table .au-c-link:hover {
+  color: var(--au-blue-700);
 }
 
 .process-modal-table-wrapper {
   max-height: 554px;
-}
-
-.process-modal-link:focus {
-  outline: none;
 }
 
 .process-change-button {
@@ -99,8 +104,10 @@
 
 .process-modal-row.is-selected {
   background-color: var(--au-blue-100);
-  border-left: 2px solid var(--au-blue-600);
-  border-top: 2px solid var(--au-blue-600);
-  border-bottom: 2px solid var(--au-blue-600);
-  border-right: 9px solid var(--au-blue-600);
+  border: 2px solid var(--au-blue-600);
+  color: var(--au-blue-700);
+}
+
+.process-modal-row.is-selected .au-c-link {
+  color: var(--au-blue-700);
 }
