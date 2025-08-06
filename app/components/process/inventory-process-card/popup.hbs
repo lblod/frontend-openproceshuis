@@ -33,7 +33,7 @@
                   <AuLabel>Categorie</AuLabel>
                   <PowerSelect
                     @allowClear={{false}}
-                    @searchEnabled={{false}}
+                    @searchEnabled={{true}}
                     @loadingMessage="Aan het laden..."
                     @noMatchesMessage="Geen resultaten"
                     @searchMessage="Typ om te zoeken"
@@ -53,7 +53,6 @@
                     @loadingMessage="Aan het laden..."
                     @noMatchesMessage="Geen resultaten"
                     @searchMessage="Typ om te zoeken"
-                    @searchField="label"
                     @selected={{this.filterDomain}}
                     @options={{this.processDomains}}
                     @onChange={{this.updateFilterDomain}}
@@ -70,7 +69,6 @@
                     @loadingMessage="Aan het laden..."
                     @noMatchesMessage="Geen resultaten"
                     @searchMessage="Typ om te zoeken"
-                    @searchField="title"
                     @selected={{this.filterGroup}}
                     @options={{this.processGroups}}
                     @onChange={{this.updateFilterGroup}}

@@ -19,6 +19,7 @@ export default class ProcessInventoryProcessCardPopup extends Component {
   @tracked filterCategory = undefined;
   @tracked filterDomain = undefined;
   @tracked filterGroup = undefined;
+  @tracked filterNumber = undefined;
 
   size = 1000;
 
