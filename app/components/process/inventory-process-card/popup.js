@@ -59,10 +59,20 @@ export default class ProcessInventoryProcessCardPopup extends Component {
     if (!domains) {
       return [];
     }
-    const domainLabels = [...domains].map((domain) => {
-      return domain.label;
-    });
-    return domainLabels;
+
+    let filteredDomains = [...domains];
+
+    if (this.filterCategory) {
+      filteredDomains = filteredDomains.filter((domain) => {
+        const categories =
+          domain.processCategories || domain.get('processCategories');
+        return (
+          categories &&
+          categories.some((category) => category.label === this.filterCategory)
+        );
+      });
+    }
+    return filteredDomains.map((domain) => domain.label);
   }
 
   get processGroups() {
@@ -70,10 +80,35 @@ export default class ProcessInventoryProcessCardPopup extends Component {
     if (!groups) {
       return [];
     }
-    const groupLabels = [...groups].map((group) => {
-      return group.label;
-    });
-    return groupLabels;
+
+    let filteredGroups = [...groups];
+
+    if (this.filterDomain) {
+      filteredGroups = filteredGroups.filter((group) => {
+        const domains = group.processDomains || group.get('processDomains');
+        return (
+          domains &&
+          domains.some((domain) => domain.label === this.filterDomain)
+        );
+      });
+    } else if (this.filterCategory) {
+      filteredGroups = filteredGroups.filter((group) => {
+        const domains = group.processDomains || group.get('processDomains');
+        if (!domains) return false;
+
+        return domains.some((domain) => {
+          const categories =
+            domain.processCategories || domain.get('processCategories');
+          return (
+            categories &&
+            categories.some(
+              (category) => category.label === this.filterCategory,
+            )
+          );
+        });
+      });
+    }
+    return filteredGroups.map((group) => group.label);
   }
 
   get isLoading() {
@@ -176,12 +211,15 @@ export default class ProcessInventoryProcessCardPopup extends Component {
   @action
   updateFilterCategory(categoryLabel) {
     this.filterCategory = categoryLabel;
+    this.filterDomain = undefined;
+    this.filterGroup = undefined;
     this.handleFilterChange();
   }
 
   @action
   updateFilterDomain(domainLabel) {
     this.filterDomain = domainLabel;
+    this.filterGroup = undefined;
     this.handleFilterChange();
   }
 
