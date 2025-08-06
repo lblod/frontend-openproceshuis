@@ -105,7 +105,6 @@ export default class ProcessInventoryProcessCardPopup extends Component {
   @action
   selectProcessConcept(processConcept) {
     this.selectedProcessConcept = processConcept;
-    console.log('this.selectedProcessConcept', this.selectedProcessConcept);
   }
 
   @dropTask
@@ -161,11 +160,6 @@ export default class ProcessInventoryProcessCardPopup extends Component {
     }
 
     return yield this.store.query('conceptual-process', query);
-  }
-
-  @action
-  mockOnchange() {
-    console.log('on change called');
   }
 
   @action
