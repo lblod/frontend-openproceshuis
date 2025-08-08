@@ -55,7 +55,7 @@ export default class InventoryIndexController extends Controller {
         filter: {
           ':not:status': ENV.resourceStates.archived,
         },
-        page: { size: 1000 },
+        page: { size: 2000 },
       },
     );
 
