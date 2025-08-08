@@ -3,6 +3,7 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { keepLatestTask } from 'ember-concurrency';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class InventoryIndexController extends Controller {
   @service store;
@@ -46,22 +47,40 @@ export default class InventoryIndexController extends Controller {
 
   @keepLatestTask
   *prepareDropdownData() {
-    const [domains, groups] = yield Promise.all([
-      this.model.domains,
-      this.model.groups,
-    ]);
-
-    const usableDomains = [...domains].filter(
-      (domain) => domain.processCategory,
+    const allConceptualProcesses = yield this.store.query(
+      'conceptual-process',
+      {
+        include:
+          'process-groups,process-groups.process-domains,process-groups.process-domains.process-categories',
+        filter: {
+          ':not:status': ENV.resourceStates.archived,
+        },
+        page: { size: 1000 },
+      },
     );
-    const usableGroups = [...groups].filter((group) => group.processDomain);
-    const usableCategories = new Set(
-      usableDomains.map((domain) => domain.processCategory),
-    );
 
-    this.domains = usableDomains;
-    this.groups = usableGroups;
-    this.categories = [...usableCategories];
+    const usableGroupsSet = new Set();
+    const usableDomainsSet = new Set();
+    const usableCategoriesSet = new Set();
+
+    [...allConceptualProcesses].forEach((process) => {
+      const group = process.processGroup;
+      if (group && !group.isArchived) {
+        usableGroupsSet.add(group);
+        const domain = group.processDomain;
+        if (domain && !domain.isArchived) {
+          usableDomainsSet.add(domain);
+          const category = domain.processCategory;
+          if (category && !category.isArchived) {
+            usableCategoriesSet.add(category);
+          }
+        }
+      }
+    });
+
+    this.groups = [...usableGroupsSet];
+    this.domains = [...usableDomainsSet];
+    this.categories = [...usableCategoriesSet];
   }
 
   get availableDomains() {
