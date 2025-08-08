@@ -102,11 +102,15 @@
         </:sidebar>
         <:content>
           {{#if this.isLoading}}
-            <div class="au-u-flex au-u-flex--vertical-center au-u-flex--center">
+            <div
+              class="au-u-flex au-u-flex--vertical-center au-u-flex--center process-modal-table-wrapper"
+            >
               <AuLoader @centered={{true}}>{{this.loadingMessage}}</AuLoader>
             </div>
           {{else if this.noResultsFound}}
-            <div class="au-u-flex au-u-flex--center au-u-flex--vertial-center">
+            <div
+              class="au-u-flex au-u-flex--vertical-center au-u-flex--center process-modal-table-wrapper"
+            >
               <p>
                 Er werden geen zoekresultaten gevonden.
               </p>
