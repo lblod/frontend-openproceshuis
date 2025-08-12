@@ -15,8 +15,8 @@ export default class InventoryIndexController extends Controller {
   size = 20;
   @tracked sort = 'title';
 
-  @tracked addProcessRowOpened = false;
-  @tracked addProcessRowEdited = false;
+  @tracked addProcessModalOpened = false;
+  @tracked addProcessModalEdited = false;
   @tracked processCategory;
   @tracked processDomain;
   @tracked processGroup;
@@ -24,6 +24,8 @@ export default class InventoryIndexController extends Controller {
   @tracked categories = [];
   @tracked domains = [];
   @tracked groups = [];
+  @tracked conceptualProcess = undefined;
+  @tracked formIsValid = false;
 
   get conceptualProcesses() {
     return this.model.loadConceptualProcessesTaskInstance.isFinished
@@ -117,6 +119,8 @@ export default class InventoryIndexController extends Controller {
     if (this.categories.length === 0) {
       await this.prepareDropdownData.perform();
     }
+
+    this.conceptualProcess = this.store.createRecord('conceptual-process');
     const latestProcessId = await this.findLatestProcessNumberTask.perform();
 
     if (typeof latestProcessId === 'number') {
@@ -125,7 +129,7 @@ export default class InventoryIndexController extends Controller {
       this.newProcessId = null;
     }
 
-    this.addProcessRowOpened = true;
+    this.addProcessModalOpened = true;
   }
 
   @keepLatestTask
@@ -146,7 +150,7 @@ export default class InventoryIndexController extends Controller {
   @action
   handleProcessCategoryChange(selectedCategory) {
     if (selectedCategory) {
-      this.addProcessRowEdited = true;
+      this.addProcessModalEdited = true;
     }
     this.processCategory = selectedCategory;
     this.processDomain = undefined;
@@ -157,7 +161,7 @@ export default class InventoryIndexController extends Controller {
   handleProcessDomainChange(selectedDomain) {
     this.processDomain = selectedDomain;
     if (selectedDomain) {
-      this.addProcessRowEdited = true;
+      this.addProcessModalEdited = true;
       this.processCategory = selectedDomain.processCategory;
       this.processGroup = undefined;
     } else {
@@ -169,16 +173,20 @@ export default class InventoryIndexController extends Controller {
   handleProcessGroupChange(selectedGroup) {
     this.processGroup = selectedGroup;
     if (selectedGroup) {
-      this.addProcessRowEdited = true;
+      this.addProcessModalEdited = true;
       this.processDomain = selectedGroup.processDomain;
       this.processCategory = selectedGroup.processDomain.processCategory;
     }
   }
 
   @action
-  closeAddProcessRow() {
-    this.addProcessRowOpened = false;
+  closeAddProcessModal() {
+    this.addProcessModalOpened = false;
     this.clearSelections();
+  }
+  @action
+  saveInventoryProcess() {
+    console.log('hehe');
   }
 
   @action
@@ -186,6 +194,15 @@ export default class InventoryIndexController extends Controller {
     this.processCategory = undefined;
     this.processDomain = undefined;
     this.processGroup = undefined;
-    this.addProcessRowEdited = false;
+    this.addProcessModalEdited = false;
+  }
+
+  @action
+  hasError(attribute) {
+    if (!this.process) return false;
+    const errorsForAttribute = this.process
+      .get('errors')
+      .filter((error) => error.attribute === attribute);
+    return errorsForAttribute.length;
   }
 }
