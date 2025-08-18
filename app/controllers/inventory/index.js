@@ -2,7 +2,7 @@ import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { keepLatestTask } from 'ember-concurrency';
+import { keepLatestTask, timeout } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
@@ -17,7 +17,7 @@ export default class InventoryIndexController extends Controller {
   size = 20;
   @tracked sort = 'title';
 
-  @tracked addProcessModalOpened = false;
+  @tracked isModalOpen = false;
   @tracked addProcessModalEdited = false;
   @tracked processCategory;
   @tracked processDomain;
@@ -27,7 +27,7 @@ export default class InventoryIndexController extends Controller {
   @tracked categories = [];
   @tracked domains = [];
   @tracked groups = [];
-  @tracked conceptualProcess = undefined;
+  @tracked currentProcess = undefined;
 
   constructor() {
     super(...arguments);
@@ -42,6 +42,10 @@ export default class InventoryIndexController extends Controller {
 
   get isLoading() {
     return this.model.loadConceptualProcessesTaskInstance.isRunning;
+  }
+
+  get isEditing() {
+    return this.currentProcess && !this.currentProcess.isNew;
   }
 
   get hasNoResults() {
@@ -129,15 +133,27 @@ export default class InventoryIndexController extends Controller {
       await this.prepareDropdownData.perform();
     }
 
-    this.addProcessModalOpened = true;
-    this.conceptualProcess = this.store.createRecord('conceptual-process');
-    const latestProcessId = await this.findLatestProcessNumberTask.perform();
+    this.isModalOpen = true;
+    this.currentProcess = this.store.createRecord('conceptual-process');
 
-    if (typeof latestProcessId === 'number') {
-      this.newProcessId = latestProcessId + 1;
-    } else {
-      this.newProcessId = null;
-    }
+    const latestProcessId = await this.findLatestProcessNumberTask.perform();
+    this.currentProcess.number =
+      typeof latestProcessId === 'number' ? latestProcessId + 1 : null;
+  }
+
+  @action
+  async editInventoryProcess(process) {
+    this.currentProcess = process;
+    this.title = process.title;
+    this.processGroup = process.processGroup;
+    this.processDomain = process.processGroup.get('processDomain');
+    this.processCategory = process.processGroup.get(
+      'processDomain.processCategory',
+    );
+
+    await timeout(0);
+    this.addProcessModalEdited = true;
+    this.isModalOpen = true;
   }
 
   @keepLatestTask
@@ -167,8 +183,8 @@ export default class InventoryIndexController extends Controller {
   @action
   setTitle(event) {
     this.title = event.target.value;
-    if (this.conceptualProcess) {
-      this.conceptualProcess.title = this.title;
+    if (this.currentProcess) {
+      this.currentProcess.title = this.title;
     }
   }
 
@@ -181,8 +197,8 @@ export default class InventoryIndexController extends Controller {
     this.processDomain = undefined;
     this.processGroup = undefined;
 
-    if (this.conceptualProcess) {
-      this.conceptualProcess.processGroups = [];
+    if (this.currentProcess) {
+      this.currentProcess.processGroups = [];
     }
   }
 
@@ -197,8 +213,8 @@ export default class InventoryIndexController extends Controller {
       this.processGroup = undefined;
     }
 
-    if (this.conceptualProcess) {
-      this.conceptualProcess.processGroups = [];
+    if (this.currentProcess) {
+      this.currentProcess.processGroups = [];
     }
   }
 
@@ -211,19 +227,18 @@ export default class InventoryIndexController extends Controller {
       this.processCategory = selectedGroup.processDomain.processCategory;
     }
 
-    if (this.conceptualProcess) {
-      this.conceptualProcess.processGroups = selectedGroup
-        ? [selectedGroup]
-        : [];
+    if (this.currentProcess) {
+      this.currentProcess.processGroups = selectedGroup ? [selectedGroup] : [];
     }
   }
 
   @action
-  closeAddProcessModal() {
-    if (this.conceptualProcess && this.conceptualProcess.isNew) {
-      this.conceptualProcess.destroyRecord();
+  closeModal() {
+    if (this.currentProcess && this.currentProcess.isNew) {
+      this.currentProcess.destroyRecord();
     }
-    this.addProcessModalOpened = false;
+    this.isModalOpen = false;
+    this.currentProcess = undefined;
     this.clearSelections();
   }
 
@@ -233,25 +248,34 @@ export default class InventoryIndexController extends Controller {
       return;
     }
 
-    try {
-      if (!this.conceptualProcess.created)
-        this.conceptualProcess.created = new Date();
-      this.conceptualProcess.modified = new Date();
-      this.conceptualProcess.number = this.newProcessId;
+    this.currentProcess.title = this.title;
+    this.currentProcess.processGroups = [this.processGroup];
+    this.currentProcess.modified = new Date();
 
-      yield this.conceptualProcess.save();
-      this.closeAddProcessModal();
+    if (this.currentProcess.isNew) {
+      this.currentProcess.created = new Date();
+    }
+
+    try {
+      yield this.currentProcess.save();
+
+      this.toaster.success(
+        this.isEditing
+          ? 'Proces succesvol bewerkt'
+          : 'Proces succesvol toegevoegd',
+        'Gelukt!',
+        { timeOut: 5000 },
+      );
+
+      this.closeModal();
       this.router.refresh('inventory.index');
-      this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
-        timeOut: 5000,
-      });
     } catch (error) {
-      const errorMessage = getMessageForErrorCode('oph.addProcessFailed');
-      this.toaster.error(errorMessage, 'Fout', {
-        timeOut: 5000,
-      });
-      console.error('Error while saving conceptual process:', error);
-      this.conceptualProcess.rollbackAttributes();
+      const errorMessage = getMessageForErrorCode(
+        this.isEditing ? 'oph.updateModelFailed' : 'oph.addProcessFailed',
+      );
+      this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
+
+      this.currentProcess.rollbackAttributes();
     }
   }
 
@@ -260,7 +284,6 @@ export default class InventoryIndexController extends Controller {
     this.processCategory = undefined;
     this.processDomain = undefined;
     this.processGroup = undefined;
-    this.title = '';
     this.addProcessModalEdited = false;
   }
 }
