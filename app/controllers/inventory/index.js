@@ -2,7 +2,7 @@ import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { keepLatestTask, timeout } from 'ember-concurrency';
+import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
@@ -129,6 +129,7 @@ export default class InventoryIndexController extends Controller {
 
   @action
   async addNewInventoryProcess() {
+    this.reset();
     if (this.categories.length === 0) {
       await this.prepareDropdownData.perform();
     }
@@ -142,7 +143,7 @@ export default class InventoryIndexController extends Controller {
   }
 
   @action
-  async editInventoryProcess(process) {
+  editInventoryProcess(process) {
     this.currentProcess = process;
     this.title = process.title;
     this.processGroup = process.processGroup;
@@ -151,7 +152,6 @@ export default class InventoryIndexController extends Controller {
       'processDomain.processCategory',
     );
 
-    await timeout(0);
     this.addProcessModalEdited = true;
     this.isModalOpen = true;
   }
@@ -239,7 +239,7 @@ export default class InventoryIndexController extends Controller {
     }
     this.isModalOpen = false;
     this.currentProcess = undefined;
-    this.clearSelections();
+    this.reset();
   }
 
   @keepLatestTask
@@ -276,6 +276,7 @@ export default class InventoryIndexController extends Controller {
       this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
 
       this.currentProcess.rollbackAttributes();
+      this.reset();
     }
   }
 
@@ -285,5 +286,13 @@ export default class InventoryIndexController extends Controller {
     this.processDomain = undefined;
     this.processGroup = undefined;
     this.addProcessModalEdited = false;
+  }
+
+  reset() {
+    this.currentProcess = undefined;
+    this.title = '';
+    this.processCategory = undefined;
+    this.processDomain = undefined;
+    this.processGroup = undefined;
   }
 }
