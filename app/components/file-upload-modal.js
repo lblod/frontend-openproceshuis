@@ -5,19 +5,25 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
+import { UploadFile } from 'ember-file-upload';
 import BpmnViewerModifier from './bpmn-viewer';
 
-export default class AuFileUpload extends Component {
+export default class FileUploadModalComponent extends Component {
   bpmnViewer = BpmnViewerModifier;
   fileQueueHelper = fileQueue;
   @service fileQueue;
   @service api;
+
   @tracked uploadErrorData = [];
   @tracked showDropzone = true;
   @tracked preview = undefined;
 
+  @tracked fileHasSensitiveInformation = false;
+  @tracked sensitiveDataResults = [];
+  @tracked sensitiveDataToAnonymize = [];
+
   get uploadingMsg() {
-    if (this.queue.files.length && !this.detectSensitiveDataInFile?.isRunning)
+    if (this.queue.files.length && !this.detectSensitiveData?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
     if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
@@ -28,7 +34,7 @@ export default class AuFileUpload extends Component {
       return 'Processtappen extraheren ...';
     }
 
-    if (this.detectSensitiveDataInFile?.isRunning) {
+    if (this.detectSensitiveData?.isRunning) {
       return 'Detecteren van gevoelige informatie in bestand ...';
     }
 
@@ -83,79 +89,65 @@ export default class AuFileUpload extends Component {
   }
 
   @task
-  *detectSensitiveDataInFile(process) {
-    try {
-      const formData = new FormData();
-      formData.append('file', process.file);
-
-      const response = yield this.api.fetch('/anonymization/bpmn', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Sensitive information detection failed! Status: ${response.status}`,
-        );
-      }
-
-      const sensitiveDataResults = yield response.json();
-      return sensitiveDataResults;
-    } catch (error) {
-      console.error('Error detecting sensitive data:', error);
-      throw error;
-    }
-  }
-
-  @task
-  *upload(file) {
+  *upload(fileWrapper) {
     this.resetErrors();
 
     const forbidden = this.args.forbidden?.split(',') ?? [];
 
-    if (forbidden.includes('.bpmn') && file.name.endsWith('.bpmn')) {
+    if (forbidden.includes('.bpmn') && fileWrapper.name.endsWith('.bpmn')) {
       this.addError(
-        file,
+        fileWrapper,
         'BPMN-bestanden kunnen niet worden toegevoegd aan bijlagen.',
       );
-      this.removeFileFromQueue(file);
+      this.removeFileFromQueue(fileWrapper);
       return;
-    } else if (forbidden.includes('.vsdx') && file.name.endsWith('.vsdx')) {
+    } else if (
+      forbidden.includes('.vsdx') &&
+      fileWrapper.name.endsWith('.vsdx')
+    ) {
       this.addError(
-        file,
+        fileWrapper,
         'Visiobestanden kunnen niet worden toegevoegd aan bijlagen.',
       );
-      this.removeFileFromQueue(file);
+      this.removeFileFromQueue(fileWrapper);
       return;
     }
 
-    let checkedFile = file;
-
-    if (file.name.endsWith('.bpmn')) {
+    if (fileWrapper.name.endsWith('.bpmn')) {
       try {
-        const response = yield this.detectSensitiveDataInFile.perform(file);
-        if (response['pii_results'].length > 0) {
+        const response = yield this.detectSensitiveData.perform(
+          fileWrapper.file,
+        );
+        const results = response['pii_results'];
+        if (results.length > 0) {
           this.showDropzone = false;
-          this.preview = yield file.file.text();
-          this.args.onSensitiveDataDetected(response['pii_results']);
-          return;
+          this.preview = yield fileWrapper.file.text();
+
+          this.sensitiveDataResults = results;
+          this.fileHasSensitiveInformation = true;
+          this.sensitiveDataToAnonymize = [...results];
         }
       } catch (error) {
-        this.addError(file, 'Error during sensitive data detection.');
-        this.removeFileFromQueue(file);
-        return;
+        this.addError(fileWrapper, 'Error during sensitive data detection.');
+        this.removeFileFromQueue(fileWrapper);
       }
+      return;
     }
 
+    yield this.processFile.perform(fileWrapper);
+  }
+
+  @task
+  *processFile(fileWrapper) {
     let fileId;
     try {
-      fileId = yield this.uploadFileTask.perform(checkedFile);
+      fileId = yield this.uploadFileTask.perform(fileWrapper);
     } catch {
       this.addError(
-        file,
+        fileWrapper,
         'Er ging iets mis tijdens het opslaan van het bestand.',
       );
-      this.removeFileFromQueue(checkedFile);
+      this.removeFileFromQueue(fileWrapper);
       return;
     }
 
@@ -164,10 +156,10 @@ export default class AuFileUpload extends Component {
         yield this.args.updateProcess.perform(fileId);
       } catch {
         this.addError(
-          checkedFile,
+          fileWrapper,
           'Er ging iets mis tijdens het bijwerken van het proces.',
         );
-        this.removeFileFromQueue(file);
+        this.removeFileFromQueue(fileWrapper);
         return;
       }
     } else if (this.args.createProcess) {
@@ -175,16 +167,16 @@ export default class AuFileUpload extends Component {
         yield this.args.createProcess.perform(fileId);
       } catch {
         this.addError(
-          checkedFile,
+          fileWrapper,
           'Er ging iets mis tijdens het aanmaken van het proces.',
         );
-        this.removeFileFromQueue(checkedFile);
+        this.removeFileFromQueue(fileWrapper);
         return;
       }
     }
 
     let bpmnFileId = fileId;
-    if (file.name.endsWith('.vsdx')) {
+    if (fileWrapper.name.endsWith('.vsdx')) {
       try {
         bpmnFileId = yield this.convertVisioToBpmn.perform(fileId);
       } catch (e) {
@@ -221,8 +213,64 @@ export default class AuFileUpload extends Component {
     return body['bpmn-file-id'];
   }
 
+  @task
+  *detectSensitiveData(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = yield this.api.fetch('/anonymization/bpmn/identify', {
+      method: 'POST',
+      body: formData,
+    });
+    const sensitiveDataResults = yield response.json();
+    return sensitiveDataResults;
+  }
+
+  @task
+  *maskSensitiveData() {
+    const originalFileWrapper = this.queue.files[0];
+
+    const formData = new FormData();
+    formData.append('file', originalFileWrapper.file, originalFileWrapper.name);
+    formData.append('pointers', JSON.stringify(this.sensitiveDataToAnonymize));
+
+    const response = yield fetch('/anonymization/bpmn/anonymize', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const maskedFileWrapper = UploadFile.fromBlob(yield response.blob());
+    maskedFileWrapper.name = originalFileWrapper.name;
+
+    this.removeFileFromQueue(originalFileWrapper);
+    this.queue.add(maskedFileWrapper);
+
+    this.fileHasSensitiveInformation = false;
+    this.sensitiveDataResults = [];
+    this.sensitiveDataToAnonymize = [];
+    this.preview = undefined;
+    this.showDropzone = true;
+
+    yield this.processFile.perform(maskedFileWrapper);
+  }
+
   @action
-  filter(file, files, index) {
+  closeModal() {
+    this.queue.files.slice().forEach((file) => this.removeFileFromQueue(file));
+    this.upload.cancelAll();
+    this.detectSensitiveData.cancelAll();
+
+    this.uploadErrorData = [];
+    this.showDropzone = true;
+    this.preview = undefined;
+    this.fileHasSensitiveInformation = false;
+    this.sensitiveDataResults = [];
+    this.sensitiveDataToAnonymize = [];
+
+    this.args.closeModal();
+  }
+
+  @action
+  filter(fileWrapper, files, index) {
     let isFirstFile = index === 0;
 
     if (isFirstFile) {
@@ -234,17 +282,34 @@ export default class AuFileUpload extends Component {
       }
     }
 
-    if (!isValidFileSize(file.size, this.maxFileSizeMB)) {
-      this.addError(file, `Bestand is te groot (max ${this.maxFileSizeMB} MB)`);
+    if (!isValidFileSize(fileWrapper.size, this.maxFileSizeMB)) {
+      this.addError(
+        fileWrapper,
+        `Bestand is te groot (max ${this.maxFileSizeMB} MB)`,
+      );
       return false;
     }
 
-    if (!isValidFileType(file, this.args.accept)) {
-      this.addError(file, this.helpTextFileNotSupported);
+    if (!isValidFileType(fileWrapper, this.args.accept)) {
+      this.addError(fileWrapper, this.helpTextFileNotSupported);
       return false;
     }
 
     return true;
+  }
+
+  @action
+  handleSensitiveDataSelection(result, isChecked) {
+    if (isChecked) {
+      this.sensitiveDataToAnonymize = [
+        ...this.sensitiveDataToAnonymize,
+        result,
+      ];
+    } else {
+      this.sensitiveDataToAnonymize = this.sensitiveDataToAnonymize.filter(
+        (item) => item !== result,
+      );
+    }
   }
 
   notifyQueueUpdate() {
@@ -260,11 +325,11 @@ export default class AuFileUpload extends Component {
     return filesQueueInfo;
   }
 
-  addError(file, errorMessage) {
+  addError(fileWrapper, errorMessage) {
     this.uploadErrorData = [
       ...this.uploadErrorData,
       {
-        filename: file.name,
+        filename: fileWrapper.name,
         error: errorMessage,
       },
     ];
@@ -275,8 +340,8 @@ export default class AuFileUpload extends Component {
     this.sensitiveDataResults = null;
   }
 
-  removeFileFromQueue(file) {
-    this.queue.remove(file);
+  removeFileFromQueue(fileWrapper) {
+    this.queue.remove(fileWrapper);
     this.notifyQueueUpdate();
   }
 }

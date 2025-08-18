@@ -119,41 +119,17 @@
   </:content>
 </SidebarContainer>
 
-<AuModal
+<FileUploadModal
+  @header="Voeg proces toe"
+  @title="BPMN- of Visiobestand selecteren"
+  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+  @accept=".bpmn,.vsdx"
+  @createProcess={{this.createProcess}}
+  @extractBpmnElements={{this.extractBpmnElements}}
+  @onFinishUpload={{this.diagramUploaded}}
   @modalOpen={{this.uploadModalOpened}}
   @closeModal={{this.closeUploadModal}}
->
-  <:title>Voeg proces toe</:title>
-  <:body>
-    <CustomFileUpload
-      @accept=".bpmn,.vsdx"
-      @title="BPMN- of Visiobestand selecteren"
-      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @createProcess={{this.createProcess}}
-      @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.diagramUploaded}}
-      @onSensitiveDataDetected={{this.setSensitiveDataState}}
-      @sensitiveDataResults={{this.sensitiveDataResults}}
-      @sensitiveDataToAnonymize={{this.sensitiveDataToAnonymize}}
-      @onSensitiveDataSelectionChange={{this.handleSensitiveDataSelection}}
-      @fileHasSensitiveInformation={{this.fileHasSensitiveInformation}}
-    />
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="secondary"
-        {{on "click" this.closeUploadModal}}
-      >Annuleer</AuButton>
-      {{#if this.fileHasSensitiveInformation}}
-        <AuButton
-          @skin="primary"
-          {{on "click" this.handleAnonymization}}
-        >Geselecteerde informatie anonimiseren</AuButton>
-      {{/if}}
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
+/>
 
 <AuModal
   @modalOpen={{this.deleteModalOpened}}

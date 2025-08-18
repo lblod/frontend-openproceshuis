@@ -88,39 +88,17 @@
   {{/if}}
 </div>
 
-<AuModal
+<FileUploadModal
+  @header="Vervang diagram"
+  @title="BPMN- of Visiobestand selecteren"
+  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+  @accept=".bpmn,.vsdx"
+  @updateProcess={{this.addFileToProcess}}
+  @extractBpmnElements={{this.extractBpmnElements}}
+  @onFinishUpload={{this.diagramUploaded}}
   @modalOpen={{this.replaceModalOpened}}
   @closeModal={{this.closeReplaceModal}}
->
-  <:title>Vervang diagram</:title>
-  <:body>
-    <CustomFileUpload
-      @accept=".bpmn,.vsdx"
-      @title="BPMN- of Visiobestand selecteren"
-      @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-      @updateProcess={{this.addFileToProcess}}
-      @extractBpmnElements={{this.extractBpmnElements}}
-      @onFinishUpload={{this.diagramUploaded}}
-      @onSensitiveDataDetected={{this.setSensitiveDataState}}
-      @sensitiveDataResults={{this.sensitiveDataResults}}
-      @sensitiveDataToAnonymize={{this.sensitiveDataToAnonymize}}
-      @onSensitiveDataSelectionChange={{this.handleSensitiveDataSelection}}
-      @fileHasSensitiveInformation={{this.fileHasSensitiveInformation}}
-    />
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="naked"
-        {{on "click" this.closeReplaceModal}}
-      >Annuleer</AuButton>
-      {{#if this.fileHasSensitiveInformation}}
-        <AuButton {{on "click" this.handleAnonymization}}>Geselecteerde
-          informatie anonimiseren</AuButton>
-      {{/if}}
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
+/>
 
 <AuModal
   @modalOpen={{this.downloadModalOpened}}
