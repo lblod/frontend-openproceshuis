@@ -20,6 +20,7 @@ export const ERROR_CODES = {
     'Informatieclassificatie data kon niet worden bijgewerkt.',
   'oph.visioLatestDiagramDownloadFailed': getVisioDownloadErrorMessage(),
   'oph.downloadLatestDiagramFailed': 'Bestand kon niet worden opgehaald',
+  'oph.addProcessFailed': 'Dit proces kon niet worden toegevoegd',
   // BPMN
   'bpmn.sessionIdNotFound': 'Session ID header werd niet gevonden.',
   'bpmn.groupUriNotFound': 'Gebruiker maakt geen deel uit van een organisatie.',

@@ -4,12 +4,14 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
+import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class InventoryIndexController extends Controller {
   @service store;
   queryParams = ['page', 'size', 'sort'];
   @service router;
   @service currentSession;
+  @service toaster;
 
   @tracked page = 0;
   size = 20;
@@ -240,7 +242,14 @@ export default class InventoryIndexController extends Controller {
       yield this.conceptualProcess.save();
       this.closeAddProcessModal();
       this.router.refresh('inventory.index');
+      this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
+        timeOut: 5000,
+      });
     } catch (error) {
+      const errorMessage = getMessageForErrorCode('oph.addProcessFailed');
+      this.toaster.error(errorMessage, 'Fout', {
+        timeOut: 5000,
+      });
       console.error('Error while saving conceptual process:', error);
       this.conceptualProcess.rollbackAttributes();
     }
