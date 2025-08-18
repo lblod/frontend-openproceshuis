@@ -21,17 +21,23 @@ export default class InventoryIndexController extends Controller {
   @tracked processDomain;
   @tracked processGroup;
   @tracked newProcessId;
+  @tracked title = '';
   @tracked categories = [];
   @tracked domains = [];
   @tracked groups = [];
   @tracked conceptualProcess = undefined;
-  @tracked formIsValid = false;
+
+  constructor() {
+    super(...arguments);
+    this.prepareDropdownData.perform();
+  }
 
   get conceptualProcesses() {
     return this.model.loadConceptualProcessesTaskInstance.isFinished
       ? this.model.loadConceptualProcessesTaskInstance.value
       : this.model.loadedConceptualProcesses;
   }
+
   get isLoading() {
     return this.model.loadConceptualProcessesTaskInstance.isRunning;
   }
@@ -105,6 +111,7 @@ export default class InventoryIndexController extends Controller {
         (group) => group.processDomain?.get('id') === this.processDomain.id,
       );
     }
+
     if (this.processCategory) {
       const domainIds = filteredDomains.map((d) => d.id);
       return this.groups.filter((group) =>
@@ -120,6 +127,7 @@ export default class InventoryIndexController extends Controller {
       await this.prepareDropdownData.perform();
     }
 
+    this.addProcessModalOpened = true;
     this.conceptualProcess = this.store.createRecord('conceptual-process');
     const latestProcessId = await this.findLatestProcessNumberTask.perform();
 
@@ -128,8 +136,6 @@ export default class InventoryIndexController extends Controller {
     } else {
       this.newProcessId = null;
     }
-
-    this.addProcessModalOpened = true;
   }
 
   @keepLatestTask
@@ -147,6 +153,23 @@ export default class InventoryIndexController extends Controller {
     }
   }
 
+  get formIsValid() {
+    const hasTitle = this.title && this.title.trim() !== '';
+    const hasGroup = !!this.processGroup;
+    const hasDomain = !!this.processDomain;
+    const hasCategory = !!this.processCategory;
+
+    return hasTitle && hasGroup && hasDomain && hasCategory;
+  }
+
+  @action
+  setTitle(event) {
+    this.title = event.target.value;
+    if (this.conceptualProcess) {
+      this.conceptualProcess.title = this.title;
+    }
+  }
+
   @action
   handleProcessCategoryChange(selectedCategory) {
     if (selectedCategory) {
@@ -155,6 +178,10 @@ export default class InventoryIndexController extends Controller {
     this.processCategory = selectedCategory;
     this.processDomain = undefined;
     this.processGroup = undefined;
+
+    if (this.conceptualProcess) {
+      this.conceptualProcess.processGroups = [];
+    }
   }
 
   @action
@@ -167,26 +194,56 @@ export default class InventoryIndexController extends Controller {
     } else {
       this.processGroup = undefined;
     }
+
+    if (this.conceptualProcess) {
+      this.conceptualProcess.processGroups = [];
+    }
   }
 
   @action
-  handleProcessGroupChange(selectedGroup) {
+  async handleProcessGroupChange(selectedGroup) {
     this.processGroup = selectedGroup;
     if (selectedGroup) {
       this.addProcessModalEdited = true;
       this.processDomain = selectedGroup.processDomain;
       this.processCategory = selectedGroup.processDomain.processCategory;
     }
+
+    if (this.conceptualProcess) {
+      this.conceptualProcess.processGroups = selectedGroup
+        ? [selectedGroup]
+        : [];
+    }
   }
 
   @action
   closeAddProcessModal() {
+    if (this.conceptualProcess && this.conceptualProcess.isNew) {
+      this.conceptualProcess.destroyRecord();
+    }
     this.addProcessModalOpened = false;
     this.clearSelections();
   }
-  @action
-  saveInventoryProcess() {
-    console.log('hehe');
+
+  @keepLatestTask
+  *saveInventoryProcess() {
+    if (!this.formIsValid) {
+      return;
+    }
+
+    try {
+      if (!this.conceptualProcess.created)
+        this.conceptualProcess.created = new Date();
+      this.conceptualProcess.modified = new Date();
+      this.conceptualProcess.number = this.newProcessId;
+
+      yield this.conceptualProcess.save();
+      this.closeAddProcessModal();
+      this.router.refresh('inventory.index');
+    } catch (error) {
+      console.error('Error while saving conceptual process:', error);
+      this.conceptualProcess.rollbackAttributes();
+    }
   }
 
   @action
@@ -194,15 +251,7 @@ export default class InventoryIndexController extends Controller {
     this.processCategory = undefined;
     this.processDomain = undefined;
     this.processGroup = undefined;
+    this.title = '';
     this.addProcessModalEdited = false;
-  }
-
-  @action
-  hasError(attribute) {
-    if (!this.process) return false;
-    const errorsForAttribute = this.process
-      .get('errors')
-      .filter((error) => error.attribute === attribute);
-    return errorsForAttribute.length;
   }
 }

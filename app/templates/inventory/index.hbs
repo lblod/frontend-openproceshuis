@@ -80,8 +80,9 @@
         {{/if}}
       </t.content>
     </AuDataTable>
+
     {{#if this.addProcessModalOpened}}
-      <form {{on "submit" (perform this.updateModel)}}>
+      <form {{on "submit" (perform this.saveInventoryProcess)}}>
         <AuModal
           @modalOpen={{this.addProcessModalOpened}}
           @closeModal={{this.closeAddProcessModal}}
@@ -90,20 +91,23 @@
           <:body>
 
             <AuLabel>Titel</AuLabel>
-            <AuInput @width="block" />
-            {{#if (this.hasError "title")}}
-              <div class="au-u-error">Titel mag niet leeg zijn</div>
-            {{/if}}
+            <AuInput
+              @width="block"
+              @value={{this.title}}
+              {{on "input" this.setTitle}}
+            />
 
-            <AuLabel class="au-u-margin-top">Procescategorie</AuLabel>
+            <AuLabel class="au-u-margin-top">Procesgroep</AuLabel>
             <PowerSelect
-              @placeholder="Selecteer een categorie"
-              @onChange={{this.handleProcessCategoryChange}}
-              @options={{this.categories}}
-              @selected={{this.processCategory}}
-              as |category|
+              @placeholder="Selecteer een groep"
+              @onChange={{this.handleProcessGroupChange}}
+              @options={{this.availableGroups}}
+              @selected={{this.processGroup}}
+              @searchEnabled={{true}}
+              @searchField="label"
+              as |group|
             >
-              {{category.label}}
+              {{group.label}}
             </PowerSelect>
 
             <AuLabel class="au-u-margin-top">Procesdomein</AuLabel>
@@ -112,20 +116,24 @@
               @onChange={{this.handleProcessDomainChange}}
               @options={{this.availableDomains}}
               @selected={{this.processDomain}}
+              @searchEnabled={{true}}
+              @searchField="label"
               as |domain|
             >
               {{domain.label}}
             </PowerSelect>
 
-            <AuLabel class="au-u-margin-top">Procesgroep</AuLabel>
+            <AuLabel class="au-u-margin-top">Procescategorie</AuLabel>
             <PowerSelect
-              @placeholder="Selecteer een groep"
-              @onChange={{this.handleProcessGroupChange}}
-              @options={{this.availableGroups}}
-              @selected={{this.processGroup}}
-              as |group|
+              @placeholder="Selecteer een categorie"
+              @onChange={{this.handleProcessCategoryChange}}
+              @options={{this.categories}}
+              @selected={{this.processCategory}}
+              @searchEnabled={{true}}
+              @searchField="label"
+              as |category|
             >
-              {{group.label}}
+              {{category.label}}
             </PowerSelect>
 
           </:body>
@@ -147,8 +155,10 @@
               {{/if}}
               <AuButton
                 @skin="primary"
-                {{on "click" this.saveInventoryProcess}}
+                @disabled={{not this.formIsValid}}
+                {{on "click" (perform this.saveInventoryProcess)}}
               >Opslaan</AuButton>
+
             </AuButtonGroup>
           </:footer>
         </AuModal>
