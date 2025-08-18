@@ -260,7 +260,6 @@ export default class InventoryIndexController extends Controller {
     this.processCategory = undefined;
     this.processDomain = undefined;
     this.processGroup = undefined;
-    this.title = '';
     this.addProcessModalEdited = false;
   }
 }
