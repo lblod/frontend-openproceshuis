@@ -73,25 +73,56 @@
             <td>{{conceptualProcess.processGroup.processDomain.label}}</td>
             <td>{{conceptualProcess.processGroup.label}}</td>
             <td>{{conceptualProcess.title}}</td>
-            <td>{{conceptualProcess.number}}</td>
+            <td>
+              <div class="au-u-flex au-u-flex--row au-u-flex--vertical-center">
+                <span
+                  class="inventory-process-number"
+                >{{conceptualProcess.number}}</span>
+                <AuButtonGroup
+                  @inline={{true}}
+                  class="inventory-row-button-group"
+                >
+                  <AuButton
+                    @icon="pencil"
+                    @skin="naked"
+                    @size="large"
+                    {{on
+                      "click"
+                      (fn this.editInventoryProcess conceptualProcess)
+                    }}
+                  />
+                  <AuButton
+                    @icon="bin"
+                    @skin="naked"
+                    @size="large"
+                    @alert={{true}}
+                    {{on "click" (fn this.openDeleteModal conceptualProcess)}}
+                  />
+                </AuButtonGroup>
+              </div>
+            </td>
           </c.body>
         {{/if}}
       </t.content>
     </AuDataTable>
 
-    {{#if this.addProcessModalOpened}}
+    {{#if this.isModalOpen}}
       <form {{on "submit" (perform this.saveInventoryProcess)}}>
         <AuModal
-          @modalOpen={{this.addProcessModalOpened}}
-          @closeModal={{this.closeAddProcessModal}}
+          @modalOpen={{this.isModalOpen}}
+          @closeModal={{this.closeModal}}
         >
-          <:title>Voeg nieuw inventaris proces toe</:title>
+          <:title>{{if
+              this.isEditing
+              "Bewerk inventaris proces"
+              "Voeg nieuw inventaris proces toe"
+            }}</:title>
           <:body>
 
             <AuLabel>Titel</AuLabel>
             <AuInput
               @width="block"
-              @value={{this.title}}
+              value={{this.currentProcess.title}}
               {{on "input" this.setTitle}}
             />
 
@@ -137,22 +168,21 @@
           </:body>
           <:footer>
             <AuButtonGroup class="au-u-flex--end">
-              {{#if this.addProcessModalEdited}}
+              {{#if this.showResetButton}}
                 <AuButton
                   @skin="naked"
                   @icon="redo"
                   {{on "click" this.clearSelections}}
                 >
                   Herstel keuzes</AuButton>
-              {{else}}
-                <AuButton
-                  @skin="naked"
-                  {{on "click" this.closeAddProcessModal}}
-                >Annuleer</AuButton>
               {{/if}}
               <AuButton
+                @skin="secondary"
+                {{on "click" this.closeModal}}
+              >Annuleer</AuButton>
+              <AuButton
                 @skin="primary"
-                @disabled={{not this.formIsValid}}
+                @disabled={{not this.canSave}}
                 {{on "click" (perform this.saveInventoryProcess)}}
               >Opslaan</AuButton>
 
@@ -160,6 +190,34 @@
           </:footer>
         </AuModal>
       </form>
+    {{/if}}
+
+    {{#if this.isDeleteModalOpen}}
+      <AuModal
+        @modalOpen={{this.isDeleteModalOpen}}
+        @closeModal={{this.closeModal}}
+      >
+        <:title>Verwijder proces</:title>
+        <:body>
+          Weet u zeker dat u het proces
+          <strong>{{this.processToDelete.title}}</strong>
+          wilt verwijderen?
+        </:body>
+        <:footer>
+          <AuButtonGroup class="au-u-flex--end">
+            <AuButton
+              @skin="naked"
+              {{on "click" this.closeModal}}
+            >Annuleer</AuButton>
+            <AuButton
+              @skin="primary"
+              @alert={{true}}
+              {{on "click" (perform this.deleteInventoryProcess)}}
+            >Verwijderen</AuButton>
+
+          </AuButtonGroup>
+        </:footer>
+      </AuModal>
     {{/if}}
   </:content>
 </SidebarContainer>
