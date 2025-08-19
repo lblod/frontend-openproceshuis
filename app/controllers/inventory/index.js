@@ -2,7 +2,7 @@ import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { keepLatestTask } from 'ember-concurrency';
+import { keepLatestTask, dropTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
@@ -18,6 +18,8 @@ export default class InventoryIndexController extends Controller {
   @tracked sort = 'title';
 
   @tracked isModalOpen = false;
+  @tracked isDeleteModalOpen = false;
+  @tracked processToDelete = undefined;
   @tracked addProcessModalEdited = false;
   @tracked processCategory;
   @tracked processDomain;
@@ -40,6 +42,18 @@ export default class InventoryIndexController extends Controller {
       : this.model.loadedConceptualProcesses;
   }
 
+  get showResetButton() {
+    if (this.currentProcess?.isNew) {
+      return this.addProcessModalEdited;
+    }
+
+    if (this.isEditing) {
+      return this.addProcessModalEdited;
+    }
+
+    return false;
+  }
+
   get isLoading() {
     return this.model.loadConceptualProcessesTaskInstance.isRunning;
   }
@@ -52,6 +66,13 @@ export default class InventoryIndexController extends Controller {
     return (
       this.model.loadConceptualProcessesTaskInstance.isFinished &&
       this.conceptualProcesses?.length === 0
+    );
+  }
+
+  get canSave() {
+    return (
+      this.formIsValid &&
+      (this.currentProcess?.isNew || this.addProcessModalEdited)
     );
   }
 
@@ -73,28 +94,27 @@ export default class InventoryIndexController extends Controller {
       },
     );
 
-    const usableGroupsSet = new Set();
-    const usableDomainsSet = new Set();
-    const usableCategoriesSet = new Set();
+    const availableGroups = new Set();
+    const availableDomains = new Set();
+    const availableCategories = new Set();
 
-    [...allConceptualProcesses].forEach((process) => {
+    for (const process of allConceptualProcesses) {
       const group = process.processGroup;
-      if (group && !group.isArchived) {
-        usableGroupsSet.add(group);
-        const domain = group.processDomain;
-        if (domain && !domain.isArchived) {
-          usableDomainsSet.add(domain);
-          const category = domain.processCategory;
-          if (category && !category.isArchived) {
-            usableCategoriesSet.add(category);
-          }
-        }
-      }
-    });
+      if (!group || group.isArchived) continue;
+      availableGroups.add(group);
 
-    this.groups = [...usableGroupsSet];
-    this.domains = [...usableDomainsSet];
-    this.categories = [...usableCategoriesSet];
+      const domain = group.processDomain;
+      if (!domain || domain.isArchived) continue;
+      availableDomains.add(domain);
+
+      const category = domain.processCategory;
+      if (!category || category.isArchived) continue;
+      availableCategories.add(category);
+    }
+
+    this.groups = [...availableGroups];
+    this.domains = [...availableDomains];
+    this.categories = [...availableCategories];
   }
 
   get availableDomains() {
@@ -147,10 +167,9 @@ export default class InventoryIndexController extends Controller {
     this.currentProcess = process;
     this.title = process.title;
     this.processGroup = process.processGroup;
-    this.processDomain = process.processGroup.get('processDomain');
-    this.processCategory = process.processGroup.get(
-      'processDomain.processCategory',
-    );
+    const domain = process.processGroup.get('processDomain');
+    this.processDomain = domain;
+    this.processCategory = domain?.processCategory;
 
     this.addProcessModalEdited = true;
     this.isModalOpen = true;
@@ -172,12 +191,12 @@ export default class InventoryIndexController extends Controller {
   }
 
   get formIsValid() {
-    const hasTitle = this.title && this.title.trim() !== '';
-    const hasGroup = !!this.processGroup;
-    const hasDomain = !!this.processDomain;
-    const hasCategory = !!this.processCategory;
-
-    return hasTitle && hasGroup && hasDomain && hasCategory;
+    return (
+      this.title?.trim() &&
+      this.processGroup &&
+      this.processDomain &&
+      this.processCategory
+    );
   }
 
   @action
@@ -186,50 +205,49 @@ export default class InventoryIndexController extends Controller {
     if (this.currentProcess) {
       this.currentProcess.title = this.title;
     }
+    if (!this.currentProcess.isNew) {
+      this.addProcessModalEdited = true;
+    }
+  }
+
+  @action
+  updateProcessHierarchy({ category, domain, group }) {
+    if (category) {
+      this.processCategory = category;
+      this.processDomain = undefined;
+      this.processGroup = undefined;
+      this.addProcessModalEdited = true;
+    }
+    if (domain) {
+      this.processDomain = domain;
+      this.processCategory = domain?.processCategory;
+      this.processGroup = undefined;
+      this.addProcessModalEdited = true;
+    }
+    if (group) {
+      this.processGroup = group;
+      this.processDomain = group?.processDomain;
+      this.processCategory = group?.processDomain?.processCategory;
+      this.addProcessModalEdited = true;
+      if (this.currentProcess) {
+        this.currentProcess.processGroups = group ? [group] : [];
+      }
+    }
   }
 
   @action
   handleProcessCategoryChange(selectedCategory) {
-    if (selectedCategory) {
-      this.addProcessModalEdited = true;
-    }
-    this.processCategory = selectedCategory;
-    this.processDomain = undefined;
-    this.processGroup = undefined;
-
-    if (this.currentProcess) {
-      this.currentProcess.processGroups = [];
-    }
+    this.updateProcessHierarchy({ category: selectedCategory });
   }
 
   @action
   handleProcessDomainChange(selectedDomain) {
-    this.processDomain = selectedDomain;
-    if (selectedDomain) {
-      this.addProcessModalEdited = true;
-      this.processCategory = selectedDomain.processCategory;
-      this.processGroup = undefined;
-    } else {
-      this.processGroup = undefined;
-    }
-
-    if (this.currentProcess) {
-      this.currentProcess.processGroups = [];
-    }
+    this.updateProcessHierarchy({ domain: selectedDomain });
   }
 
   @action
-  async handleProcessGroupChange(selectedGroup) {
-    this.processGroup = selectedGroup;
-    if (selectedGroup) {
-      this.addProcessModalEdited = true;
-      this.processDomain = selectedGroup.processDomain;
-      this.processCategory = selectedGroup.processDomain.processCategory;
-    }
-
-    if (this.currentProcess) {
-      this.currentProcess.processGroups = selectedGroup ? [selectedGroup] : [];
-    }
+  handleProcessGroupChange(selectedGroup) {
+    this.updateProcessHierarchy({ group: selectedGroup });
   }
 
   @action
@@ -237,9 +255,30 @@ export default class InventoryIndexController extends Controller {
     if (this.currentProcess && this.currentProcess.isNew) {
       this.currentProcess.destroyRecord();
     }
-    this.isModalOpen = false;
-    this.currentProcess = undefined;
     this.reset();
+  }
+
+  @action
+  openDeleteModal(process) {
+    this.processToDelete = process;
+    this.isDeleteModalOpen = true;
+  }
+
+  @dropTask
+  *deleteInventoryProcess() {
+    try {
+      this.processToDelete.status = ENV.resourceStates.archived;
+      yield this.processToDelete.save();
+      this.router.refresh('inventory.index');
+      this.toaster.success('Proces succesvol verwijderd.', 'Gelukt!', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      const errorMessage = getMessageForErrorCode('oph.processDeletionError');
+      this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
+    } finally {
+      this.closeModal();
+    }
   }
 
   @keepLatestTask
@@ -249,7 +288,6 @@ export default class InventoryIndexController extends Controller {
     }
 
     this.currentProcess.title = this.title;
-    this.currentProcess.processGroups = [this.processGroup];
     this.currentProcess.modified = new Date();
 
     if (this.currentProcess.isNew) {
@@ -266,7 +304,6 @@ export default class InventoryIndexController extends Controller {
         'Gelukt!',
         { timeOut: 5000 },
       );
-
       this.closeModal();
       this.router.refresh('inventory.index');
     } catch (error) {
@@ -276,7 +313,7 @@ export default class InventoryIndexController extends Controller {
       this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
 
       this.currentProcess.rollbackAttributes();
-      this.reset();
+      this.closeModal();
     }
   }
 
@@ -291,8 +328,10 @@ export default class InventoryIndexController extends Controller {
   reset() {
     this.currentProcess = undefined;
     this.title = '';
-    this.processCategory = undefined;
-    this.processDomain = undefined;
-    this.processGroup = undefined;
+    this.clearSelections();
+    this.processToDelete = undefined;
+    this.isDeleteModalOpen = false;
+    this.isModalOpen = false;
+    this.addProcessModalEdited = false;
   }
 }
