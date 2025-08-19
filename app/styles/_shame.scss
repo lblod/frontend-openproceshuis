@@ -91,3 +91,11 @@
 tr:hover .inventory-row-button-group .au-c-button {
   visibility: visible;
 }
+
+.admin-page .au-c-toolbar {
+  flex-direction: column;
+}
+
+.admin-page .au-c-toolbar__action {
+  justify-content: flex-start;
+}
