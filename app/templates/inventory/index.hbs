@@ -12,6 +12,14 @@
         </AuLinkExternal>
       </:subtitle>
       <:action>
+        {{#if this.currentSession.isAdmin}}
+          <AuButton
+            @skin="secondary"
+            @icon="add"
+            iconAlignment="left"
+            {{on "click" this.addNewInventoryProcess}}
+          >Nieuw hoofdproces</AuButton>
+        {{/if}}
       </:action>
     </PageHeader>
 
@@ -49,7 +57,6 @@
             @currentSorting={{this.sort}}
             @label="Nummer"
           />
-          <th></th>
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -61,7 +68,8 @@
           </TableMessage>
         {{else}}
           <c.body as |conceptualProcess|>
-            <td>{{conceptualProcess.processGroup.processDomain.processCategory.label}}</td>
+            <td
+            >{{conceptualProcess.processGroup.processDomain.processCategory.label}}</td>
             <td>{{conceptualProcess.processGroup.processDomain.label}}</td>
             <td>{{conceptualProcess.processGroup.label}}</td>
             <td>{{conceptualProcess.title}}</td>
@@ -70,5 +78,88 @@
         {{/if}}
       </t.content>
     </AuDataTable>
+
+    {{#if this.addProcessModalOpened}}
+      <form {{on "submit" (perform this.saveInventoryProcess)}}>
+        <AuModal
+          @modalOpen={{this.addProcessModalOpened}}
+          @closeModal={{this.closeAddProcessModal}}
+        >
+          <:title>Voeg nieuw inventaris proces toe</:title>
+          <:body>
+
+            <AuLabel>Titel</AuLabel>
+            <AuInput
+              @width="block"
+              @value={{this.title}}
+              {{on "input" this.setTitle}}
+            />
+
+            <AuLabel class="au-u-margin-top">Procesgroep</AuLabel>
+            <PowerSelect
+              @placeholder="Selecteer een groep"
+              @onChange={{this.handleProcessGroupChange}}
+              @options={{this.availableGroups}}
+              @selected={{this.processGroup}}
+              @searchEnabled={{true}}
+              @searchField="label"
+              as |group|
+            >
+              {{group.label}}
+            </PowerSelect>
+
+            <AuLabel class="au-u-margin-top">Procesdomein</AuLabel>
+            <PowerSelect
+              @placeholder="Selecteer een domein"
+              @onChange={{this.handleProcessDomainChange}}
+              @options={{this.availableDomains}}
+              @selected={{this.processDomain}}
+              @searchEnabled={{true}}
+              @searchField="label"
+              as |domain|
+            >
+              {{domain.label}}
+            </PowerSelect>
+
+            <AuLabel class="au-u-margin-top">Procescategorie</AuLabel>
+            <PowerSelect
+              @placeholder="Selecteer een categorie"
+              @onChange={{this.handleProcessCategoryChange}}
+              @options={{this.categories}}
+              @selected={{this.processCategory}}
+              @searchEnabled={{true}}
+              @searchField="label"
+              as |category|
+            >
+              {{category.label}}
+            </PowerSelect>
+
+          </:body>
+          <:footer>
+            <AuButtonGroup class="au-u-flex--end">
+              {{#if this.addProcessModalEdited}}
+                <AuButton
+                  @skin="naked"
+                  @icon="redo"
+                  {{on "click" this.clearSelections}}
+                >
+                  Herstel keuzes</AuButton>
+              {{else}}
+                <AuButton
+                  @skin="naked"
+                  {{on "click" this.closeAddProcessModal}}
+                >Annuleer</AuButton>
+              {{/if}}
+              <AuButton
+                @skin="primary"
+                @disabled={{not this.formIsValid}}
+                {{on "click" (perform this.saveInventoryProcess)}}
+              >Opslaan</AuButton>
+
+            </AuButtonGroup>
+          </:footer>
+        </AuModal>
+      </form>
+    {{/if}}
   </:content>
 </SidebarContainer>
