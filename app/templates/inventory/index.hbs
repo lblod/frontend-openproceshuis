@@ -4,7 +4,6 @@
     </div>
   </:sidebar>
   <:content>
-    <div class="inventory-scrollable-content"></div>
     <PageHeader>
       <:title>Inventaris processen Lokale Besturen</:title>
       <:subtitle>
@@ -18,7 +17,6 @@
             @skin="secondary"
             @icon="add"
             iconAlignment="left"
-            @disabled={{this.addProcessRowOpened}}
             {{on "click" this.addNewInventoryProcess}}
           >Nieuw hoofdproces</AuButton>
         {{/if}}
@@ -143,7 +141,6 @@
                 <AuButton
                   @skin="naked"
                   @icon="redo"
-                  class="inventory-row-redo-icon"
                   {{on "click" this.clearSelections}}
                 >
                   Herstel keuzes</AuButton>
