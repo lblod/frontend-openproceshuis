@@ -49,6 +49,10 @@ Router.map(function () {
     this.route('index', { path: '' });
   });
 
+  this.route('admin', function () {
+    this.route('index', { path: '' });
+  });
+
   this.route('legal', { path: '/legaal' }, function () {
     this.route('disclaimer');
     this.route('cookiestatement', { path: '/cookieverklaring' });

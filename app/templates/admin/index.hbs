@@ -1,0 +1,29 @@
+<SidebarContainer class="admin-page">
+
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-u-padding">
+        <AuHeading
+          @skin="5"
+          class="au-u-muted au-u-margin-bottom-small"
+        >Categorieen</AuHeading>
+        <ul>
+          {{#each this.categories as |category|}}
+            <li class="au-u-h6">{{category.label}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </:sidebar>
+
+  <:content>
+    <PageHeader @border="none">
+      <:title>Admin</:title>
+      <:action>
+        <AuButton @skin="secondary" @icon="add" iconAlignment="left">Nieuwe
+          categorie</AuButton>
+      </:action>
+    </PageHeader>
+  </:content>
+
+</SidebarContainer>
