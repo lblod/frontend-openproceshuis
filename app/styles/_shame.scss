@@ -79,3 +79,40 @@
 .bjs-breadcrumbs {
   display: none !important;
 }
+
+#process-concept-selection-form .au-c-sidebar-container__content {
+  min-height: 554px;
+}
+
+.process-modal-table {
+  min-width: auto;
+}
+
+.process-modal-table .au-c-link {
+  text-decoration: none;
+  color: var(--au-gray-1000);
+  outline: none;
+}
+
+.process-modal-table .au-c-link:hover {
+  color: var(--au-blue-700);
+}
+
+.process-modal-table-wrapper {
+  max-height: 554px;
+  min-height: 554px;
+}
+
+.process-change-button {
+  flex-shrink: 0;
+}
+
+.process-modal-row.is-selected {
+  background-color: var(--au-blue-100);
+  border: 2px solid var(--au-blue-600);
+  color: var(--au-blue-700);
+}
+
+.process-modal-row.is-selected .au-c-link {
+  color: var(--au-blue-700);
+}

@@ -28,6 +28,11 @@
     @setIsEditing={{this.setIsEditingDetails}}
   />
 
+  <Process::InventoryProcessCard
+    @canEdit={{this.canEdit}}
+    @process={{this.process}}
+  />
+
   <Process::Diagram::Visual
     @canEdit={{this.canEdit}}
     @process={{this.process}}

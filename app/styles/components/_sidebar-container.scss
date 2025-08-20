@@ -19,7 +19,6 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
   flex-basis: 100%;
 
   @include mq(medium) {
-    height: 100%;
     flex-basis: 25rem;
     flex-shrink: 0;
     padding-right: 0;
