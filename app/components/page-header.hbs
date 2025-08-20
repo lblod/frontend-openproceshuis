@@ -1,11 +1,6 @@
 <header ...attributes>
   {{#if (has-block "action")}}
-    <AuToolbar
-      @border={{or @border "bottom"}}
-      @size="medium"
-      @nowrap={{true}}
-      as |Group|
-    >
+    <AuToolbar @border="bottom" @size="medium" @nowrap={{true}} as |Group|>
       <Group>
         <div>
           <AuHeading>
