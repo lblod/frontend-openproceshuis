@@ -116,3 +116,15 @@
 .process-modal-row.is-selected .au-c-link {
   color: var(--au-blue-700);
 }
+
+.inventory-process-number {
+  width: 3.5rem;
+}
+
+.inventory-row-button-group .au-c-button {
+  visibility: hidden;
+}
+
+tr:hover .inventory-row-button-group .au-c-button {
+  visibility: visible;
+}
