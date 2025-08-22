@@ -78,27 +78,30 @@
                 <span
                   class="inventory-process-number"
                 >{{conceptualProcess.number}}</span>
-                <AuButtonGroup
-                  @inline={{true}}
-                  class="inventory-row-button-group"
-                >
-                  <AuButton
-                    @icon="pencil"
-                    @skin="naked"
-                    @size="large"
-                    {{on
-                      "click"
-                      (fn this.editInventoryProcess conceptualProcess)
-                    }}
-                  />
-                  <AuButton
-                    @icon="bin"
-                    @skin="naked"
-                    @size="large"
-                    @alert={{true}}
-                    {{on "click" (fn this.openDeleteModal conceptualProcess)}}
-                  />
-                </AuButtonGroup>
+                {{#if this.currentSession.isAdmin}}
+
+                  <AuButtonGroup
+                    @inline={{true}}
+                    class="inventory-row-button-group"
+                  >
+                    <AuButton
+                      @icon="pencil"
+                      @skin="naked"
+                      @size="large"
+                      {{on
+                        "click"
+                        (fn this.editInventoryProcess conceptualProcess)
+                      }}
+                    />
+                    <AuButton
+                      @icon="bin"
+                      @skin="naked"
+                      @size="large"
+                      @alert={{true}}
+                      {{on "click" (fn this.openDeleteModal conceptualProcess)}}
+                    />
+                  </AuButtonGroup>
+                {{/if}}
               </div>
             </td>
           </c.body>
