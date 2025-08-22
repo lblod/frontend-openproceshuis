@@ -17,12 +17,23 @@
             Gedeelde processen
           </AuLink>
         </Tab>
-        <Tab>
-          <AuLink @route="inventory" @icon="folder">
-            Inventaris processen
-          </AuLink>
-        </Tab>
       {{/if}}
+      <Tab>
+        <AuLink @route="inventory" @icon="folder">
+          Inventaris processen
+        </AuLink>
+      </Tab>
     </AuTabs>
   </Group>
+  {{#if this.currentSession.isAdmin}}
+    <Group>
+      <AuTabs as |Tab|>
+        <Tab>
+          <AuLink @route="admin" @icon="user">
+            Admin
+          </AuLink>
+        </Tab>
+      </AuTabs>
+    </Group>
+  {{/if}}
 </AuToolbar>

@@ -1,0 +1,47 @@
+<SidebarContainer class="admin-page">
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-u-padding">
+        <AuHeading @skin="5" class="au-u-muted au-u-margin-bottom-small">
+          Categorieën
+        </AuHeading>
+        <ul>
+          {{#each this.categorizedData as |category|}}
+            <li class="au-u-h6">{{category.label}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </:sidebar>
+
+  <:content>
+    <PageHeader @border="none">
+      <:title>Admin</:title>
+      <:action>
+        <AuButton @skin="secondary" @icon="add" iconAlignment="left">
+          Nieuwe categorie
+        </AuButton>
+      </:action>
+    </PageHeader>
+
+    {{#each this.categorizedData as |category|}}
+      <div class="au-u-margin-bottom-large">
+        <CollapsibleContainer class="au-u-margin-small">
+          <:title>{{category.label}}</:title>
+          <:action>
+            <AuButton @skin="naked" @icon="add" iconAlignment="left">
+              Nieuw domein
+            </AuButton>
+          </:action>
+          <:default>
+            <div class="tables-container">
+              {{#each category.domains as |domain|}}
+                <CollapsibleTable @domain={{domain}} />
+              {{/each}}
+            </div>
+          </:default>
+        </CollapsibleContainer>
+      </div>
+    {{/each}}
+  </:content>
+</SidebarContainer>
