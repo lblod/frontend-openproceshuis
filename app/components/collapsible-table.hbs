@@ -1,0 +1,62 @@
+<AuTable>
+  <:header>
+    <tr>
+      <th class="au-u-h6 au-u-muted">
+        <div class="au-u-flex au-u-flex--vertical-baseline">
+          <AuButton
+            @skin="naked"
+            class="au-u-flex au-u-flex--spaced-tiny"
+            {{on "click" this.toggleCollapse}}
+          >
+            <AuIcon
+              @icon={{if this.isCollapsed "chevron-right" "chevron-down"}}
+              class="au-u-muted"
+            />
+          </AuButton>
+          {{@domain.label}}
+        </div>
+      </th>
+    </tr>
+  </:header>
+
+  <:body>
+    {{#unless this.isCollapsed}}
+      {{#each @domain.groups as |group|}}
+        <tr><td>{{group.label}}</td></tr>
+      {{/each}}
+
+      {{#if this.isAddingNewGroup}}
+        <tr>
+          <td>
+            <div class="au-u-flex au-u-flex--vertical-center">
+              <div class="input-wrapper"><AuInput /></div>
+              <AuButtonGroup @inline={{true}}>
+                <AuButton @icon="check" @skin="naked" @size="large" />
+                <AuButton
+                  @icon="cross"
+                  @skin="naked"
+                  @size="large"
+                  @alert={{true}}
+                  {{on "click" this.cancelAddingNewGroup}}
+                />
+              </AuButtonGroup>
+            </div>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td>
+            <AuButton
+              @skin="link"
+              @icon="add"
+              iconAlignment="left"
+              {{on "click" this.addNewGroup}}
+            >
+              Nieuwe groep
+            </AuButton>
+          </td>
+        </tr>
+      {{/if}}
+    {{/unless}}
+  </:body>
+</AuTable>

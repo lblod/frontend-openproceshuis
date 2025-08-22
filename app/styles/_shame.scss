@@ -99,3 +99,21 @@ tr:hover .inventory-row-button-group .au-c-button {
 .admin-page .au-c-toolbar__action {
   justify-content: flex-start;
 }
+
+.tables-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.admin-page .au-c-table-wrapper {
+  overflow-x: hidden;
+  max-height: 25rem;
+  overflow-y: auto;
+  flex: 1 1 31%;
+  min-width: 280px;
+}
+
+.admin-page .au-c-input {
+  flex-grow: 1;
+}

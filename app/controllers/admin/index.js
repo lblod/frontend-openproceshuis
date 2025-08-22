@@ -2,18 +2,26 @@ import Controller from '@ember/controller';
 import { keepLatestTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class AdminPanelController extends Controller {
   @service store;
 
-  @tracked categories;
-  @tracked domains;
-  @tracked groups;
+  @tracked categories = [];
+  @tracked domains = [];
+  @tracked groups = [];
+  @tracked categorizedData = [];
+  @tracked isCollapsed = false;
 
   constructor() {
     super(...arguments);
     this.fetchAdminData.perform();
+  }
+
+  @action
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
   }
 
   @keepLatestTask
@@ -48,8 +56,33 @@ export default class AdminPanelController extends Controller {
       availableCategories.add(category);
     }
 
-    this.groups = [...availableGroups];
-    this.domains = [...availableDomains];
-    this.categories = [...availableCategories];
+    const uniqueGroups = [...availableGroups];
+    const uniqueDomains = [...availableDomains];
+    const uniqueCategories = [...availableCategories];
+
+    const nestedData = uniqueCategories.map((category) => {
+      const domainsForCategory = uniqueDomains.filter(
+        (domain) => domain.processCategory?.id === category.id,
+      );
+
+      const processedDomains = domainsForCategory.map((domain) => {
+        const groupsForDomain = uniqueGroups.filter(
+          (group) => group.processDomain?.id === domain.id,
+        );
+        return {
+          id: domain.id,
+          label: domain.label,
+          groups: groupsForDomain,
+        };
+      });
+
+      return {
+        id: category.id,
+        label: category.label,
+        domains: processedDomains,
+      };
+    });
+
+    this.categorizedData = nestedData;
   }
 }
