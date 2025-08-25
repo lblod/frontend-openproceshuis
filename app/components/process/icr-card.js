@@ -1,8 +1,12 @@
 import Component from '@glimmer/component';
+
+import { A } from '@ember/array';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+
 import { dropTask } from 'ember-concurrency';
-import { inject as service } from '@ember/service';
+
 import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
@@ -11,9 +15,24 @@ export default class ProcessIcrCardComponent extends Component {
   @service toaster;
 
   @tracked draftInformationAssets = [];
+  @tracked blueprintUsages = A([]);
 
   @tracked edit = false;
   @tracked formIsValid = false;
+
+  constructor() {
+    super(...arguments);
+
+    if (this.args.process.isBlueprint) {
+      this.store
+        .query('process', {
+          'filter[linked-blueprints][id]': this.args.process.id,
+        })
+        .then((processes) => {
+          this.blueprintUsages.pushObjects(processes);
+        });
+    }
+  }
 
   @action
   toggleEdit() {
