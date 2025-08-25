@@ -70,4 +70,8 @@ export default class CurrentSessionService extends Service {
       roles = this.impersonation.originalRoles || [];
     return roles?.includes(ADMIN_ROLE);
   }
+
+  get isMedewerker() {
+    return this.roles.includes('medewerker') || this.isAdmin;
+  }
 }

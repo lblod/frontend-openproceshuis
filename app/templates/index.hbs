@@ -63,31 +63,37 @@
               {{#if
                 (or this.currentSession.canEdit this.currentSession.isAdmin)
               }}
-                <div class="au-o-grid__item au-u-1-2@medium">
-                  <AuCard @flex={{true}} as |c|>
-                    <c.header
-                      @badgeSkin="brand"
-                      @badgeIcon="users-four-of-four"
-                      @badgeSize="small"
-                    >
-                      <AuHeading @level="2" @skin="4">
-                        Processen mijn lokaal bestuur
-                      </AuHeading>
-                    </c.header>
-                    <c.content>
-                      <AuList @divider={{true}} as |Item|>
-                        <Item>Raadpleeg processen gelinkt aan mijn lokaal
-                          bestuur</Item>
-                      </AuList>
-                    </c.content>
-                    <c.footer>
-                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                        <AuLink @skin="button" @route="my-local-government">Toon
-                          mijn processen</AuLink>
-                      </div>
-                    </c.footer>
-                  </AuCard>
-                </div>
+                {{#if this.currentSession.isMedewerker}}
+                  <div class="au-o-grid__item au-u-1-2@medium">
+                    <AuCard @flex={{true}} as |c|>
+                      <c.header
+                        @badgeSkin="brand"
+                        @badgeIcon="users-four-of-four"
+                        @badgeSize="small"
+                      >
+                        <AuHeading @level="2" @skin="4">
+                          Processen mijn lokaal bestuur
+                        </AuHeading>
+                      </c.header>
+                      <c.content>
+                        <AuList @divider={{true}} as |Item|>
+                          <Item>Raadpleeg processen gelinkt aan mijn lokaal
+                            bestuur</Item>
+                        </AuList>
+                      </c.content>
+                      <c.footer>
+                        <div
+                          class="au-u-h-functional au-o-flow au-o-flow--small"
+                        >
+                          <AuLink
+                            @skin="button"
+                            @route="my-local-government"
+                          >Toon mijn processen</AuLink>
+                        </div>
+                      </c.footer>
+                    </AuCard>
+                  </div>
+                {{/if}}
                 <div class="au-o-grid__item au-u-1-2@medium">
                   <AuCard @flex={{true}} as |c|>
                     <c.header

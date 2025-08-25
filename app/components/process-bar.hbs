@@ -7,11 +7,13 @@
         </AuLink>
       </Tab>
       {{#if this.currentSession.canEdit}}
-        <Tab>
-          <AuLink @route="my-local-government" @icon="users-four-of-four">
-            Processen mijn bestuur
-          </AuLink>
-        </Tab>
+        {{#if this.currentSession.isMedewerker}}
+          <Tab>
+            <AuLink @route="my-local-government" @icon="users-four-of-four">
+              Processen mijn bestuur
+            </AuLink>
+          </Tab>
+        {{/if}}
         <Tab>
           <AuLink @route="shared-processes" @icon="unordered-list">
             Gedeelde processen

@@ -21,7 +21,8 @@ export default class MyLocalGovernmentIndexRoute extends Route {
   async beforeModel(transition) {
     this.session.requireAuthentication(transition, 'index');
 
-    if (this.currentSession.readOnly) this.router.transitionTo('unauthorized');
+    if (this.currentSession.readOnly || !this.currentSession.isMedewerker)
+      this.router.transitionTo('unauthorized');
   }
 
   async model(params) {
