@@ -72,6 +72,8 @@ export default class CurrentSessionService extends Service {
   }
 
   get isMedewerker() {
-    return this.roles.includes('medewerker') || this.isAdmin;
+    return (
+      this.roles.includes('LoketLB-OpenProcesHuisGebruiker') || this.isAdmin
+    );
   }
 }
