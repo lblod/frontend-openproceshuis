@@ -4,6 +4,13 @@ import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesProcessRoute extends Route {
   @service store;
+  @service session;
+
+  beforeModel(transition) {
+    if (!this.session.isAuthenticated) {
+      this.session.requireAuthentication(transition, 'auth.login');
+    }
+  }
 
   async model(params) {
     const query = {
