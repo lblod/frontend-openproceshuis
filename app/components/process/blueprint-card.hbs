@@ -61,7 +61,11 @@
             <:content>
               <ul>
                 {{#each @process.linkedBlueprints as |blueprint|}}
-                  <li>{{blueprint.title}}</li>
+                  <li>
+                    <AuLinkExternal @newTab={{true}} href={{blueprint.href}}>
+                      {{blueprint.title}}
+                    </AuLinkExternal>
+                  </li>
                 {{/each}}
               </ul>
             </:content>

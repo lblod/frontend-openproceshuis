@@ -105,4 +105,8 @@ export default class ProcessModel extends Model {
     const ovoCodes = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
     return ovoCodes.includes(this.publisher?.identifier);
   }
+
+  get href() {
+    return `${window.location.origin}/processen/${this.id}`;
+  }
 }
