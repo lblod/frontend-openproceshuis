@@ -109,4 +109,22 @@ export default class ProcessesProcessIndexController extends Controller {
     this.diagrams = undefined;
     this.latestDiagram = undefined;
   }
+
+  @action
+  copyUrl() {
+    try {
+      navigator.clipboard.writeText(window.location.href);
+      this.toaster.success('Link naar process gekopieerd', 'Proces url', {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het kopiëren van de proces link',
+        'Proces url',
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+  }
 }
