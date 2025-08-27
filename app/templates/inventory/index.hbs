@@ -27,6 +27,14 @@
           </div>
           <div>
             <AuLabel for="filter-number">Nummer</AuLabel>
+            <AuInput
+              @id="filter-number"
+              @selected={{this.number}}
+              type="number"
+              min="0"
+              class="grow"
+              {{on "input" this.setNumber}}
+            />
           </div>
           <div class="au-u-flex au-u-flex--end">
             <AuButton

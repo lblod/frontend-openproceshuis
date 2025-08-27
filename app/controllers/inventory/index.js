@@ -63,6 +63,12 @@ export default class InventoryIndexController extends Controller {
     this.title = selection;
   }
 
+  @action
+  setNumber(event) {
+    this.page = null;
+    this.number = event.target.value;
+  }
+
   get isEditing() {
     return Boolean(this.processToEdit);
   }
