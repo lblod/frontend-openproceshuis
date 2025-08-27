@@ -9,6 +9,11 @@ export default class InventoryIndexRoute extends Route {
   queryParams = {
     page: { refreshModel: true },
     sort: { refreshModel: true },
+    category: { refreshModel: true, replace: true },
+    domain: { refreshModel: true, replace: true },
+    group: { refreshModel: true, replace: true },
+    title: { refreshModel: true, replace: true },
+    number: { refreshModel: true, replace: true },
   };
 
   async model(params) {
@@ -47,6 +52,16 @@ export default class InventoryIndexRoute extends Route {
 
       query.sort = sortValue;
     }
+
+    if (params.title) query['filter[title]'] = params.title;
+    if (params.number) query['filter[:exact:number]'] = params.number;
+    if (params.group) query['filter[process-groups][label]'] = params.group;
+    if (params.domain)
+      query['filter[process-groups][process-domains][label]'] = params.domain;
+    if (params.category)
+      query[
+        'filter[process-groups][process-domains][process-categories][label]'
+      ] = params.category;
 
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 

@@ -12,11 +12,25 @@ export default class InventoryIndexController extends Controller {
   @service currentSession;
   @service toaster;
 
-  queryParams = ['page', 'size', 'sort'];
+  queryParams = [
+    'page',
+    'size',
+    'sort',
+    'category',
+    'domain',
+    'group',
+    'title',
+    'number',
+  ];
 
   @tracked page = 0;
   size = 20;
   @tracked sort = 'title';
+  @tracked category;
+  @tracked domain;
+  @tracked group;
+  @tracked title;
+  @tracked number;
 
   @tracked processToAdd = null;
   @tracked processToEdit = null;
