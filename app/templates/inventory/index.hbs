@@ -1,6 +1,39 @@
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+        >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
+          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+            <AuLabel for="filter-category">Categorie</AuLabel>
+          </div>
+          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+            <AuLabel for="filter-domain">Procesdomein</AuLabel>
+          </div>
+          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+            <AuLabel for="filter-group">Procesgroep</AuLabel>
+          </div>
+          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+            <AuLabel for="filter-title">Hoofdproces</AuLabel>
+          </div>
+          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+            <AuLabel for="filter-number">Nummer</AuLabel>
+          </div>
+          <div class="au-u-flex au-u-flex--end">
+            <AuButton
+              @icon="cross"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none au-u-medium"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
     </div>
   </:sidebar>
   <:content>

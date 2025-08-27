@@ -26,11 +26,11 @@ export default class InventoryIndexController extends Controller {
   @tracked page = 0;
   size = 20;
   @tracked sort = 'title';
-  @tracked category;
-  @tracked domain;
-  @tracked group;
-  @tracked title;
-  @tracked number;
+  @tracked category = '';
+  @tracked domain = '';
+  @tracked group = '';
+  @tracked title = '';
+  @tracked number = '';
 
   @tracked processToAdd = null;
   @tracked processToEdit = null;
@@ -161,5 +161,19 @@ export default class InventoryIndexController extends Controller {
       record.rollbackAttributes();
       this.closeModal();
     }
+  }
+
+  @action
+  resetFilters() {
+    this.category = '';
+    this.domain = '';
+    this.group = '';
+    this.title = '';
+    this.number = '';
+    this.page = 0;
+    this.sort = 'title';
+
+    // Triggers a refresh of the model
+    this.page = null;
   }
 }
