@@ -1,0 +1,100 @@
+<form {{on "submit" this.save}}>
+  <AuModal @modalOpen={{true}} @closeModal={{this.close}}>
+    <:title>
+      {{if
+        @isEditing
+        "Bewerk inventarisproces"
+        "Voeg nieuw inventarisproces toe"
+      }}
+    </:title>
+
+    <:body>
+      {{#if this.isLoadingOptions}}
+        <p class="au-u-muted">Laden van opties…</p>
+      {{/if}}
+
+      <AuLabel>Titel</AuLabel>
+      <AuInput
+        @width="block"
+        value={{this.title}}
+        {{on "input" this.setTitle}}
+      />
+
+      <AuLabel class="au-u-margin-top">Procesgroep</AuLabel>
+      <PowerSelect
+        @placeholder={{if this.isLoadingOptions "Laden…" "Selecteer een groep"}}
+        @onChange={{this.handleProcessGroupChange}}
+        @options={{this.availableGroups}}
+        @selected={{this.processGroup}}
+        @searchEnabled={{true}}
+        @searchField="label"
+        @disabled={{this.isLoadingOptions}}
+        as |group|
+      >
+        {{group.label}}
+      </PowerSelect>
+
+      <AuLabel class="au-u-margin-top">Procesdomein</AuLabel>
+      <PowerSelect
+        @placeholder={{if
+          this.isLoadingOptions
+          "Laden…"
+          "Selecteer een domein"
+        }}
+        @onChange={{this.handleProcessDomainChange}}
+        @options={{this.availableDomains}}
+        @selected={{this.processDomain}}
+        @searchEnabled={{true}}
+        @searchField="label"
+        @disabled={{this.isLoadingOptions}}
+        as |domain|
+      >
+        {{domain.label}}
+      </PowerSelect>
+
+      <AuLabel class="au-u-margin-top">Procescategorie</AuLabel>
+      <PowerSelect
+        @placeholder={{if
+          this.isLoadingOptions
+          "Laden…"
+          "Selecteer een categorie"
+        }}
+        @onChange={{this.handleProcessCategoryChange}}
+        @options={{this.categories}}
+        @selected={{this.processCategory}}
+        @searchEnabled={{true}}
+        @searchField="label"
+        @disabled={{this.isLoadingOptions}}
+        as |category|
+      >
+        {{category.label}}
+      </PowerSelect>
+    </:body>
+
+    <:footer>
+      <AuButtonGroup class="au-u-flex--end">
+        {{#if this.showResetButton}}
+          <AuButton
+            @skin="naked"
+            @icon="redo"
+            {{on "click" this.clearSelections}}
+          >
+            Herstel keuzes
+          </AuButton>
+        {{/if}}
+
+        <AuButton @skin="secondary" {{on "click" this.close}}>
+          Annuleer
+        </AuButton>
+
+        <AuButton
+          @skin="primary"
+          @disabled={{not this.canSave}}
+          {{on "click" this.save}}
+        >
+          Opslaan
+        </AuButton>
+      </AuButtonGroup>
+    </:footer>
+  </AuModal>
+</form>

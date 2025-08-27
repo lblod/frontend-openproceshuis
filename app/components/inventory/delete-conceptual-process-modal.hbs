@@ -1,0 +1,18 @@
+<AuModal @modalOpen={{true}} @closeModal={{this.cancel}}>
+  <:title>Verwijder proces</:title>
+
+  <:body>
+    Weet u zeker dat u het proces
+    <strong>{{@processTitle}}</strong>
+    wilt verwijderen?
+  </:body>
+
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton @skin="naked" {{on "click" this.cancel}}>Annuleer</AuButton>
+      <AuButton @skin="primary" @alert={{true}} {{on "click" this.confirm}}>
+        Verwijderen
+      </AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

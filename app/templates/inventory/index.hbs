@@ -5,7 +5,7 @@
   </:sidebar>
   <:content>
     <PageHeader>
-      <:title>Inventaris processen Lokale Besturen</:title>
+      <:title>Inventarisprocessen lokale besturen</:title>
       <:subtitle>
         <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
           Handleiding Open Proces Huis
@@ -110,117 +110,20 @@
     </AuDataTable>
 
     {{#if this.isModalOpen}}
-      <form {{on "submit" (perform this.saveInventoryProcess)}}>
-        <AuModal
-          @modalOpen={{this.isModalOpen}}
-          @closeModal={{this.closeModal}}
-        >
-          <:title>{{if
-              this.isEditing
-              "Bewerk inventaris proces"
-              "Voeg nieuw inventaris proces toe"
-            }}</:title>
-          <:body>
-
-            <AuLabel>Titel</AuLabel>
-            <AuInput
-              @width="block"
-              value={{this.currentProcess.title}}
-              {{on "input" this.setTitle}}
-            />
-
-            <AuLabel class="au-u-margin-top">Procesgroep</AuLabel>
-            <PowerSelect
-              @placeholder="Selecteer een groep"
-              @onChange={{this.handleProcessGroupChange}}
-              @options={{this.availableGroups}}
-              @selected={{this.processGroup}}
-              @searchEnabled={{true}}
-              @searchField="label"
-              as |group|
-            >
-              {{group.label}}
-            </PowerSelect>
-
-            <AuLabel class="au-u-margin-top">Procesdomein</AuLabel>
-            <PowerSelect
-              @placeholder="Selecteer een domein"
-              @onChange={{this.handleProcessDomainChange}}
-              @options={{this.availableDomains}}
-              @selected={{this.processDomain}}
-              @searchEnabled={{true}}
-              @searchField="label"
-              as |domain|
-            >
-              {{domain.label}}
-            </PowerSelect>
-
-            <AuLabel class="au-u-margin-top">Procescategorie</AuLabel>
-            <PowerSelect
-              @placeholder="Selecteer een categorie"
-              @onChange={{this.handleProcessCategoryChange}}
-              @options={{this.categories}}
-              @selected={{this.processCategory}}
-              @searchEnabled={{true}}
-              @searchField="label"
-              as |category|
-            >
-              {{category.label}}
-            </PowerSelect>
-
-          </:body>
-          <:footer>
-            <AuButtonGroup class="au-u-flex--end">
-              {{#if this.showResetButton}}
-                <AuButton
-                  @skin="naked"
-                  @icon="redo"
-                  {{on "click" this.clearSelections}}
-                >
-                  Herstel keuzes</AuButton>
-              {{/if}}
-              <AuButton
-                @skin="secondary"
-                {{on "click" this.closeModal}}
-              >Annuleer</AuButton>
-              <AuButton
-                @skin="primary"
-                @disabled={{not this.canSave}}
-                {{on "click" (perform this.saveInventoryProcess)}}
-              >Opslaan</AuButton>
-
-            </AuButtonGroup>
-          </:footer>
-        </AuModal>
-      </form>
+      <Inventory::AddConceptualProcessModal
+        @record={{this.currentProcess}}
+        @isEditing={{this.isEditing}}
+        @onClose={{this.closeModal}}
+        @onSave={{perform this.saveInventoryProcess}}
+      />
     {{/if}}
 
     {{#if this.isDeleteModalOpen}}
-      <AuModal
-        @modalOpen={{this.isDeleteModalOpen}}
-        @closeModal={{this.closeModal}}
-      >
-        <:title>Verwijder proces</:title>
-        <:body>
-          Weet u zeker dat u het proces
-          <strong>{{this.processToDelete.title}}</strong>
-          wilt verwijderen?
-        </:body>
-        <:footer>
-          <AuButtonGroup class="au-u-flex--end">
-            <AuButton
-              @skin="naked"
-              {{on "click" this.closeModal}}
-            >Annuleer</AuButton>
-            <AuButton
-              @skin="primary"
-              @alert={{true}}
-              {{on "click" (perform this.deleteInventoryProcess)}}
-            >Verwijderen</AuButton>
-
-          </AuButtonGroup>
-        </:footer>
-      </AuModal>
+      <Inventory::DeleteConceptualProcessModal
+        @processTitle={{this.processToDelete.title}}
+        @onCancel={{this.closeDeleteModal}}
+        @onConfirm={{perform this.deleteInventoryProcess}}
+      />
     {{/if}}
   </:content>
 </SidebarContainer>
