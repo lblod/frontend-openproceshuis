@@ -57,6 +57,12 @@ export default class InventoryIndexController extends Controller {
     return this.model.loadConceptualProcessesTaskInstance.isError;
   }
 
+  @action
+  setTitle(selection) {
+    this.page = null;
+    this.title = selection;
+  }
+
   get isEditing() {
     return Boolean(this.processToEdit);
   }

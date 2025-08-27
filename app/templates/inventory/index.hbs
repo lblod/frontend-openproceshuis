@@ -7,19 +7,25 @@
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+          <div>
             <AuLabel for="filter-category">Categorie</AuLabel>
           </div>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+          <div>
             <AuLabel for="filter-domain">Procesdomein</AuLabel>
           </div>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+          <div>
             <AuLabel for="filter-group">Procesgroep</AuLabel>
           </div>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+          <div>
             <AuLabel for="filter-title">Hoofdproces</AuLabel>
+            <Inventory::SelectByTitle
+              @id="filter-title"
+              @selected={{this.title}}
+              @onChange={{this.setTitle}}
+              class="grow"
+            />
           </div>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+          <div>
             <AuLabel for="filter-number">Nummer</AuLabel>
           </div>
           <div class="au-u-flex au-u-flex--end">
