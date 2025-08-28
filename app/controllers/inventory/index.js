@@ -317,9 +317,18 @@ export default class InventoryIndexController extends Controller {
     }
   }
 
-  @action
-  downloadProcesses() {
-    alert('download processes WIP');
+  get downloadProcessesHref() {
+    const queryParams = {
+      sort: this.sort,
+      page: this.page,
+      size: this.size,
+    };
+
+    const createQueryParamsAsString = Object.keys(queryParams)
+      .filter((key) => queryParams[key])
+      .map((key) => `${key}=${queryParams[key]}`);
+
+    return `/process-api/download?${createQueryParamsAsString.join('&')}`;
   }
 
   @action
