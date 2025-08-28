@@ -59,14 +59,21 @@
           <Item>
             <:label>Gekoppeld aan</:label>
             <:content>
-              <ul>
-                {{#each @process.linkedBlueprints as |blueprint|}}
-                  <li>{{blueprint.title}}</li>
-                {{/each}}
-              </ul>
+              {{#if (gt this.linkedBlueprints.length 0)}}
+                <ul>
+                  {{#each this.linkedBlueprints as |blueprint|}}
+                    <li>
+                      <AuLinkExternal @newTab={{true}} href={{blueprint.href}}>
+                        {{blueprint.title}}
+                      </AuLinkExternal>
+                    </li>
+                  {{/each}}
+                </ul>
+              {{else}}
+                <p>/</p>
+              {{/if}}
             </:content>
           </Item>
-
         </:left>
       </Card.Columns>
     </:card>
