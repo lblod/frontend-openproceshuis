@@ -188,20 +188,6 @@
               </div>
             </:content>
           </Item>
-          <Item>
-            <:label>Gekoppeld aan</:label>
-            <:content>
-              <ul>
-                {{#each this.blueprintUsages as |usage|}}
-                  <li>
-                    <AuLinkExternal @newTab={{true}} href={{usage.href}}>
-                      {{usage.title}}
-                    </AuLinkExternal>
-                  </li>
-                {{/each}}
-              </ul>
-            </:content>
-          </Item>
         </:left>
         <:right as |Item|>
           <Item>
@@ -231,6 +217,24 @@
                 </AuLinkExternal>
               {{else}}
                 /
+              {{/if}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Gekoppeld aan</:label>
+            <:content>
+              {{#if (gt this.blueprintUsages.length 0)}}
+                <ul>
+                  {{#each this.blueprintUsages as |usage|}}
+                    <li>
+                      <AuLinkExternal @newTab={{true}} href={{usage.href}}>
+                        {{usage.title}}
+                      </AuLinkExternal>
+                    </li>
+                  {{/each}}
+                </ul>
+              {{else}}
+                <p>/</p>
               {{/if}}
             </:content>
           </Item>
