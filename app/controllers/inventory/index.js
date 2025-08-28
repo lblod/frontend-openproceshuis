@@ -318,6 +318,11 @@ export default class InventoryIndexController extends Controller {
   }
 
   @action
+  downloadProcesses() {
+    alert('download processes WIP');
+  }
+
+  @action
   clearSelections() {
     this.processCategory = undefined;
     this.processDomain = undefined;

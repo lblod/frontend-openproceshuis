@@ -20,6 +20,12 @@
             {{on "click" this.addNewInventoryProcess}}
           >Nieuw hoofdproces</AuButton>
         {{/if}}
+        <AuButton
+          @skin="primary"
+          @icon="download"
+          iconAlignment="left"
+          {{on "click" this.downloadProcesses}}
+        >Download</AuButton>
       </:action>
     </PageHeader>
 
