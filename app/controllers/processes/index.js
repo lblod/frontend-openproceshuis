@@ -105,6 +105,7 @@ export default class ProcessesIndexController extends Controller {
     this.sort = 'title';
     this.blueprint = false;
     this.selectedIpdcProducts = undefined;
+    this.ipdcProducts = undefined;
 
     // Triggers a refresh of the model
     this.page = null;
