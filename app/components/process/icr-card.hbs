@@ -220,6 +220,24 @@
               {{/if}}
             </:content>
           </Item>
+          <Item>
+            <:label>Gekoppeld aan</:label>
+            <:content>
+              {{#if (gt this.blueprintUsages.length 0)}}
+                <ul>
+                  {{#each this.blueprintUsages as |usage|}}
+                    <li>
+                      <AuLinkExternal @newTab={{true}} href={{usage.href}}>
+                        {{usage.title}}
+                      </AuLinkExternal>
+                    </li>
+                  {{/each}}
+                </ul>
+              {{else}}
+                <p>/</p>
+              {{/if}}
+            </:content>
+          </Item>
         </:right>
       </Card.Columns>
     </:card>
