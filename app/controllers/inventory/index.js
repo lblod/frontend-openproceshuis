@@ -32,6 +32,8 @@ export default class InventoryIndexController extends Controller {
   @tracked title = '';
   @tracked number = '';
 
+  @tracked selectedCategory = null;
+
   @tracked processToAdd = null;
   @tracked processToEdit = null;
   @tracked processToDelete = null;
@@ -55,6 +57,13 @@ export default class InventoryIndexController extends Controller {
 
   get hasErrored() {
     return this.model.loadConceptualProcessesTaskInstance.isError;
+  }
+
+  @action
+  setCategory(selection) {
+    this.page = null;
+    this.selectedCategory = selection;
+    this.category = selection?.id;
   }
 
   @action
@@ -177,13 +186,15 @@ export default class InventoryIndexController extends Controller {
 
   @action
   resetFilters() {
+    this.page = 0;
+    this.sort = 'title';
     this.category = '';
     this.domain = '';
     this.group = '';
     this.title = '';
     this.number = '';
-    this.page = 0;
-    this.sort = 'title';
+
+    this.selectedCategory = null;
 
     // Triggers a refresh of the model
     this.page = null;

@@ -9,6 +9,12 @@
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
           <div>
             <AuLabel for="filter-category">Categorie</AuLabel>
+            <Inventory::SelectByCategory
+              @id="filter-category"
+              @selected={{this.selectedCategory}}
+              @onChange={{this.setCategory}}
+              class="grow"
+            />
           </div>
           <div>
             <AuLabel for="filter-domain">Procesdomein</AuLabel>

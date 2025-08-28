@@ -59,9 +59,8 @@ export default class InventoryIndexRoute extends Route {
     if (params.domain)
       query['filter[process-groups][process-domains][label]'] = params.domain;
     if (params.category)
-      query[
-        'filter[process-groups][process-domains][process-categories][label]'
-      ] = params.category;
+      query['filter[process-groups][process-domains][process-categories][id]'] =
+        params.category;
 
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
