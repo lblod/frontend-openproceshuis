@@ -1,6 +1,33 @@
 import Service from '@ember/service';
 
 export default class ProcessApiService extends Service {
+  async fetchInventoryProcessesTableContent(fetchOptions) {
+    const queryOptions = fetchOptions;
+
+    if (!fetchOptions.page) {
+      queryOptions.page = 0;
+    }
+
+    const query = this.optionsToQueryParams(queryOptions);
+
+    const response = await fetch(
+      `/process-api/conceptional-processes/table-content?${query.join('&')}`,
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        'Er liep iets mis bij het ophalen van de content voor de inventaris tabel',
+      );
+    }
+    const tableContent = await response.json();
+
+    return {
+      sortableHeaderLabels: tableContent.headerLabels,
+      headerLabels: tableContent.headerLabels.map((sh) => sh.label),
+      content: tableContent.content,
+    };
+  }
+
   downloadLinkForInventoryProcessesPage(downloadOptions) {
     const downloadPageOptions = downloadOptions;
 
