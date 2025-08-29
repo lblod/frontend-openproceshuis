@@ -19,6 +19,7 @@ export default class InventoryIndexController extends Controller {
 
   @tracked isModalOpen = false;
   @tracked isDeleteModalOpen = false;
+  @tracked isDownloadModalOpen = false;
   @tracked processToDelete = undefined;
   @tracked addProcessModalEdited = false;
   @tracked processCategory;
@@ -315,20 +316,6 @@ export default class InventoryIndexController extends Controller {
       this.currentProcess.rollbackAttributes();
       this.closeModal();
     }
-  }
-
-  get downloadProcessesHref() {
-    const queryParams = {
-      sort: this.sort,
-      page: this.page,
-      size: this.size,
-    };
-
-    const createQueryParamsAsString = Object.keys(queryParams)
-      .filter((key) => queryParams[key])
-      .map((key) => `${key}=${queryParams[key]}`);
-
-    return `/process-api/download?${createQueryParamsAsString.join('&')}`;
   }
 
   @action

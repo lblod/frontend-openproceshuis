@@ -20,14 +20,12 @@
             {{on "click" this.addNewInventoryProcess}}
           >Nieuw hoofdproces</AuButton>
         {{/if}}
-        <AuLinkExternal
-          role={{@role}}
-          href={{this.downloadProcessesHref}}
-          download="inventory-processen"
-          @skin="button"
+        <AuButton
+          @skin="primary"
           @icon="download"
-          @iconAlignment="left"
-        >Download</AuLinkExternal>
+          iconAlignment="left"
+          {{on "click" (fn (mut this.isDownloadModalOpen) true)}}
+        >Download</AuButton>
       </:action>
     </PageHeader>
 
@@ -232,3 +230,9 @@
     {{/if}}
   </:content>
 </SidebarContainer>
+
+<DownloadModal::InventoryProcesses
+  @isOpen={{this.isDownloadModalOpen}}
+  @onClose={{fn (mut this.isDownloadModalOpen) false}}
+  @downloadOptions={{hash sort=this.sort page=this.page size=this.size}}
+/>
