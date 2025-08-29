@@ -64,6 +64,12 @@ export default class InventoryIndexController extends Controller {
   }
 
   @action
+  setDomain(selection) {
+    this.page = null;
+    this.domain = selection;
+  }
+
+  @action
   setTitle(selection) {
     this.page = null;
     this.title = selection;

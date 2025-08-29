@@ -18,6 +18,12 @@
           </div>
           <div>
             <AuLabel for="filter-domain">Procesdomein</AuLabel>
+            <Inventory::SelectByDomain
+              @id="filter-domain"
+              @selected={{this.domain}}
+              @onChange={{this.setDomain}}
+              class="grow"
+            />
           </div>
           <div>
             <AuLabel for="filter-group">Procesgroep</AuLabel>

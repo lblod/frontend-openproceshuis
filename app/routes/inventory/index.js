@@ -57,7 +57,7 @@ export default class InventoryIndexRoute extends Route {
     if (params.number) query['filter[:exact:number]'] = params.number;
     if (params.group) query['filter[process-groups][label]'] = params.group;
     if (params.domain)
-      query['filter[process-groups][process-domains][label]'] = params.domain;
+      query['filter[process-groups][process-domains][id]'] = params.domain;
     if (params.category)
       query['filter[process-groups][process-domains][process-categories][id]'] =
         params.category;
