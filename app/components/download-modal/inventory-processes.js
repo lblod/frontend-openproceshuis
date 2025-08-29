@@ -1,26 +1,18 @@
 import Component from '@glimmer/component';
 
+import { service } from '@ember/service';
+
 export default class DownloadModalInventoryProcesses extends Component {
+  @service processApi;
+
   get downloadCurrentPageHref() {
-    const downloadPageOptions = this.args.downloadOptions;
-
-    if (!this.args.downloadOptions.page) {
-      downloadPageOptions.page = 0;
-    }
-
-    const query = this.optionsToQueryParams(downloadPageOptions);
-    return `/process-api/download?${query.join('&')}`;
+    return this.processApi.downloadLinkForInventoryProcessesPage(
+      this.args.downloadOptions,
+    );
   }
   get downloadAllHref() {
-    const downloadAllOptions = this.args.downloadOptions;
-    delete downloadAllOptions.page;
-    delete downloadAllOptions.size;
-
-    const query = this.optionsToQueryParams(downloadAllOptions);
-    return `/process-api/download?${query.join('&')}`;
-  }
-
-  optionsToQueryParams(options) {
-    return Object.keys(options).map((key) => `${key}=${options[key]}`);
+    return this.processApi.downloadLinkForInventoryProcesses(
+      this.args.downloadOptions,
+    );
   }
 }
