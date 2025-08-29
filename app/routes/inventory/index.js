@@ -25,7 +25,7 @@ export default class InventoryIndexRoute extends Route {
       };
     } catch (error) {
       return {
-        tableContent: {},
+        tableContent: null,
         couldNotFetchTableContent: true,
       };
     }

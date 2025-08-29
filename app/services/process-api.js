@@ -20,11 +20,13 @@ export default class ProcessApiService extends Service {
       );
     }
     const tableContent = await response.json();
+    const content = tableContent.content;
+    content.meta = tableContent.meta;
 
     return {
       sortableHeaderLabels: tableContent.headerLabels,
       headerLabels: tableContent.headerLabels.map((sh) => sh.label),
-      content: tableContent.content,
+      content,
     };
   }
 
