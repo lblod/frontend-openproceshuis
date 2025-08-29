@@ -27,6 +27,12 @@
           </div>
           <div>
             <AuLabel for="filter-group">Procesgroep</AuLabel>
+            <Inventory::SelectByGroup
+              @id="filter-group"
+              @selected={{this.group}}
+              @onChange={{this.setGroup}}
+              class="grow"
+            />
           </div>
           <div>
             <AuLabel for="filter-title">Hoofdproces</AuLabel>

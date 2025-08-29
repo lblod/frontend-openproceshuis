@@ -1,0 +1,16 @@
+<div class={{if @error "ember-power-select--error"}} ...attributes>
+  <PowerSelect
+    @loadingMessage="Aan het laden..."
+    @noMatchesMessage="Geen resultaten"
+    @options={{this.groups}}
+    @selected={{this.selectedGroup.value}}
+    @onChange={{this.onChange}}
+    @allowClear={{true}}
+    @searchEnabled={{true}}
+    @searchField="label"
+    @triggerId={{@id}}
+    as |group|
+  >
+    {{group.label}}
+  </PowerSelect>
+</div>

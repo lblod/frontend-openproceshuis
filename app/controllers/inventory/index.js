@@ -70,6 +70,12 @@ export default class InventoryIndexController extends Controller {
   }
 
   @action
+  setGroup(selection) {
+    this.page = null;
+    this.group = selection;
+  }
+
+  @action
   setTitle(selection) {
     this.page = null;
     this.title = selection;
