@@ -11,10 +11,6 @@ export default class InventorySelectByCategoryComponent extends Component {
 
   loadCategoriesTask = restartableTask(async () => {
     const query = {
-      page: {
-        number: 0,
-        size: 20,
-      },
       sort: ':no-case:label',
       filter: {
         scheme: ENV.conceptSchemes.processCategories,
