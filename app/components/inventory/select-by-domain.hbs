@@ -2,7 +2,7 @@
   <PowerSelect
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
-    @options={{this.domains}}
+    @options={{this.domains.value}}
     @selected={{this.selectedDomain.value}}
     @onChange={{this.onChange}}
     @allowClear={{true}}

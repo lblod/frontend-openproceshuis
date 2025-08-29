@@ -2,7 +2,7 @@
   <PowerSelect
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
-    @options={{this.groups}}
+    @options={{this.groups.value}}
     @selected={{this.selectedGroup.value}}
     @onChange={{this.onChange}}
     @allowClear={{true}}

@@ -22,6 +22,7 @@
               @id="filter-domain"
               @selected={{this.domain}}
               @onChange={{this.setDomain}}
+              @category={{this.category}}
               class="grow"
             />
           </div>
@@ -31,6 +32,8 @@
               @id="filter-group"
               @selected={{this.group}}
               @onChange={{this.setGroup}}
+              @category={{this.category}}
+              @domain={{this.domain}}
               class="grow"
             />
           </div>
@@ -40,6 +43,9 @@
               @id="filter-title"
               @selected={{this.title}}
               @onChange={{this.setTitle}}
+              @category={{this.category}}
+              @domain={{this.domain}}
+              @group={{this.group}}
               class="grow"
             />
           </div>

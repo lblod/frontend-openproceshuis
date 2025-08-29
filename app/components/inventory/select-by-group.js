@@ -21,10 +21,20 @@ export default class InventorySelectByGroupComponent extends Component {
       },
     };
 
+    if (this.args.category)
+      query['filter[process-domains][process-categories][id]'] =
+        this.args.category;
+
+    if (this.args.domain)
+      query['filter[process-domains][id]'] = this.args.domain;
+
     return await this.store.query('process-group', query);
   });
 
-  groups = trackedTask(this, this.loadGroupsTask);
+  groups = trackedTask(this, this.loadGroupsTask, () => [
+    this.args.category,
+    this.args.domain,
+  ]);
 
   loadSelectedGroup = restartableTask(async () => {
     if (!this.args.selected) return null;

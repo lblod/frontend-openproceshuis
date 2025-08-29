@@ -19,6 +19,15 @@ export default class InventorySelectByTitleComponent extends Component {
       },
     };
 
+    if (this.args.category)
+      query['filter[process-groups][process-domains][process-categories][id]'] =
+        this.args.category;
+
+    if (this.args.domain)
+      query['filter[process-groups][process-domains][id]'] = this.args.domain;
+
+    if (this.args.group) query['filter[process-groups][id]'] = this.args.group;
+
     const result = yield this.store.query('conceptual-process', query);
 
     if (result) {

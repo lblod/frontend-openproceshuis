@@ -21,10 +21,13 @@ export default class InventorySelectByDomainComponent extends Component {
       },
     };
 
+    if (this.args.category)
+      query['filter[process-categories][id]'] = this.args.category;
+
     return await this.store.query('process-domain', query);
   });
 
-  domains = trackedTask(this, this.loadDomainsTask);
+  domains = trackedTask(this, this.loadDomainsTask, () => [this.args.category]);
 
   loadSelectedDomain = restartableTask(async () => {
     if (!this.args.selected) return null;

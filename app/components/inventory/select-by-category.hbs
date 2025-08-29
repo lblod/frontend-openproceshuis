@@ -2,7 +2,7 @@
   <PowerSelect
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
-    @options={{this.categories}}
+    @options={{this.categories.value}}
     @selected={{this.selectedCategory.value}}
     @onChange={{this.onChange}}
     @allowClear={{true}}
