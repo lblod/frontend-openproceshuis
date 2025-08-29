@@ -32,8 +32,6 @@ export default class InventoryIndexController extends Controller {
   @tracked title = '';
   @tracked number = '';
 
-  @tracked selectedCategory = null;
-
   @tracked processToAdd = null;
   @tracked processToEdit = null;
   @tracked processToDelete = null;
@@ -62,8 +60,7 @@ export default class InventoryIndexController extends Controller {
   @action
   setCategory(selection) {
     this.page = null;
-    this.selectedCategory = selection;
-    this.category = selection?.id;
+    this.category = selection;
   }
 
   @action
@@ -193,8 +190,6 @@ export default class InventoryIndexController extends Controller {
     this.group = '';
     this.title = '';
     this.number = '';
-
-    this.selectedCategory = null;
 
     // Triggers a refresh of the model
     this.page = null;

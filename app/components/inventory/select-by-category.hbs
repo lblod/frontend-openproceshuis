@@ -3,9 +3,9 @@
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @options={{this.categories}}
-    @selected={{@selected}}
-    @onChange={{@onChange}}
-    @allowClear="true"
+    @selected={{this.selectedCategory.value}}
+    @onChange={{this.onChange}}
+    @allowClear={{true}}
     @triggerId={{@id}}
     as |category|
   >

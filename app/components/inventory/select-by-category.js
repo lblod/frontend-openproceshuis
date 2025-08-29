@@ -1,10 +1,11 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
+import { action } from '@ember/object';
 import { restartableTask } from 'ember-concurrency';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
-export default class ProcessSelectByClassificationComponent extends Component {
+export default class InventorySelectByCategoryComponent extends Component {
   @service router;
   @service store;
 
@@ -25,4 +26,18 @@ export default class ProcessSelectByClassificationComponent extends Component {
   });
 
   categories = trackedTask(this, this.loadCategoriesTask);
+
+  loadSelectedCategory = restartableTask(async () => {
+    if (!this.args.selected) return null;
+    return await this.store.findRecord('process-category', this.args.selected);
+  });
+
+  selectedCategory = trackedTask(this, this.loadSelectedCategory, () => [
+    this.args.selected,
+  ]);
+
+  @action
+  onChange(category) {
+    this.args.onChange(category?.id);
+  }
 }
