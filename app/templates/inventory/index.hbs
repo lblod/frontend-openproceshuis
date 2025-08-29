@@ -43,7 +43,7 @@
           <c.header>
             {{#each @model.tableContent.sortableHeaderLabels as |header|}}
               <AuDataTableThSortable
-                @field={{header.sortProperty}}
+                @field={{header.field}}
                 @currentSorting={{this.sort}}
                 @label={{header.label}}
               />
