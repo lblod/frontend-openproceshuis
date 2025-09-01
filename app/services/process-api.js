@@ -11,7 +11,7 @@ export default class ProcessApiService extends Service {
     const query = this.optionsToQueryParams(queryOptions);
 
     const response = await fetch(
-      `/process-api/conceptional-processes/table-content?${query.join('&')}`,
+      `/process-api/conceptual-processes/table-content?${query.join('&')}`,
     );
 
     if (!response.ok) {
@@ -38,7 +38,7 @@ export default class ProcessApiService extends Service {
     }
 
     const query = this.optionsToQueryParams(downloadPageOptions);
-    return `/process-api/conceptional-processes/download?${query.join('&')}`;
+    return `/process-api/conceptual-processes/download?${query.join('&')}`;
   }
   downloadLinkForInventoryProcesses(downloadOptions) {
     const downloadAllOptions = downloadOptions;
@@ -46,7 +46,7 @@ export default class ProcessApiService extends Service {
     delete downloadAllOptions.size;
 
     const query = this.optionsToQueryParams(downloadAllOptions);
-    return `/process-api/conceptional-processes/download?${query.join('&')}`;
+    return `/process-api/conceptual-processes/download?${query.join('&')}`;
   }
 
   optionsToQueryParams(options) {
