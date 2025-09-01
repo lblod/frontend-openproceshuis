@@ -7,18 +7,20 @@
       <AuLinkExternal
         role={{@role}}
         href={{this.downloadCurrentPageHref}}
-        download="inventory-processen-page"
+        download="inventory-processen-page.csv"
         @skin="button"
         @icon="download"
         @iconAlignment="left"
+        {{on "click" this.showIsDownloadingToast}}
       >Huidige pagina</AuLinkExternal>
       <AuLinkExternal
         role={{@role}}
         href={{this.downloadAllHref}}
-        download="inventory-processen"
+        download="inventory-processen.csv"
         @skin="button-secondary"
         @icon="download"
         @iconAlignment="left"
+        {{on "click" this.showIsDownloadingToast}}
       >Alle processen</AuLinkExternal>
     </div>
   </:body>

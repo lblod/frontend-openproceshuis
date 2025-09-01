@@ -179,5 +179,6 @@
 <DownloadModal::InventoryProcesses
   @isOpen={{this.isDownloadModalOpen}}
   @onClose={{fn (mut this.isDownloadModalOpen) false}}
+  @onClickedDownloadButton={{fn (mut this.isDownloadModalOpen) false}}
   @downloadOptions={{hash sort=this.sort page=this.page size=this.size}}
 />
