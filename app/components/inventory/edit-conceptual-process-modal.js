@@ -5,7 +5,7 @@ import { action } from '@ember/object';
 import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
-export default class InventoryAddConceptualProcessModalComponent extends Component {
+export default class InventoryEditConceptualProcessModalComponent extends Component {
   @service store;
 
   @tracked title = '';

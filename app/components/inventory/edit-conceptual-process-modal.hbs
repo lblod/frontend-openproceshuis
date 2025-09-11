@@ -2,9 +2,9 @@
   <AuModal @modalOpen={{true}} @closeModal={{this.close}}>
     <:title>
       {{if
-        @isEditing
-        "Bewerk inventarisproces"
+        @record.isNew
         "Voeg nieuw inventarisproces toe"
+        "Bewerk inventarisproces"
       }}
     </:title>
 

@@ -88,7 +88,7 @@
             @skin="secondary"
             @icon="add"
             iconAlignment="left"
-            {{on "click" this.addNewInventoryProcess}}
+            {{on "click" this.openAddModal}}
           >Nieuw hoofdproces</AuButton>
         {{/if}}
       </:action>
@@ -159,10 +159,7 @@
                       @icon="pencil"
                       @skin="naked"
                       @size="large"
-                      {{on
-                        "click"
-                        (fn this.editInventoryProcess conceptualProcess)
-                      }}
+                      {{on "click" (fn this.openEditModal conceptualProcess)}}
                     />
                     <AuButton
                       @icon="bin"
@@ -180,11 +177,10 @@
       </t.content>
     </AuDataTable>
 
-    {{#if this.isModalOpen}}
-      <Inventory::AddConceptualProcessModal
-        @record={{this.currentProcess}}
-        @isEditing={{this.isEditing}}
-        @onClose={{this.closeModal}}
+    {{#if this.isEditModalOpen}}
+      <Inventory::EditConceptualProcessModal
+        @record={{this.processToEdit}}
+        @onClose={{this.closeEditModal}}
         @onSave={{perform this.saveInventoryProcess}}
       />
     {{/if}}

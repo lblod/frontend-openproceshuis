@@ -32,7 +32,6 @@ export default class InventoryIndexController extends Controller {
   @tracked title = '';
   @tracked number = '';
 
-  @tracked processToAdd = null;
   @tracked processToEdit = null;
   @tracked processToDelete = null;
 
@@ -55,6 +54,14 @@ export default class InventoryIndexController extends Controller {
 
   get hasErrored() {
     return this.model.loadConceptualProcessesTaskInstance.isError;
+  }
+
+  get isEditModalOpen() {
+    return Boolean(this.processToEdit);
+  }
+
+  get isDeleteModalOpen() {
+    return Boolean(this.processToDelete);
   }
 
   @action
@@ -87,31 +94,13 @@ export default class InventoryIndexController extends Controller {
     this.number = event.target.value;
   }
 
-  get isEditing() {
-    return Boolean(this.processToEdit);
-  }
-  get currentProcess() {
-    return this.processToEdit ?? this.processToAdd ?? null;
-  }
-  get isModalOpen() {
-    return Boolean(this.currentProcess);
-  }
-  get isDeleteModalOpen() {
-    return Boolean(this.processToDelete);
+  @action
+  openAddModal() {
+    this.processToEdit = this.store.createRecord('conceptual-process');
   }
 
   @action
-  async addNewInventoryProcess() {
-    const record = this.store.createRecord('conceptual-process');
-
-    const latest = await this.findLatestProcessNumberTask.perform();
-    record.number = typeof latest === 'number' ? latest + 1 : null;
-
-    this.processToAdd = record;
-  }
-
-  @action
-  editInventoryProcess(process) {
+  openEditModal(process) {
     this.processToEdit = process;
   }
 
@@ -121,32 +110,14 @@ export default class InventoryIndexController extends Controller {
   }
 
   @action
-  closeModal() {
-    if (this.processToAdd?.isNew) {
-      this.processToAdd.destroyRecord();
-    }
-    this.processToAdd = null;
+  closeEditModal() {
+    if (this.processToEdit?.isNew) this.processToEdit.destroyRecord();
     this.processToEdit = null;
   }
 
   @action
   closeDeleteModal() {
     this.processToDelete = null;
-  }
-
-  @keepLatestTask
-  *findLatestProcessNumberTask() {
-    try {
-      const res = yield this.store.query('conceptual-process', {
-        sort: '-number',
-        page: { size: 1 },
-      });
-      const process = [...res];
-      return process[0]?.number;
-    } catch (e) {
-      console.error('Error fetching latest process number:', e);
-      return null;
-    }
   }
 
   @dropTask
@@ -167,29 +138,50 @@ export default class InventoryIndexController extends Controller {
   }
 
   @keepLatestTask
-  *saveInventoryProcess(record) {
-    try {
-      record.modified = new Date();
-      if (record.isNew) record.created = new Date();
+  *saveInventoryProcess(process) {
+    if (!process) return;
 
-      yield record.save();
+    const isNewProcess = process.isNew;
+
+    try {
+      process.modified = new Date();
+      if (isNewProcess) {
+        process.created = new Date();
+        process.number = yield this.calculatedNewProcessNumber.perform();
+      }
+      yield process.save();
 
       this.toaster.success(
-        this.isEditing
+        isNewProcess
           ? 'Proces succesvol bewerkt'
           : 'Proces succesvol toegevoegd',
         'Gelukt!',
         { timeOut: 5000 },
       );
-      this.closeModal();
+
+      this.closeEditModal();
       this.router.refresh('inventory.index');
     } catch (error) {
       const msg = getMessageForErrorCode(
-        this.isEditing ? 'oph.updateModelFailed' : 'oph.addProcessFailed',
+        isNewProcess ? 'oph.updateModelFailed' : 'oph.addProcessFailed',
       );
       this.toaster.error(msg, 'Fout', { timeOut: 5000 });
-      record.rollbackAttributes();
-      this.closeModal();
+      process.rollbackAttributes();
+      this.closeEditModal();
+    }
+  }
+
+  @keepLatestTask
+  *calculatedNewProcessNumber() {
+    try {
+      const processes = yield this.store.query('conceptual-process', {
+        sort: '-number',
+        page: { size: 1 },
+      });
+      return processes[0]?.number + 1;
+    } catch (e) {
+      console.error('Error fetching latest process number:', e);
+      return null;
     }
   }
 
