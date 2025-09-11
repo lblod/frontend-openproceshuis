@@ -179,7 +179,7 @@
 
     {{#if this.isEditModalOpen}}
       <Inventory::EditConceptualProcessModal
-        @record={{this.processToEdit}}
+        @process={{this.processToEdit}}
         @onClose={{this.closeEditModal}}
         @onSave={{perform this.saveInventoryProcess}}
       />

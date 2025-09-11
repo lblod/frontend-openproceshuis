@@ -20,15 +20,15 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
 
   constructor() {
     super(...arguments);
-    this.seedFromRecord(this.args.record);
+    this.seedFromProcess(this.args.process);
     this.loadOptionsTask.perform();
   }
 
-  seedFromRecord(rec) {
-    const group = rec?.processGroup;
+  seedFromProcess(process) {
+    const group = process?.processGroup;
     const domain = group?.processDomain;
 
-    this.title = rec?.title ?? '';
+    this.title = process?.title ?? '';
     this.processGroup = group ?? undefined;
     this.processDomain = domain ?? undefined;
     this.processCategory = domain?.processCategory ?? undefined;
@@ -107,7 +107,7 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
   }
 
   get canSave() {
-    return this.formIsValid && (this.args.record.isNew || this.dirty);
+    return this.formIsValid && (this.args.process.isNew || this.dirty);
   }
 
   get showResetButton() {
@@ -123,8 +123,8 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
   @action
   setTitle(e) {
     this.title = e.target.value;
-    if (!this.args.record.isNew) this.dirty = true;
-    this.args.record.title = this.title;
+    if (!this.args.process.isNew) this.dirty = true;
+    this.args.process.title = this.title;
   }
 
   @action
@@ -148,7 +148,7 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
     this.processGroup = group;
     this.processDomain = group?.processDomain;
     this.processCategory = group?.processDomain?.processCategory;
-    this.args.record.processGroups = group ? [group] : [];
+    this.args.process.processGroups = group ? [group] : [];
     this.dirty = true;
   }
 
@@ -169,11 +169,11 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
   save() {
     if (!this.formIsValid) return;
 
-    this.args.record.title = (this.title ?? '').trim();
-    this.args.record.processGroups = this.processGroup
+    this.args.process.title = (this.title ?? '').trim();
+    this.args.process.processGroups = this.processGroup
       ? [this.processGroup]
       : [];
 
-    this.args?.onSave?.(this.args.record);
+    this.args?.onSave?.(this.args.process);
   }
 }
