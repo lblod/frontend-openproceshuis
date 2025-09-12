@@ -1,0 +1,32 @@
+<AuModal @modalOpen={{@isOpen}} @closable={{true}} @closeModal={{@onClose}}>
+  <:title>Download processen</:title>
+  <:body>
+    <p class="au-u-margin-bottom">Exporteer de processen van deze pagina of alle
+      inventarisprocessen naar een CSV-bestand.</p>
+    <div class="au-u-flex au-u-flex--spaced">
+      <AuLinkExternal
+        role={{@role}}
+        href={{this.downloadCurrentPageHref}}
+        download="inventory-processen-page.csv"
+        @skin="button"
+        @icon="download"
+        @iconAlignment="left"
+        {{on "click" this.showIsDownloadingToast}}
+      >Huidige pagina</AuLinkExternal>
+      <AuLinkExternal
+        role={{@role}}
+        href={{this.downloadAllHref}}
+        download="inventory-processen.csv"
+        @skin="button-secondary"
+        @icon="download"
+        @iconAlignment="left"
+        {{on "click" this.showIsDownloadingToast}}
+      >Alle processen</AuLinkExternal>
+    </div>
+  </:body>
+  <:footer>
+    <div class="au-u-flex au-u-flex--end">
+      <AuButton @skin="naked" {{on "click" @onClose}}>Annuleer</AuButton>
+    </div>
+  </:footer>
+</AuModal>

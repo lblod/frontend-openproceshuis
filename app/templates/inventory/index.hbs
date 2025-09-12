@@ -20,95 +20,46 @@
             {{on "click" this.addNewInventoryProcess}}
           >Nieuw hoofdproces</AuButton>
         {{/if}}
+        <AuButton
+          @skin="primary"
+          @icon="download"
+          iconAlignment="left"
+          {{on "click" (fn (mut this.isDownloadModalOpen) true)}}
+        >Download</AuButton>
       </:action>
     </PageHeader>
 
-    <AuDataTable
-      @content={{this.conceptualProcesses}}
-      @isLoading={{this.isLoading}}
-      @page={{this.page}}
-      @size={{this.size}}
-      as |t|
-    >
-      <t.content class="au-c-data-table__table--small" as |c|>
-        <c.header>
-          <AuDataTableThSortable
-            @field="category"
-            @currentSorting={{this.sort}}
-            @label="Categorie"
-          />
-          <AuDataTableThSortable
-            @field="domain"
-            @currentSorting={{this.sort}}
-            @label="Procesdomein"
-          />
-          <AuDataTableThSortable
-            @field="group"
-            @currentSorting={{this.sort}}
-            @label="Procesgroep"
-          />
-          <AuDataTableThSortable
-            @field="title"
-            @currentSorting={{this.sort}}
-            @label="Hoofdproces"
-          />
-          <AuDataTableThSortable
-            @field="number"
-            @currentSorting={{this.sort}}
-            @label="Nummer"
-          />
-        </c.header>
-        {{#if this.hasErrored}}
-          <TableMessage::Error />
-        {{else if this.hasNoResults}}
-          <TableMessage>
-            <p>
-              Er werden geen zoekresultaten gevonden.
-            </p>
-          </TableMessage>
-        {{else}}
+    {{#if @model.couldNotFetchTableContent}}
+      <TableMessage::Error />
+    {{else}}
+      <AuDataTable
+        @content={{@model.tableContent.content}}
+        @page={{this.page}}
+        @size={{this.size}}
+        @noDataMessage="Er werden geen zoekresultaten gevonden."
+        as |t|
+      >
+        <t.content class="au-c-data-table__table--small" as |c|>
+          <c.header>
+            {{#each @model.tableContent.sortableHeaderLabels as |header|}}
+              <AuDataTableThSortable
+                @field={{header.field}}
+                @currentSorting={{this.sort}}
+                @label={{header.label}}
+              />
+            {{/each}}
+          </c.header>
           <c.body as |conceptualProcess|>
-            <td
-            >{{conceptualProcess.processGroup.processDomain.processCategory.label}}</td>
-            <td>{{conceptualProcess.processGroup.processDomain.label}}</td>
-            <td>{{conceptualProcess.processGroup.label}}</td>
-            <td>{{conceptualProcess.title}}</td>
-            <td>
-              <div class="au-u-flex au-u-flex--row au-u-flex--vertical-center">
-                <span
-                  class="inventory-process-number"
-                >{{conceptualProcess.number}}</span>
-                {{#if this.currentSession.isAdmin}}
-
-                  <AuButtonGroup
-                    @inline={{true}}
-                    class="inventory-row-button-group"
-                  >
-                    <AuButton
-                      @icon="pencil"
-                      @skin="naked"
-                      @size="large"
-                      {{on
-                        "click"
-                        (fn this.editInventoryProcess conceptualProcess)
-                      }}
-                    />
-                    <AuButton
-                      @icon="bin"
-                      @skin="naked"
-                      @size="large"
-                      @alert={{true}}
-                      {{on "click" (fn this.openDeleteModal conceptualProcess)}}
-                    />
-                  </AuButtonGroup>
-                {{/if}}
-              </div>
-            </td>
+            <InventoryProcessTableRow
+              @process={{conceptualProcess}}
+              @labels={{@model.tableContent.headerLabels}}
+              @onEditInventoryProcess={{this.editInventoryProcess}}
+              @onOpenDeleteModal={{this.openDeleteModal}}
+            />
           </c.body>
-        {{/if}}
-      </t.content>
-    </AuDataTable>
-
+        </t.content>
+      </AuDataTable>
+    {{/if}}
     {{#if this.isModalOpen}}
       <form {{on "submit" (perform this.saveInventoryProcess)}}>
         <AuModal
@@ -224,3 +175,10 @@
     {{/if}}
   </:content>
 </SidebarContainer>
+
+<DownloadModal::InventoryProcesses
+  @isOpen={{this.isDownloadModalOpen}}
+  @onClose={{fn (mut this.isDownloadModalOpen) false}}
+  @onClickedDownloadButton={{fn (mut this.isDownloadModalOpen) false}}
+  @downloadOptions={{hash sort=this.sort page=this.page size=this.size}}
+/>

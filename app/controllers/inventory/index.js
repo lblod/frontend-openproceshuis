@@ -19,6 +19,7 @@ export default class InventoryIndexController extends Controller {
 
   @tracked isModalOpen = false;
   @tracked isDeleteModalOpen = false;
+  @tracked isDownloadModalOpen = false;
   @tracked processToDelete = undefined;
   @tracked addProcessModalEdited = false;
   @tracked processCategory;
