@@ -3,6 +3,7 @@ import Route from '@ember/routing/route';
 import { service } from '@ember/service';
 
 export default class InventoryIndexRoute extends Route {
+  @service session;
   @service store;
   @service processApi;
 
@@ -10,6 +11,10 @@ export default class InventoryIndexRoute extends Route {
     page: { refreshModel: true },
     sort: { refreshModel: true },
   };
+
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'auth.login');
+  }
 
   async model(params) {
     try {

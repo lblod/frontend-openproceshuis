@@ -18,10 +18,8 @@ export default class MyLocalGovernmentIndexRoute extends Route {
     blueprint: { refreshModel: true },
   };
 
-  async beforeModel(transition) {
-    this.session.requireAuthentication(transition, 'index');
-
-    if (this.currentSession.readOnly) this.router.transitionTo('unauthorized');
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'auth.login');
   }
 
   async model(params) {
