@@ -29,34 +29,33 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
 
   @keepLatestTask
   *loadOptionsTask() {
-    const all = yield this.store.query('conceptual-process', {
-      include:
-        'process-groups,process-groups.process-domains,process-groups.process-domains.process-categories',
-      filter: { ':not:status': ENV.resourceStates.archived },
-      page: { size: 2000 },
+    this.groups = yield this.store.query('process-group', {
+      page: { size: 500 },
+      sort: ':no-case:label',
+      filter: {
+        ':not:status': ENV.resourceStates.archived,
+        scheme: ENV.conceptSchemes.processGroups,
+      },
+      include: 'process-domains,process-domains.process-categories',
     });
 
-    const groups = new Set();
-    const domains = new Set();
-    const categories = new Set();
+    const domainsSet = new Set();
+    const categoriesSet = new Set();
 
-    for (const p of all) {
-      const g = p.processGroup;
-      if (!g || g.isArchived) continue;
-      groups.add(g);
+    for (const group of this.groups) {
+      const domain = group.processDomain;
+      if (domain && !domain.isArchived) {
+        domainsSet.add(domain);
 
-      const d = g.processDomain;
-      if (!d || d.isArchived) continue;
-      domains.add(d);
-
-      const c = d.processCategory;
-      if (!c || c.isArchived) continue;
-      categories.add(c);
+        const category = domain.processCategory;
+        if (category && !category.isArchived) {
+          categoriesSet.add(category);
+        }
+      }
     }
 
-    this.groups = [...groups];
-    this.domains = [...domains];
-    this.categories = [...categories];
+    this.domains = Array.from(domainsSet);
+    this.categories = Array.from(categoriesSet);
   }
 
   get availableDomains() {
