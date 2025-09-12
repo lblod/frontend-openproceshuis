@@ -8,33 +8,32 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 
 export default class InventoryIndexController extends Controller {
   @service store;
-  queryParams = ['page', 'size', 'sort'];
   @service router;
   @service currentSession;
   @service toaster;
 
+  queryParams = [
+    'page',
+    'size',
+    'sort',
+    'category',
+    'domain',
+    'group',
+    'title',
+    'number',
+  ];
+
   @tracked page = 0;
   size = 20;
   @tracked sort = 'title';
-
-  @tracked isModalOpen = false;
-  @tracked isDeleteModalOpen = false;
-  @tracked processToDelete = undefined;
-  @tracked addProcessModalEdited = false;
-  @tracked processCategory;
-  @tracked processDomain;
-  @tracked processGroup;
-  @tracked newProcessId;
+  @tracked category = '';
+  @tracked domain = '';
+  @tracked group = '';
   @tracked title = '';
-  @tracked categories = [];
-  @tracked domains = [];
-  @tracked groups = [];
-  @tracked currentProcess = undefined;
+  @tracked number = '';
 
-  constructor() {
-    super(...arguments);
-    this.prepareDropdownData.perform();
-  }
+  @tracked processToEdit = null;
+  @tracked processToDelete = null;
 
   get conceptualProcesses() {
     return this.model.loadConceptualProcessesTaskInstance.isFinished
@@ -42,24 +41,8 @@ export default class InventoryIndexController extends Controller {
       : this.model.loadedConceptualProcesses;
   }
 
-  get showResetButton() {
-    if (this.currentProcess?.isNew) {
-      return this.addProcessModalEdited;
-    }
-
-    if (this.isEditing) {
-      return this.addProcessModalEdited;
-    }
-
-    return false;
-  }
-
   get isLoading() {
     return this.model.loadConceptualProcessesTaskInstance.isRunning;
-  }
-
-  get isEditing() {
-    return this.currentProcess && !this.currentProcess.isNew;
   }
 
   get hasNoResults() {
@@ -69,199 +52,72 @@ export default class InventoryIndexController extends Controller {
     );
   }
 
-  get canSave() {
-    return (
-      this.formIsValid &&
-      (this.currentProcess?.isNew || this.addProcessModalEdited)
-    );
-  }
-
   get hasErrored() {
     return this.model.loadConceptualProcessesTaskInstance.isError;
   }
 
-  @keepLatestTask
-  *prepareDropdownData() {
-    const allConceptualProcesses = yield this.store.query(
-      'conceptual-process',
-      {
-        include:
-          'process-groups,process-groups.process-domains,process-groups.process-domains.process-categories',
-        filter: {
-          ':not:status': ENV.resourceStates.archived,
-        },
-        page: { size: 2000 },
-      },
-    );
-
-    const availableGroups = new Set();
-    const availableDomains = new Set();
-    const availableCategories = new Set();
-
-    for (const process of allConceptualProcesses) {
-      const group = process.processGroup;
-      if (!group || group.isArchived) continue;
-      availableGroups.add(group);
-
-      const domain = group.processDomain;
-      if (!domain || domain.isArchived) continue;
-      availableDomains.add(domain);
-
-      const category = domain.processCategory;
-      if (!category || category.isArchived) continue;
-      availableCategories.add(category);
-    }
-
-    this.groups = [...availableGroups];
-    this.domains = [...availableDomains];
-    this.categories = [...availableCategories];
+  get isEditModalOpen() {
+    return Boolean(this.processToEdit);
   }
 
-  get availableDomains() {
-    if (this.processGroup) {
-      return [this.processGroup.processDomain];
-    }
-    if (this.processCategory) {
-      return this.domains.filter(
-        (domain) =>
-          domain.processCategory?.get('id') === this.processCategory.id,
-      );
-    }
-    return this.domains;
-  }
-
-  get availableGroups() {
-    const filteredDomains = this.availableDomains;
-    if (this.processDomain) {
-      return this.groups.filter(
-        (group) => group.processDomain?.get('id') === this.processDomain.id,
-      );
-    }
-
-    if (this.processCategory) {
-      const domainIds = filteredDomains.map((d) => d.id);
-      return this.groups.filter((group) =>
-        domainIds.includes(group.processDomain?.get('id')),
-      );
-    }
-    return this.groups;
+  get isDeleteModalOpen() {
+    return Boolean(this.processToDelete);
   }
 
   @action
-  async addNewInventoryProcess() {
-    this.reset();
-    if (this.categories.length === 0) {
-      await this.prepareDropdownData.perform();
-    }
-
-    this.isModalOpen = true;
-    this.currentProcess = this.store.createRecord('conceptual-process');
-
-    const latestProcessId = await this.findLatestProcessNumberTask.perform();
-    this.currentProcess.number =
-      typeof latestProcessId === 'number' ? latestProcessId + 1 : null;
+  setCategory(selection) {
+    this.page = null;
+    this.category = selection;
   }
 
   @action
-  editInventoryProcess(process) {
-    this.currentProcess = process;
-    this.title = process.title;
-    this.processGroup = process.processGroup;
-    const domain = process.processGroup.get('processDomain');
-    this.processDomain = domain;
-    this.processCategory = domain?.processCategory;
-
-    this.addProcessModalEdited = true;
-    this.isModalOpen = true;
-  }
-
-  @keepLatestTask
-  *findLatestProcessNumberTask() {
-    try {
-      const res = yield this.store.query('conceptual-process', {
-        sort: '-number',
-        page: { size: 1 },
-      });
-      const process = [...res];
-      return process[0]?.number;
-    } catch (error) {
-      console.error('Error fetching latest process number:', error);
-      return null;
-    }
-  }
-
-  get formIsValid() {
-    return (
-      this.title?.trim() &&
-      this.processGroup &&
-      this.processDomain &&
-      this.processCategory
-    );
+  setDomain(selection) {
+    this.page = null;
+    this.domain = selection;
   }
 
   @action
-  setTitle(event) {
-    this.title = event.target.value;
-    if (this.currentProcess) {
-      this.currentProcess.title = this.title;
-    }
-    if (!this.currentProcess.isNew) {
-      this.addProcessModalEdited = true;
-    }
+  setGroup(selection) {
+    this.page = null;
+    this.group = selection;
   }
 
   @action
-  updateProcessHierarchy({ category, domain, group }) {
-    if (category) {
-      this.processCategory = category;
-      this.processDomain = undefined;
-      this.processGroup = undefined;
-      this.addProcessModalEdited = true;
-    }
-    if (domain) {
-      this.processDomain = domain;
-      this.processCategory = domain?.processCategory;
-      this.processGroup = undefined;
-      this.addProcessModalEdited = true;
-    }
-    if (group) {
-      this.processGroup = group;
-      this.processDomain = group?.processDomain;
-      this.processCategory = group?.processDomain?.processCategory;
-      this.addProcessModalEdited = true;
-      if (this.currentProcess) {
-        this.currentProcess.processGroups = group ? [group] : [];
-      }
-    }
+  setTitle(selection) {
+    this.page = null;
+    this.title = selection;
   }
 
   @action
-  handleProcessCategoryChange(selectedCategory) {
-    this.updateProcessHierarchy({ category: selectedCategory });
+  setNumber(event) {
+    this.page = null;
+    this.number = event.target.value;
   }
 
   @action
-  handleProcessDomainChange(selectedDomain) {
-    this.updateProcessHierarchy({ domain: selectedDomain });
+  openAddModal() {
+    this.processToEdit = this.store.createRecord('conceptual-process');
   }
 
   @action
-  handleProcessGroupChange(selectedGroup) {
-    this.updateProcessHierarchy({ group: selectedGroup });
-  }
-
-  @action
-  closeModal() {
-    if (this.currentProcess && this.currentProcess.isNew) {
-      this.currentProcess.destroyRecord();
-    }
-    this.reset();
+  openEditModal(process) {
+    this.processToEdit = process;
   }
 
   @action
   openDeleteModal(process) {
     this.processToDelete = process;
-    this.isDeleteModalOpen = true;
+  }
+
+  @action
+  closeEditModal() {
+    if (this.processToEdit?.isNew) this.processToEdit.destroyRecord();
+    this.processToEdit = null;
+  }
+
+  @action
+  closeDeleteModal() {
+    this.processToDelete = null;
   }
 
   @dropTask
@@ -274,64 +130,72 @@ export default class InventoryIndexController extends Controller {
         timeOut: 5000,
       });
     } catch (error) {
-      const errorMessage = getMessageForErrorCode('oph.processDeletionError');
-      this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
+      const msg = getMessageForErrorCode('oph.processDeletionError');
+      this.toaster.error(msg, 'Fout', { timeOut: 5000 });
     } finally {
-      this.closeModal();
+      this.closeDeleteModal();
     }
   }
 
   @keepLatestTask
-  *saveInventoryProcess() {
-    if (!this.formIsValid) {
-      return;
-    }
+  *saveInventoryProcess(process) {
+    if (!process) return;
 
-    this.currentProcess.title = this.title;
-    this.currentProcess.modified = new Date();
-
-    if (this.currentProcess.isNew) {
-      this.currentProcess.created = new Date();
-    }
+    const isNewProcess = process.isNew;
 
     try {
-      yield this.currentProcess.save();
+      process.modified = new Date();
+      if (isNewProcess) {
+        process.created = new Date();
+        process.number = yield this.calculatedNewProcessNumber.perform();
+      }
+      yield process.save();
 
       this.toaster.success(
-        this.isEditing
+        isNewProcess
           ? 'Proces succesvol bewerkt'
           : 'Proces succesvol toegevoegd',
         'Gelukt!',
         { timeOut: 5000 },
       );
-      this.closeModal();
+
+      this.closeEditModal();
       this.router.refresh('inventory.index');
     } catch (error) {
-      const errorMessage = getMessageForErrorCode(
-        this.isEditing ? 'oph.updateModelFailed' : 'oph.addProcessFailed',
+      const msg = getMessageForErrorCode(
+        isNewProcess ? 'oph.updateModelFailed' : 'oph.addProcessFailed',
       );
-      this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
+      this.toaster.error(msg, 'Fout', { timeOut: 5000 });
+      process.rollbackAttributes();
+      this.closeEditModal();
+    }
+  }
 
-      this.currentProcess.rollbackAttributes();
-      this.closeModal();
+  @keepLatestTask
+  *calculatedNewProcessNumber() {
+    try {
+      const processes = yield this.store.query('conceptual-process', {
+        sort: '-number',
+        page: { size: 1 },
+      });
+      return processes[0]?.number + 1;
+    } catch (e) {
+      console.error('Error fetching latest process number:', e);
+      return null;
     }
   }
 
   @action
-  clearSelections() {
-    this.processCategory = undefined;
-    this.processDomain = undefined;
-    this.processGroup = undefined;
-    this.addProcessModalEdited = false;
-  }
-
-  reset() {
-    this.currentProcess = undefined;
+  resetFilters() {
+    this.page = 0;
+    this.sort = 'title';
+    this.category = '';
+    this.domain = '';
+    this.group = '';
     this.title = '';
-    this.clearSelections();
-    this.processToDelete = undefined;
-    this.isDeleteModalOpen = false;
-    this.isModalOpen = false;
-    this.addProcessModalEdited = false;
+    this.number = '';
+
+    // Triggers a refresh of the model
+    this.page = null;
   }
 }

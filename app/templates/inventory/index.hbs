@@ -1,11 +1,82 @@
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+        >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
+          <div>
+            <AuLabel for="filter-category">Categorie</AuLabel>
+            <Inventory::SelectByCategory
+              @id="filter-category"
+              @selected={{this.category}}
+              @onChange={{this.setCategory}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-domain">Procesdomein</AuLabel>
+            <Inventory::SelectByDomain
+              @id="filter-domain"
+              @selected={{this.domain}}
+              @onChange={{this.setDomain}}
+              @category={{this.category}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-group">Procesgroep</AuLabel>
+            <Inventory::SelectByGroup
+              @id="filter-group"
+              @selected={{this.group}}
+              @onChange={{this.setGroup}}
+              @category={{this.category}}
+              @domain={{this.domain}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-title">Hoofdproces</AuLabel>
+            <Inventory::SelectByTitle
+              @id="filter-title"
+              @selected={{this.title}}
+              @onChange={{this.setTitle}}
+              @category={{this.category}}
+              @domain={{this.domain}}
+              @group={{this.group}}
+              class="grow"
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-number">Nummer</AuLabel>
+            <AuInput
+              @id="filter-number"
+              @selected={{this.number}}
+              type="number"
+              min="0"
+              class="grow"
+              {{on "input" this.setNumber}}
+            />
+          </div>
+          <div class="au-u-flex au-u-flex--end">
+            <AuButton
+              @icon="cross"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none au-u-medium"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
     </div>
   </:sidebar>
   <:content>
     <PageHeader>
-      <:title>Inventaris processen Lokale Besturen</:title>
+      <:title>Inventarisprocessen lokale besturen</:title>
       <:subtitle>
         <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
           Handleiding Open Proces Huis
@@ -17,7 +88,7 @@
             @skin="secondary"
             @icon="add"
             iconAlignment="left"
-            {{on "click" this.addNewInventoryProcess}}
+            {{on "click" this.openAddModal}}
           >Nieuw hoofdproces</AuButton>
         {{/if}}
       </:action>
@@ -88,10 +159,7 @@
                       @icon="pencil"
                       @skin="naked"
                       @size="large"
-                      {{on
-                        "click"
-                        (fn this.editInventoryProcess conceptualProcess)
-                      }}
+                      {{on "click" (fn this.openEditModal conceptualProcess)}}
                     />
                     <AuButton
                       @icon="bin"
@@ -109,118 +177,20 @@
       </t.content>
     </AuDataTable>
 
-    {{#if this.isModalOpen}}
-      <form {{on "submit" (perform this.saveInventoryProcess)}}>
-        <AuModal
-          @modalOpen={{this.isModalOpen}}
-          @closeModal={{this.closeModal}}
-        >
-          <:title>{{if
-              this.isEditing
-              "Bewerk inventaris proces"
-              "Voeg nieuw inventaris proces toe"
-            }}</:title>
-          <:body>
-
-            <AuLabel>Titel</AuLabel>
-            <AuInput
-              @width="block"
-              value={{this.currentProcess.title}}
-              {{on "input" this.setTitle}}
-            />
-
-            <AuLabel class="au-u-margin-top">Procesgroep</AuLabel>
-            <PowerSelect
-              @placeholder="Selecteer een groep"
-              @onChange={{this.handleProcessGroupChange}}
-              @options={{this.availableGroups}}
-              @selected={{this.processGroup}}
-              @searchEnabled={{true}}
-              @searchField="label"
-              as |group|
-            >
-              {{group.label}}
-            </PowerSelect>
-
-            <AuLabel class="au-u-margin-top">Procesdomein</AuLabel>
-            <PowerSelect
-              @placeholder="Selecteer een domein"
-              @onChange={{this.handleProcessDomainChange}}
-              @options={{this.availableDomains}}
-              @selected={{this.processDomain}}
-              @searchEnabled={{true}}
-              @searchField="label"
-              as |domain|
-            >
-              {{domain.label}}
-            </PowerSelect>
-
-            <AuLabel class="au-u-margin-top">Procescategorie</AuLabel>
-            <PowerSelect
-              @placeholder="Selecteer een categorie"
-              @onChange={{this.handleProcessCategoryChange}}
-              @options={{this.categories}}
-              @selected={{this.processCategory}}
-              @searchEnabled={{true}}
-              @searchField="label"
-              as |category|
-            >
-              {{category.label}}
-            </PowerSelect>
-
-          </:body>
-          <:footer>
-            <AuButtonGroup class="au-u-flex--end">
-              {{#if this.showResetButton}}
-                <AuButton
-                  @skin="naked"
-                  @icon="redo"
-                  {{on "click" this.clearSelections}}
-                >
-                  Herstel keuzes</AuButton>
-              {{/if}}
-              <AuButton
-                @skin="secondary"
-                {{on "click" this.closeModal}}
-              >Annuleer</AuButton>
-              <AuButton
-                @skin="primary"
-                @disabled={{not this.canSave}}
-                {{on "click" (perform this.saveInventoryProcess)}}
-              >Opslaan</AuButton>
-
-            </AuButtonGroup>
-          </:footer>
-        </AuModal>
-      </form>
+    {{#if this.isEditModalOpen}}
+      <Inventory::EditConceptualProcessModal
+        @process={{this.processToEdit}}
+        @onClose={{this.closeEditModal}}
+        @onSave={{perform this.saveInventoryProcess}}
+      />
     {{/if}}
 
     {{#if this.isDeleteModalOpen}}
-      <AuModal
-        @modalOpen={{this.isDeleteModalOpen}}
-        @closeModal={{this.closeModal}}
-      >
-        <:title>Verwijder proces</:title>
-        <:body>
-          Weet u zeker dat u het proces
-          <strong>{{this.processToDelete.title}}</strong>
-          wilt verwijderen?
-        </:body>
-        <:footer>
-          <AuButtonGroup class="au-u-flex--end">
-            <AuButton
-              @skin="naked"
-              {{on "click" this.closeModal}}
-            >Annuleer</AuButton>
-            <AuButton
-              @skin="primary"
-              @alert={{true}}
-              {{on "click" (perform this.deleteInventoryProcess)}}
-            >Verwijderen</AuButton>
-
-          </AuButtonGroup>
-        </:footer>
-      </AuModal>
+      <Inventory::DeleteConceptualProcessModal
+        @processTitle={{this.processToDelete.title}}
+        @onCancel={{this.closeDeleteModal}}
+        @onConfirm={{perform this.deleteInventoryProcess}}
+      />
     {{/if}}
   </:content>
 </SidebarContainer>
