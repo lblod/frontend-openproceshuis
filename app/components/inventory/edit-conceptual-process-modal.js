@@ -8,11 +8,10 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class InventoryEditConceptualProcessModalComponent extends Component {
   @service store;
 
-  @tracked title = '';
+  @tracked title = undefined;
   @tracked processCategory = undefined;
   @tracked processDomain = undefined;
   @tracked processGroup = undefined;
-  @tracked dirty = false;
 
   @tracked categories = [];
   @tracked domains = [];
@@ -20,20 +19,8 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
 
   constructor() {
     super(...arguments);
-    this.seedFromProcess(this.args.process);
+    this.resetProperties();
     this.loadOptionsTask.perform();
-  }
-
-  seedFromProcess(process) {
-    const group = process?.processGroup;
-    const domain = group?.processDomain;
-
-    this.title = process?.title ?? '';
-    this.processGroup = group ?? undefined;
-    this.processDomain = domain ?? undefined;
-    this.processCategory = domain?.processCategory ?? undefined;
-
-    this.dirty = false;
   }
 
   get isLoadingOptions() {
@@ -97,9 +84,20 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
     return this.groups ?? [];
   }
 
+  get formIsDirty() {
+    return !(
+      this.title?.trim() === this.args.process?.title?.trim() &&
+      this.processGroup?.id === this.args.process?.processGroup?.id &&
+      this.processDomain?.id ===
+        this.args.process?.processGroup?.processDomain?.id &&
+      this.processCategory?.id ===
+        this.args.process?.processGroup?.processDomain?.processCategory?.id
+    );
+  }
+
   get formIsValid() {
     return (
-      (this.title ?? '').trim() &&
+      this.title?.trim() &&
       this.processGroup &&
       this.processDomain &&
       this.processCategory
@@ -107,11 +105,7 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
   }
 
   get canSave() {
-    return this.formIsValid && (this.args.process.isNew || this.dirty);
-  }
-
-  get showResetButton() {
-    return this.dirty;
+    return this.formIsDirty && this.formIsValid;
   }
 
   @action
@@ -123,24 +117,20 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
   @action
   setTitle(e) {
     this.title = e.target.value;
-    if (!this.args.process.isNew) this.dirty = true;
-    this.args.process.title = this.title;
   }
 
   @action
-  handleProcessCategoryChange(cat) {
-    this.processCategory = cat;
+  handleProcessCategoryChange(category) {
+    this.processCategory = category;
     this.processDomain = undefined;
     this.processGroup = undefined;
-    this.dirty = true;
   }
 
   @action
-  handleProcessDomainChange(dom) {
-    this.processDomain = dom;
-    this.processCategory = dom?.processCategory;
+  handleProcessDomainChange(domain) {
+    this.processDomain = domain;
+    this.processCategory = domain?.processCategory;
     this.processGroup = undefined;
-    this.dirty = true;
   }
 
   @action
@@ -148,16 +138,14 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
     this.processGroup = group;
     this.processDomain = group?.processDomain;
     this.processCategory = group?.processDomain?.processCategory;
-    this.args.process.processGroups = group ? [group] : [];
-    this.dirty = true;
   }
 
   @action
-  clearSelections() {
-    this.processCategory = undefined;
-    this.processDomain = undefined;
-    this.processGroup = undefined;
-    this.dirty = false;
+  resetProperties() {
+    this.title = this.args.process?.title;
+    this.processGroup = this.args.process?.processGroup;
+    this.processDomain = this.processGroup?.processDomain;
+    this.processCategory = this.processDomain?.processCategory;
   }
 
   @action
@@ -169,7 +157,7 @@ export default class InventoryEditConceptualProcessModalComponent extends Compon
   save() {
     if (!this.formIsValid) return;
 
-    this.args.process.title = (this.title ?? '').trim();
+    this.args.process.title = this.title?.trim();
     this.args.process.processGroups = this.processGroup
       ? [this.processGroup]
       : [];

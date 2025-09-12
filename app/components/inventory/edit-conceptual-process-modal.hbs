@@ -69,11 +69,11 @@
 
     <:footer>
       <AuButtonGroup class="au-u-flex--end">
-        {{#if this.showResetButton}}
+        {{#if this.formIsDirty}}
           <AuButton
             @skin="naked"
             @icon="redo"
-            {{on "click" this.clearSelections}}
+            {{on "click" this.resetProperties}}
           >
             Herstel keuzes
           </AuButton>
