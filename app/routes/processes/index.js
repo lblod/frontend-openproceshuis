@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesIndexRoute extends Route {
+  @service session;
   @service store;
 
   queryParams = {
@@ -15,6 +16,10 @@ export default class ProcessesIndexRoute extends Route {
     blueprint: { refreshModel: true },
     ipdcProducts: { refreshModel: true, replace: true },
   };
+
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'auth.login');
+  }
 
   async model(params) {
     return {

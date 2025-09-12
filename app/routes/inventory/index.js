@@ -4,12 +4,17 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class InventoryIndexRoute extends Route {
+  @service session;
   @service store;
 
   queryParams = {
     page: { refreshModel: true },
     sort: { refreshModel: true },
   };
+
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'auth.login');
+  }
 
   async model(params) {
     return {
