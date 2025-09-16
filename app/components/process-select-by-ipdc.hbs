@@ -1,5 +1,7 @@
 <div class={{if @error "ember-power-select--error"}} ...attributes>
   <PowerSelectMultiple
+    @searchEnabled={{true}}
+    @searchField="name"
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @options={{this.ipdcProducts}}
