@@ -1,0 +1,61 @@
+{{#unless (eq this.relevantLinks.length 0)}}
+  <AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
+    {{#each this.relevantLinks as |link|}}
+      <Item>
+        <AuLinkExternal
+          href={{link.href}}
+          @icon="external-link"
+          @iconAlignment="right"
+          @newTab={{true}}
+        >
+          {{link.label}}
+        </AuLinkExternal>
+      </Item>
+    {{/each}}
+    {{#if @canEdit}}
+      <Item>
+        <AuButton
+          @icon="plus"
+          @skin="naked"
+          {{on "click" (fn (mut this.isAddModalOpen) true)}}
+        >
+          Voeg een link toe
+        </AuButton>
+      </Item>
+    {{/if}}
+  </AuList>
+{{/unless}}
+
+<AuModal
+  @modalOpen={{this.isAddModalOpen}}
+  @closeModal={{fn (mut this.isAddModalOpen) false}}
+>
+  <:title>Voeg link toe</:title>
+  <:body>
+    <p class="au-u-margin-bottom">Voeg een link toe die relevant is aan dit
+      proces.</p>
+    <AuLabel @error={{not this.inputIsValid}} for="relevant-link">
+      Link
+    </AuLabel>
+    <AuInput
+      @error={{not this.inputIsValid}}
+      @width="block"
+      value={{this.linkValue}}
+      id="relevant-link"
+      {{on "keyup" this.updateLinkValue}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isAddModalOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @icon="plus"
+        @disabled={{not this.canSaveChanges}}
+        {{on "click" this.addLink}}
+      >Voeg toe</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
