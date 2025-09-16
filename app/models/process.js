@@ -41,6 +41,11 @@ export default class ProcessModel extends Model {
     polymorphic: true,
   })
   ipdcProducts;
+  @hasMany('link', {
+    inverse: 'process',
+    async: true,
+  })
+  links;
   @hasMany('information-asset', { inverse: null, async: false })
   informationAssets;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
