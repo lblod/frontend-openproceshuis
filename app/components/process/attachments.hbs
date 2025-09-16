@@ -28,7 +28,7 @@
   </:subheader>
 
   <:card>
-    <Process::RelevantLinks @canEdit={{@canEdit}} @processId={{@process.id}} />
+    <Process::RelevantLinks @canEdit={{@canEdit}} @process={{@process}} />
     <AuDataTable
       @content={{this.attachments}}
       @isLoading={{this.attachmentsAreLoading}}

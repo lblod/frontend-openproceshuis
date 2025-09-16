@@ -1,29 +1,28 @@
 {{#unless (eq this.relevantLinks.length 0)}}
-  <AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
-    {{#each this.relevantLinks as |link|}}
-      <Item>
-        <AuLinkExternal
-          href={{link.href}}
-          @icon="external-link"
-          @iconAlignment="right"
-          @newTab={{true}}
-        >
-          {{link.label}}
-        </AuLinkExternal>
-      </Item>
-    {{/each}}
-    {{#if @canEdit}}
-      <Item>
-        <AuButton
-          @icon="plus"
-          @skin="naked"
-          {{on "click" (fn (mut this.isAddModalOpen) true)}}
-        >
-          Voeg een link toe
-        </AuButton>
-      </Item>
-    {{/if}}
-  </AuList>
+    <AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
+      {{#each this.relevantLinks as |link|}}
+        <Item class="au-u-padding-left">
+          <AuLinkExternal
+            href={{link.href}}
+            @icon="external-link"
+            @iconAlignment="right"
+            @newTab={{true}}
+          >
+            {{link.displayLabel}}
+          </AuLinkExternal>
+        </Item>
+      {{/each}}
+      {{#if @canEdit}}
+        <Item class="au-u-padding-left-small">
+          <AuButton
+            @skin="naked"
+            {{on "click" (fn (mut this.isAddModalOpen) true)}}
+          >
+            Voeg een link toe
+          </AuButton>
+        </Item>
+      {{/if}}
+    </AuList>
 {{/unless}}
 
 <AuModal
