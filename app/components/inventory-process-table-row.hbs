@@ -1,0 +1,31 @@
+{{#each this.rows as |row|}}
+  {{#if row.isLastRow}}
+    <td>
+      <div class="au-u-flex au-u-flex--row au-u-flex--vertical-center">
+        <span
+          class="inventory-process-number"
+        >{{row.value}}</span>
+        {{#if this.currentSession.isAdmin}}
+
+          <AuButtonGroup @inline={{true}} class="inventory-row-button-group">
+            <AuButton
+              @icon="pencil"
+              @skin="naked"
+              @size="large"
+              {{on "click" this.editInventoryProcess}}
+            />
+            <AuButton
+              @icon="bin"
+              @skin="naked"
+              @size="large"
+              @alert={{true}}
+              {{on "click" this.openDeleteModal}}
+            />
+          </AuButtonGroup>
+        {{/if}}
+      </div>
+    </td>
+  {{else}}
+    <td class="au-u-word-break">{{row.value}}</td>
+  {{/if}}
+{{/each}}
