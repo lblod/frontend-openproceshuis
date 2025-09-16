@@ -1,7 +1,8 @@
 {{#unless (eq this.relevantLinks.length 0)}}
-    <AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
-      {{#each this.relevantLinks as |link|}}
-        <Item class="au-u-padding-left">
+  <AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
+    {{#each this.relevantLinks as |link|}}
+      <Item>
+        <div class="au-u-padding-left show-element-on-hover au-u-flex au-u-flex--between">
           <AuLinkExternal
             href={{link.href}}
             @icon="external-link"
@@ -10,19 +11,38 @@
           >
             {{link.displayLabel}}
           </AuLinkExternal>
-        </Item>
-      {{/each}}
-      {{#if @canEdit}}
-        <Item class="au-u-padding-left-small">
-          <AuButton
-            @skin="naked"
-            {{on "click" (fn (mut this.isAddModalOpen) true)}}
+          <AuButtonGroup
+            @inline={{true}}
+            class="show-element-on-hover--element"
           >
-            Voeg een link toe
-          </AuButton>
-        </Item>
-      {{/if}}
-    </AuList>
+            <AuButton
+              @icon="pencil"
+              @skin="naked"
+              @size="large"
+              {{!-- {{on "click" this.editInventoryProcess}} --}}
+            />
+            <AuButton
+              @icon="bin"
+              @skin="naked"
+              @size="large"
+              @alert={{true}}
+              {{!-- {{on "click" this.openDeleteModal}} --}}
+            />
+          </AuButtonGroup>
+        </div>
+      </Item>
+    {{/each}}
+    {{#if @canEdit}}
+      <Item class="au-u-padding-left-small">
+        <AuButton
+          @skin="naked"
+          {{on "click" this.openAddModal}}
+        >
+          Voeg een link toe
+        </AuButton>
+      </Item>
+    {{/if}}
+  </AuList>
 {{/unless}}
 
 <AuModal

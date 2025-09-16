@@ -128,3 +128,13 @@
 tr:hover .inventory-row-button-group .au-c-button {
   visibility: visible;
 }
+
+.show-element-on-hover--element {
+  visibility: hidden;
+}
+
+.show-element-on-hover:hover {
+  .show-element-on-hover--element {
+    visibility: visible;
+  }
+}

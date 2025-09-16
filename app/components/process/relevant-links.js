@@ -8,6 +8,7 @@ import { isEmptyOrUrl } from '../../utils/custom-validators';
 
 export default class ProcessRelevantLinks extends Component {
   @service store;
+  @service toaster;
 
   @tracked isAddModalOpen = false;
   @tracked linkValue;
@@ -33,24 +34,44 @@ export default class ProcessRelevantLinks extends Component {
   }
 
   @action
+  openAddModal() {
+    this.isAddModalOpen = true;
+    this.linkValue = null;
+  }
+
+  @action
   async addLink() {
     const cleanLink = this.linkValue.trim();
-    const link = this.store.createRecord('link', {
+    const linkModel = this.store.createRecord('link', {
       label: null,
-      href: this.linkValue,
+      href: cleanLink,
     });
     const links = await this.args.process.links;
-    links.push(cleanLink);
-
-    if (links.find((l) => l.href === link.href)) {
+    if (links.find((l) => l.href === linkModel.href)) {
       this.toaster.error('Deze link heeft u al toegevoegd', undefined, {
         timeOut: 5000,
       });
-      link.deleteRecord();
+      linkModel.deleteRecord();
+      this.linkValue = null;
       return;
     }
-
-    await link.save();
-    await this.args.process.save();
+    links.push(linkModel);
+    try {
+      await linkModel.save();
+      await this.args.process.save();
+      this.toaster.success('Link toegevoegd', undefined, {
+        timeOut: 5000,
+      });
+      this.isAddModalOpen = false;
+      this.linkValue = null;
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het toevoegen van de link',
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
   }
 }
