@@ -2,7 +2,9 @@
   <AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
     {{#each this.relevantLinks as |link|}}
       <Item>
-        <div class="au-u-padding-left show-element-on-hover au-u-flex au-u-flex--between">
+        <div
+          class="au-u-padding-left show-element-on-hover au-u-flex au-u-flex--between"
+        >
           <AuLinkExternal
             href={{link.href}}
             @icon="external-link"
@@ -26,7 +28,7 @@
               @skin="naked"
               @size="large"
               @alert={{true}}
-              {{!-- {{on "click" this.openDeleteModal}} --}}
+              {{on "click" (fn this.openDeleteModal link)}}
             />
           </AuButtonGroup>
         </div>
@@ -34,10 +36,7 @@
     {{/each}}
     {{#if @canEdit}}
       <Item class="au-u-padding-left-small">
-        <AuButton
-          @skin="naked"
-          {{on "click" this.openAddModal}}
-        >
+        <AuButton @skin="naked" {{on "click" this.openAddModal}}>
           Voeg een link toe
         </AuButton>
       </Item>
@@ -75,6 +74,31 @@
         @disabled={{not this.canSaveChanges}}
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isDeleteModalOpen}}
+  @closeModal={{fn (mut this.isDeleteModalOpen) false}}
+>
+  <:title>Voeg link toe</:title>
+  <:body>
+    <p>Bent u zeker dat u de link
+      <a href={{this.updateLink.href}}> {{this.updateLink.displayLabel}}</a>
+      wilt verwijderen?</p>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isDeleteModalOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @icon="trash"
+        @alert={{true}}
+        {{on "click" this.deleteLink}}
+      >Verwijder</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>

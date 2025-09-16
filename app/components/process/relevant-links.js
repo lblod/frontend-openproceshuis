@@ -11,6 +11,9 @@ export default class ProcessRelevantLinks extends Component {
   @service toaster;
 
   @tracked isAddModalOpen = false;
+  @tracked isDeleteModalOpen = false;
+
+  @tracked editLinkModel;
   @tracked linkValue;
 
   get relevantLinks() {
@@ -37,6 +40,12 @@ export default class ProcessRelevantLinks extends Component {
   openAddModal() {
     this.isAddModalOpen = true;
     this.linkValue = null;
+  }
+
+  @action
+  openDeleteModal(link) {
+    this.isDeleteModalOpen = true;
+    this.editLinkModel = link;
   }
 
   @action
@@ -67,6 +76,24 @@ export default class ProcessRelevantLinks extends Component {
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het toevoegen van de link',
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+  }
+
+  @action
+  async deleteLink() {
+    try {
+      await this.editLinkModel.destroyRecord();
+      this.toaster.success('Link succesvol verwijderd', undefined, {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het verwijderen van de link',
         undefined,
         {
           timeOut: 5000,
