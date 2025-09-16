@@ -1,5 +1,8 @@
 <div class={{if @error "ember-power-select--error"}} ...attributes>
   <PowerSelectMultiple
+    @allowClear={{true}}
+    @searchEnabled={{true}}
+    @searchField="label"
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @options={{this.relevantAdministrativeUnits}}
