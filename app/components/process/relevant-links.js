@@ -11,9 +11,10 @@ export default class ProcessRelevantLinks extends Component {
   @service toaster;
 
   @tracked isAddModalOpen = false;
+  @tracked isEditModalOpen = false;
   @tracked isDeleteModalOpen = false;
 
-  @tracked editLinkModel;
+  @tracked updateLinkModel;
   @tracked linkValue;
 
   get relevantLinks() {
@@ -31,6 +32,13 @@ export default class ProcessRelevantLinks extends Component {
     return this.inputIsValid;
   }
 
+  get canUpdateChanges() {
+    if (!this.linkValue) {
+      return false;
+    }
+    return this.inputIsValid && this.updateLinkModel?.href !== this.linkValue;
+  }
+
   @action
   updateLinkValue(event) {
     this.linkValue = event.target?.value;
@@ -45,7 +53,14 @@ export default class ProcessRelevantLinks extends Component {
   @action
   openDeleteModal(link) {
     this.isDeleteModalOpen = true;
-    this.editLinkModel = link;
+    this.updateLinkModel = link;
+  }
+
+  @action
+  openEditModal(link) {
+    this.isEditModalOpen = true;
+    this.updateLinkModel = link;
+    this.linkValue = link.href;
   }
 
   @action
@@ -87,13 +102,35 @@ export default class ProcessRelevantLinks extends Component {
   @action
   async deleteLink() {
     try {
-      await this.editLinkModel.destroyRecord();
+      await this.updateLinkModel.destroyRecord();
       this.toaster.success('Link succesvol verwijderd', undefined, {
         timeOut: 5000,
       });
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het verwijderen van de link',
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+  }
+
+  @action
+  async updateLink() {
+    this.updateLinkModel.href = this.linkValue;
+    try {
+      await this.updateLinkModel.save();
+      this.toaster.success('De link werd succesvol aangepast', undefined, {
+        timeOut: 5000,
+      });
+      this.isEditModalOpen = false;
+      this.updateLinkModel = null;
+      this.linkValue = null;
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het aanpassen van de link',
         undefined,
         {
           timeOut: 5000,

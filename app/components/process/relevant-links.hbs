@@ -21,7 +21,7 @@
               @icon="pencil"
               @skin="naked"
               @size="large"
-              {{!-- {{on "click" this.editInventoryProcess}} --}}
+              {{on "click" (fn this.openEditModal link)}}
             />
             <AuButton
               @icon="bin"
@@ -36,7 +36,12 @@
     {{/each}}
     {{#if @canEdit}}
       <Item class="au-u-padding-left-small">
-        <AuButton @skin="naked" {{on "click" this.openAddModal}}>
+        <AuButton
+          @icon="plus"
+          @iconAlignment="right"
+          @skin="naked"
+          {{on "click" this.openAddModal}}
+        >
           Voeg een link toe
         </AuButton>
       </Item>
@@ -74,6 +79,39 @@
         @disabled={{not this.canSaveChanges}}
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isEditModalOpen}}
+  @closeModal={{fn (mut this.isEditModalOpen) false}}
+>
+  <:title>Pas link aan</:title>
+  <:body>
+    <p class="au-u-margin-bottom">Pas de link aan naar een aangepast waarde.</p>
+    <AuLabel @error={{not this.inputIsValid}} for="editrelevant-link">
+      Link
+    </AuLabel>
+    <AuInput
+      @error={{not this.inputIsValid}}
+      @width="block"
+      value={{this.linkValue}}
+      id="edit-relevant-link"
+      {{on "keyup" this.updateLinkValue}}
+    />
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isEditModalOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @icon="pencil"
+        @disabled={{not this.canUpdateChanges}}
+        {{on "click" this.updateLink}}
+      >Update</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>
