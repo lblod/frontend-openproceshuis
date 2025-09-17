@@ -1,15 +1,8 @@
-import Model, { attr, belongsTo } from '@ember-data/model';
+import Model, { attr } from '@ember-data/model';
 
 export default class LinkModel extends Model {
   @attr('string') label;
   @attr('string') href;
-
-  @belongsTo('process', {
-    async: false,
-    inverse: 'links',
-    polymorphic: true,
-  })
-  process;
 
   get displayLabel() {
     if (!this.label) {

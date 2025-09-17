@@ -42,7 +42,7 @@ export default class ProcessModel extends Model {
   })
   ipdcProducts;
   @hasMany('link', {
-    inverse: 'process',
+    inverse: null,
     async: true,
   })
   links;
