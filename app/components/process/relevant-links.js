@@ -41,7 +41,7 @@ export default class ProcessRelevantLinks extends Component {
     if (!this.linkValue) {
       return false;
     }
-    return this.isLinkValid && this.updateLinkModel?.href !== this.linkValue;
+    return this.isLinkValid && this.isInputDivergingFromStartValue;
   }
 
   get cleanLabel() {
@@ -50,6 +50,20 @@ export default class ProcessRelevantLinks extends Component {
 
   get cleanLink() {
     return this.linkValue?.trim();
+  }
+
+  get isInputDivergingFromStartValue() {
+    if (!this.updateLinkModel) {
+      return false;
+    }
+    if (this.cleanLabel != this.updateLinkModel.label) {
+      return true;
+    }
+    if (this.cleanLink != this.updateLinkModel.href) {
+      return true;
+    }
+
+    return false;
   }
 
   @action
@@ -65,6 +79,7 @@ export default class ProcessRelevantLinks extends Component {
   @action
   openAddModal() {
     this.isAddModalOpen = true;
+    this.labelValue = null;
     this.linkValue = null;
   }
 
@@ -78,6 +93,7 @@ export default class ProcessRelevantLinks extends Component {
   openEditModal(link) {
     this.isEditModalOpen = true;
     this.updateLinkModel = link;
+    this.labelValue = link.label;
     this.linkValue = link.href;
   }
 
