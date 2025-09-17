@@ -1,0 +1,31 @@
+<div ...attributes>
+  <div class="au-u-flex au-u-flex--vertical-center au-u-flex--between">
+    {{#if (has-block "title")}}
+      <div class="au-u-flex au-u-flex--vertical-center">
+        <AuHeading
+          @level={{or @headingLevel "3"}}
+          @skin={{or @headingSkin "4"}}
+        >
+          {{yield to="title"}}
+        </AuHeading>
+        <AuButton
+          @icon={{if this.isCollapsed "chevron-right" "chevron-down"}}
+          @skin="naked"
+          class="au-u-flex au-u-flex--spaced-tiny icon--black"
+          {{on "click" this.toggleCollapse}}
+        />
+      </div>
+    {{/if}}
+    {{#if (has-block "action")}}
+      <div>
+        {{yield to="action"}}
+      </div>
+    {{/if}}
+  </div>
+
+  {{#unless this.isCollapsed}}
+    <div class="au-u-margin">
+      {{yield}}
+    </div>
+  {{/unless}}
+</div>
