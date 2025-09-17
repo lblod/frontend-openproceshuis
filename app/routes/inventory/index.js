@@ -12,10 +12,6 @@ export default class InventoryIndexRoute extends Route {
     sort: { refreshModel: true },
   };
 
-  beforeModel(transition) {
-    this.session.requireAuthentication(transition, 'auth.login');
-  }
-
   async model(params) {
     try {
       const tableContent =

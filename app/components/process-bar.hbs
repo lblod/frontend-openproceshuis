@@ -20,13 +20,11 @@
           </AuLink>
         </Tab>
       {{/if}}
-      {{#if this.currentSession.isAuthenticated}}
-        <Tab>
-          <AuLink @route="inventory" @icon="folder">
-            Inventaris processen
-          </AuLink>
-        </Tab>
-      {{/if}}
+      <Tab>
+        <AuLink @route="inventory" @icon="folder">
+          Inventaris processen
+        </AuLink>
+      </Tab>
     </AuTabs>
   </Group>
 </AuToolbar>
