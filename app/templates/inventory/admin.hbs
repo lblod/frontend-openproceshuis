@@ -41,5 +41,20 @@
         </AuButton>
       </Group>
     </AuToolbar>
+    <div class="au-o-box">
+      {{#each @model.categories as |category|}}
+        <CollapsibleContainer class="au-u-margin-small">
+          <:title>{{category.label}}</:title>
+          <:action>
+            <AuButton @skin="naked" @icon="add" iconAlignment="left">
+              Nieuw domein
+            </AuButton>
+          </:action>
+          <:default>
+            {{! tables }}
+          </:default>
+        </CollapsibleContainer>
+      {{/each}}
+    </div>
   </:content>
 </SidebarContainer>
