@@ -15,28 +15,46 @@ export default class ProcessRelevantLinks extends Component {
   @tracked isDeleteModalOpen = false;
 
   @tracked updateLinkModel;
+  @tracked labelValue;
   @tracked linkValue;
 
   get relevantLinks() {
     return this.args.process?.links ?? [];
   }
 
-  get inputIsValid() {
+  get isLinkValid() {
     return isEmptyOrUrl(this.linkValue);
+  }
+
+  get isLabelValid() {
+    return !this.labelValue || this.labelValue.trim() != '';
   }
 
   get canSaveChanges() {
     if (!this.linkValue) {
       return false;
     }
-    return this.inputIsValid;
+    return this.isLinkValid;
   }
 
   get canUpdateChanges() {
     if (!this.linkValue) {
       return false;
     }
-    return this.inputIsValid && this.updateLinkModel?.href !== this.linkValue;
+    return this.isLinkValid && this.updateLinkModel?.href !== this.linkValue;
+  }
+
+  get cleanLabel() {
+    return this.labelValue?.trim();
+  }
+
+  get cleanLink() {
+    return this.linkValue?.trim();
+  }
+
+  @action
+  updateLabelValue(event) {
+    this.labelValue = event.target?.value;
   }
 
   @action
@@ -65,10 +83,9 @@ export default class ProcessRelevantLinks extends Component {
 
   @action
   async addLink() {
-    const cleanLink = this.linkValue.trim();
     const linkModel = this.store.createRecord('link', {
-      label: null,
-      href: cleanLink,
+      label: this.cleanLabel,
+      href: this.cleanLink,
     });
     const links = await this.args.process.links;
     if (links.find((l) => l.href === linkModel.href)) {
@@ -119,7 +136,8 @@ export default class ProcessRelevantLinks extends Component {
 
   @action
   async updateLink() {
-    this.updateLinkModel.href = this.linkValue;
+    this.updateLinkModel.label = this.cleanLabel;
+    this.updateLinkModel.href = this.cleanLink;
     try {
       await this.updateLinkModel.save();
       this.toaster.success('De link werd succesvol aangepast', undefined, {

@@ -55,18 +55,36 @@
 >
   <:title>Voeg link toe</:title>
   <:body>
-    <p class="au-u-margin-bottom">Voeg een link toe die relevant is aan dit
-      proces.</p>
-    <AuLabel @error={{not this.inputIsValid}} for="relevant-link">
-      Link
-    </AuLabel>
-    <AuInput
-      @error={{not this.inputIsValid}}
-      @width="block"
-      value={{this.linkValue}}
-      id="relevant-link"
-      {{on "keyup" this.updateLinkValue}}
-    />
+    <p>Voeg een link toe die relevant is aan dit proces. De bijhorende label
+      wordt gebruikt om de links te tonen in de lijst.</p>
+    <div class="au-u-margin-top">
+      <AuLabel @error={{not this.isLabelValid}} for="relevant-link-label">
+        Label
+      </AuLabel>
+      <AuInput
+        @error={{not this.isLabelValid}}
+        @width="block"
+        value={{this.labelValue}}
+        id="relevant-link-label"
+        {{on "keyup" this.updateLabelValue}}
+      />
+    </div>
+    <div class="au-u-margin-top">
+      <AuLabel
+        @required={{true}}
+        @error={{not this.isLinkValid}}
+        for="relevant-link"
+      >
+        Link
+      </AuLabel>
+      <AuInput
+        @error={{not this.isLinkValid}}
+        @width="block"
+        value={{this.linkValue}}
+        id="relevant-link"
+        {{on "keyup" this.updateLinkValue}}
+      />
+    </div>
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
@@ -89,17 +107,31 @@
 >
   <:title>Pas link aan</:title>
   <:body>
-    <p class="au-u-margin-bottom">Pas de link aan naar een aangepast waarde.</p>
-    <AuLabel @error={{not this.inputIsValid}} for="editrelevant-link">
-      Link
-    </AuLabel>
-    <AuInput
-      @error={{not this.inputIsValid}}
-      @width="block"
-      value={{this.linkValue}}
-      id="edit-relevant-link"
-      {{on "keyup" this.updateLinkValue}}
-    />
+    <p>Pas de link aan naar een aangepast waarde.</p>
+    <div class="au-u-margin-top">
+      <AuLabel @error={{not this.isLabelValid}} for="edit-relevant-link-label">
+        Label
+      </AuLabel>
+      <AuInput
+        @error={{not this.isLabelValid}}
+        @width="block"
+        value={{this.labelValue}}
+        id="edit-relevant-link-label"
+        {{on "keyup" this.updateLabelValue}}
+      />
+    </div>
+    <div class="au-u-margin-bottom">
+      <AuLabel @error={{not this.isLinkValid}} for="editrelevant-link">
+        Link
+      </AuLabel>
+      <AuInput
+        @error={{not this.isLinkValid}}
+        @width="block"
+        value={{this.linkValue}}
+        id="edit-relevant-link"
+        {{on "keyup" this.updateLinkValue}}
+      />
+    </div>
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
