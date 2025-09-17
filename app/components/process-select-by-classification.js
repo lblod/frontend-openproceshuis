@@ -12,7 +12,7 @@ export default class ProcessSelectByClassificationComponent extends Component {
     const query = {
       page: {
         number: 0,
-        size: 20,
+        size: 1000,
       },
       sort: ':no-case:label',
     };
