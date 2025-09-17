@@ -55,9 +55,8 @@
 >
   <:title>Voeg link toe</:title>
   <:body>
-    <p>Voeg een link toe die relevant is aan dit proces. De bijhorende label
-      wordt gebruikt om de links te tonen in de lijst. Laat je deze leeg dan
-      wordt er de link getoont.
+    <p>Voeg een link toe die relevant is voor dit proces. Kies een label voor
+      meer context. Laat je deze leeg, dan wordt de link getoond.
     </p>
     <div class="au-u-margin-top">
       <AuLabel @error={{not this.isLabelValid}} for="relevant-link-label">
@@ -154,12 +153,10 @@
   @modalOpen={{this.isDeleteModalOpen}}
   @closeModal={{fn (mut this.isDeleteModalOpen) false}}
 >
-  <:title>Voeg link toe</:title>
+  <:title>Verwijder link</:title>
   <:body>
-    <p>Bent u zeker dat u de link
-      <a href={{this.updateLinkModel.href}}>
-        {{this.updateLinkModel.displayLabel}}</a>
-      wilt verwijderen?</p>
+    <p>Ben je zeker dat je de link "{{this.updateLinkModel.displayLabel}}" wil
+      verwijderen?</p>
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">

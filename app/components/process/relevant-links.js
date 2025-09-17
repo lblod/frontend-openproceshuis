@@ -105,7 +105,7 @@ export default class ProcessRelevantLinks extends Component {
     });
     const links = await this.args.process.links;
     if (links.find((l) => l.href === linkModel.href)) {
-      this.toaster.error('Deze link heeft u al toegevoegd', undefined, {
+      this.toaster.error('Deze link werd al toegevoegd.', undefined, {
         timeOut: 5000,
       });
       linkModel.deleteRecord();
