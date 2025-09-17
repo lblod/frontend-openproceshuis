@@ -27,4 +27,15 @@
       </Tab>
     </AuTabs>
   </Group>
+  <Group>
+    <AuTabs @reversed={{this.reversed}} as |Tab|>
+      {{#if (and this.currentSession.isAdmin this.currentRouteIsInventory)}}
+        <Tab>
+          <AuLink @route="inventory.admin">
+            Beheer
+          </AuLink>
+        </Tab>
+      {{/if}}
+    </AuTabs>
+  </Group>
 </AuToolbar>

@@ -1,0 +1,36 @@
+{{page-title "Beheer inventaris processsen"}}
+{{breadcrumb "Beheer" route="inventory.admin"}}
+
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar au-o-box">
+      <AuHeading @skin="5" class="au-u-muted au-u-margin-bottom-small">
+        Categorieën
+      </AuHeading>
+    </div>
+  </:sidebar>
+  <:content>
+    <AuToolbar
+      @size="large"
+      class="au-u-padding-bottom-none au-u-margin-bottom-none"
+      as |Group|
+    >
+      <Group class="au-u-margin-bottom-none">
+        <AuHeading @skin="2">
+          Beheer inventaris processen
+        </AuHeading>
+      </Group>
+    </AuToolbar>
+    <AuToolbar
+      @size="large"
+      class="au-u-padding-bottom-none au-u-margin-bottom-none"
+      as |Group|
+    >
+      <Group class="au-u-margin-bottom-none">
+        <AuButton @skin="secondary" @icon="add" iconAlignment="left">
+          Nieuwe categorie
+        </AuButton>
+      </Group>
+    </AuToolbar>
+  </:content>
+</SidebarContainer>

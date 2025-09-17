@@ -1,11 +1,10 @@
-{{page-title "Inventaris"}}
-{{breadcrumb "Inventaris" route="inventory"}}
+{{page-title "Inventaris processen"}}
+{{breadcrumb "Inventaris processen" route="inventory.index"}}
 
 <div class="au-c-body-container au-c-body-container--scroll">
   <NavigationBar />
   {{#if this.currentSession.isAuthenticated}}
     <ProcessBar />
   {{/if}}
-
   {{outlet}}
 </div>
