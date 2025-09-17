@@ -4,9 +4,18 @@
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar au-o-box">
-      <AuHeading @skin="5" class="au-u-muted au-u-margin-bottom-small">
-        Categorieën
-      </AuHeading>
+      <div>
+        <AuHeading @skin="5" class="au-u-muted au-u-margin-bottom-small">
+          Categorieën
+        </AuHeading>
+        <AuList @divider={{false}} as |Item|>
+          {{#each @model.categories as |category|}}
+            <Item>
+              {{category.label}}
+            </Item>
+          {{/each}}
+        </AuList>
+      </div>
     </div>
   </:sidebar>
   <:content>

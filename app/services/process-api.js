@@ -1,6 +1,8 @@
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
 
 export default class ProcessApiService extends Service {
+  @service store;
+
   async fetchInventoryProcessesTableContent(fetchOptions) {
     const queryOptions = fetchOptions;
 
@@ -51,5 +53,23 @@ export default class ProcessApiService extends Service {
 
   optionsToQueryParams(options) {
     return Object.keys(options).map((key) => `${key}=${options[key]}`);
+  }
+
+  async getConceptualCategories() {
+    const response = await fetch(
+      `/process-api/conceptual-processes/categories`,
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        'Er liep iets mis bij het ophalen van de content voor de inventaris tabel',
+      );
+    }
+
+    const results = await response.json();
+
+    return await this.store.query('process-category', {
+      'filter[id]': results.map((category) => category.id).join(','),
+    });
   }
 }
