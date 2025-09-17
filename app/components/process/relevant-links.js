@@ -136,6 +136,8 @@ export default class ProcessRelevantLinks extends Component {
   async deleteLink() {
     try {
       await this.updateLinkModel.destroyRecord();
+      this.isDeleteModalOpen = false;
+      this.updateLinkModel = null;
       this.toaster.success('Link succesvol verwijderd', undefined, {
         timeOut: 5000,
       });
