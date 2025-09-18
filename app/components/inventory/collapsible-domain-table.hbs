@@ -1,0 +1,35 @@
+<AuTable @size={{this.size}}>
+  <:title>
+    <AuButton
+      @iconAlignment="right"
+      @icon={{if this.isCollapsed "chevron-right" "chevron-down"}}
+      @skin="naked"
+      class="au-u-flex au-u-flex--spaced-tiny icon--black"
+      {{on "click" this.toggleCollapse}}
+    >
+      {{@domain.label}}
+    </AuButton>
+  </:title>
+  <:body>
+    {{#unless this.isCollapsed}}
+
+      {{#each this.groups as |group|}}
+        <tr>
+          <td>{{group.label}}</td>
+        </tr>
+      {{/each}}
+    {{/unless}}
+  </:body>
+  <:footer>
+    {{#unless this.isCollapsed}}
+
+      <tr>
+        <td>
+          <AuButton @skin="naked" @icon="add" iconAlignment="left">
+            Nieuwe groep
+          </AuButton>
+        </td>
+      </tr>
+    {{/unless}}
+  </:footer>
+</AuTable>

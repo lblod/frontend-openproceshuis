@@ -1,3 +1,7 @@
-{{#each this.domains as |domain|}}
-  <p>{{domain.label}}</p>
-{{/each}}
+<div class="au-u-flex au-u-flex--row au-u-flex--spaced-large au-u-flex--wrap">
+  {{#each this.domains as |domain|}}
+    <div>
+      <Inventory::CollapsibleDomainTable @domain={{domain}} />
+    </div>
+  {{/each}}
+</div>
