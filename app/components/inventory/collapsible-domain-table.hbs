@@ -12,11 +12,15 @@
   </:title>
   <:body>
     {{#unless this.isCollapsed}}
-      {{#each this.groups as |group|}}
-        <tr>
-          <td>{{group.label}}</td>
-        </tr>
-      {{/each}}
+      {{#if this.isLoading}}
+        <AuLoader @hideMessage={{true}} />
+      {{else}}
+        {{#each this.groups as |group|}}
+          <tr>
+            <td>{{group.label}}</td>
+          </tr>
+        {{/each}}
+      {{/if}}
     {{/unless}}
   </:body>
   <:footer>

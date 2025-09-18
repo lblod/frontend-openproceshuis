@@ -1,10 +1,14 @@
 <div class="au-u-flex au-u-flex--row au-u-flex--spaced-large au-u-flex--wrap">
-  {{#each this.domains as |domain|}}
-    <div>
-      <Inventory::CollapsibleDomainTable
-        @domain={{domain}}
-        @isCollapsedOnLoad={{true}}
-      />
-    </div>
-  {{/each}}
+  {{#if this.isLoading}}
+    <AuLoader @hideMessage={{true}} />
+  {{else}}
+    {{#each this.domains as |domain|}}
+      <div>
+        <Inventory::CollapsibleDomainTable
+          @domain={{domain}}
+          @isCollapsedOnLoad={{true}}
+        />
+      </div>
+    {{/each}}
+  {{/if}}
 </div>
