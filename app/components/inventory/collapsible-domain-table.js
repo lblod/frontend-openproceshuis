@@ -30,12 +30,22 @@ export default class InventoryCollapsibleDomainTable extends Component {
   }
 
   async loadGroups() {
-    this.isLoading = true;
+    let loadingTimeout;
+    new Promise((resolve) => {
+      console.log('start');
+      loadingTimeout = setTimeout(() => {
+        this.isLoading = true;
+        console.log(`loading set to true`);
+        resolve();
+      }, 50);
+    });
+
     this.groups = await this.store.query('process-group', {
       'filter[process-domains][id]': this.args.domain.id,
       sort: 'label',
       page: { size: 100 },
     });
+    clearTimeout(loadingTimeout);
     this.isLoading = false;
   }
 }
