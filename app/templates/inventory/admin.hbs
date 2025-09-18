@@ -43,7 +43,10 @@
     </AuToolbar>
     <div class="au-o-box">
       {{#each @model.categories as |category|}}
-        <CollapsibleContainer class="au-u-margin-small">
+        <CollapsibleContainer
+          class="au-u-margin-small"
+          @isCollapsedOnLoad={{true}}
+        >
           <:title>{{category.label}}</:title>
           <:action>
             <AuButton @skin="naked" @icon="add" iconAlignment="left">

@@ -12,7 +12,6 @@
   </:title>
   <:body>
     {{#unless this.isCollapsed}}
-
       {{#each this.groups as |group|}}
         <tr>
           <td>{{group.label}}</td>
@@ -22,7 +21,6 @@
   </:body>
   <:footer>
     {{#unless this.isCollapsed}}
-
       <tr>
         <td>
           <AuButton @skin="naked" @icon="add" iconAlignment="left">

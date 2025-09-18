@@ -14,6 +14,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
 
   constructor() {
     super(...arguments);
+    this.isCollapsed = !!this.args.isCollapsedOnLoad;
     this.store
       .query('process-group', {
         'filter[process-domains][id]': this.args.domain.id,
