@@ -26,10 +26,16 @@
     {{/unless}}
   </:body>
   <:footer>
-    {{#unless this.isCollapsed}}
+    {{#unless (or this.isCollapsed this.isLoading)}}
       <tr>
         <td>
-          <AuButton @skin="naked" @icon="add" iconAlignment="left">
+          <AuButton
+            @skin="naked"
+            @icon="add"
+            iconAlignment="left"
+            @disabled={{this.isCreatingGroup}}
+            {{on "click" this.createGroup}}
+          >
             Nieuwe groep
           </AuButton>
         </td>

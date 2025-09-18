@@ -8,10 +8,12 @@ import { tracked } from '@glimmer/tracking';
 
 export default class InventoryCollapsibleDomainTable extends Component {
   @service store;
+  @service toaster;
 
   @tracked groups = A([]);
   @tracked isLoading = false;
   @tracked isCollapsed = false;
+  @tracked isCreatingGroup = false;
 
   constructor() {
     super(...arguments);
@@ -32,10 +34,8 @@ export default class InventoryCollapsibleDomainTable extends Component {
   async loadGroups() {
     let loadingTimeout;
     new Promise((resolve) => {
-      console.log('start');
       loadingTimeout = setTimeout(() => {
         this.isLoading = true;
-        console.log(`loading set to true`);
         resolve();
       }, 50);
     });
@@ -47,5 +47,38 @@ export default class InventoryCollapsibleDomainTable extends Component {
     });
     clearTimeout(loadingTimeout);
     this.isLoading = false;
+  }
+
+  @action
+  async createGroup() {
+    this.isCreatingGroup = true;
+    const datetimeNow = new Date();
+    const group = await this.store.createRecord('process-group', {
+      label: 'Nieuwe groep',
+      created: datetimeNow,
+      modified: datetimeNow,
+      processDomains: [this.args.domain],
+    });
+    try {
+      await group.save();
+      this.toaster.success(
+        'Nieuwe groep toegevoegd aan domein',
+        this.args.domain.label,
+        {
+          timeOut: 5000,
+        },
+      );
+      this.groups = [...this.groups, group];
+      this.isCreatingGroup = false;
+    } catch (error) {
+      this.isCreatingGroup = false;
+      this.toaster.error(
+        `Er liep iets mis bij het toevoegen van een nieuwe aan het domein ${this.args.domain.label}.`,
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
   }
 }
