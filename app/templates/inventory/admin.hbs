@@ -40,7 +40,7 @@
           @skin="secondary"
           @icon="add"
           iconAlignment="left"
-          {{on "click" this.openCategoryModal}}
+          {{on "click" (fn (mut this.isNewCategoryModalOpen) true)}}
         >
           Nieuwe categorie
         </AuButton>
@@ -72,39 +72,10 @@
   </:content>
 </SidebarContainer>
 
-<AuModal
-  @modalOpen={{this.isNewCategoryModalOpen}}
-  @closable={{true}}
-  @closeModal={{fn (mut this.isNewCategoryModalOpen) false}}
->
-  <:title>Voeg een nieuwe categorie</:title>
-  <:body>
-    <p class="au-u-margin-bottom">Geef de label in van de categorie dat je wil
-      toevoegen.</p>
-    <div class="au-u-flex au-u-flex--column">
-      <AuLabel @required={{true}} for="new-category">Label</AuLabel>
-      <AuInput
-        id="new-category"
-        @value={{this.newCategoryLabel}}
-        {{on "keyup" this.updateCategoryLabel}}
-      />
-    </div>
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="secondary"
-        {{on "click" (fn (mut this.isNewCategoryModalOpen) false)}}
-      >Annuleer</AuButton>
-      <AuButton
-        @icon="plus"
-        @disabled={{not this.canSaveNewCategory}}
-        {{on "click" this.createCategory}}
-      >Voeg toe</AuButton>
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
-
+<Inventory::CreateCategoryModal
+  @isModalOpen={{this.isNewCategoryModalOpen}}
+  @onCloseModal={{fn (mut this.isNewCategoryModalOpen) false}}
+/>
 <Inventory::CreateDomainModal
   @isModalOpen={{this.isNewDomainModalOpen}}
   @onCloseModal={{this.onCloseCreateDomainModal}}

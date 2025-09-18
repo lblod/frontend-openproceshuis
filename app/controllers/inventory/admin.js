@@ -9,51 +9,8 @@ export default class InventoryAdminController extends Controller {
   @service toaster;
 
   @tracked isNewCategoryModalOpen = false;
-  @tracked newCategoryLabel;
-
-  @tracked isNewDomainModalOpen;
+  @tracked isNewDomainModalOpen = false;
   @tracked createForCategory;
-
-  get canSaveNewCategory() {
-    return this.newCategoryLabel && this.newCategoryLabel.trim() !== '';
-  }
-
-  @action
-  openCategoryModal() {
-    this.isNewCategoryModalOpen = true;
-    this.newCategoryLabel = null;
-  }
-
-  @action
-  updateCategoryLabel(event) {
-    this.newCategoryLabel = event.target?.value;
-  }
-
-  @action
-  async createCategory() {
-    try {
-      const datetimeNow = new Date();
-      const categoryModel = await this.store.createRecord('process-category', {
-        label: this.newCategoryLabel.trim(),
-        created: datetimeNow,
-        modified: datetimeNow,
-      });
-      await categoryModel.save();
-      this.toaster.success('Categorie toegevoegd', undefined, {
-        timeOut: 5000,
-      });
-      this.newCategoryLabel = null;
-      this.isNewCategoryModalOpen = false;
-    } catch (error) {
-      this.toaster.error(
-        'Er liep iets mis bij het aanmaken van de categorie',
-        undefined,
-        {
-          timeOut: 5000,
-        },
-      );
-    }
-  }
 
   @action
   onCloseCreateDomainModal() {
