@@ -12,6 +12,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
 
   @tracked groups = A([]);
   @tracked isLoading = false;
+  @tracked isFetchingGroups = false;
   @tracked isCollapsed = false;
   @tracked isCreatingGroup = false;
 
@@ -32,6 +33,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
   }
 
   async loadGroups() {
+    this.isFetchingGroups = true;
     let loadingTimeout;
     new Promise((resolve) => {
       loadingTimeout = setTimeout(() => {
@@ -47,6 +49,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
     });
     clearTimeout(loadingTimeout);
     this.isLoading = false;
+    this.isFetchingGroups = false;
   }
 
   @action

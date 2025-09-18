@@ -26,7 +26,7 @@
     {{/unless}}
   </:body>
   <:footer>
-    {{#unless (or this.isCollapsed this.isLoading)}}
+    {{#unless (or this.isCollapsed this.isFetchingGroups)}}
       <tr>
         <td>
           <AuButton
