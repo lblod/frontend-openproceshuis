@@ -1,0 +1,49 @@
+<tr>
+  <div
+    class="{{if this.isEditing 'bg-200--blue'}}
+      au-u-flex au-u-flex--row au-u-flex--vertical-center au-u-flex--between au-u-padding-left-small au-u-padding-right-small"
+  >
+    {{#if this.isEditing}}
+      <AuInput
+        @width="block"
+        @error={{this.errorMessage}}
+        id="new-category"
+        value={{this.label}}
+        {{on "keyup" (perform this.updateLabel)}}
+      />
+      <AuButtonGroup @inline={{true}}>
+        <AuButton
+          @icon="check"
+          @skin="naked"
+          @size="large"
+          @disabled={{not this.isValidLabel}}
+          {{on "click" this.saveGroupLabel}}
+        />
+        <AuButton
+          @icon="cross"
+          @skin="naked"
+          @size="large"
+          @alert={{true}}
+          {{on "click" this.toggleIsEditing}}
+        />
+      </AuButtonGroup>
+    {{else}}
+      <p>{{@group.label}}</p>
+      <AuButtonGroup @inline={{true}} class="inventory-row-button-group">
+        <AuButton
+          @icon="pencil"
+          @skin="naked"
+          @size="large"
+          {{on "click" this.toggleIsEditing}}
+        />
+        <AuButton
+          @icon="bin"
+          @skin="naked"
+          @size="large"
+          @alert={{true}}
+          {{!-- {{on "click" this.openDeleteGroupModal}} --}}
+        />
+      </AuButtonGroup>
+    {{/if}}
+  </div>
+</tr>

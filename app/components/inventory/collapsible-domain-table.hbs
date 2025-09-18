@@ -20,31 +20,7 @@
         <AuLoader @hideMessage={{true}} />
       {{else}}
         {{#each this.groups as |group|}}
-          <tr>
-            <div
-              class="au-u-flex au-u-flex--row au-u-flex--vertical-center au-u-flex--between au-u-padding-left-small au-u-padding-right-small"
-            >
-              <p>{{group.label}}</p>
-              <AuButtonGroup
-                @inline={{true}}
-                class="inventory-row-button-group"
-              >
-                <AuButton
-                  @icon="pencil"
-                  @skin="naked"
-                  @size="large"
-                  {{!-- {{on "click" this.editGroup}} --}}
-                />
-                <AuButton
-                  @icon="bin"
-                  @skin="naked"
-                  @size="large"
-                  @alert={{true}}
-                  {{!-- {{on "click" this.openDeleteGroupModal}} --}}
-                />
-              </AuButtonGroup>
-            </div>
-          </tr>
+          <Inventory::EditableGroupRow @group={{group}} @domain={{@domain}} />
         {{/each}}
       {{/if}}
     {{/unless}}
