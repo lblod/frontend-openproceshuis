@@ -14,8 +14,9 @@
         for="new-category"
       >Label</AuLabel>
       <AuInput
+        @error={{this.errorMessage}}
         id="new-category"
-        @value={{this.label}}
+        value={{this.label}}
         {{on "keyup" (perform this.updateLabel)}}
       />
       {{#if this.errorMessage}}

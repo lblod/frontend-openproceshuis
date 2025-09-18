@@ -14,8 +14,9 @@
         for="new-domain"
       >Label</AuLabel>
       <AuInput
+        @error={{this.errorMessage}}
         id="new-domain"
-        @value={{this.label}}
+        value={{this.label}}
         {{on "keyup" (perform this.updateLabel)}}
       />
       {{#if this.errorMessage}}
