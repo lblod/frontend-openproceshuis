@@ -1,14 +1,18 @@
 <AuTable @size={{this.size}}>
   <:title>
-    <AuButton
-      @iconAlignment="right"
-      @icon={{if this.isCollapsed "chevron-right" "chevron-down"}}
-      @skin="naked"
-      class="au-u-flex au-u-flex--spaced-tiny icon--black"
+    {{! template-lint-disable no-invalid-interactive }}
+    <div
+      class="au-u-flex au-u-flex--row au-u-flex--no-wrap au-u-flex--vertical-center au-u-flex--between"
       {{on "click" this.toggleCollapse}}
     >
-      {{@domain.label}}
-    </AuButton>
+      <p class="au-u-muted au-u-h6">
+        {{@domain.label}}
+      </p>
+      <AuIcon
+        @icon={{if this.isCollapsed "chevron-right" "chevron-down"}}
+        @class="au-u-flex au-u-flex--spaced-tiny icon--black"
+      />
+    </div>
   </:title>
   <:body>
     {{#unless this.isCollapsed}}
