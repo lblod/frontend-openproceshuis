@@ -5,7 +5,7 @@ import { service } from '@ember/service';
 export default class InventoryAdminRoute extends Route {
   @service session;
   @service currentSession;
-  @service processApi;
+  @service store;
 
   async beforeModel(transition) {
     this.session.requireAuthentication(transition, 'index');
@@ -13,7 +13,10 @@ export default class InventoryAdminRoute extends Route {
   }
 
   async model() {
-    const categories = await this.processApi.getConceptualCategories();
+    const categories = await this.store.query('process-category', {
+      page: { size: 500 },
+      sort: 'label',
+    });
     return {
       categories,
     };
