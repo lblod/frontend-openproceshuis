@@ -72,12 +72,16 @@
   </:content>
 </SidebarContainer>
 
-<Inventory::CreateCategoryModal
-  @isModalOpen={{this.isNewCategoryModalOpen}}
-  @onCloseModal={{fn (mut this.isNewCategoryModalOpen) false}}
-/>
-<Inventory::CreateDomainModal
-  @isModalOpen={{this.isNewDomainModalOpen}}
-  @onCloseModal={{this.onCloseCreateDomainModal}}
-  @category={{this.createForCategory}}
-/>
+{{#if this.isNewCategoryModalOpen}}
+  <Inventory::CreateCategoryModal
+    @isModalOpen={{this.isNewCategoryModalOpen}}
+    @onCloseModal={{fn (mut this.isNewCategoryModalOpen) false}}
+  />
+{{/if}}
+{{#if this.isNewDomainModalOpen}}
+  <Inventory::CreateDomainModal
+    @isModalOpen={{this.isNewDomainModalOpen}}
+    @onCloseModal={{this.onCloseCreateDomainModal}}
+    @category={{this.createForCategory}}
+  />
+{{/if}}

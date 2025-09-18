@@ -8,12 +8,21 @@
     <p class="au-u-margin-bottom">Geef de label in van de categorie dat je wil
       toevoegen.</p>
     <div class="au-u-flex au-u-flex--column">
-      <AuLabel @required={{true}} for="new-category">Label</AuLabel>
+      <AuLabel
+        @error={{this.errorMessage}}
+        @required={{true}}
+        for="new-category"
+      >Label</AuLabel>
       <AuInput
         id="new-category"
         @value={{this.label}}
-        {{on "keyup" this.updateLabel}}
+        {{on "keyup" (perform this.updateLabel)}}
       />
+      {{#if this.errorMessage}}
+        <AuHelpText @error="true">
+          {{this.errorMessage}}
+        </AuHelpText>
+      {{/if}}
     </div>
   </:body>
   <:footer>
