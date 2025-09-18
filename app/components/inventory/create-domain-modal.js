@@ -4,20 +4,38 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
+import { restartableTask, timeout } from 'ember-concurrency';
+
 export default class InventoryCreateDomainModal extends Component {
   @service store;
   @service toaster;
 
   @tracked label;
+  @tracked errorMessage;
 
   get canSave() {
-    return this.label && this.label.trim() !== '';
+    return this.label && this.label.trim() !== '' && !this.errorMessage;
   }
 
-  @action
-  updateLabel(event) {
+  updateLabel = restartableTask(async (event) => {
     this.label = event.target?.value;
-  }
+    await timeout(250);
+    if (this.label) {
+      this.errorMessage = null;
+      const duplicates = await this.store.query('process-domain', {
+        'filter[process-categories][id]': this.args.category.id,
+        'filter[:exact:label]': this.label.trim(),
+        page: { size: 1 },
+      });
+      if (duplicates.length !== 0) {
+        this.errorMessage = 'Dit domein bestaat al';
+      } else {
+        this.errorMessage = null;
+      }
+    } else {
+      this.errorMessage = 'Dit veld is verplicht';
+    }
+  });
 
   @action
   async create() {
