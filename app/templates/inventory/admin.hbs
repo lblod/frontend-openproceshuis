@@ -10,7 +10,7 @@
         </AuHeading>
         <AuList @divider={{false}} as |Item|>
           {{#each @model.categories as |category|}}
-            <Item>
+            <Item {{on "click" (fn this.scrollToCategory category)}}>
               {{category.label}}
             </Item>
           {{/each}}
@@ -48,25 +48,27 @@
     </AuToolbar>
     <div class="au-o-box">
       {{#each @model.categories as |category|}}
-        <CollapsibleContainer
-          class="au-u-margin-small"
-          @isCollapsedOnLoad={{true}}
-        >
-          <:title>{{category.label}}</:title>
-          <:action>
-            <AuButton
-              @skin="naked"
-              @icon="add"
-              iconAlignment="left"
-              {{on "click" (fn this.openCreateDomainModal category)}}
-            >
-              Nieuw domein
-            </AuButton>
-          </:action>
-          <:default>
-            <Inventory::TableViewDomains @category={{category}} />
-          </:default>
-        </CollapsibleContainer>
+        <section id={{category.id}}>
+          <CollapsibleContainer
+            class="au-u-margin-small"
+            @isCollapsedOnLoad={{true}}
+          >
+            <:title>{{category.label}}</:title>
+            <:action>
+              <AuButton
+                @skin="naked"
+                @icon="add"
+                iconAlignment="left"
+                {{on "click" (fn this.openCreateDomainModal category)}}
+              >
+                Nieuw domein
+              </AuButton>
+            </:action>
+            <:default>
+              <Inventory::TableViewDomains @category={{category}} />
+            </:default>
+          </CollapsibleContainer>
+        </section>
       {{/each}}
     </div>
   </:content>
