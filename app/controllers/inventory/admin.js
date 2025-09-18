@@ -11,6 +11,9 @@ export default class InventoryAdminController extends Controller {
   @tracked isNewCategoryModalOpen = false;
   @tracked newCategoryLabel;
 
+  @tracked isNewDomainModalOpen;
+  @tracked createForCategory;
+
   get canSaveNewCategory() {
     return this.newCategoryLabel && this.newCategoryLabel.trim() !== '';
   }
@@ -50,5 +53,17 @@ export default class InventoryAdminController extends Controller {
         },
       );
     }
+  }
+
+  @action
+  onCloseCreateDomainModal() {
+    this.createForCategory = null;
+    this.isNewDomainModalOpen = false;
+  }
+
+  @action
+  openCreateDomainModal(categoryModel) {
+    this.createForCategory = categoryModel;
+    this.isNewDomainModalOpen = true;
   }
 }

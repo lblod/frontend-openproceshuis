@@ -54,7 +54,12 @@
         >
           <:title>{{category.label}}</:title>
           <:action>
-            <AuButton @skin="naked" @icon="add" iconAlignment="left">
+            <AuButton
+              @skin="naked"
+              @icon="add"
+              iconAlignment="left"
+              {{on "click" (fn this.openCreateDomainModal category)}}
+            >
               Nieuw domein
             </AuButton>
           </:action>
@@ -99,3 +104,9 @@
     </AuButtonGroup>
   </:footer>
 </AuModal>
+
+<Inventory::CreateDomainModal
+  @isModalOpen={{this.isNewDomainModalOpen}}
+  @onCloseModal={{this.onCloseCreateDomainModal}}
+  @category={{this.createForCategory}}
+/>

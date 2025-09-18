@@ -1,0 +1,32 @@
+<AuModal
+  @modalOpen={{@isModalOpen}}
+  @closable={{true}}
+  @closeModal={{@onCloseModal}}
+>
+  <:title>Voeg een nieuw domein toe</:title>
+  <:body>
+    <p class="au-u-margin-bottom">Geef de label in van het domein dat je wil
+      toevoegen.</p>
+    <div class="au-u-flex au-u-flex--column">
+      <AuLabel @required={{true}} for="new-domain">Label</AuLabel>
+      <AuInput
+        id="new-domain"
+        @value={{this.label}}
+        {{on "keyup" this.updateLabel}}
+      />
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" @onCloseModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @icon="plus"
+        @disabled={{not this.canSave}}
+        {{on "click" this.create}}
+      >Voeg toe</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
