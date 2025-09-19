@@ -32,6 +32,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
     }
   }
 
+  @action
   async loadGroups() {
     this.isFetchingGroups = true;
     let loadingTimeout;

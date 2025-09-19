@@ -20,7 +20,7 @@
         <AuLoader @hideMessage={{true}} />
       {{else}}
         {{#each this.groups as |group|}}
-          <Inventory::EditableGroupRow @group={{group}} @domain={{@domain}} />
+          <Inventory::EditableGroupRow @group={{group}} @domain={{@domain}} @onRemovedGroup={{this.loadGroups}}/>
         {{/each}}
       {{/if}}
     {{/unless}}

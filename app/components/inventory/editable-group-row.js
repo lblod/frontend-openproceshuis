@@ -12,6 +12,8 @@ export default class InventoryEditableGroupRow extends Component {
 
   @tracked isEditing;
   @tracked label;
+  @tracked isDeleteModelOpen;
+  @tracked isDeleting;
 
   get cleanLabel() {
     return this.label?.trim();
@@ -61,10 +63,13 @@ export default class InventoryEditableGroupRow extends Component {
     try {
       this.args.group.label = this.cleanLabel;
       await this.args.group.save();
-      this.toaster.success('Procesgroep succesvol aangepast', undefined, {
-        timeOut: 5000,
-      });
-      this.toggleIsEditing();
+      this.toaster.success(
+        'Procesgroep succesvol aangepast',
+        this.args.domain.label,
+        {
+          timeOut: 5000,
+        },
+      );
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het aanpassen van de procesgroep',
@@ -73,7 +78,38 @@ export default class InventoryEditableGroupRow extends Component {
           timeOut: 5000,
         },
       );
-      this.toggleIsEditing();
     }
+    this.toggleIsEditing();
+  }
+
+  @action
+  async deleteGroupFromDomain() {
+    this.isDeleting = true;
+    try {
+      const domainsOfGroup = await this.args.group.processDomains;
+      const remainingDomains = domainsOfGroup.filter(
+        (domain) => domain.id !== this.args.domain.id,
+      );
+      this.args.group.processDomains = remainingDomains;
+      await this.args.group.save();
+      this.args.onRemovedGroup?.();
+      this.toaster.success(
+        'Procesgroep verwijderd uit domein',
+        this.args.domain.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het verwijderen van de groep',
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isDeleteModelOpen = false;
+    this.isDeleting = false;
   }
 }

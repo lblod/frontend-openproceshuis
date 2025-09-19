@@ -41,9 +41,38 @@
           @skin="naked"
           @size="large"
           @alert={{true}}
-          {{!-- {{on "click" this.openDeleteGroupModal}} --}}
+          {{on "click" (fn (mut this.isDeleteModelOpen) true)}}
         />
       </AuButtonGroup>
     {{/if}}
   </div>
 </tr>
+
+<AuModal
+  @modalOpen={{this.isDeleteModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isDeleteModelOpen) false}}
+>
+  <:title>Verwijder groep uit domein</:title>
+  <:body>Ben je zeker dat je de groep
+    <span class="au-u-medium">{{@group.label}}</span>
+    wil verwijderen uit het domein
+    <span class="au-u-medium">{{@domain.label}}?</span></:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isDeleteModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabeld={{this.isDeleting}}
+        @loading={{this.isDeleting}}
+        @loadingMessage="Verwijderen"
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" this.deleteGroupFromDomain}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
