@@ -11,7 +11,7 @@
         <AuList @divider={{false}} as |Item|>
           {{#each @model.categories as |category|}}
             <Item {{on "click" (fn this.scrollToCategory category)}}>
-              {{category.label}}
+              <span class="au-u-medium au-u-padding-left-small">{{category.label}}</span>
             </Item>
           {{/each}}
         </AuList>

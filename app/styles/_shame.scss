@@ -139,9 +139,10 @@ tr:hover .inventory-row-button-group .au-c-button {
   }
 }
 
-.icon--black {
+.color--black {
   color: var(--au-gray-1000) !important;
 }
+
 .bg-200--blue {
   background-color: var(--au-blue-200) !important;
 }
@@ -153,9 +154,9 @@ tr:hover .inventory-row-button-group .au-c-button {
 
 .inventory-domain-tables {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   gap: 2.5rem;
+
   table {
     width: 25vw !important;
   }
