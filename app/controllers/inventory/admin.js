@@ -30,23 +30,16 @@ export default class InventoryAdminController extends Controller {
 
   @action
   scrollToCategory(category) {
-    let element = document.getElementById(category.id);
-    if (element) {
-      const elementTop =
-        element.getBoundingClientRect().top + window.pageYOffset;
-      const elementHeight = element.offsetHeight;
-      const viewportHeight = window.innerHeight;
-
-      const scrollTo = elementTop - viewportHeight / 2 + elementHeight / 2;
-
+    let categorySection = document.getElementById(category.id);
+    if (categorySection) {
       window.scrollTo({
-        top: scrollTo,
+        top: categorySection.offsetTop,
         behavior: 'smooth',
       });
 
-      element.classList.add('highlight-section');
+      categorySection.classList.add('highlight-section');
       setTimeout(() => {
-        element.classList.remove('highlight-section');
+        categorySection.classList.remove('highlight-section');
       }, 1000);
     }
   }
