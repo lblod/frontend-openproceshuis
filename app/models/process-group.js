@@ -6,6 +6,10 @@ export default class ProcessGroupModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+  @attr('string', {
+    defaultValue: ENV.conceptSchemes.processGroups,
+  })
+  scheme;
 
   @hasMany('process-domain', { inverse: null, async: false })
   processDomains;

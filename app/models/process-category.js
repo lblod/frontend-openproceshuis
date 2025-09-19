@@ -6,6 +6,10 @@ export default class ProcessCategoryModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+  @attr('string', {
+    defaultValue: ENV.conceptSchemes.processCategories,
+  })
+  scheme;
 
   get isArchived() {
     return this.status === ENV.resourceStates.archived;
