@@ -60,118 +60,118 @@
                   </c.footer>
                 </AuCard>
               </div>
-              {{#if
-                (or this.currentSession.canEdit this.currentSession.isAdmin)
-              }}
-                <div class="au-o-grid__item au-u-1-2@medium">
-                  <AuCard @flex={{true}} as |c|>
-                    <c.header
-                      @badgeSkin="brand"
-                      @badgeIcon="users-four-of-four"
-                      @badgeSize="small"
-                    >
-                      <AuHeading @level="2" @skin="4">
-                        Processen mijn lokaal bestuur
-                      </AuHeading>
-                    </c.header>
-                    <c.content>
-                      <AuList @divider={{true}} as |Item|>
-                        <Item>Raadpleeg processen gelinkt aan mijn lokaal
-                          bestuur</Item>
-                      </AuList>
-                    </c.content>
-                    <c.footer>
-                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                        <AuLink @skin="button" @route="my-local-government">Toon
-                          mijn processen</AuLink>
-                      </div>
-                    </c.footer>
-                  </AuCard>
-                </div>
-                <div class="au-o-grid__item au-u-1-2@medium">
-                  <AuCard @flex={{true}} as |c|>
-                    <c.header
-                      @badgeSkin="brand"
-                      @badgeIcon="upload"
-                      @badgeSize="small"
-                    >
-                      <AuHeading @level="2" @skin="4">
-                        Deel jouw processen
-                      </AuHeading>
-                    </c.header>
-                    <c.content>
-                      <AuList @divider={{true}} as |Item|>
-                        <Item>Upload processen</Item>
-                        <Item>Beheer gedeelde processen</Item>
-                      </AuList>
-                    </c.content>
-                    <c.footer>
-                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                        <AuLink @skin="button" @route="shared-processes">Deel
-                          jouw processen</AuLink>
-                      </div>
-                    </c.footer>
-                  </AuCard>
-                </div>
-                <div class="au-o-grid__item au-u-1-2@medium">
-                  <AuCard @flex={{true}} as |c|>
-                    <c.header
-                      @badgeSkin="brand"
-                      @badgeIcon="folder"
-                      @badgeSize="small"
-                    >
-                      <AuHeading @level="2" @skin="4">
-                        Processeninventaris
-                      </AuHeading>
-                    </c.header>
-                    <c.content>
-                      <AuList @divider={{true}} as |Item|>
-                        <Item>Toon processen uit de inventaris</Item>
-                      </AuList>
-                    </c.content>
-                    <c.footer>
-                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                        <AuLink @skin="button" @route="inventory">Ga naar
-                          inventaris</AuLink>
-                      </div>
-                    </c.footer>
-                  </AuCard>
-                </div>
-              {{/if}}
-              {{#if this.currentSession.isAdmin}}
-                <div class="au-o-grid__item au-u-1-2@medium">
-                  <AuCard @flex={{true}} as |c|>
-                    <c.header
-                      @badgeSkin="brand"
-                      @badgeIcon="user"
-                      @badgeSize="small"
-                    >
-                      <AuHeading @level="2" @skin="4">
-                        Administratie
-                      </AuHeading>
-                    </c.header>
-                    <c.content>
-                      <AuList @divider={{true}} as |Item|>
-                        <Item>Raadpleeg rapporten</Item>
-                        <Item>Bevraag de databank</Item>
-                      </AuList>
-                    </c.content>
-                    <c.footer>
-                      <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                        <AuLink
-                          @skin="button"
-                          @route="reporting"
-                        >Rapportering</AuLink>
-                        <AuLink
-                          @skin="button-secondary"
-                          @route="sparql"
-                        >SPARQL</AuLink>
-                      </div>
-                    </c.footer>
-                  </AuCard>
-                </div>
-              {{/if}}
-            {{else}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="users-four-of-four"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Processen mijn lokaal bestuur
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Raadpleeg processen gelinkt aan mijn lokaal bestuur</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink @skin="button" @route="my-local-government">Toon
+                        mijn processen</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
+            {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="upload"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Deel jouw processen
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Upload processen</Item>
+                      <Item>Beheer gedeelde processen</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink @skin="button" @route="shared-processes">Deel jouw
+                        processen</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
+            {{#if this.currentSession.isAuthenticated}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="folder"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Processeninventaris
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Toon processen uit de inventaris</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink @skin="button" @route="inventory">Ga naar
+                        inventaris</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
+            {{#if this.currentSession.isAdmin}}
+              <div class="au-o-grid__item au-u-1-2@medium">
+                <AuCard @flex={{true}} as |c|>
+                  <c.header
+                    @badgeSkin="brand"
+                    @badgeIcon="user"
+                    @badgeSize="small"
+                  >
+                    <AuHeading @level="2" @skin="4">
+                      Administratie
+                    </AuHeading>
+                  </c.header>
+                  <c.content>
+                    <AuList @divider={{true}} as |Item|>
+                      <Item>Raadpleeg rapporten</Item>
+                      <Item>Bevraag de databank</Item>
+                    </AuList>
+                  </c.content>
+                  <c.footer>
+                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                      <AuLink
+                        @skin="button"
+                        @route="reporting"
+                      >Rapportering</AuLink>
+                      <AuLink
+                        @skin="button-secondary"
+                        @route="sparql"
+                      >SPARQL</AuLink>
+                    </div>
+                  </c.footer>
+                </AuCard>
+              </div>
+            {{/if}}
+            {{#unless this.currentSession.isAuthenticated}}
               <div class="au-o-grid__item au-u-1-2@medium">
                 <AuLink
                   @skin="button"
@@ -180,9 +180,8 @@
                 >Log in</AuLink>
                 <AuLink @skin="button-secondary" @route="inventory">Inventaris
                   processen bekijken</AuLink>
-
               </div>
-            {{/if}}
+            {{/unless}}
           </div>
           <p class="au-u-text-center">
             <AuLinkExternal
