@@ -6,6 +6,8 @@ import { service } from '@ember/service';
 
 import { tracked } from '@glimmer/tracking';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class InventoryCollapsibleDomainTable extends Component {
   @service store;
   @service toaster;
@@ -45,6 +47,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
 
     this.groups = await this.store.query('process-group', {
       'filter[process-domains][id]': this.args.domain.id,
+      'filter[:exact:scheme]': ENV.conceptSchemes.processGroups,
       sort: 'label',
       page: { size: 100 },
     });

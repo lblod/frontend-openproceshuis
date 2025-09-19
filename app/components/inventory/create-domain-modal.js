@@ -6,6 +6,8 @@ import { tracked } from '@glimmer/tracking';
 
 import { restartableTask, timeout } from 'ember-concurrency';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class InventoryCreateDomainModal extends Component {
   @service store;
   @service toaster;
@@ -25,6 +27,7 @@ export default class InventoryCreateDomainModal extends Component {
       const duplicates = await this.store.query('process-domain', {
         'filter[process-categories][id]': this.args.category.id,
         'filter[:exact:label]': this.label.trim(),
+        'filter[:exact:scheme]': ENV.conceptSchemes.processDomains,
         page: { size: 1 },
       });
       if (duplicates.length !== 0) {
