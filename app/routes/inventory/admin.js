@@ -2,6 +2,8 @@ import Route from '@ember/routing/route';
 
 import { service } from '@ember/service';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class InventoryAdminRoute extends Route {
   @service session;
   @service currentSession;
@@ -14,6 +16,7 @@ export default class InventoryAdminRoute extends Route {
 
   async model() {
     const categories = await this.store.query('process-category', {
+      'filter[:exact:scheme]': ENV.conceptSchemes.processCategories,
       page: { size: 500 },
       sort: 'label',
     });
