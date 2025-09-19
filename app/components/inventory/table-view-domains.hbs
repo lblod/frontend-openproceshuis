@@ -1,4 +1,4 @@
-<div class="au-u-flex au-u-flex--row au-u-flex--spaced-large au-u-flex--wrap">
+<div class="inventory-domain-tables">
   {{#if this.isLoading}}
     <AuLoader @hideMessage={{true}} />
   {{else}}
@@ -6,7 +6,7 @@
       <div>
         <Inventory::CollapsibleDomainTable
           @domain={{domain}}
-          @isCollapsedOnLoad={{true}}
+          @isCollapsedOnLoad={{false}}
         />
       </div>
     {{/each}}

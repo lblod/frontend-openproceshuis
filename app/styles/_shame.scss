@@ -150,3 +150,13 @@ tr:hover .inventory-row-button-group .au-c-button {
   border-radius: 5px;
   background-color: var(--au-blue-200) !important;
 }
+
+.inventory-domain-tables {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  table {
+    width: 25vw !important;
+  }
+}
