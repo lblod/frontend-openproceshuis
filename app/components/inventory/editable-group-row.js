@@ -6,6 +6,8 @@ import { service } from '@ember/service';
 
 import { restartableTask, timeout } from 'ember-concurrency';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class InventoryEditableGroupRow extends Component {
   @service toaster;
   @service store;
@@ -14,6 +16,12 @@ export default class InventoryEditableGroupRow extends Component {
   @tracked label;
   @tracked isDeleteModelOpen;
   @tracked isDeleting;
+  @tracked isArchiveModelOpen;
+  @tracked isArchiving;
+
+  get isArchived() {
+    return this.args.group.status === ENV.resourceStates.archived;
+  }
 
   get cleanLabel() {
     return this.label?.trim();
@@ -65,7 +73,7 @@ export default class InventoryEditableGroupRow extends Component {
       await this.args.group.save();
       this.toaster.success(
         'Procesgroep succesvol aangepast',
-        this.args.domain.label,
+        this.args.group.label,
         {
           timeOut: 5000,
         },
@@ -73,13 +81,56 @@ export default class InventoryEditableGroupRow extends Component {
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het aanpassen van de procesgroep',
-        undefined,
+        this.args.group.label,
         {
           timeOut: 5000,
         },
       );
     }
     this.toggleIsEditing();
+  }
+
+  @action
+  async archiveGroup() {
+    this.isArchiving = true;
+    try {
+      this.args.group.status = ENV.resourceStates.archived;
+      await this.args.group.save();
+      this.toaster.success(`${this.args.group.label} gearchiveerd`, undefined, {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het archiveren van de groep',
+        this.args.group.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isArchiveModelOpen = false;
+    this.isArchiving = false;
+  }
+  @action
+  async unArchiveGroup() {
+    this.isArchiving = true;
+    try {
+      this.args.group.status = null;
+      await this.args.group.save();
+      this.toaster.success(`${this.args.group.label} hersteld`, undefined, {
+        timeOut: 5000,
+      });
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het hertellen van de groep',
+        this.args.group.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isArchiveModelOpen = false;
+    this.isArchiving = false;
   }
 
   @action
@@ -93,17 +144,13 @@ export default class InventoryEditableGroupRow extends Component {
       this.args.group.processDomains = remainingDomains;
       await this.args.group.save();
       this.args.onRemovedGroup?.();
-      this.toaster.success(
-        'Procesgroep verwijderd uit domein',
-        this.args.domain.label,
-        {
-          timeOut: 5000,
-        },
-      );
+      this.toaster.success(`${this.args.group.label} verwijderd`, undefined, {
+        timeOut: 5000,
+      });
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het verwijderen van de groep',
-        undefined,
+        this.args.group.label,
         {
           timeOut: 5000,
         },

@@ -30,12 +30,27 @@
     {{else}}
       <p>{{@group.label}}</p>
       <AuButtonGroup @inline={{true}} class="inventory-row-button-group">
-        <AuButton
-          @icon="pencil"
-          @skin="naked"
-          @size="large"
-          {{on "click" this.toggleIsEditing}}
-        />
+        {{#if this.isArchived}}
+          <AuButton
+            @icon="undo"
+            @skin="naked"
+            @size="large"
+            {{on "click" this.unArchiveGroup}}
+          />
+        {{else}}
+          <AuButton
+            @icon="pencil"
+            @skin="naked"
+            @size="large"
+            {{on "click" this.toggleIsEditing}}
+          />
+          <AuButton
+            @icon="archive"
+            @skin="naked"
+            @size="large"
+            {{on "click" (fn (mut this.isArchiveModelOpen) true)}}
+          />
+        {{/if}}
         <AuButton
           @icon="bin"
           @skin="naked"
@@ -73,6 +88,33 @@
         @alert="true"
         {{on "click" this.deleteGroupFromDomain}}
       >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isArchiveModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isArchiveModelOpen) false}}
+>
+  <:title>Archiveer deze groep</:title>
+  <:body>Ben je zeker dat je de groep
+    <span class="au-u-medium">{{@group.label}}</span>
+    wil archiveren? Achteraf kan je deze nog altijd terug uit het archief
+    herstellen.</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isArchiveModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabeld={{this.isArchiving}}
+        @loading={{this.isArchiving}}
+        @loadingMessage="Archiveren"
+        @alert={{true}}
+        {{on "click" this.archiveGroup}}
+      >Archiveer</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>
