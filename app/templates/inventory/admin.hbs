@@ -67,7 +67,9 @@
               </AuButton>
             </:action>
             <:default>
-              <Inventory::TableViewDomains @category={{category}} />
+              {{#unless (eq this.categoryToRefresh.id category.id)}}
+                <Inventory::TableViewDomains @category={{category}} />
+              {{/unless}}
             </:default>
           </CollapsibleContainer>
         </section>
@@ -87,6 +89,7 @@
   <Inventory::CreateDomainModal
     @isModalOpen={{this.isNewDomainModalOpen}}
     @onCloseModal={{this.onCloseCreateDomainModal}}
+    @onCreated={{fn this.refreshDomainsForCategory this.createForCategory}}
     @category={{this.createForCategory}}
   />
 {{/if}}

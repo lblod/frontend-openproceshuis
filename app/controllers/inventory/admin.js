@@ -4,6 +4,8 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
+import { timeout } from 'ember-concurrency';
+
 export default class InventoryAdminController extends Controller {
   @service store;
   @service toaster;
@@ -11,6 +13,7 @@ export default class InventoryAdminController extends Controller {
 
   @tracked isNewCategoryModalOpen = false;
   @tracked isNewDomainModalOpen = false;
+  @tracked categoryToRefresh;
   @tracked createForCategory;
 
   @action
@@ -51,5 +54,14 @@ export default class InventoryAdminController extends Controller {
   @action
   refreshCategories() {
     this.router.refresh();
+  }
+
+  @action
+  async refreshDomainsForCategory() {
+    this.categoryToRefresh = this.createForCategory;
+    await timeout(25);
+    this.categoryToRefresh = null;
+    this.createForCategory = null;
+    this.isNewDomainModalOpen = false;
   }
 }

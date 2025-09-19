@@ -54,7 +54,7 @@ export default class InventoryCreateDomainModal extends Component {
       this.toaster.success('Domein toegevoegd', undefined, {
         timeOut: 5000,
       });
-      this.args.onCloseModal?.();
+      this.args.onCreated?.();
       this.label = null;
     } catch (error) {
       this.toaster.error(
