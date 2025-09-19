@@ -11,7 +11,9 @@
         <AuList @divider={{false}} as |Item|>
           {{#each @model.categories as |category|}}
             <Item {{on "click" (fn this.scrollToCategory category)}}>
-              <span class="au-u-medium au-u-padding-left-small">{{category.label}}</span>
+              <span
+                class="au-u-medium au-u-padding-left-small"
+              >{{category.label}}</span>
             </Item>
           {{/each}}
         </AuList>
@@ -78,6 +80,7 @@
   <Inventory::CreateCategoryModal
     @isModalOpen={{this.isNewCategoryModalOpen}}
     @onCloseModal={{fn (mut this.isNewCategoryModalOpen) false}}
+    @onCreated={{this.refreshCategories}}
   />
 {{/if}}
 {{#if this.isNewDomainModalOpen}}

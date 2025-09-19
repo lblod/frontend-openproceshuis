@@ -7,6 +7,7 @@ import { tracked } from '@glimmer/tracking';
 export default class InventoryAdminController extends Controller {
   @service store;
   @service toaster;
+  @service router;
 
   @tracked isNewCategoryModalOpen = false;
   @tracked isNewDomainModalOpen = false;
@@ -45,5 +46,10 @@ export default class InventoryAdminController extends Controller {
         element.classList.remove('highlight-section');
       }, 1000);
     }
+  }
+
+  @action
+  refreshCategories() {
+    this.router.refresh();
   }
 }
