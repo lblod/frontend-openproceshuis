@@ -8,7 +8,8 @@ export default class AuthLoginRoute extends Route {
   @service session;
   @service router;
 
-  beforeModel() {
+  beforeModel(transition) {
+    this.session.setRouteForAfterLogin(transition);
     if (this.session.prohibitAuthentication('index')) {
       if (isValidAcmidmConfig(ENV.acmidm)) {
         window.location.replace(buildLoginUrl(ENV.acmidm));

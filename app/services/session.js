@@ -11,7 +11,6 @@ export default class OPHSessionService extends SessionService {
   }
 
   async requireAuthentication(transition, redirectRouteNameIfNotAuthenticated) {
-    this.setRouteForAfterLogin(transition);
     super.requireAuthentication(
       transition,
       redirectRouteNameIfNotAuthenticated,
