@@ -1,7 +1,11 @@
 <div ...attributes>
   <div class="au-u-flex au-u-flex--vertical-center au-u-flex--between">
     {{#if (has-block "title")}}
-      <div class="au-u-flex au-u-flex--vertical-center">
+      {{!-- template-lint-disable no-invalid-interactive --}}
+      <div
+        class="au-u-flex au-u-flex--vertical-center"
+        {{on "click" this.toggleCollapse}}
+      >
         <AuHeading
           @level={{or @headingLevel "3"}}
           @skin={{or @headingSkin "4"}}
@@ -12,7 +16,6 @@
           @icon={{if this.isCollapsed "chevron-right" "chevron-down"}}
           @skin="naked"
           class="au-u-flex au-u-flex--spaced-tiny color--black"
-          {{on "click" this.toggleCollapse}}
         />
       </div>
     {{/if}}
