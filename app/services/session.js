@@ -10,12 +10,45 @@ export default class OPHSessionService extends SessionService {
       : false;
   }
 
+  async requireAuthentication(transition, redirectRouteNameIfNotAuthenticated) {
+    this.setRouteForAfterLogin(transition);
+    super.requireAuthentication(
+      transition,
+      redirectRouteNameIfNotAuthenticated,
+    );
+  }
+
   async handleAuthentication(routeAfterAuthentication) {
     await this.currentSession.load();
-    super.handleAuthentication(routeAfterAuthentication);
+    const url = sessionStorage.getItem('BEFORE_LOGIN_URL');
+    if (url) {
+      window.location.replace(url);
+    } else {
+      super.handleAuthentication(routeAfterAuthentication);
+    }
   }
 
   handleInvalidation() {
     // Invalidation is handled in the relevant routes directly
+  }
+
+  setRouteForAfterLogin(transition) {
+    let routeName = transition.to?.name;
+    const ignoredRoutes = [
+      'mock-login',
+      'switch-login',
+      'auth.callback',
+      'auth.callback-error',
+      'auth.login',
+      'auth.logout',
+      'auth.switch',
+      'unauthorized',
+      'route-not-found',
+    ];
+
+    if (!routeName || ignoredRoutes.includes(routeName)) {
+      return;
+    }
+    sessionStorage.setItem('BEFORE_LOGIN_URL', window.location.href);
   }
 }
