@@ -37,17 +37,32 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
       ['Instantie']: 'ipdc-instance',
       ['Concept']: 'ipdc-concept',
     };
-    return results.map((product) => {
-      return {
-        name: Object.entries(product.naam).map(([language, content]) => ({
-          content,
-          language,
-        })),
-        productNumber: product.productnummer,
-        type: typeMapping[product['@type']],
-        isDraft: true,
-      };
-    });
+    return results
+      .map((product) => {
+        const name = Object.entries(product.naam).map(
+          ([language, content]) => ({
+            content,
+            language,
+          }),
+        );
+        // TODO: Update the queryParams when the api supports only searching in title content
+        const namesJoin = name.map((n) => n.content).join(' ');
+        if (
+          !productNumberOrId &&
+          searchParams &&
+          !namesJoin.includes(searchParams)
+        ) {
+          return null;
+        }
+
+        return {
+          name,
+          productNumber: product.productnummer,
+          type: typeMapping[product['@type']],
+          isDraft: true,
+        };
+      })
+      .filter((isProduct) => isProduct);
   }
 
   throwErrorOnUnsupportedResponseType(jsonResponse) {
