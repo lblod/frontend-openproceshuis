@@ -19,7 +19,7 @@ export default class OPHSessionService extends SessionService {
 
   async handleAuthentication(routeAfterAuthentication) {
     await this.currentSession.load();
-    const url = sessionStorage.getItem('BEFORE_LOGIN_URL');
+    const url = localStorage.getItem('BEFORE_LOGIN_URL');
     if (url) {
       window.location.replace(url);
     } else {
@@ -48,6 +48,6 @@ export default class OPHSessionService extends SessionService {
     if (!routeName || ignoredRoutes.includes(routeName)) {
       return;
     }
-    sessionStorage.setItem('BEFORE_LOGIN_URL', window.location.href);
+    localStorage.setItem('BEFORE_LOGIN_URL', window.location.href);
   }
 }
