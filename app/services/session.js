@@ -1,5 +1,6 @@
-import { inject as service } from '@ember/service';
 import SessionService from 'ember-simple-auth/services/session';
+
+import { service } from '@ember/service';
 
 export default class OPHSessionService extends SessionService {
   @service currentSession;
@@ -26,6 +27,5 @@ export default class OPHSessionService extends SessionService {
 
   setRouteForAfterLogin() {
     localStorage.setItem('BEFORE_LOGIN_URL', window.location.href);
-    alert('DONE');
   }
 }
