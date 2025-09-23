@@ -23,7 +23,7 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
       results = [jsonResponse];
     } else {
       const response = yield fetch(
-        `/ipdc/doc/product?zoekterm=${searchParams}`,
+        `/ipdc/doc/product?gearchiveerd=false&zoekterm=${searchParams}`,
       );
       if (!response.ok) return [];
 
