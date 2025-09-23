@@ -54,6 +54,8 @@
           <CollapsibleContainer
             class="au-u-margin-small"
             @isCollapsedOnLoad={{true}}
+            @toggleOpen={{eq this.categoryToOpen.id category.id}}
+            @onContainerLogicTakesOver={{this.clearOpenCategory}}
           >
             <:title>{{category.label}}</:title>
             <:action>

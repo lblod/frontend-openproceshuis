@@ -26,9 +26,9 @@
     {{/if}}
   </div>
 
-  {{#unless this.isCollapsed}}
+  {{#if this.isContentShown}}
     <div class="au-u-margin">
       {{yield}}
     </div>
-  {{/unless}}
+  {{/if}}
 </div>

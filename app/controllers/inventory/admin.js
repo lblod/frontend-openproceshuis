@@ -14,6 +14,7 @@ export default class InventoryAdminController extends Controller {
   @tracked isNewCategoryModalOpen = false;
   @tracked isNewDomainModalOpen = false;
   @tracked categoryToRefresh;
+  @tracked categoryToOpen;
   @tracked createForCategory;
 
   @action
@@ -38,10 +39,16 @@ export default class InventoryAdminController extends Controller {
       });
 
       categorySection.classList.add('highlight-section');
+      this.categoryToOpen = category;
       setTimeout(() => {
         categorySection.classList.remove('highlight-section');
       }, 1000);
     }
+  }
+
+  @action
+  clearOpenCategory() {
+    this.categoryToOpen = null;
   }
 
   @action

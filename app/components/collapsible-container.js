@@ -14,6 +14,14 @@ export default class CollapsibleContainer extends Component {
 
   @action
   toggleCollapse() {
+    if (this.args.toggleOpen === true) {
+      this.isCollapsed = false;
+      this.args.onContainerLogicTakesOver?.();
+    }
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  get isContentShown() {
+    return !this.isCollapsed || this.args.toggleOpen === true;
   }
 }
