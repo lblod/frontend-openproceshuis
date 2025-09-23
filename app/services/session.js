@@ -38,7 +38,6 @@ export default class OPHSessionService extends SessionService {
       'switch-login',
       'auth.callback',
       'auth.callback-error',
-      'auth.login',
       'auth.logout',
       'auth.switch',
       'unauthorized',
