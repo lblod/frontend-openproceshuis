@@ -10,13 +10,6 @@ export default class OPHSessionService extends SessionService {
       : false;
   }
 
-  async requireAuthentication(transition, redirectRouteNameIfNotAuthenticated) {
-    super.requireAuthentication(
-      transition,
-      redirectRouteNameIfNotAuthenticated,
-    );
-  }
-
   async handleAuthentication(routeAfterAuthentication) {
     await this.currentSession.load();
     const url = localStorage.getItem('BEFORE_LOGIN_URL');
@@ -31,22 +24,8 @@ export default class OPHSessionService extends SessionService {
     // Invalidation is handled in the relevant routes directly
   }
 
-  setRouteForAfterLogin(transition) {
-    let routeName = transition.to?.name;
-    const ignoredRoutes = [
-      'mock-login',
-      'switch-login',
-      'auth.callback',
-      'auth.callback-error',
-      'auth.logout',
-      'auth.switch',
-      'unauthorized',
-      'route-not-found',
-    ];
-
-    if (!routeName || ignoredRoutes.includes(routeName)) {
-      return;
-    }
+  setRouteForAfterLogin() {
     localStorage.setItem('BEFORE_LOGIN_URL', window.location.href);
+    alert('DONE');
   }
 }
