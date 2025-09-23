@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 
 export default class OPHSessionService extends SessionService {
   @service currentSession;
+  @service router;
 
   get isMockLoginSession() {
     return this.isAuthenticated
@@ -13,9 +14,10 @@ export default class OPHSessionService extends SessionService {
 
   async handleAuthentication(routeAfterAuthentication) {
     await this.currentSession.load();
-    const url = localStorage.getItem('BEFORE_LOGIN_URL');
-    if (url) {
-      window.location.replace(url);
+    const pathName = localStorage.getItem('BEFORE_LOGIN_PATH');
+    if (pathName) {
+      this.router.replaceWith(pathName);
+      localStorage.removeItem('BEFORE_LOGIN_PATH');
     } else {
       super.handleAuthentication(routeAfterAuthentication);
     }
@@ -26,6 +28,6 @@ export default class OPHSessionService extends SessionService {
   }
 
   setRouteForAfterLogin() {
-    localStorage.setItem('BEFORE_LOGIN_URL', window.location.href);
+    localStorage.setItem('BEFORE_LOGIN_PATH', window.location.pathname);
   }
 }
