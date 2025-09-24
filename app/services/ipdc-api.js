@@ -5,7 +5,7 @@ import { tracked } from '@glimmer/tracking';
 export default class IpdcApiService extends Service {
   @service currentSession;
 
-  @tracked postcodes = [];
+  @tracked gebiedIds = [];
 
   async getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
@@ -30,6 +30,11 @@ export default class IpdcApiService extends Service {
         key: 'doelgroepen',
         value: 'LokaalBestuur',
         isApplied: true,
+      },
+      {
+        key: 'geografischeToepassingsgebieden',
+        value: this.gebiedIds.join(','),
+        isApplied: this.gebiedIds?.length >= 1,
       },
       {
         key: 'zoekterm',
@@ -64,18 +69,18 @@ export default class IpdcApiService extends Service {
 
     const results = await response.json();
     const gebieden = [...(results.waardes ?? [])];
-    this.postcodes = this._getPostcodesForSession(gebieden);
+    this.gebiedIds = this._getGebiedIds(gebieden);
   }
 
-  _getPostcodesForSession(gebieden) {
-    const name = this.currentSession.group?.name;
+  _getGebiedIds(gebieden) {
+    const name = this.currentSession.group?.name?.toLowerCase();
     if (!name) {
       return null;
     }
 
     return gebieden
-      .filter((gebied) => name.includes(gebied.labels['nl']))
-      .map((gebied) => gebied.postcode)
+      .filter((gebied) => name.includes(gebied.labels['nl']?.toLowerCase()))
+      .map((gebied) => gebied.id)
       .filter((isPostCode) => isPostCode);
   }
 
