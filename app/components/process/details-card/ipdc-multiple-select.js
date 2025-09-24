@@ -14,15 +14,20 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
 
   @restartableTask
   *loadIpdcProductsTask(searchParams = '') {
+    if (this.products.length >= 1) {
+      this.products.clear();
+    }
     yield timeout(500);
 
     const searchValue = typeof searchParams === 'string' ? searchParams : null;
     let results = [];
     const productNumberOrId = this.extractPossibleNumberOrId(searchParams);
     if (productNumberOrId) {
-      const product =
-        yield this.ipdcApi.getProductByProductNumberOrId(productNumberOrId);
-      results = [product];
+      const products =
+        yield this.ipdcApi.getProductByProductNumberOrIdForSession(
+          productNumberOrId,
+        );
+      results = [...products];
     } else {
       const products = yield this.ipdcApi.getProducts({
         searchValue,

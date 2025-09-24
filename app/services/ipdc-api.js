@@ -7,6 +7,23 @@ export default class IpdcApiService extends Service {
 
   @tracked gebiedIds = [];
 
+  // This is a hack as we cannot apply any filters when fetching an instance by id
+  async getProductByProductNumberOrIdForSession(productNumberOrId) {
+    const productForId =
+      await this.getProductByProductNumberOrId(productNumberOrId);
+
+    if (!productForId) {
+      return null;
+    }
+
+    const searchValue = productForId.naam?.nl ?? null;
+    if (!searchValue) {
+      return null;
+    }
+
+    return await this.getProducts({ searchValue });
+  }
+
   async getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) {
@@ -16,7 +33,7 @@ export default class IpdcApiService extends Service {
     const product = await response.json();
     this._throwErrorOnUnsupportedResponseType(product);
 
-    return product;
+    return product; // This product is not restricted to the current session
   }
 
   async getProducts({ searchValue }) {
