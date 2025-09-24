@@ -12,6 +12,7 @@
           @selected={{@params.category}}
           @onChange={{this.onFilterUpdated}}
           class="grow"
+          @disabled={{@params.domain}}
         />
       </div>
       <div>
@@ -22,6 +23,7 @@
           @onChange={{this.onFilterUpdated}}
           @category={{@params.category}}
           class="grow"
+          @disabled={{@params.group}}
         />
       </div>
       <div>
