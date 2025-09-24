@@ -4,6 +4,7 @@ import { restartableTask, timeout } from 'ember-concurrency';
 
 export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Component {
   @service store;
+  @service ipdcApi;
 
   @restartableTask
   *loadIpdcProductsTask(searchParams = '') {
@@ -14,23 +15,14 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
     let results = [];
     const productNumberOrId = this.extractNumberOrId(searchParams);
     if (productNumberOrId) {
-      const response = yield fetch(`/ipdc/doc/product/${productNumberOrId}`);
-      if (!response.ok) return [];
-
-      const jsonResponse = yield response.json();
-      this.throwErrorOnUnsupportedResponseType(jsonResponse);
-
-      results = [jsonResponse];
+      const product =
+        yield this.ipdcApi.getProductByProductNumberOrId(productNumberOrId);
+      results = [product];
     } else {
-      const response = yield fetch(
-        `/ipdc/doc/product?gearchiveerd=false&zoekterm=${searchParams}`,
-      );
-      if (!response.ok) return [];
-
-      const jsonResponse = yield response.json();
-      this.throwErrorOnUnsupportedResponseType(jsonResponse);
-
-      results = jsonResponse.hydraMember ?? []; // Default imit is 25
+      const products = yield this.ipdcApi.getProducts({
+        searchValue: searchParams,
+      });
+      results = [...products];
     }
 
     const typeMapping = {
@@ -63,15 +55,6 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
         };
       })
       .filter((isProduct) => isProduct);
-  }
-
-  throwErrorOnUnsupportedResponseType(jsonResponse) {
-    const type = jsonResponse['@type'];
-    if (['Collection', 'Instantie', 'Concept'].includes(type)) {
-      return;
-    }
-
-    throw new Error('Unsupported type in IPDC response: ' + type);
   }
 
   extractNumberOrId(input) {
