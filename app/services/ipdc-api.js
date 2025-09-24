@@ -21,6 +21,11 @@ export default class IpdcApiService extends Service {
         isApplied: true,
       },
       {
+        key: 'doelgroepen',
+        value: 'LokaalBestuur',
+        isApplied: true,
+      },
+      {
         key: 'zoekterm',
         value: searchValue,
         isApplied: searchValue && searchValue.trim() !== '',
