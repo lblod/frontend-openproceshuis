@@ -14,9 +14,23 @@ export default class IpdcApiService extends Service {
   }
 
   async getProducts({ searchValue }) {
-    const response = await fetch(
-      `/ipdc/doc/product?gearchiveerd=false&zoekterm=${searchValue}`,
-    );
+    const params = [
+      {
+        key: 'gearchiveerd',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'zoekterm',
+        value: searchValue,
+        isApplied: searchValue && searchValue.trim() !== '',
+      },
+    ].filter((param) => param.isApplied);
+    const queryParams = params
+      .map((param) => `${param.key}=${param.value}`)
+      .join('&');
+
+    const response = await fetch(`/ipdc/doc/product?${queryParams}`);
     if (!response.ok) {
       // Shouldn't we throw an error here?
       return [];
