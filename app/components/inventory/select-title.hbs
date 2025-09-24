@@ -1,0 +1,19 @@
+<div class={{if @error "ember-power-select--error"}} ...attributes>
+  <PowerSelect
+    @allowClear={{true}}
+    @searchEnabled={{true}}
+    @searchField="title"
+    @loadingMessage="Aan het laden..."
+    @noMatchesMessage="Geen resultaten"
+    @searchMessage="Typ om te zoeken"
+    @search={{perform this.loadConceptualProcessesTask}}
+    @onOpen={{perform this.loadConceptualProcessesTask}}
+    @options={{this.options}}
+    @selected={{@selected}}
+    @onChange={{this.onChange}}
+    @triggerId={{@id}}
+    as |title|
+  >
+    {{title}}
+  </PowerSelect>
+</div>
