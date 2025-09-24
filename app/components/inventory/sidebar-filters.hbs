@@ -24,6 +24,17 @@
           class="grow"
         />
       </div>
+      <div>
+        <AuLabel for="filter-group">Procesgroep</AuLabel>
+        <Inventory::SelectGroup
+          @id="filter-group"
+          @selected={{@params.group}}
+          @onChange={{this.onFilterUpdated}}
+          @category={{@params.category}}
+          @domain={{@params.domain}}
+          class="grow"
+        />
+      </div>
       <div class="au-u-flex au-u-flex--end">
         <AuButton
           @icon="cross"

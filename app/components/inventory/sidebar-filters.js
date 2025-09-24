@@ -3,7 +3,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
 export default class InventorySidebarFilters extends Component {
-  queryParams = ['category', 'domain'];
+  queryParams = ['category', 'domain', 'group'];
 
   @action
   resetFilters() {

@@ -8,7 +8,7 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 
 export default class InventoryIndexController extends Controller {
   @service store;
-  queryParams = ['page', 'size', 'sort', 'category', 'domain'];
+  queryParams = ['page', 'size', 'sort', 'category', 'domain', 'group'];
   @service router;
   @service currentSession;
   @service toaster;
@@ -18,6 +18,7 @@ export default class InventoryIndexController extends Controller {
   @tracked sort = 'title';
   @tracked category = null;
   @tracked domain = null;
+  @tracked group = null;
 
   @tracked isModalOpen = false;
   @tracked isDeleteModalOpen = false;
