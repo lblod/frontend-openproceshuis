@@ -35,6 +35,18 @@
           class="grow"
         />
       </div>
+      <div>
+        <AuLabel for="filter-title">Hoofdproces</AuLabel>
+        <Inventory::SelectTitle
+          @id="filter-title"
+          @selected={{@params.processTitle}}
+          @onChange={{this.onFilterUpdated}}
+          @category={{@params.category}}
+          @domain={{@params.domain}}
+          @group={{@params.group}}
+          class="grow"
+        />
+      </div>
       <div class="au-u-flex au-u-flex--end">
         <AuButton
           @icon="cross"
