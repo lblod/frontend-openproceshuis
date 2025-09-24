@@ -5,11 +5,6 @@ export default class ProcessApiService extends Service {
 
   async fetchInventoryProcessesTableContent(fetchOptions) {
     const queryOptions = fetchOptions;
-
-    if (!fetchOptions.page) {
-      queryOptions.page = 0;
-    }
-
     const query = this.optionsToQueryParams(queryOptions);
 
     const response = await fetch(
@@ -34,11 +29,6 @@ export default class ProcessApiService extends Service {
 
   downloadLinkForInventoryProcessesPage(downloadOptions) {
     const downloadPageOptions = downloadOptions;
-
-    if (!downloadOptions.page) {
-      downloadPageOptions.page = 0;
-    }
-
     const query = this.optionsToQueryParams(downloadPageOptions);
     return `/process-api/conceptual-processes/download?${query.join('&')}`;
   }
@@ -52,6 +42,8 @@ export default class ProcessApiService extends Service {
   }
 
   optionsToQueryParams(options) {
-    return Object.keys(options).map((key) => `${key}=${options[key]}`);
+    return Object.keys(options)
+      .filter((key) => options[key])
+      .map((key) => `${key}=${options[key]}`);
   }
 }
