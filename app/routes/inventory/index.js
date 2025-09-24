@@ -10,24 +10,23 @@ export default class InventoryIndexRoute extends Route {
   queryParams = {
     page: { refreshModel: true },
     sort: { refreshModel: true },
+    category: { refreshModel: true },
   };
 
   async model(params) {
     try {
       const tableContent =
-        await this.processApi.fetchInventoryProcessesTableContent({
-          page: params.page,
-          size: params.size,
-          sort: params.sort,
-        });
+        await this.processApi.fetchInventoryProcessesTableContent(params);
       return {
         tableContent: tableContent,
         couldNotFetchTableContent: false,
+        params,
       };
     } catch (error) {
       return {
         tableContent: null,
         couldNotFetchTableContent: true,
+        params,
       };
     }
   }

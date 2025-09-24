@@ -1,7 +1,6 @@
 <SidebarContainer>
   <:sidebar>
-    <div class="au-c-sidebar">
-    </div>
+    <Inventory::SidebarFilters @params={{@model.params}} @onFilterApplied={{this.updateFilters}}/>
   </:sidebar>
   <:content>
     <PageHeader>
