@@ -39,6 +39,11 @@ export default class IpdcApiService extends Service {
   async getProducts({ searchValue }) {
     const params = [
       {
+        key: 'page',
+        value: 0,
+        isApplied: true,
+      },
+      {
         key: 'sortBy',
         value: 'LAATST_GEWIJZIGD',
         isApplied: true,
@@ -51,6 +56,11 @@ export default class IpdcApiService extends Service {
       {
         key: 'doelgroepen',
         value: 'LokaalBestuur',
+        isApplied: true,
+      },
+      {
+        key: 'includeParentGeografischeToepassingsgebieden',
+        value: false,
         isApplied: true,
       },
       {
