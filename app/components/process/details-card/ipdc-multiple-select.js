@@ -1,26 +1,31 @@
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+
+import { A } from '@ember/array';
+import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
+
 import { restartableTask, timeout } from 'ember-concurrency';
 
 export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Component {
   @service store;
   @service ipdcApi;
 
+  @tracked products = A([]);
+
   @restartableTask
   *loadIpdcProductsTask(searchParams = '') {
-    if (!searchParams) return;
-
     yield timeout(500);
 
+    const searchValue = typeof searchParams === 'string' ? searchParams : null;
     let results = [];
-    const productNumberOrId = this.extractNumberOrId(searchParams);
+    const productNumberOrId = this.extractPossibleNumberOrId(searchParams);
     if (productNumberOrId) {
       const product =
         yield this.ipdcApi.getProductByProductNumberOrId(productNumberOrId);
       results = [product];
     } else {
       const products = yield this.ipdcApi.getProducts({
-        searchValue: searchParams,
+        searchValue,
       });
       results = [...products];
     }
@@ -29,35 +34,36 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
       ['Instantie']: 'ipdc-instance',
       ['Concept']: 'ipdc-concept',
     };
-    return results
-      .map((product) => {
-        const name = Object.entries(product.naam).map(
-          ([language, content]) => ({
-            content,
-            language,
-          }),
-        );
-        // TODO: Update the queryParams when the api supports only searching in title content
-        const namesJoin = name.map((n) => n.content).join(' ');
-        if (
-          !productNumberOrId &&
-          searchParams &&
-          !namesJoin.includes(searchParams)
-        ) {
-          return null;
-        }
-
-        return {
-          name,
-          productNumber: product.productnummer,
-          type: typeMapping[product['@type']],
-          isDraft: true,
-        };
-      })
-      .filter((isProduct) => isProduct);
+    this.products.clear();
+    results.map((result) => {
+      const name = Object.entries(result.naam).map(([language, content]) => ({
+        content,
+        language,
+      }));
+      // TODO: Update the queryParams when the api supports only searching in title content
+      const namesJoin = name.map((n) => n.content).join(' ');
+      if (
+        !productNumberOrId &&
+        searchValue &&
+        !namesJoin.includes(searchValue)
+      ) {
+        return null;
+      }
+      const product = {
+        name,
+        productNumber: result.productnummer,
+        type: typeMapping[result['@type']],
+        isDraft: true,
+      };
+      this.products.pushObject(product);
+    });
   }
 
-  extractNumberOrId(input) {
+  extractPossibleNumberOrId(input) {
+    if (!input || typeof input !== 'string') {
+      return null;
+    }
+
     input = input.trim();
 
     try {

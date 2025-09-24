@@ -4,7 +4,9 @@
     @searchMessage="Typ om te zoeken"
     @loadingMessage="Aan het laden ..."
     @noMatchesMessage="Geen resultaten"
+    @options={{this.products}}
     @search={{perform this.loadIpdcProductsTask}}
+    @onFocus={{perform this.loadIpdcProductsTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
     @disabled={{@disabled}}
