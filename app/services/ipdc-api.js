@@ -1,8 +1,11 @@
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
+
 import { tracked } from '@glimmer/tracking';
 
 export default class IpdcApiService extends Service {
-  @tracked gebieden = [];
+  @service currentSession;
+
+  @tracked postcodes = [];
 
   async getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
@@ -60,7 +63,20 @@ export default class IpdcApiService extends Service {
     }
 
     const results = await response.json();
-    this.gebieden = [...(results.waardes ?? [])];
+    const gebieden = [...(results.waardes ?? [])];
+    this.postcodes = this._getPostcodesForSession(gebieden);
+  }
+
+  _getPostcodesForSession(gebieden) {
+    const name = this.currentSession.group?.name;
+    if (!name) {
+      return null;
+    }
+
+    return gebieden
+      .filter((gebied) => name.includes(gebied.labels['nl']))
+      .map((gebied) => gebied.postcode)
+      .filter((isPostCode) => isPostCode);
   }
 
   _throwErrorOnUnsupportedResponseType(jsonResponse) {
