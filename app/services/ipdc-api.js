@@ -22,6 +22,11 @@ export default class IpdcApiService extends Service {
   async getProducts({ searchValue }) {
     const params = [
       {
+        key: 'sortBy',
+        value: 'LAATST_GEWIJZIGD',
+        isApplied: true,
+      },
+      {
         key: 'gearchiveerd',
         value: false,
         isApplied: true,
