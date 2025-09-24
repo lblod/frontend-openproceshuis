@@ -1,6 +1,9 @@
 <SidebarContainer>
   <:sidebar>
-    <Inventory::SidebarFilters @params={{@model.params}} @onFilterApplied={{this.updateFilters}}/>
+    <Inventory::SidebarFilters
+      @params={{@model.params}}
+      @onFilterApplied={{this.updateFilters}}
+    />
   </:sidebar>
   <:content>
     <PageHeader>
@@ -20,6 +23,7 @@
           >Nieuw proces</AuButton>
         {{/if}}
         <AuButton
+          @disabled={{eq @model.tableContent.content.length 0}}
           @skin="primary"
           @icon="download"
           iconAlignment="left"
@@ -166,8 +170,9 @@
               @skin="primary"
               @alert={{true}}
               {{on "click" (perform this.deleteInventoryProcess)}}
-            >Verwijderen</AuButton>
-
+            >
+              Verwijderen
+            </AuButton>
           </AuButtonGroup>
         </:footer>
       </AuModal>
@@ -179,5 +184,5 @@
   @isOpen={{this.isDownloadModalOpen}}
   @onClose={{fn (mut this.isDownloadModalOpen) false}}
   @onClickedDownloadButton={{fn (mut this.isDownloadModalOpen) false}}
-  @downloadOptions={{hash sort=this.sort page=this.page size=this.size}}
+  @downloadOptions={{@model.params}}
 />
