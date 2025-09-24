@@ -14,6 +14,16 @@
           class="grow"
         />
       </div>
+      <div>
+        <AuLabel for="filter-domain">Procesdomein</AuLabel>
+        <Inventory::SelectDomain
+          @id="filter-domain"
+          @selected={{@params.domain}}
+          @onChange={{this.onFilterUpdated}}
+          @category={{@params.category}}
+          class="grow"
+        />
+      </div>
       <div class="au-u-flex au-u-flex--end">
         <AuButton
           @icon="cross"

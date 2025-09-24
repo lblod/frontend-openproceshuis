@@ -11,6 +11,7 @@ export default class InventoryIndexRoute extends Route {
     page: { refreshModel: true },
     sort: { refreshModel: true },
     category: { refreshModel: true },
+    domain: { refreshModel: true },
   };
 
   async model(params) {
