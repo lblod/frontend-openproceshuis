@@ -23,11 +23,13 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
     let results = [];
     const productNumberOrId = this.extractPossibleNumberOrId(searchParams);
     if (productNumberOrId) {
-      const products =
+      const product =
         yield this.ipdcApi.getProductByProductNumberOrIdForSession(
           productNumberOrId,
         );
-      results = [...products];
+      if (product) {
+        results = [product];
+      }
     } else {
       const products = yield this.ipdcApi.getProducts({
         searchValue,

@@ -21,7 +21,12 @@ export default class IpdcApiService extends Service {
       return null;
     }
 
-    return await this.getProducts({ searchValue });
+    const matches = await this.getProducts({ searchValue });
+    if (matches.find((product) => product.productnummer == productNumberOrId)) {
+      return productForId;
+    }
+
+    return null;
   }
 
   async getProductByProductNumberOrId(productNumberOrId) {
