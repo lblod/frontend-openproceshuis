@@ -1,6 +1,9 @@
 import Service from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 
 export default class IpdcApiService extends Service {
+  @tracked gebieden = [];
+
   async getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) {
@@ -45,6 +48,19 @@ export default class IpdcApiService extends Service {
     this._throwErrorOnUnsupportedResponseType(products);
 
     return products.hydraMember ?? []; // Default limit is 25
+  }
+
+  async getToepassingsGebiedenCodelist() {
+    const response = await fetch(
+      `/ipdc/api/codelijsten/geografisch-toepassingsgebied?include-inactive=false`,
+    );
+    if (!response.ok) {
+      // Shouldn't we throw an error here?
+      return null;
+    }
+
+    const results = await response.json();
+    this.gebieden = [...(results.waardes ?? [])];
   }
 
   _throwErrorOnUnsupportedResponseType(jsonResponse) {
