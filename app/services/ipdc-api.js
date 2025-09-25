@@ -75,12 +75,12 @@ export default class IpdcApiService extends Service {
       {
         key: 'geografischeToepassingsgebieden',
         value: this.gebiedIds.join(','),
-        isApplied: this.gebiedIds?.length >= 1,
+        isApplied: Boolean(this.gebiedIds?.length),
       },
       {
         key: 'zoekterm',
         value: searchValue,
-        isApplied: searchValue && searchValue.trim() !== '',
+        isApplied: Boolean(searchValue && searchValue.trim()),
       },
     ].filter((param) => param.isApplied);
     const queryParams = params
