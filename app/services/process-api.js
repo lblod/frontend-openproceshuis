@@ -35,7 +35,7 @@ export default class ProcessApiService extends Service {
   downloadLinkForInventoryProcesses(downloadOptions) {
     const downloadAllOptions = downloadOptions;
     delete downloadAllOptions.page;
-    downloadAllOptions.size = 9999;
+    delete downloadAllOptions.size;
 
     const query = this.optionsToQueryParams(downloadAllOptions);
     return `/process-api/conceptual-processes/download?${query.join('&')}`;

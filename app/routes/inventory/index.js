@@ -17,19 +17,25 @@ export default class InventoryIndexRoute extends Route {
   };
 
   async model(params) {
+    let modifiedParams = { ...params };
+    if (!params.size) {
+      modifiedParams['size'] = 20;
+    }
     try {
       const tableContent =
-        await this.processApi.fetchInventoryProcessesTableContent(params);
+        await this.processApi.fetchInventoryProcessesTableContent(
+          modifiedParams,
+        );
       return {
         tableContent: tableContent,
         couldNotFetchTableContent: false,
-        params,
+        params: modifiedParams,
       };
     } catch (error) {
       return {
         tableContent: null,
         couldNotFetchTableContent: true,
-        params,
+        params: modifiedParams,
       };
     }
   }
