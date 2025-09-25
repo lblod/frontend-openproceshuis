@@ -43,21 +43,23 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
     };
     this.products.clear();
     results.map((result) => {
-      const name = Object.entries(result.naam).map(([language, content]) => ({
+      const names = Object.entries(result.naam).map(([language, content]) => ({
         content,
         language,
       }));
       // TODO: Update the queryParams when the api supports only searching in title content
-      const namesJoin = name.map((n) => n.content).join(' ');
+      const dutchName = names
+        .find((name) => name.language === 'nl')
+        ?.content?.toLowerCase();
       if (
         !productNumberOrId &&
         searchValue &&
-        !namesJoin.includes(searchValue)
+        !dutchName.startsWith(searchValue?.toLowerCase()) // Not fool proof as it filters in the 25 results
       ) {
         return null;
       }
       const product = {
-        name,
+        name: names,
         productNumber: result.productnummer,
         type: typeMapping[result['@type']],
         isDraft: true,
