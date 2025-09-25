@@ -23,7 +23,7 @@ export default class IpdcApiService extends Service {
     }
 
     const matches = await this.getProducts({ searchValue });
-    if (matches.find((product) => product.productnummer == productNumberOrId)) {
+    if (matches.find((product) => product.id == productForId.id)) {
       return productForId;
     }
 
