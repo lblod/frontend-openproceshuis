@@ -51,13 +51,15 @@
             {{on "click" (fn (mut this.isArchiveModelOpen) true)}}
           />
         {{/if}}
-        <AuButton
-          @icon="bin"
-          @skin="naked"
-          @size="large"
-          @alert={{true}}
-          {{on "click" (fn (mut this.isDeleteModelOpen) true)}}
-        />
+        {{#unless true}}
+          <AuButton
+            @icon="bin"
+            @skin="naked"
+            @size="large"
+            @alert={{true}}
+            {{on "click" (fn (mut this.isDeleteModelOpen) true)}}
+          />
+        {{/unless}}
       </AuButtonGroup>
     {{/if}}
   </div>
