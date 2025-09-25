@@ -47,6 +47,7 @@ Router.map(function () {
 
   this.route('inventory', { path: 'inventaris' }, function () {
     this.route('index', { path: '' });
+    this.route('admin');
   });
 
   this.route('legal', { path: '/legaal' }, function () {

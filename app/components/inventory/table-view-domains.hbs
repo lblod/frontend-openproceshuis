@@ -1,0 +1,14 @@
+<div class="inventory-domain-tables">
+  {{#if this.isLoading}}
+    <AuLoader @hideMessage={{true}} />
+  {{else}}
+    {{#each this.domains as |domain|}}
+      <div>
+        <Inventory::CollapsibleDomainTable
+          @domain={{domain}}
+          @isCollapsedOnLoad={{false}}
+        />
+      </div>
+    {{/each}}
+  {{/if}}
+</div>

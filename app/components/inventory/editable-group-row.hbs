@@ -1,0 +1,120 @@
+<tr>
+  <div
+    class="{{if this.isEditing 'bg-200--blue'}}
+      au-u-flex au-u-flex--row au-u-flex--vertical-center au-u-flex--between au-u-padding-small au-padding-right-none"
+  >
+    {{#if this.isEditing}}
+      <AuInput
+        @width="block"
+        @error={{this.errorMessage}}
+        id="new-category"
+        value={{this.label}}
+        {{on "keyup" (perform this.updateLabel)}}
+      />
+      <AuButtonGroup @inline={{true}}>
+        <AuButton
+          @icon="check"
+          @skin="naked"
+          @size="large"
+          @disabled={{not this.isValidLabel}}
+          {{on "click" this.saveGroupLabel}}
+        />
+        <AuButton
+          @icon="cross"
+          @skin="naked"
+          @size="large"
+          @alert={{true}}
+          {{on "click" this.toggleIsEditing}}
+        />
+      </AuButtonGroup>
+    {{else}}
+      <p>{{@group.label}}</p>
+      <AuButtonGroup @inline={{true}} class="inventory-row-button-group">
+        {{#if this.isArchived}}
+          <AuButton
+            @icon="undo"
+            @skin="naked"
+            @size="large"
+            {{on "click" this.unArchiveGroup}}
+          />
+        {{else}}
+          <AuButton
+            @icon="pencil"
+            @skin="naked"
+            @size="large"
+            {{on "click" this.toggleIsEditing}}
+          />
+          <AuButton
+            @icon="archive"
+            @skin="naked"
+            @size="large"
+            {{on "click" (fn (mut this.isArchiveModelOpen) true)}}
+          />
+        {{/if}}
+        <AuButton
+          @icon="bin"
+          @skin="naked"
+          @size="large"
+          @alert={{true}}
+          {{on "click" (fn (mut this.isDeleteModelOpen) true)}}
+        />
+      </AuButtonGroup>
+    {{/if}}
+  </div>
+</tr>
+
+<AuModal
+  @modalOpen={{this.isDeleteModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isDeleteModelOpen) false}}
+>
+  <:title>Verwijder groep uit domein</:title>
+  <:body>Ben je zeker dat je de groep
+    <span class="au-u-medium">{{@group.label}}</span>
+    wil verwijderen uit het domein
+    <span class="au-u-medium">{{@domain.label}}?</span></:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isDeleteModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabeld={{this.isDeleting}}
+        @loading={{this.isDeleting}}
+        @loadingMessage="Verwijderen"
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" this.deleteGroupFromDomain}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isArchiveModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isArchiveModelOpen) false}}
+>
+  <:title>Archiveer deze groep</:title>
+  <:body>Ben je zeker dat je de groep
+    <span class="au-u-medium">{{@group.label}}</span>
+    wil archiveren? Achteraf kan je deze nog altijd terug uit het archief
+    herstellen.</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isArchiveModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabeld={{this.isArchiving}}
+        @loading={{this.isArchiving}}
+        @loadingMessage="Archiveren"
+        @alert={{true}}
+        {{on "click" this.archiveGroup}}
+      >Archiveer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

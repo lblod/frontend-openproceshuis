@@ -1,6 +1,8 @@
-import Service from '@ember/service';
+import Service, { service } from '@ember/service';
 
 export default class ProcessApiService extends Service {
+  @service store;
+
   async fetchInventoryProcessesTableContent(fetchOptions) {
     const queryOptions = fetchOptions;
 

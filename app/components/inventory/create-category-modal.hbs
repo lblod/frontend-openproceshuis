@@ -1,0 +1,42 @@
+<AuModal
+  @modalOpen={{@isModalOpen}}
+  @closable={{true}}
+  @closeModal={{@onCloseModal}}
+>
+  <:title>Voeg een nieuwe categorie toe</:title>
+  <:body>
+    <p class="au-u-margin-bottom">Geef de label in van de categorie dat je wil
+      toevoegen.</p>
+    <div class="au-u-flex au-u-flex--column">
+      <AuLabel
+        @error={{this.errorMessage}}
+        @required={{true}}
+        for="new-category"
+      >Label</AuLabel>
+      <AuInput
+        @error={{this.errorMessage}}
+        id="new-category"
+        value={{this.label}}
+        {{on "keyup" (perform this.updateLabel)}}
+      />
+      {{#if this.errorMessage}}
+        <AuHelpText @error="true">
+          {{this.errorMessage}}
+        </AuHelpText>
+      {{/if}}
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" @onCloseModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @icon="plus"
+        @disabled={{not this.canSave}}
+        {{on "click" this.create}}
+      >Voeg toe</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

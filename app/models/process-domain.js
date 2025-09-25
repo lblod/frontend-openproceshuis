@@ -6,6 +6,10 @@ export default class ProcessDomainModel extends Model {
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
+  @attr('string', {
+    defaultValue: ENV.conceptSchemes.processDomains,
+  })
+  scheme;
 
   @hasMany('process-category', { inverse: null, async: false })
   processCategories;

@@ -1,0 +1,97 @@
+{{page-title "Beheer inventaris processsen"}}
+{{breadcrumb "Beheer" route="inventory.admin"}}
+
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar au-o-box">
+      <div>
+        <AuHeading @skin="5" class="au-u-muted au-u-margin-bottom-small">
+          Categorieën
+        </AuHeading>
+        <AuList @divider={{false}} as |Item|>
+          {{#each @model.categories as |category|}}
+            <Item {{on "click" (fn this.scrollToCategory category)}}>
+              <span
+                class="au-u-medium au-u-padding-left-small"
+              >{{category.label}}</span>
+            </Item>
+          {{/each}}
+        </AuList>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <AuToolbar
+      @size="large"
+      class="au-u-padding-bottom-none au-u-margin-bottom-none"
+      as |Group|
+    >
+      <Group class="au-u-margin-bottom-none">
+        <AuHeading @skin="2">
+          Beheer inventaris processen
+        </AuHeading>
+      </Group>
+    </AuToolbar>
+    <AuToolbar
+      @size="large"
+      class="au-u-padding-bottom-none au-u-margin-bottom-none"
+      as |Group|
+    >
+      <Group class="au-u-margin-bottom-none">
+        <AuButton
+          @skin="secondary"
+          @icon="add"
+          iconAlignment="left"
+          {{on "click" (fn (mut this.isNewCategoryModalOpen) true)}}
+        >
+          Nieuwe categorie
+        </AuButton>
+      </Group>
+    </AuToolbar>
+    <div class="au-o-box">
+      {{#each @model.categories as |category|}}
+        <section id={{category.id}}>
+          <CollapsibleContainer
+            class="au-u-margin-small"
+            @isCollapsedOnLoad={{true}}
+            @toggleOpen={{eq this.categoryToOpen.id category.id}}
+            @onContainerLogicTakesOver={{this.clearOpenCategory}}
+          >
+            <:title>{{category.label}}</:title>
+            <:action>
+              <AuButton
+                @skin="naked"
+                @icon="add"
+                iconAlignment="left"
+                {{on "click" (fn this.openCreateDomainModal category)}}
+              >
+                Nieuw domein
+              </AuButton>
+            </:action>
+            <:default>
+              {{#unless (eq this.categoryToRefresh.id category.id)}}
+                <Inventory::TableViewDomains @category={{category}} />
+              {{/unless}}
+            </:default>
+          </CollapsibleContainer>
+        </section>
+      {{/each}}
+    </div>
+  </:content>
+</SidebarContainer>
+
+{{#if this.isNewCategoryModalOpen}}
+  <Inventory::CreateCategoryModal
+    @isModalOpen={{this.isNewCategoryModalOpen}}
+    @onCloseModal={{fn (mut this.isNewCategoryModalOpen) false}}
+    @onCreated={{this.refreshCategories}}
+  />
+{{/if}}
+{{#if this.isNewDomainModalOpen}}
+  <Inventory::CreateDomainModal
+    @isModalOpen={{this.isNewDomainModalOpen}}
+    @onCloseModal={{this.onCloseCreateDomainModal}}
+    @onCreated={{fn this.refreshDomainsForCategory this.createForCategory}}
+    @category={{this.createForCategory}}
+  />
+{{/if}}
