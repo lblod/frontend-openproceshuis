@@ -3,6 +3,7 @@ import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 export default class IpdcApiService extends Service {
+  @service toaster;
   @service currentSession;
 
   @tracked gebiedIds = [];
@@ -32,8 +33,11 @@ export default class IpdcApiService extends Service {
   async getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) {
-      // Shouldn't we throw an error here?
-      return null;
+      const errorMessage = `Kon het product niet vinden met nummer: ${productNumberOrId}`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
     }
     const product = await response.json();
     this._throwErrorOnUnsupportedResponseType(product);
@@ -85,8 +89,11 @@ export default class IpdcApiService extends Service {
 
     const response = await fetch(`/ipdc/doc/product?${queryParams}`);
     if (!response.ok) {
-      // Shouldn't we throw an error here?
-      return [];
+      const errorMessage = `Er liep iets mis bij het vinden van producten met zoekterm: "${searchValue}"`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
     }
 
     const products = await response.json();
@@ -100,8 +107,11 @@ export default class IpdcApiService extends Service {
       `/ipdc/api/codelijsten/geografisch-toepassingsgebied?include-inactive=false`,
     );
     if (!response.ok) {
-      // Shouldn't we throw an error here?
-      return null;
+      const errorMessage = `Er liep iets mis bij het ophalen van de product toepassingsgebieden`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
     }
 
     const results = await response.json();
