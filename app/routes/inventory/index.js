@@ -14,6 +14,7 @@ export default class InventoryIndexRoute extends Route {
     domain: { refreshModel: true },
     group: { refreshModel: true },
     processTitle: { refreshModel: true },
+    processNumber: { refreshModel: true },
   };
 
   async model(params) {

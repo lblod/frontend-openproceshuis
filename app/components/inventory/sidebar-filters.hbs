@@ -49,6 +49,15 @@
           class="grow"
         />
       </div>
+      <div>
+        <AuLabel for="filter-title">Nummer</AuLabel>
+        <Inventory::SelectNumber
+          @id="filter-number"
+          @selected={{@params.processNumber}}
+          @onChange={{this.onFilterUpdated}}
+          class="grow"
+        />
+      </div>
       <div class="au-u-flex au-u-flex--end">
         <AuButton
           @icon="cross"

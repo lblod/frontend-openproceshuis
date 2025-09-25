@@ -17,6 +17,7 @@ export default class InventoryIndexController extends Controller {
     'group',
     'title',
     'processTitle',
+    'processNumber',
   ];
   @service router;
   @service currentSession;
@@ -29,6 +30,7 @@ export default class InventoryIndexController extends Controller {
   @tracked domain = null;
   @tracked group = null;
   @tracked processTitle = null;
+  @tracked processNumber = null;
 
   @tracked isModalOpen = false;
   @tracked isDeleteModalOpen = false;

@@ -1,0 +1,9 @@
+<AuInput
+  @width="block"
+  @id={{@id}}
+  value={{@selected}}
+  type="number"
+  min="0"
+  class="grow"
+  {{on "input" (perform this.onChange)}}
+/>
