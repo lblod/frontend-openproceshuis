@@ -1,5 +1,5 @@
 <div class="inventory-domain-tables">
-  {{#if this.isLoading}}
+  {{#if this.fetchDomains.isRunning}}
     <AuLoader @hideMessage={{true}} />
   {{else}}
     {{#each this.domains as |domain|}}
@@ -7,6 +7,7 @@
         <Inventory::CollapsibleDomainTable
           @domain={{domain}}
           @isCollapsedOnLoad={{false}}
+          @onDomainDeleted={{perform this.fetchDomains}}
         />
       </div>
     {{/each}}

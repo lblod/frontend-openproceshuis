@@ -41,6 +41,7 @@ export default class InventoryEditToolbar extends Component {
       this.toaster.success(`${this.args.model.label} verwijderd`, undefined, {
         timeOut: 5000,
       });
+      this.args.onModelDeleted?.();
     } catch (error) {
       this.toaster.error(
         `Er liep iets mis bij het verwijderen van ${this.args.model.label}`,
