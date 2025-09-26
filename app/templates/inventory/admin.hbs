@@ -59,14 +59,10 @@
           >
             <:title>{{category.label}}</:title>
             <:action>
-              <AuButton
-                @skin="naked"
-                @icon="add"
-                iconAlignment="left"
-                {{on "click" (fn this.openCreateDomainModal category)}}
-              >
-                Nieuw domein
-              </AuButton>
+              <Inventory::EditToolbar
+                @modelName="process-category"
+                @model={{category}}
+              />
             </:action>
             <:default>
               {{#unless (eq this.categoryToRefresh.id category.id)}}

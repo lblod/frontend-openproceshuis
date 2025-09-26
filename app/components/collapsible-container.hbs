@@ -1,7 +1,7 @@
 <div ...attributes>
   <div class="au-u-flex au-u-flex--vertical-center au-u-flex--between">
     {{#if (has-block "title")}}
-      {{!-- template-lint-disable no-invalid-interactive --}}
+      {{! template-lint-disable no-invalid-interactive }}
       <div
         class="au-u-flex au-u-flex--vertical-center"
         {{on "click" this.toggleCollapse}}
@@ -27,7 +27,7 @@
   </div>
 
   {{#if this.isContentShown}}
-    <div class="au-u-margin">
+    <div>
       {{yield}}
     </div>
   {{/if}}
