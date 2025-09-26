@@ -3,6 +3,20 @@ import Service, { service } from '@ember/service';
 export default class ProcessApiService extends Service {
   @service store;
 
+  async hasUsage(id) {
+    const response = await fetch(
+      `/process-api/conceptual-processes/${id}/hasUsage`,
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Er liep iets mis bij het nakijken of er een toepassing is voor entiteit met id: ${id}`,
+      );
+    }
+    const usage = await response.json();
+    return usage.hasUsage;
+  }
+
   async fetchInventoryProcessesTableContent(fetchOptions) {
     const queryOptions = fetchOptions;
     const query = this.optionsToQueryParams(queryOptions);

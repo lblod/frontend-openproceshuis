@@ -11,6 +11,7 @@ import { restartableTask, timeout } from 'ember-concurrency';
 export default class InventoryEditToolbar extends Component {
   @service store;
   @service toaster;
+  @service processApi;
 
   @tracked isCreating;
   @tracked isCreateModelOpen;
@@ -19,6 +20,9 @@ export default class InventoryEditToolbar extends Component {
   @tracked isEditModelOpen;
   @tracked label;
   @tracked errorMessage;
+
+  @tracked isCheckingForUsage;
+  @tracked usageMessage;
 
   @tracked isDeleting;
   @tracked isDeleteModelOpen;
@@ -97,6 +101,39 @@ export default class InventoryEditToolbar extends Component {
     }
     this.isEditModelOpen = false;
     this.isUpdating = false;
+  }
+
+  async checkForUsage() {
+    this.isCheckingForUsage = true;
+    let hasUsage = false;
+    try {
+      hasUsage = await this.processApi.hasUsage(this.args.model.id);
+    } catch (error) {
+      this.toaster.error(
+        `Er liep iets mis bij het kijken of ${this.args.model.label} wordt gebruikt in de applicatie`,
+        this.args.model.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isCheckingForUsage = false;
+    this.usageMessage = null;
+    if (hasUsage) {
+      this.usageMessage = `Er werden plaatsen gevonden waar dit item wordt gebruikt.`;
+    }
+  }
+
+  @action
+  async openArchiveModal() {
+    this.isArchiveModelOpen = true;
+    await this.checkForUsage();
+  }
+
+  @action
+  async openDeleteModal() {
+    this.isDeleteModelOpen = true;
+    await this.checkForUsage();
   }
 
   @action
