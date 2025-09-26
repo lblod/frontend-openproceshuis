@@ -1,12 +1,8 @@
-{{#if (or @label @statusUri)}}
-  <span class="au-u-flex au-u-flex--between">
-    {{#if @label}}
-      {{@label}}
-    {{/if}}
-    {{#if this.status}}
-      <AuPill @skin={{this.status.skin}} class="no-underline">
-        {{this.status.label}}
-      </AuPill>
-    {{/if}}
-  </span>
-{{/if}}
+<span class="au-u-flex au-u-flex--between">
+  {{#if @label}}
+    {{@label}}
+  {{/if}}
+  {{#if this.status}}
+    <AuPill @skin={{this.status.skin}} class="round-pill" />
+  {{/if}}
+</span>

@@ -10,8 +10,15 @@ export default class InventoryLabelWithStatusPill extends Component {
         label: 'Gearchiveerd',
         skin: 'warning',
       },
+      {
+        uri: null,
+        label: 'Actief',
+        skin: 'success',
+      },
     ];
 
-    return statusUriMap.find((s) => s.uri === this.args.statusUri);
+    return statusUriMap.find(
+      (s) => s.uri === this.args.statusUri || s.uri === null,
+    );
   }
 }

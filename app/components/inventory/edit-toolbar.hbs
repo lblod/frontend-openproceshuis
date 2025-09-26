@@ -12,7 +12,7 @@
     {{/if}}
   </Group>
   {{#unless this.isCreateModel}}
-    <Group>
+    <Group class="au-u-flex au-u-flex--vertical-center">
       <Inventory::LabelWithStatusPill @statusUri={{@model.status}} />
       {{#if this.isEditModel}}
         <AuButtonGroup @inline={{true}}>
