@@ -13,31 +13,31 @@
           <AuButton
             @icon="undo"
             @skin="naked"
-            @size="large"
+            @hideText={{true}}
             {{on "click" this.unarchiveModel}}
-          />
+          >Herstel</AuButton>
         {{else}}
           <AuButton
             @icon="pencil"
             @skin="naked"
-            @size="large"
+            @hideText={{true}}
             {{!-- {{on "click" this.toggleIsEditing}} --}}
-          />
+          >Pas aan</AuButton>
           <AuButton
             @icon="archive"
             @skin="naked"
-            @size="large"
+            @hideText={{true}}
             {{on "click" (fn (mut this.isArchiveModelOpen) true)}}
-          />
+          >Archiveer</AuButton>
         {{/if}}
         {{#unless true}}
           <AuButton
             @icon="bin"
             @skin="naked"
-            @size="large"
+            @hideText={{true}}
             @alert={{true}}
             {{on "click" (fn (mut this.isDeleteModelOpen) true)}}
-          />
+          >Verwijder</AuButton>
         {{/unless}}
       </AuButtonGroup>
     {{/if}}
