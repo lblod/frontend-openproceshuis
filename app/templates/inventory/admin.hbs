@@ -65,6 +65,14 @@
               />
             </:action>
             <:default>
+              <Inventory::EditToolbar
+                @modelName="process-domain"
+                @createButtonText="Voeg domein toe"
+                @onCreateButtonClicked={{fn
+                  this.openCreateDomainModal
+                  category
+                }}
+              />
               {{#unless (eq this.categoryToRefresh.id category.id)}}
                 <Inventory::TableViewDomains @category={{category}} />
               {{/unless}}

@@ -31,7 +31,7 @@ export default class InventoryEditToolbar extends Component {
   get isCreateModel() {
     return (
       !this.args.model &&
-      this.args.modeName &&
+      this.args.modelName &&
       this.allowedModelNames.includes(this.args.modelName)
     );
   }
