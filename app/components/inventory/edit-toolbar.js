@@ -6,12 +6,19 @@ import { service } from '@ember/service';
 
 import ENV from 'frontend-openproceshuis/config/environment';
 
+import { restartableTask, timeout } from 'ember-concurrency';
+
 export default class InventoryEditToolbar extends Component {
   @service store;
   @service toaster;
 
   @tracked isCreating;
   @tracked isCreateModelOpen;
+
+  @tracked isUpdating;
+  @tracked isEditModelOpen;
+  @tracked label;
+  @tracked errorMessage;
 
   @tracked isDeleting;
   @tracked isDeleteModelOpen;
@@ -31,6 +38,65 @@ export default class InventoryEditToolbar extends Component {
 
   get isEditModel() {
     return this.args.model;
+  }
+
+  get cleanLabel() {
+    return this.label?.trim();
+  }
+
+  get isValidLabel() {
+    return this.label && this.cleanLabel !== '' && !this.errorMessage;
+  }
+
+  get canSaveLabel() {
+    return this.isValidLabel && this.cleanLabel !== this.args.model.label;
+  }
+
+  @action
+  openEditModal() {
+    this.label = this.args.model.label;
+    this.isEditModelOpen = true;
+  }
+
+  onUpdateLabel = restartableTask(async (event) => {
+    this.label = event.target?.value;
+    await timeout(250);
+    if (this.label) {
+      this.errorMessage = null;
+      const duplicates = await this.store.query(this.args.modelName, {
+        'filter[:exact:label]': this.cleanLabel,
+        page: { size: 1 },
+      });
+      if (
+        duplicates.length !== 0 &&
+        this.cleanLabel !== this.args.model.label
+      ) {
+        this.errorMessage = 'Deze naam bestaat al';
+      } else {
+        this.errorMessage = null;
+      }
+    } else {
+      this.errorMessage = 'Dit veld is verplicht';
+    }
+  });
+
+  @action
+  async updateModelLabel() {
+    this.isUpdating = true;
+    try {
+      this.args.model.label = this.cleanLabel;
+      await this.args.model.save();
+    } catch (error) {
+      this.toaster.error(
+        `Er liep iets mis bij het aanpassen van de naam naar ${this.cleanLabel}`,
+        this.args.model.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isEditModelOpen = false;
+    this.isUpdating = false;
   }
 
   @action

@@ -21,7 +21,7 @@
             @icon="pencil"
             @skin="naked"
             @hideText={{true}}
-            {{!-- {{on "click" this.toggleIsEditing}} --}}
+            {{on "click" this.openEditModal}}
           >Pas aan</AuButton>
           <AuButton
             @icon="archive"
@@ -43,6 +43,52 @@
     {{/if}}
   </Group>
 </AuToolbar>
+
+<AuModal
+  @modalOpen={{this.isEditModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isEditModelOpen) false}}
+>
+  <:title>Bewerk</:title>
+  <:body>
+    <p>Pas de naam van
+      <span class="au-u-medium">{{@model.label}}</span>
+      aan naar een andere waarde. Door het aanpassen van de naam zal deze overal
+      in de applicatie worden aangepast naar de nieuwe waarde.
+    </p>
+    <div class="au-u-margin-top">
+      <AuLabel @error={{not this.isValidLabel}} for="edit-model-label">
+        Label
+      </AuLabel>
+      <AuInput
+        @error={{not this.isValidLabel}}
+        @width="block"
+        value={{this.label}}
+        id="edit-model-label"
+        {{on "keyup" (perform this.onUpdateLabel)}}
+      />
+      {{#if this.errorMessage}}
+        <AuHelpText @error={{true}}>
+          {{this.errorMessage}}
+        </AuHelpText>
+      {{/if}}
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isEditModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabled={{or (not this.canSaveLabel) this.isUpdating}}
+        @loading={{this.isUpdating}}
+        @loadingMessage="Aanpassen"
+        {{on "click" this.updateModelLabel}}
+      >Pas aan</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
 
 <AuModal
   @modalOpen={{this.isArchiveModelOpen}}
