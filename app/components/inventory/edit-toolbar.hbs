@@ -13,6 +13,7 @@
   </Group>
   {{#unless this.isCreateModel}}
     <Group>
+      <Inventory::LabelWithStatusPill @statusUri={{@model.status}} />
       {{#if this.isEditModel}}
         <AuButtonGroup @inline={{true}}>
           {{#if @model.isArchived}}
