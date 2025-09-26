@@ -1,13 +1,8 @@
-<AuToolbar @size="large" class="au-u-padding-none" as |Group|>
-  {{#if this.isCreateModel}}
-    <Group>
-      {{! Empty just for pushing create to the right }}
-    </Group>
-  {{/if}}
-  <Group class="au-u-margin-bottom-none">
+<AuToolbar @size="large" class="au-u-padding-none" ...attributes as |Group|>
+  <Group class="au-u-margin-left-none">
     {{#if this.isCreateModel}}
       <AuButton
-        @skin="naked"
+        @skin="secondary"
         @icon="add"
         iconAlignment="left"
         {{on "click" @onCreateButtonClicked}}

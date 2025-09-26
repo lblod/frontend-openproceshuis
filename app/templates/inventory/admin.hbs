@@ -32,23 +32,13 @@
         </AuHeading>
       </Group>
     </AuToolbar>
-    <AuToolbar
-      @size="large"
-      class="au-u-padding-bottom-none au-u-margin-bottom-none"
-      as |Group|
-    >
-      <Group class="au-u-margin-bottom-none">
-        <AuButton
-          @skin="secondary"
-          @icon="add"
-          iconAlignment="left"
-          {{on "click" (fn (mut this.isNewCategoryModalOpen) true)}}
-        >
-          Nieuwe categorie
-        </AuButton>
-      </Group>
-    </AuToolbar>
     <div class="au-o-box">
+      <Inventory::EditToolbar
+        class="au-u-margin-left-small"
+        @modelName="process-category"
+        @createButtonText="Nieuwe categorie"
+        @onCreateButtonClicked={{fn (mut this.isNewCategoryModalOpen) true}}
+      />
       {{#each @model.categories as |category|}}
         <section id={{category.id}}>
           <CollapsibleContainer
@@ -66,8 +56,9 @@
             </:action>
             <:default>
               <Inventory::EditToolbar
+                class="au-u-margin-bottom"
                 @modelName="process-domain"
-                @createButtonText="Voeg domein toe"
+                @createButtonText="Nieuwe domein"
                 @onCreateButtonClicked={{fn
                   this.openCreateDomainModal
                   category
