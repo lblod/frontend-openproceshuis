@@ -11,6 +11,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class InventoryEditableGroupRow extends Component {
   @service toaster;
   @service store;
+  @service processApi;
 
   @tracked isEditing;
   @tracked label;
@@ -18,6 +19,8 @@ export default class InventoryEditableGroupRow extends Component {
   @tracked isDeleting;
   @tracked isArchiveModelOpen;
   @tracked isArchiving;
+  @tracked usageMessage;
+  @tracked isCheckingForUsage;
 
   get isArchived() {
     return this.args.group.status === ENV.resourceStates.archived;
@@ -88,6 +91,39 @@ export default class InventoryEditableGroupRow extends Component {
       );
     }
     this.toggleIsEditing();
+  }
+
+  async checkForUsage() {
+    this.isCheckingForUsage = true;
+    let hasUsage = false;
+    try {
+      hasUsage = await this.processApi.hasUsage(this.args.group.id);
+    } catch (error) {
+      this.toaster.error(
+        `Er liep iets mis bij het kijken of ${this.args.group.label} wordt gebruikt in de applicatie`,
+        this.args.group.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isCheckingForUsage = false;
+    this.usageMessage = null;
+    if (hasUsage) {
+      this.usageMessage = `Er werden plaatsen gevonden waar dit item wordt gebruikt.`;
+    }
+  }
+
+  @action
+  async openArchiveModal() {
+    this.isArchiveModelOpen = true;
+    await this.checkForUsage();
+  }
+
+  @action
+  async openDeleteModal() {
+    this.isDeleteModelOpen = true;
+    await this.checkForUsage();
   }
 
   @action
