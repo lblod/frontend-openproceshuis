@@ -7,11 +7,11 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 import { restartableTask, timeout } from 'ember-concurrency';
+import { hasUsageInRelationOfConceptualProcess } from '../../utils/conceptual-process';
 
 export default class InventoryEditToolbar extends Component {
   @service store;
   @service toaster;
-  @service processApi;
 
   @tracked isCreating;
   @tracked isCreateModelOpen;
@@ -107,10 +107,14 @@ export default class InventoryEditToolbar extends Component {
     this.isCheckingForUsage = true;
     let hasUsage = false;
     try {
-      hasUsage = await this.processApi.hasUsage(this.args.model.id);
+      hasUsage = await hasUsageInRelationOfConceptualProcess(
+        this.args.model.id,
+        this.args.modelName,
+        this.store,
+      );
     } catch (error) {
       this.toaster.error(
-        `Er liep iets mis bij het kijken of ${this.args.model.label} wordt gebruikt in de applicatie`,
+        `Er liep iets mis bij het nakijken of ${this.args.model.label} gelinkt is aan een inventaris process`,
         this.args.model.label,
         {
           timeOut: 5000,
@@ -120,7 +124,7 @@ export default class InventoryEditToolbar extends Component {
     this.isCheckingForUsage = false;
     this.usageMessage = null;
     if (hasUsage) {
-      this.usageMessage = `Er werden plaatsen gevonden waar dit item wordt gebruikt.`;
+      this.usageMessage = `Er werden processen gevonden die gebruik van ${this.args.model.label}.`;
     }
   }
 
@@ -192,7 +196,7 @@ export default class InventoryEditToolbar extends Component {
     } catch (error) {
       this.toaster.error(
         `Er liep iets mis bij het hertellen van ${this.args.model.label}`,
-        this.args.group.label,
+        this.args.model.label,
         {
           timeOut: 5000,
         },
