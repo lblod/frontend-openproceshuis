@@ -7,11 +7,11 @@ import { service } from '@ember/service';
 import { restartableTask, timeout } from 'ember-concurrency';
 
 import ENV from 'frontend-openproceshuis/config/environment';
-import { hasUsageInRelationOfConceptualProcess } from '../../utils/conceptual-process';
 
 export default class InventoryEditableGroupRow extends Component {
   @service toaster;
   @service store;
+  @service('conceptual-process') cpService;
 
   @tracked isEditing;
   @tracked label;
@@ -97,14 +97,13 @@ export default class InventoryEditableGroupRow extends Component {
     this.isCheckingForUsage = true;
     let hasUsage = false;
     try {
-      hasUsage = await hasUsageInRelationOfConceptualProcess(
+      hasUsage = await this.cpService.hasUsageInRelationOfConceptualProcess(
         this.args.group.id,
         'process-group',
-        this.store,
       );
     } catch (error) {
       this.toaster.error(
-        `Er liep iets mis bij het kijken of ${this.args.group.label} wordt gebruikt in de applicatie`,
+        `Er liep iets mis bij het nakijken of ${this.args.group.label} gelinkt is aan een inventaris process`,
         this.args.group.label,
         {
           timeOut: 5000,
@@ -114,7 +113,7 @@ export default class InventoryEditableGroupRow extends Component {
     this.isCheckingForUsage = false;
     this.usageMessage = null;
     if (hasUsage) {
-      this.usageMessage = `Er werden plaatsen gevonden waar dit item wordt gebruikt.`;
+      this.usageMessage = `Er werden processen gevonden die gebruik maken van ${this.args.group.label}.`;
     }
   }
 

@@ -7,11 +7,11 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 import { restartableTask, timeout } from 'ember-concurrency';
-import { hasUsageInRelationOfConceptualProcess } from '../../utils/conceptual-process';
 
 export default class InventoryEditToolbar extends Component {
   @service store;
   @service toaster;
+  @service('conceptual-process') cpService;
 
   @tracked isCreating;
   @tracked isCreateModelOpen;
@@ -107,10 +107,9 @@ export default class InventoryEditToolbar extends Component {
     this.isCheckingForUsage = true;
     let hasUsage = false;
     try {
-      hasUsage = await hasUsageInRelationOfConceptualProcess(
+      hasUsage = await this.cpService.hasUsageInRelationOfConceptualProcess(
         this.args.model.id,
         this.args.modelName,
-        this.store,
       );
     } catch (error) {
       this.toaster.error(
@@ -124,7 +123,7 @@ export default class InventoryEditToolbar extends Component {
     this.isCheckingForUsage = false;
     this.usageMessage = null;
     if (hasUsage) {
-      this.usageMessage = `Er werden processen gevonden die gebruik van ${this.args.model.label}.`;
+      this.usageMessage = `Er werden processen gevonden die gebruik maken van ${this.args.model.label}.`;
     }
   }
 
