@@ -133,7 +133,9 @@ export default class InventoryEditableGroupRow extends Component {
   async archiveGroup() {
     this.isArchiving = true;
     try {
+      const domains = await this.args.group.processDomains;
       this.args.group.status = ENV.resourceStates.archived;
+      this.args.group.processDomains = domains;
       await this.args.group.save();
       this.toaster.success(`${this.args.group.label} gearchiveerd`, undefined, {
         timeOut: 5000,

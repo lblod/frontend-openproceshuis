@@ -6,6 +6,8 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { restartableTask } from 'ember-concurrency';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class InventoryTableViewDomains extends Component {
   @service store;
 
@@ -19,6 +21,7 @@ export default class InventoryTableViewDomains extends Component {
   fetchDomains = restartableTask(async () => {
     const domains = await this.store.query('process-domain', {
       'filter[process-categories][id]': this.args.category.id,
+      'filter[:exact:scheme]': ENV.conceptSchemes.processDomains,
       sort: 'label',
       page: { size: 100 },
     });
