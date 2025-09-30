@@ -1,0 +1,71 @@
+<div class="au-c-sidebar">
+  <div class="au-c-sidebar__content">
+    <form
+      {{on "reset" this.resetFilters}}
+      class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+    >
+      <h1 class="au-u-h3 au-u-medium">Filters</h1>
+      <div>
+        <AuLabel for="filter-category">Categorie</AuLabel>
+        <Inventory::SelectCategory
+          @id="filter-category"
+          @selected={{@params.category}}
+          @onChange={{this.onFilterUpdated}}
+          class="grow"
+        />
+      </div>
+      <div>
+        <AuLabel for="filter-domain">Procesdomein</AuLabel>
+        <Inventory::SelectDomain
+          @id="filter-domain"
+          @selected={{@params.domain}}
+          @onChange={{this.onFilterUpdated}}
+          @category={{@params.category}}
+          class="grow"
+        />
+      </div>
+      <div>
+        <AuLabel for="filter-group">Procesgroep</AuLabel>
+        <Inventory::SelectGroup
+          @id="filter-group"
+          @selected={{@params.group}}
+          @onChange={{this.onFilterUpdated}}
+          @category={{@params.category}}
+          @domain={{@params.domain}}
+          class="grow"
+        />
+      </div>
+      <div>
+        <AuLabel for="filter-title">Hoofdproces</AuLabel>
+        <Inventory::SelectTitle
+          @id="filter-title"
+          @selected={{@params.processTitle}}
+          @onChange={{this.onFilterUpdated}}
+          @category={{@params.category}}
+          @domain={{@params.domain}}
+          @group={{@params.group}}
+          class="grow"
+        />
+      </div>
+      <div>
+        <AuLabel for="filter-title">Nummer</AuLabel>
+        <Inventory::SelectNumber
+          @id="filter-number"
+          @selected={{@params.processNumber}}
+          @onChange={{this.onFilterUpdated}}
+          class="grow"
+        />
+      </div>
+      <div class="au-u-flex au-u-flex--end">
+        <AuButton
+          @icon="cross"
+          @skin="link"
+          type="reset"
+          class="au-u-padding-none au-u-medium"
+        >
+          Herstel alle filters
+        </AuButton>
+      </div>
+    </form>
+  </div>
+</div>

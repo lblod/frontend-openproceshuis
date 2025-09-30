@@ -8,7 +8,17 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 
 export default class InventoryIndexController extends Controller {
   @service store;
-  queryParams = ['page', 'size', 'sort'];
+  queryParams = [
+    'page',
+    'size',
+    'sort',
+    'category',
+    'domain',
+    'group',
+    'title',
+    'processTitle',
+    'processNumber',
+  ];
   @service router;
   @service currentSession;
   @service toaster;
@@ -16,6 +26,11 @@ export default class InventoryIndexController extends Controller {
   @tracked page = 0;
   size = 20;
   @tracked sort = 'title';
+  @tracked category = null;
+  @tracked domain = null;
+  @tracked group = null;
+  @tracked processTitle = null;
+  @tracked processNumber = null;
 
   @tracked isModalOpen = false;
   @tracked isDeleteModalOpen = false;
@@ -334,5 +349,13 @@ export default class InventoryIndexController extends Controller {
     this.isDeleteModalOpen = false;
     this.isModalOpen = false;
     this.addProcessModalEdited = false;
+  }
+
+  @action
+  updateFilters(filters) {
+    Object.entries(filters).map(([key, value]) => {
+      this[key] = value;
+    });
+    this.page = 0;
   }
 }
