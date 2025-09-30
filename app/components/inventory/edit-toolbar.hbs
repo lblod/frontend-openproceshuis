@@ -105,7 +105,15 @@
   <:title>Archiveren</:title>
   <:body>
     {{#if this.usageMessage}}
-      <p class="au-u-margin-bottom">{{this.usageMessage}}</p>
+      <AuAlert
+        @title="Opgepast"
+        @skin="warning"
+        @icon="alert-triangle"
+        @size={{this.size}}
+        @closable={{false}}
+      >
+        {{this.usageMessage}}
+      </AuAlert>
     {{/if}}
     Ben je zeker dat je
     <span class="au-u-medium">{{@model.label}}</span>
@@ -126,6 +134,7 @@
           "Archiveren"
           "zoeken naar implementaties"
         }}
+        @icon={{if this.usageMessage "alert-triangle" null}}
         @alert={{true}}
         {{on "click" this.archiveModel}}
       >Archiveer</AuButton>
@@ -141,7 +150,15 @@
   <:title>Verwijderen</:title>
   <:body>
     {{#if this.usageMessage}}
-      <p class="au-u-margin-bottom">{{this.usageMessage}}</p>
+      <AuAlert
+        @title="Opgepast"
+        @skin="warning"
+        @icon="alert-triangle"
+        @size={{this.size}}
+        @closable={{false}}
+      >
+        {{this.usageMessage}}
+      </AuAlert>
     {{/if}}
     Ben je zeker dat je
     <span class="au-u-medium">{{@model.label}}</span>
@@ -162,7 +179,7 @@
           "zoeken naar implementaties"
         }}
         @skin="primary"
-        @icon="bin"
+        @icon={{if this.usageMessage "alert-triangle" "bin"}}
         @alert="true"
         {{on "click" this.deleteModel}}
       >Verwijder</AuButton>
