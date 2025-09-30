@@ -1,80 +1,78 @@
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+
+import { A } from '@ember/array';
+import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
+
 import { restartableTask, timeout } from 'ember-concurrency';
 
 export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Component {
   @service store;
+  @service ipdcApi;
+
+  @tracked products = A([]);
 
   @restartableTask
   *loadIpdcProductsTask(searchParams = '') {
-    if (!searchParams) return;
-
+    if (this.products.length >= 1) {
+      this.products.clear();
+    }
     yield timeout(500);
 
+    const searchValue = typeof searchParams === 'string' ? searchParams : null;
     let results = [];
-    const productNumberOrId = this.extractNumberOrId(searchParams);
+    const productNumberOrId = this.extractPossibleNumberOrId(searchParams);
     if (productNumberOrId) {
-      const response = yield fetch(`/ipdc/doc/product/${productNumberOrId}`);
-      if (!response.ok) return [];
-
-      const jsonResponse = yield response.json();
-      this.throwErrorOnUnsupportedResponseType(jsonResponse);
-
-      results = [jsonResponse];
+      const product =
+        yield this.ipdcApi.getProductByProductNumberOrIdForSession(
+          productNumberOrId,
+        );
+      if (product) {
+        results = [product];
+      }
     } else {
-      const response = yield fetch(
-        `/ipdc/doc/product?gearchiveerd=false&zoekterm=${searchParams}`,
-      );
-      if (!response.ok) return [];
-
-      const jsonResponse = yield response.json();
-      this.throwErrorOnUnsupportedResponseType(jsonResponse);
-
-      results = jsonResponse.hydraMember ?? []; // Default imit is 25
+      const products = yield this.ipdcApi.getProducts({
+        searchValue,
+      });
+      results = [...products];
     }
 
     const typeMapping = {
       ['Instantie']: 'ipdc-instance',
       ['Concept']: 'ipdc-concept',
     };
-    return results
-      .map((product) => {
-        const name = Object.entries(product.naam).map(
-          ([language, content]) => ({
-            content,
-            language,
-          }),
-        );
-        // TODO: Update the queryParams when the api supports only searching in title content
-        const namesJoin = name.map((n) => n.content).join(' ');
-        if (
-          !productNumberOrId &&
-          searchParams &&
-          !namesJoin.includes(searchParams)
-        ) {
-          return null;
-        }
-
-        return {
-          name,
-          productNumber: product.productnummer,
-          type: typeMapping[product['@type']],
-          isDraft: true,
-        };
-      })
-      .filter((isProduct) => isProduct);
+    this.products.clear();
+    results.map((result) => {
+      const names = Object.entries(result.naam).map(([language, content]) => ({
+        content,
+        language,
+      }));
+      // TODO: Update the queryParams when the api supports only searching in title content
+      const dutchName = names
+        .find((name) => name.language === 'nl')
+        ?.content?.toLowerCase();
+      if (
+        !productNumberOrId &&
+        searchValue &&
+        !dutchName.startsWith(searchValue?.toLowerCase()) // Not fool proof as it filters in the 25 results
+      ) {
+        return null;
+      }
+      const product = {
+        name: names,
+        productNumber: result.productnummer,
+        type: typeMapping[result['@type']],
+        isDraft: true,
+      };
+      this.products.pushObject(product);
+    });
   }
 
-  throwErrorOnUnsupportedResponseType(jsonResponse) {
-    const type = jsonResponse['@type'];
-    if (['Collection', 'Instantie', 'Concept'].includes(type)) {
-      return;
+  extractPossibleNumberOrId(input) {
+    if (!input || typeof input !== 'string') {
+      return null;
     }
 
-    throw new Error('Unsupported type in IPDC response: ' + type);
-  }
-
-  extractNumberOrId(input) {
     input = input.trim();
 
     try {

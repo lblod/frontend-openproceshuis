@@ -13,6 +13,7 @@ export default class CurrentSessionService extends Service {
   @service session;
   @service store;
   @service impersonation;
+  @service ipdcApi;
 
   @tracked account;
   @tracked user;
@@ -41,6 +42,7 @@ export default class CurrentSessionService extends Service {
         reload: true,
       });
       this.title = `${this.user.firstName} ${this.user.familyName} - ${this.group.name}`;
+      this.ipdcApi.getToepassingsGebiedenCodelist();
     }
   }
 

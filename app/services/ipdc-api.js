@@ -1,0 +1,142 @@
+import Service, { service } from '@ember/service';
+
+import { tracked } from '@glimmer/tracking';
+
+export default class IpdcApiService extends Service {
+  @service toaster;
+  @service currentSession;
+
+  @tracked gebiedIds = [];
+
+  // This is a hack as we cannot apply any filters when fetching an instance by id
+  async getProductByProductNumberOrIdForSession(productNumberOrId) {
+    const productForId =
+      await this.getProductByProductNumberOrId(productNumberOrId);
+
+    if (!productForId) {
+      return null;
+    }
+
+    const searchValue = productForId.naam?.nl ?? null;
+    if (!searchValue) {
+      return null;
+    }
+
+    const matches = await this.getProducts({ searchValue });
+    if (matches.find((product) => product.id == productForId.id)) {
+      return productForId;
+    }
+
+    return null;
+  }
+
+  async getProductByProductNumberOrId(productNumberOrId) {
+    const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
+    if (!response.ok) {
+      const errorMessage = `Kon het product niet vinden met nummer: ${productNumberOrId}`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
+    }
+    const product = await response.json();
+    this._throwErrorOnUnsupportedResponseType(product);
+
+    return product; // This product is not restricted to the current session
+  }
+
+  async getProducts({ searchValue }) {
+    const params = [
+      {
+        key: 'page',
+        value: 0,
+        isApplied: true,
+      },
+      {
+        key: 'sortBy',
+        value: 'LAATST_GEWIJZIGD',
+        isApplied: true,
+      },
+      {
+        key: 'gearchiveerd',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'doelgroepen',
+        value: 'LokaalBestuur',
+        isApplied: true,
+      },
+      {
+        key: 'includeParentGeografischeToepassingsgebieden',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'geografischeToepassingsgebieden',
+        value: this.gebiedIds.join(','),
+        isApplied: Boolean(this.gebiedIds?.length),
+      },
+      {
+        key: 'zoekterm',
+        value: searchValue,
+        isApplied: Boolean(searchValue && searchValue.trim()),
+      },
+    ].filter((param) => param.isApplied);
+    const queryParams = params
+      .map((param) => `${param.key}=${param.value}`)
+      .join('&');
+
+    const response = await fetch(`/ipdc/doc/product?${queryParams}`);
+    if (!response.ok) {
+      const errorMessage = `Er liep iets mis bij het vinden van producten met zoekterm: "${searchValue}"`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
+    }
+
+    const products = await response.json();
+    this._throwErrorOnUnsupportedResponseType(products);
+
+    return products.hydraMember ?? []; // Default limit is 25
+  }
+
+  async getToepassingsGebiedenCodelist() {
+    const response = await fetch(
+      `/ipdc/api/codelijsten/geografisch-toepassingsgebied?include-inactive=false`,
+    );
+    if (!response.ok) {
+      const errorMessage = `Er liep iets mis bij het ophalen van de product toepassingsgebieden`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
+    }
+
+    const results = await response.json();
+    const gebieden = [...(results.waardes ?? [])];
+    this.gebiedIds = this._getGebiedIds(gebieden);
+  }
+
+  _getGebiedIds(gebieden) {
+    const name = this.currentSession.group?.name?.toLowerCase();
+    if (!name) {
+      return null;
+    }
+
+    return gebieden
+      .filter((gebied) => name.includes(gebied.labels['nl']?.toLowerCase()))
+      .map((gebied) => gebied.id)
+      .filter((isPostCode) => isPostCode);
+  }
+
+  _throwErrorOnUnsupportedResponseType(jsonResponse) {
+    const type = jsonResponse['@type'];
+    if (['Collection', 'Instantie', 'Concept'].includes(type)) {
+      return;
+    }
+
+    throw new Error('Unsupported type in IPDC response: ' + type);
+  }
+}
