@@ -148,37 +148,15 @@
         </AuModal>
       </form>
     {{/if}}
-
-    {{#if this.isDeleteModalOpen}}
-      <AuModal
-        @modalOpen={{this.isDeleteModalOpen}}
-        @closeModal={{this.closeModal}}
-      >
-        <:title>Verwijder proces</:title>
-        <:body>
-          Weet u zeker dat u het proces
-          <strong>{{this.processToDelete.title}}</strong>
-          wilt verwijderen?
-        </:body>
-        <:footer>
-          <AuButtonGroup class="au-u-flex--end">
-            <AuButton
-              @skin="naked"
-              {{on "click" this.closeModal}}
-            >Annuleer</AuButton>
-            <AuButton
-              @skin="primary"
-              @alert={{true}}
-              {{on "click" (perform this.deleteInventoryProcess)}}
-            >
-              Verwijderen
-            </AuButton>
-          </AuButtonGroup>
-        </:footer>
-      </AuModal>
-    {{/if}}
   </:content>
 </SidebarContainer>
+
+<Inventory::DeleteProcessModal
+  @isModelOpen={{this.isDeleteModalOpen}}
+  @process={{this.processToDelete}}
+  @onProcessDeleted={{this.onProcessDeleted}}
+  @onCancel={{this.onCloseDeleteModal}}
+/>
 
 <DownloadModal::InventoryProcesses
   @isOpen={{this.isDownloadModalOpen}}

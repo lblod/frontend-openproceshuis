@@ -2,7 +2,7 @@ import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { keepLatestTask, dropTask } from 'ember-concurrency';
+import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
@@ -280,21 +280,16 @@ export default class InventoryIndexController extends Controller {
     this.isDeleteModalOpen = true;
   }
 
-  @dropTask
-  *deleteInventoryProcess() {
-    try {
-      this.processToDelete.status = ENV.resourceStates.archived;
-      yield this.processToDelete.save();
-      this.router.refresh('inventory.index');
-      this.toaster.success('Proces succesvol verwijderd.', 'Gelukt!', {
-        timeOut: 5000,
-      });
-    } catch (error) {
-      const errorMessage = getMessageForErrorCode('oph.processDeletionError');
-      this.toaster.error(errorMessage, 'Fout', { timeOut: 5000 });
-    } finally {
-      this.closeModal();
-    }
+  @action
+  onProcessDeleted() {
+    this.router.refresh('inventory.index');
+    this.onCloseDeleteModal();
+  }
+
+  @action
+  onCloseDeleteModal() {
+    this.processToDelete = null;
+    this.isDeleteModalOpen = false;
   }
 
   @keepLatestTask
