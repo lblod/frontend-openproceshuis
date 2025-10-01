@@ -19,4 +19,9 @@ export default class ConceptualProcessModel extends Model {
   get isArchived() {
     return this.status === ENV.resourceStates.archived;
   }
+
+  async save() {
+    this.modified = new Date();
+    await super.save();
+  }
 }
