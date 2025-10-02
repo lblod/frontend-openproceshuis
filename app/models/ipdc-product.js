@@ -14,4 +14,9 @@ export default class IpdcProductModel extends Model {
   get url() {
     return `https://productencatalogus-v3.vlaanderen.be/product/${this.productNumber}`;
   }
+
+  get searchKeys() {
+    let names = this.name.map((ls) => ls.content?.toLowerCase()).join(' ');
+    return `${names} ${this.productNumber ?? ''}`;
+  }
 }
