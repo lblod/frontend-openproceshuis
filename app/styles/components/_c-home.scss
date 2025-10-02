@@ -50,6 +50,7 @@
 }
 
 .c-home__visual {
+  z-index: 10;
   @include mq(small) {
     position: absolute;
     left: 0;

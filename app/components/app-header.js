@@ -1,5 +1,8 @@
 import Component from '@glimmer/component';
+
 import { service } from '@ember/service';
+
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class AppHeaderComponent extends Component {
   @service currentSession;
@@ -36,5 +39,13 @@ export default class AppHeaderComponent extends Component {
     }
 
     return userInfo;
+  }
+
+  get maintenanceEnabled() {
+    return ENV.announce.maintenance.enabled === 'true';
+  }
+
+  get maintenanceMessage() {
+    return ENV.announce.maintenance.message;
   }
 }
