@@ -1,3 +1,12 @@
+.c-home--no-scroll {
+  height: 100%;
+  overflow-y: scroll;
+
+  @include mq(medium) {
+    display: contents;
+  }
+}
+
 .c-home {
   display: flex;
   flex-direction: column;
