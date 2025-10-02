@@ -4,7 +4,7 @@ import { restartableTask } from 'ember-concurrency';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
-export default class ProcessSelectByClassificationComponent extends Component {
+export default class ProcessSelectByIpdcComponent extends Component {
   @service router;
   @service store;
 
