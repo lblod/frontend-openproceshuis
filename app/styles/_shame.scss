@@ -161,3 +161,7 @@ tr:hover .inventory-row-button-group .au-c-button {
     width: 25vw !important;
   }
 }
+
+.au-c-tabs-list__item a:focus {
+  outline: none !important;
+}
