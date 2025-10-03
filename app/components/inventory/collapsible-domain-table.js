@@ -50,6 +50,7 @@ export default class InventoryCollapsibleDomainTable extends Component {
       'filter[:exact:scheme]': ENV.conceptSchemes.processGroups,
       sort: 'label',
       page: { size: 100 },
+      include: 'process-domains',
     });
     clearTimeout(loadingTimeout);
     this.isLoading = false;
