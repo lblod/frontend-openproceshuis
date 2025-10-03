@@ -11,6 +11,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class InventoryEditableGroupRow extends Component {
   @service toaster;
   @service store;
+  @service('conceptual-process') cpService;
 
   @tracked isEditing;
   @tracked label;
@@ -18,6 +19,8 @@ export default class InventoryEditableGroupRow extends Component {
   @tracked isDeleting;
   @tracked isArchiveModelOpen;
   @tracked isArchiving;
+  @tracked usageMessage;
+  @tracked isCheckingForUsage;
 
   get isArchived() {
     return this.args.group.status === ENV.resourceStates.archived;
@@ -90,11 +93,49 @@ export default class InventoryEditableGroupRow extends Component {
     this.toggleIsEditing();
   }
 
+  async checkForUsage() {
+    this.isCheckingForUsage = true;
+    let hasUsage = false;
+    try {
+      hasUsage = await this.cpService.hasUsageInRelationOfConceptualProcess(
+        this.args.group.id,
+        'process-group',
+      );
+    } catch (error) {
+      this.toaster.error(
+        `Er liep iets mis bij het nakijken of ${this.args.group.label} gelinkt is aan een inventaris process`,
+        this.args.group.label,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+    this.isCheckingForUsage = false;
+    this.usageMessage = null;
+    if (hasUsage) {
+      this.usageMessage = `Er werden processen gevonden die gebruik maken van ${this.args.group.label}.`;
+    }
+  }
+
+  @action
+  async openArchiveModal() {
+    this.isArchiveModelOpen = true;
+    await this.checkForUsage();
+  }
+
+  @action
+  async openDeleteModal() {
+    this.isDeleteModelOpen = true;
+    await this.checkForUsage();
+  }
+
   @action
   async archiveGroup() {
     this.isArchiving = true;
     try {
+      const domains = await this.args.group.processDomains;
       this.args.group.status = ENV.resourceStates.archived;
+      this.args.group.processDomains = domains;
       await this.args.group.save();
       this.toaster.success(`${this.args.group.label} gearchiveerd`, undefined, {
         timeOut: 5000,

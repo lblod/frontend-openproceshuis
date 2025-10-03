@@ -1,0 +1,188 @@
+<AuToolbar @size="large" class="au-u-padding-none" ...attributes as |Group|>
+  <Group class="au-u-margin-left-none">
+    {{#if this.isCreateModel}}
+      <AuButton
+        @skin="secondary"
+        @icon="add"
+        iconAlignment="left"
+        {{on "click" @onCreateButtonClicked}}
+      >
+        {{if @createButtonText @createButtonText "Voeg toe"}}
+      </AuButton>
+    {{/if}}
+  </Group>
+  {{#unless this.isCreateModel}}
+    <Group class="au-u-flex au-u-flex--vertical-center">
+      {{#if this.isEditModel}}
+        <AuButtonGroup @inline={{true}}>
+          {{#if @model.isArchived}}
+            <AuButton
+              @icon="undo"
+              @skin="naked"
+              @hideText={{true}}
+              {{on "click" this.unarchiveModel}}
+            >Herstel</AuButton>
+          {{else}}
+            <AuButton
+              @icon="pencil"
+              @skin="naked"
+              @hideText={{true}}
+              {{on "click" this.openEditModal}}
+            >Pas aan</AuButton>
+            <AuButton
+              @icon="archive"
+              @skin="naked"
+              @hideText={{true}}
+              {{on "click" this.openArchiveModal}}
+            >Archiveer</AuButton>
+          {{/if}}
+          {{#unless true}}
+            <AuButton
+              @icon="bin"
+              @skin="naked"
+              @hideText={{true}}
+              @alert={{true}}
+              {{on "click" this.openDeleteModal}}
+            >Verwijder</AuButton>
+          {{/unless}}
+        </AuButtonGroup>
+      {{/if}}
+    </Group>
+  {{/unless}}
+</AuToolbar>
+
+<AuModal
+  @modalOpen={{this.isEditModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isEditModelOpen) false}}
+>
+  <:title>Bewerk</:title>
+  <:body>
+    <p>Pas de naam van
+      <span class="au-u-medium">{{@model.label}}</span>
+      aan naar een andere waarde. Door het aanpassen van de naam zal deze overal
+      in de applicatie worden aangepast naar de nieuwe waarde.
+    </p>
+    <div class="au-u-margin-top">
+      <AuLabel @error={{not this.isValidLabel}} for="edit-model-label">
+        Label
+      </AuLabel>
+      <AuInput
+        @error={{not this.isValidLabel}}
+        @width="block"
+        value={{this.label}}
+        id="edit-model-label"
+        {{on "keyup" (perform this.onUpdateLabel)}}
+      />
+      {{#if this.errorMessage}}
+        <AuHelpText @error={{true}}>
+          {{this.errorMessage}}
+        </AuHelpText>
+      {{/if}}
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isEditModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabled={{or (not this.canSaveLabel) this.isUpdating}}
+        @loading={{this.isUpdating}}
+        @loadingMessage="Aanpassen"
+        {{on "click" this.updateModelLabel}}
+      >Pas aan</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isArchiveModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isArchiveModelOpen) false}}
+>
+  <:title>Archiveren</:title>
+  <:body>
+    {{#if this.usageMessage}}
+      <AuAlert
+        @title="Opgepast"
+        @skin="warning"
+        @icon="alert-triangle"
+        @size={{this.size}}
+        @closable={{false}}
+      >
+        {{this.usageMessage}}
+      </AuAlert>
+    {{/if}}
+    Ben je zeker dat je
+    <span class="au-u-medium">{{@model.label}}</span>
+    wil archiveren? Achteraf kan je deze nog altijd terug uit het archief
+    herstellen.
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isArchiveModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabeld={{or this.isArchiving this.isCheckingForUsage}}
+        @loading={{or this.isArchiving this.isCheckingForUsage}}
+        @loadingMessage={{if
+          this.isArchiving
+          "Archiveren"
+          "zoeken naar implementaties"
+        }}
+        @icon={{if this.usageMessage "alert-triangle" null}}
+        @alert={{true}}
+        {{on "click" this.archiveModel}}
+      >Archiveer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isDeleteModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isDeleteModelOpen) false}}
+>
+  <:title>Verwijderen</:title>
+  <:body>
+    {{#if this.usageMessage}}
+      <AuAlert
+        @title="Opgepast"
+        @skin="warning"
+        @icon="alert-triangle"
+        @size={{this.size}}
+        @closable={{false}}
+      >
+        {{this.usageMessage}}
+      </AuAlert>
+    {{/if}}
+    Ben je zeker dat je
+    <span class="au-u-medium">{{@model.label}}</span>
+    wil verwijderen?
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" (fn (mut this.isDeleteModelOpen) false)}}
+      >Annuleer</AuButton>
+      <AuButton
+        @disabeld={{or this.isDeleting this.isCheckingForUsage}}
+        @loading={{or this.isDeleting this.isCheckingForUsage}}
+        @loadingMessage={{if
+          this.isArchiving
+          "Verwijderen"
+          "zoeken naar implementaties"
+        }}
+        @skin="primary"
+        @icon={{if this.usageMessage "alert-triangle" "bin"}}
+        @alert="true"
+        {{on "click" this.deleteModel}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

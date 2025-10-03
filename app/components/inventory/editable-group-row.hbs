@@ -48,16 +48,18 @@
             @icon="archive"
             @skin="naked"
             @size="large"
-            {{on "click" (fn (mut this.isArchiveModelOpen) true)}}
+            {{on "click" this.openArchiveModal}}
           />
         {{/if}}
-        <AuButton
-          @icon="bin"
-          @skin="naked"
-          @size="large"
-          @alert={{true}}
-          {{on "click" (fn (mut this.isDeleteModelOpen) true)}}
-        />
+        {{#unless true}}
+          <AuButton
+            @icon="bin"
+            @skin="naked"
+            @size="large"
+            @alert={{true}}
+            {{on "click" this.openDeleteModal}}
+          />
+        {{/unless}}
       </AuButtonGroup>
     {{/if}}
   </div>
@@ -69,7 +71,19 @@
   @closeModal={{fn (mut this.isDeleteModelOpen) false}}
 >
   <:title>Verwijder groep uit domein</:title>
-  <:body>Ben je zeker dat je de groep
+  <:body>
+    {{#if this.usageMessage}}
+      <AuAlert
+        @title="Opgepast"
+        @skin="warning"
+        @icon="alert-triangle"
+        @size={{this.size}}
+        @closable={{false}}
+      >
+        {{this.usageMessage}}
+      </AuAlert>
+    {{/if}}
+    Ben je zeker dat je de groep
     <span class="au-u-medium">{{@group.label}}</span>
     wil verwijderen uit het domein
     <span class="au-u-medium">{{@domain.label}}?</span></:body>
@@ -80,11 +94,15 @@
         {{on "click" (fn (mut this.isDeleteModelOpen) false)}}
       >Annuleer</AuButton>
       <AuButton
-        @disabeld={{this.isDeleting}}
-        @loading={{this.isDeleting}}
-        @loadingMessage="Verwijderen"
+        @disabeld={{or this.isDeleting this.isCheckingForUsage}}
+        @loading={{or this.isDeleting this.isCheckingForUsage}}
+        @loadingMessage={{if
+          this.isArchiving
+          "Verwijderen"
+          "zoeken naar implementaties"
+        }}
         @skin="primary"
-        @icon="bin"
+        @icon={{if this.usageMessage "alert-triangle" "bin"}}
         @alert="true"
         {{on "click" this.deleteGroupFromDomain}}
       >Verwijder</AuButton>
@@ -98,7 +116,19 @@
   @closeModal={{fn (mut this.isArchiveModelOpen) false}}
 >
   <:title>Archiveer deze groep</:title>
-  <:body>Ben je zeker dat je de groep
+  <:body>
+    {{#if this.usageMessage}}
+      <AuAlert
+        @title="Opgepast"
+        @skin="warning"
+        @icon="alert-triangle"
+        @size={{this.size}}
+        @closable={{false}}
+      >
+        {{this.usageMessage}}
+      </AuAlert>
+    {{/if}}
+    Ben je zeker dat je de groep
     <span class="au-u-medium">{{@group.label}}</span>
     wil archiveren? Achteraf kan je deze nog altijd terug uit het archief
     herstellen.</:body>
@@ -109,9 +139,14 @@
         {{on "click" (fn (mut this.isArchiveModelOpen) false)}}
       >Annuleer</AuButton>
       <AuButton
-        @disabeld={{this.isArchiving}}
-        @loading={{this.isArchiving}}
-        @loadingMessage="Archiveren"
+        @disabeld={{or this.isArchiving this.isCheckingForUsage}}
+        @loading={{or this.isArchiving this.isCheckingForUsage}}
+        @loadingMessage={{if
+          this.isArchiving
+          "Archiveren"
+          "zoeken naar implementaties"
+        }}
+        @icon={{if this.usageMessage "alert-triangle" null}}
         @alert={{true}}
         {{on "click" this.archiveGroup}}
       >Archiveer</AuButton>

@@ -30,6 +30,12 @@ export default class InventoryProcessTableRow extends Component {
   async getProcessModel() {
     const processes = await this.store.query('conceptual-process', {
       'filter[id]': this.args.process?.id,
+      include: [
+        'process-groups',
+        'process-groups.process-domains',
+        'process-groups.process-domains.process-categories',
+      ].join(','),
+      page: { size: 1 },
     });
     if (processes.length === 0) {
       throw new Error(
