@@ -8,3 +8,16 @@
   height: 100%;
   justify-content: center;
 }
+
+.c-home-limit-width-70 {
+  max-width: 70%;
+}
+
+@media ((max-width: 63.9375em)) {
+  .c-home-smaller-image-when-mobile {
+    max-width: 10vh;
+  }
+  .au-c-sidebar {
+    border: 0px;
+  }
+}

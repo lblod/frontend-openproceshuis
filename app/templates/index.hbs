@@ -1,6 +1,6 @@
 <div class="au-c-sidebar-container">
-  <div class="au-c-sidebar-container__sidebar">
-    <div class="au-c-sidebar bg-white">
+  <div class="au-c-sidebar-container__sidebar au-u-flex au-u-flex--center">
+    <div class="au-c-sidebar bg-white c-home-smaller-image-when-mobile">
       <div
         class="au-c-sidebar__content au-u-flex au-u-vertical-center au-u-padding au-u-flex--center"
       >
@@ -15,11 +15,11 @@
   </div>
   <div class="au-c-sidebar-container__content" id="content" tabindex="0">
     <div
-      class="au-u-background-gray-100 c-home--content au-o-box au-o-flow au-u-flex au-u-flex--column"
+      class="au-u-background-gray-100 c-home--content au-o-flow au-u-flex au-u-flex--column"
     >
-      <div>
+      <div class="c-home-limit-width-70">
         <AuContent class="au-o-flow">
-          <AuHeading @level="1" @skin="2" class="au-u-margin-bottom">
+          <AuHeading @level="1" @skin="2" class="au-u-padding">
             Welkom bij Open Proces Huis, jouw centrale bron voor het ontdekken
             en delen van processen.
           </AuHeading>
@@ -64,7 +64,9 @@
         </AuContent>
       </div>
       <div>
-        <div class="au-u-flex au-u-flex--wrap au-u-flex--row">
+        <div
+          class="au-u-flex au-u-flex--wrap au-u-flex--row au-u-padding-left au-u-padding-right"
+        >
           {{#if this.currentSession.isAuthenticated}}
             <div class="au-o-grid__item au-u-1-2@medium">
               <AuCard @flex={{true}} as |c|>
@@ -203,7 +205,7 @@
         </div>
         {{#if this.currentSession.isAuthenticated}}
           <p
-            class="au-u-text-center au-u-margin-top-large au-u-margin-bottom-large"
+            class="au-u-text-center au-u-padding-top-large au-u-padding-bottom-large au-u-background-gray-100"
           >
             <AuLinkExternal
               href="https://abb-vlaanderen.gitbook.io/informatie-oph"
