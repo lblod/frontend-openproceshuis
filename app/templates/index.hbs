@@ -1,18 +1,28 @@
-<div class="c-home--no-scroll">
-  <AuBodyContainer class="au-u-background-gray-100 au-o-region-large">
-    <section class="c-home">
-      <div class="au-o-flow">
-        <AuContent>
-          <AuHeading @level="1" @skin="2">Welkom bij Open Proces Huis, jouw
-            centrale bron voor het ontdekken en delen van processen.</AuHeading>
-          <div class="c-home__visual">
-            <img
-              src="/assets/images/homepage-visual.svg"
-              class="c-home-visual"
-              alt=""
-              {{!template-lint-disable require-valid-alt-text}}
-            />
-          </div>
+<div class="au-c-sidebar-container">
+  <div class="au-c-sidebar-container__sidebar">
+    <div class="au-c-sidebar bg-white">
+      <div
+        class="au-c-sidebar__content au-u-flex au-u-vertical-center au-u-padding au-u-flex--center"
+      >
+        <img
+          src="/assets/images/homepage-visual.svg"
+          class="c-home-visual"
+          alt=""
+          {{!template-lint-disable require-valid-alt-text}}
+        />
+      </div>
+    </div>
+  </div>
+  <div class="au-c-sidebar-container__content" id="content" tabindex="0">
+    <div
+      class="au-u-background-gray-100 c-home--content au-o-box au-o-flow au-u-flex au-u-flex--column"
+    >
+      <div>
+        <AuContent class="au-o-flow">
+          <AuHeading @level="1" @skin="2" class="au-u-margin-bottom">
+            Welkom bij Open Proces Huis, jouw centrale bron voor het ontdekken
+            en delen van processen.
+          </AuHeading>
           {{#unless this.currentSession.isAuthenticated}}
             <ul>
               <li>
@@ -32,167 +42,178 @@
               </li>
             </ul>
           {{/unless}}
+          {{#unless this.currentSession.isAuthenticated}}
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuLink
+                @skin="button"
+                @route="auth.login"
+                class="au-u-margin-right-tiny"
+              >Log in</AuLink>
+              <AuLink @skin="button-secondary" @route="inventory">Inventaris
+                processen bekijken</AuLink>
+            </div>
+            <p class="au-u-text-center">
+              <AuLinkExternal
+                href="https://abb-vlaanderen.gitbook.io/informatie-oph"
+              >
+                Handleiding Open Proces Huis
+              </AuLinkExternal>
+            </p>
+          {{/unless}}
+
         </AuContent>
-        <div class="au-c-home__form au-o-flow">
-          <div class="au-o-grid au-o-grid--small">
-            {{#if this.currentSession.isAuthenticated}}
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuCard @flex={{true}} as |c|>
-                  <c.header
-                    @badgeSkin="brand"
-                    @badgeIcon="sitemap"
-                    @badgeSize="small"
-                  >
-                    <AuHeading @level="2" @skin="4">
-                      Processenbibliotheek
-                    </AuHeading>
-                  </c.header>
-                  <c.content>
-                    <AuList @divider={{true}} as |Item|>
-                      <Item>Raadpleeg alle processen</Item>
-                    </AuList>
-                  </c.content>
-                  <c.footer>
-                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink @skin="button" @route="processes">Toon alle
-                        Processen</AuLink>
-                    </div>
-                  </c.footer>
-                </AuCard>
-              </div>
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuCard @flex={{true}} as |c|>
-                  <c.header
-                    @badgeSkin="brand"
-                    @badgeIcon="users-four-of-four"
-                    @badgeSize="small"
-                  >
-                    <AuHeading @level="2" @skin="4">
-                      Processen mijn lokaal bestuur
-                    </AuHeading>
-                  </c.header>
-                  <c.content>
-                    <AuList @divider={{true}} as |Item|>
-                      <Item>Raadpleeg processen gelinkt aan mijn lokaal bestuur</Item>
-                    </AuList>
-                  </c.content>
-                  <c.footer>
-                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink @skin="button" @route="my-local-government">Toon
-                        mijn processen</AuLink>
-                    </div>
-                  </c.footer>
-                </AuCard>
-              </div>
-            {{/if}}
-            {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuCard @flex={{true}} as |c|>
-                  <c.header
-                    @badgeSkin="brand"
-                    @badgeIcon="upload"
-                    @badgeSize="small"
-                  >
-                    <AuHeading @level="2" @skin="4">
-                      Deel jouw processen
-                    </AuHeading>
-                  </c.header>
-                  <c.content>
-                    <AuList @divider={{true}} as |Item|>
-                      <Item>Upload processen</Item>
-                      <Item>Beheer gedeelde processen</Item>
-                    </AuList>
-                  </c.content>
-                  <c.footer>
-                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink @skin="button" @route="shared-processes">Deel jouw
-                        processen</AuLink>
-                    </div>
-                  </c.footer>
-                </AuCard>
-              </div>
-            {{/if}}
-            {{#if this.currentSession.isAuthenticated}}
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuCard @flex={{true}} as |c|>
-                  <c.header
-                    @badgeSkin="brand"
-                    @badgeIcon="folder"
-                    @badgeSize="small"
-                  >
-                    <AuHeading @level="2" @skin="4">
-                      Processeninventaris
-                    </AuHeading>
-                  </c.header>
-                  <c.content>
-                    <AuList @divider={{true}} as |Item|>
-                      <Item>Toon processen uit de inventaris</Item>
-                    </AuList>
-                  </c.content>
-                  <c.footer>
-                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink @skin="button" @route="inventory">Ga naar
-                        inventaris</AuLink>
-                    </div>
-                  </c.footer>
-                </AuCard>
-              </div>
-            {{/if}}
-            {{#if this.currentSession.isAdmin}}
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuCard @flex={{true}} as |c|>
-                  <c.header
-                    @badgeSkin="brand"
-                    @badgeIcon="user"
-                    @badgeSize="small"
-                  >
-                    <AuHeading @level="2" @skin="4">
-                      Administratie
-                    </AuHeading>
-                  </c.header>
-                  <c.content>
-                    <AuList @divider={{true}} as |Item|>
-                      <Item>Raadpleeg rapporten</Item>
-                      <Item>Bevraag de databank</Item>
-                    </AuList>
-                  </c.content>
-                  <c.footer>
-                    <div class="au-u-h-functional au-o-flow au-o-flow--small">
-                      <AuLink
-                        @skin="button"
-                        @route="reporting"
-                      >Rapportering</AuLink>
-                      <AuLink
-                        @skin="button-secondary"
-                        @route="sparql"
-                      >SPARQL</AuLink>
-                    </div>
-                  </c.footer>
-                </AuCard>
-              </div>
-            {{/if}}
-            {{#unless this.currentSession.isAuthenticated}}
-              <div class="au-o-grid__item au-u-1-2@medium">
-                <AuLink
-                  @skin="button"
-                  @route="auth.login"
-                  class="au-u-margin-right-tiny"
-                >Log in</AuLink>
-                <AuLink @skin="button-secondary" @route="inventory">Inventaris
-                  processen bekijken</AuLink>
-              </div>
-            {{/unless}}
-          </div>
-          <p class="au-u-text-center">
+      </div>
+      <div>
+        <div class="au-u-flex au-u-flex--wrap au-u-flex--row">
+          {{#if this.currentSession.isAuthenticated}}
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="sitemap"
+                  @badgeSize="small"
+                >
+                  <AuHeading @level="2" @skin="4">
+                    Processenbibliotheek
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Raadpleeg alle processen</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink @skin="button" @route="processes">Toon alle
+                      Processen</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="users-four-of-four"
+                  @badgeSize="small"
+                >
+                  <AuHeading @level="2" @skin="4">
+                    Processen mijn lokaal bestuur
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Raadpleeg processen gelinkt aan mijn lokaal bestuur</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink @skin="button" @route="my-local-government">Toon
+                      mijn processen</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+          {{/if}}
+          {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="upload"
+                  @badgeSize="small"
+                >
+                  <AuHeading @level="2" @skin="4">
+                    Deel jouw processen
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Upload processen</Item>
+                    <Item>Beheer gedeelde processen</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink @skin="button" @route="shared-processes">Deel jouw
+                      processen</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+          {{/if}}
+          {{#if this.currentSession.isAuthenticated}}
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="folder"
+                  @badgeSize="small"
+                >
+                  <AuHeading @level="2" @skin="4">
+                    Processeninventaris
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Toon processen uit de inventaris</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink @skin="button" @route="inventory">Ga naar inventaris</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+          {{/if}}
+          {{#if this.currentSession.isAdmin}}
+            <div class="au-o-grid__item au-u-1-2@medium">
+              <AuCard @flex={{true}} as |c|>
+                <c.header
+                  @badgeSkin="brand"
+                  @badgeIcon="user"
+                  @badgeSize="small"
+                >
+                  <AuHeading @level="2" @skin="4">
+                    Administratie
+                  </AuHeading>
+                </c.header>
+                <c.content>
+                  <AuList @divider={{true}} as |Item|>
+                    <Item>Raadpleeg rapporten</Item>
+                    <Item>Bevraag de databank</Item>
+                  </AuList>
+                </c.content>
+                <c.footer>
+                  <div class="au-u-h-functional au-o-flow au-o-flow--small">
+                    <AuLink
+                      @skin="button"
+                      @route="reporting"
+                    >Rapportering</AuLink>
+                    <AuLink
+                      @skin="button-secondary"
+                      @route="sparql"
+                    >SPARQL</AuLink>
+                  </div>
+                </c.footer>
+              </AuCard>
+            </div>
+          {{/if}}
+        </div>
+        {{#if this.currentSession.isAuthenticated}}
+          <p
+            class="au-u-text-center au-u-margin-top-large au-u-margin-bottom-large"
+          >
             <AuLinkExternal
               href="https://abb-vlaanderen.gitbook.io/informatie-oph"
             >
               Handleiding Open Proces Huis
             </AuLinkExternal>
           </p>
-        </div>
+        {{/if}}
       </div>
-    </section>
-  </AuBodyContainer>
-  <Footer />
+    </div>
+  </div>
 </div>
+<Footer />
