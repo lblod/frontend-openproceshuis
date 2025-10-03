@@ -24,6 +24,7 @@ export default class InventoryTableViewDomains extends Component {
       'filter[:exact:scheme]': ENV.conceptSchemes.processDomains,
       sort: 'label',
       page: { size: 100 },
+      include: 'process-categories',
     });
     this.domains.clear();
     this.domains.pushObjects(domains);
