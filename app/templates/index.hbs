@@ -13,13 +13,15 @@
       </div>
     </div>
   </div>
-  <div class="au-c-sidebar-container__content" id="content" tabindex="0">
-    <div
-      class="au-u-background-gray-100 c-home--content au-o-flow au-u-flex au-u-flex--column"
-    >
+  <div
+    class="au-c-sidebar-container__content au-u-background-gray-100"
+    id="content"
+    tabindex="0"
+  >
+    <div class="c-home--content au-o-flow au-u-flex au-u-flex--column">
       <div class="c-home-limit-width-70">
         <AuContent class="au-o-flow">
-          <AuHeading @level="1" @skin="2" class="au-u-padding">
+          <AuHeading @level="1" @skin="2" class="au-u-padding au-u-margin-top">
             Welkom bij Open Proces Huis, jouw centrale bron voor het ontdekken
             en delen van processen.
           </AuHeading>
@@ -65,7 +67,7 @@
       </div>
       <div>
         <div
-          class="au-u-flex au-u-flex--wrap au-u-flex--row au-u-padding-left au-u-padding-right"
+          class="au-u-flex au-u-flex--wrap au-u-flex--row au-u-padding-left au-u-padding-right au-u-background-gray-100"
         >
           {{#if this.currentSession.isAuthenticated}}
             <div class="au-o-grid__item au-u-1-2@medium">
