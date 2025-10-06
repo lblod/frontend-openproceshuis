@@ -26,6 +26,10 @@ export default class ApplicationController extends Controller {
     );
   }
 
+  get overrideScrollOnHomePage() {
+    return this.router.currentRoute?.name == 'index';
+  }
+
   get isProcessBarShown() {
     if (!this.currentSession.isAuthenticated) {
       return false;

@@ -21,3 +21,13 @@
     border: 0;
   }
 }
+
+.override-home-page {
+  overflow-x: hidden !important;
+}
+
+@media ((width >= 63.9375em)) {
+  .au-c-app.override-home-page {
+    overflow-y: hidden !important;
+  }
+}

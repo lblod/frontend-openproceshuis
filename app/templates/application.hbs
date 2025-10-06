@@ -7,7 +7,7 @@
 
 <AuModalContainer />
 <AuToaster />
-<AuApp>
+<AuApp class={{if this.overrideScrollOnHomePage "override-home-page" ""}}>
   <AppHeader />
   {{#if this.isBreadcrumbBarShown}}
     <NavigationBar />

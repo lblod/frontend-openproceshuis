@@ -66,9 +66,9 @@
 
         </AuContent>
       </div>
-      <div>
+      <div class="override-home-page">
         <div
-          class="au-u-flex au-u-flex--wrap au-u-flex--row au-u-padding-left au-u-padding-right au-u-background-gray-100"
+          class="au-o-grid au-u-padding-left au-u-padding-right au-u-background-gray-100"
         >
           {{#if this.currentSession.isAuthenticated}}
             <div class="au-o-grid__item au-u-1-2@medium">
@@ -221,4 +221,6 @@
     </div>
   </div>
 </div>
-<Footer />
+{{#unless this.currentSession.isAuthenticated}}
+  <Footer />
+{{/unless}}
