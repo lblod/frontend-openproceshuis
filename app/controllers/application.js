@@ -9,6 +9,7 @@ const isLocalhost = Boolean(
 );
 
 export default class ApplicationController extends Controller {
+  @service currentSession;
   @service router;
 
   get environmentName() {
@@ -25,11 +26,30 @@ export default class ApplicationController extends Controller {
     );
   }
 
-  get maintenanceEnabled() {
-    return ENV.announce.maintenance.enabled === 'true';
+  get overrideScrollOnHomePage() {
+    return this.router.currentRoute?.name == 'index';
   }
 
-  get maintenanceMessage() {
-    return ENV.announce.maintenance.message;
+  get isProcessBarShown() {
+    if (!this.currentSession.isAuthenticated) {
+      return false;
+    }
+
+    return [
+      'processes',
+      'shared-processes',
+      'my-local-government',
+      'inventory',
+    ].includes(this.compareRouteName);
+  }
+
+  get isBreadcrumbBarShown() {
+    return !['application', 'auth'].includes(this.compareRouteName);
+  }
+
+  get compareRouteName() {
+    return (
+      this.router.currentRoute?.parent?.name || this.router.currentRoute?.name
+    );
   }
 }

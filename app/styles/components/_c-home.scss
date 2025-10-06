@@ -1,84 +1,38 @@
-.c-home {
+.bg-white {
+  background-color: white !important;
+}
+
+.c-home--content {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  overflow: auto;
+}
 
-  > * {
-    padding: $au-unit;
+.c-home-limit-width-70 {
+  max-width: 70%;
+}
+
+.c-home-smaller-image-when-mobile {
+  min-width: 25vw;
+}
+
+@media ((width <= 63.9375em)) {
+  .c-home-smaller-image-when-mobile {
+    max-width: 25rem;
+    min-width: 25rem;
   }
 
-  @include mq(small) {
-    margin-left: 25%;
-    width: 75%;
-    height: 100%;
-  }
-
-  @include mq(medium) {
-    > * {
-      padding: $au-unit-large;
-      max-width: 1024px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  @include mq($until: small) {
-    .au-c-home__form {
-      position: relative;
-      z-index: 1;
-    }
-
-    .c-home__visual + p {
-      margin-top: $au-unit-large;
-      margin-right: 130px;
-    }
-
-    & h1 {
-      background-color: $au-white;
-      padding: $au-unit;
-      margin-top: -$au-unit;
-      margin-right: -$au-unit;
-      margin-left: -$au-unit;
-      padding-bottom: $au-unit-large;
-      border-bottom: 1px solid var(--au-gray-200);
-    }
+  .au-c-sidebar {
+    border: 0;
   }
 }
 
-.c-home__visual {
-  @include mq(small) {
-    position: absolute;
-    left: 0;
-    top: -$au-unit;
-    display: flex;
-    justify-content: center;
-    width: 25%;
-    height: 100%;
-    padding: $au-unit-large;
-    background-color: $au-white;
-    border-right: 1px solid var(--au-gray-200);
+.override-home-page {
+  overflow-x: hidden !important;
+}
 
-    > img {
-      max-width: 465px;
-      width: 100%;
-    }
-  }
-
-  @include mq(small) {
-    padding: $au-unit-large;
-    background-color: $au-white;
-  }
-
-  @include mq($until: small) {
-    position: relative;
-    margin: (-$au-unit-large + $au-unit-small) (-$au-unit-small)
-      (-$au-unit-large * 2) auto;
-    width: 130px;
-    height: 130px;
-    padding: 0;
+@media ((width >= 63.9375em)) {
+  .au-c-app.override-home-page {
+    overflow-y: hidden !important;
   }
 }
