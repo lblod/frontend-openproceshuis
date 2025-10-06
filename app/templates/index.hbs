@@ -6,7 +6,7 @@
       >
         <img
           src="/assets/images/homepage-visual.svg"
-          class="c-home-visual"
+          class="au-u-padding-left au-u-padding-right"
           alt=""
           {{!template-lint-disable require-valid-alt-text}}
         />
@@ -46,7 +46,7 @@
             </ul>
           {{/unless}}
           {{#unless this.currentSession.isAuthenticated}}
-            <div class="au-o-grid__item au-u-1-2@medium">
+            <div class="au-o-grid__item">
               <AuLink
                 @skin="button"
                 @route="auth.login"

@@ -12,9 +12,14 @@
   max-width: 70%;
 }
 
+.c-home-smaller-image-when-mobile {
+  min-width: 25vw;
+}
+
 @media ((width <= 63.9375em)) {
   .c-home-smaller-image-when-mobile {
-    max-width: 15vh;
+    max-width: 25rem;
+    min-width: 25rem;
   }
 
   .au-c-sidebar {
