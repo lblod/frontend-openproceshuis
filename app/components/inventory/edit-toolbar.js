@@ -7,6 +7,7 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 import { restartableTask, timeout } from 'ember-concurrency';
+import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
 export default class InventoryEditToolbar extends Component {
   @service store;
@@ -55,6 +56,10 @@ export default class InventoryEditToolbar extends Component {
   get canSaveLabel() {
     return this.isValidLabel && this.cleanLabel !== this.args.model.label;
   }
+
+  canArchiveModel = restartableTask(async () => this.args.model.canArchive());
+
+  canArchive = trackedTask(this, this.canArchiveModel, () => [this.args.model]);
 
   @action
   openEditModal() {

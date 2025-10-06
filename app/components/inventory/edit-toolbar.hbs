@@ -30,6 +30,7 @@
               {{on "click" this.openEditModal}}
             >Pas aan</AuButton>
             <AuButton
+              @disabled={{not this.canArchive.value}}
               @icon="archive"
               @skin="naked"
               @hideText={{true}}
