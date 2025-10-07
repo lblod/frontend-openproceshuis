@@ -1,7 +1,6 @@
 .tooltip-container {
   position: relative;
   overflow: visible !important;
-  z-index: 99;
 }
 
 .tooltip-container .tooltip-text {
@@ -45,7 +44,7 @@
   bottom: 100%;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent #687483 transparent;
+  border-color: transparent transparent #687483;
 }
 
 .tooltip-container .tooltip-text.center::after {
