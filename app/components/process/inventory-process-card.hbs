@@ -42,7 +42,18 @@
               {{/if}}
             {{else}}
               <div class="au-u-flex au-u-flex--row">
-                {{this.processConceptTitle}}
+                <div class="au-u-flex au-u-vertical-center">
+                  <p> {{this.processConceptTitle}}</p>
+                  {{#if this.hasProcessArchivedProperties}}
+                    <AuIcon
+                      class="icon--warning"
+                      @icon="alert-triangle"
+                      @size="large"
+                      @alignment="right"
+                      @ariaHidden={{this.ariaHidden}}
+                    />
+                  {{/if}}
+                </div>
                 <AuButton @skin="naked" class="process-change-button" />
               </div>
             {{/if}}

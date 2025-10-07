@@ -127,7 +127,16 @@
                           'is-selected'
                         }}"
                     >
-                      <td>
+                      <td class="au-u-flex au-u-vertical-align">
+                        {{#if process.processGroup.isArchived}}
+                          <AuIcon
+                            class="icon--warning au-u-margin-right-small"
+                            @icon="alert-triangle"
+                            @size="large"
+                            @alignment="right"
+                            @ariaHidden={{this.ariaHidden}}
+                          />
+                        {{/if}}
                         <AuLink
                           class="process-modal-link"
                           {{on "click" (fn this.selectProcessConcept process)}}
