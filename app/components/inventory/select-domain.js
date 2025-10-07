@@ -20,7 +20,6 @@ export default class InventorySelectDomain extends Component {
       sort: ':no-case:label',
       filter: {
         scheme: ENV.conceptSchemes.processDomains,
-        ':not:status': ENV.resourceStates.archived,
       },
     };
 

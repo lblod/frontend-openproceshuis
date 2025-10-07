@@ -13,4 +13,10 @@
   >
     {{category.label}}
   </PowerSelect>
+  {{#if this.selectedCategory.value.isArchived}}
+    <AuHelpText @skin="warning" @warning={{true}} class="color--warning">
+      <AuIcon @icon="alert-triangle" @size="small" @alignment="right" />
+      Gearchiveerd
+    </AuHelpText>
+  {{/if}}
 </div>
