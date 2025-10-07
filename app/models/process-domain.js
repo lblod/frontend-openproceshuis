@@ -39,4 +39,16 @@ export default class ProcessDomainModel extends ArchivableModel {
 
     return groups.length === 0;
   }
+
+  async archive() {
+    super.archive();
+    this.status = ENV.resourceStates.archived;
+    await this.save();
+  }
+
+  async unArchive() {
+    super.unArchive();
+    this.status = null;
+    await this.save();
+  }
 }

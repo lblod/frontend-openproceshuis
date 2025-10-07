@@ -4,8 +4,6 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
-import ENV from 'frontend-openproceshuis/config/environment';
-
 import { restartableTask, timeout } from 'ember-concurrency';
 
 export default class InventoryEditToolbar extends Component {
@@ -184,8 +182,7 @@ export default class InventoryEditToolbar extends Component {
   async archiveModel() {
     this.isArchiving = true;
     try {
-      this.args.model.status = ENV.resourceStates.archived;
-      await this.args.model.save();
+      await this.args.model.archive();
       this.toaster.success(`${this.args.model.label} gearchiveerd`, undefined, {
         timeOut: 5000,
       });
@@ -206,8 +203,7 @@ export default class InventoryEditToolbar extends Component {
   async unarchiveModel() {
     this.isArchiving = true;
     try {
-      this.args.model.status = null;
-      await this.args.model.save();
+      await this.args.model.unArchive();
       this.toaster.success(`${this.args.model.label} hersteld`, undefined, {
         timeOut: 5000,
       });
