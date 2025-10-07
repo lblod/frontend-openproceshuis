@@ -41,6 +41,14 @@ export default class ProcessCategoryModel extends ArchivableModel {
     await this.save();
   }
 
+  async canUnArchive() {
+    if (!this.isArchived) {
+      return false;
+    }
+
+    return true;
+  }
+
   async unArchive() {
     super.unArchive();
     this.status = null;

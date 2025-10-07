@@ -28,6 +28,7 @@ export default class InventoryEditToolbar extends Component {
   @tracked isArchiving;
   @tracked isArchiveModelOpen;
   @tracked isCannotArchiveModelOpen;
+  @tracked isCannotUnArchiveModelOpen;
 
   allowedModelNames = ['process-category', 'process-domain'];
 
@@ -151,6 +152,18 @@ export default class InventoryEditToolbar extends Component {
   }
 
   @action
+  async openUnArchiveModal() {
+    this.isCheckingForUsage = true;
+    const canUnArchive = await this.args.model.canUnArchive();
+    this.isCheckingForUsage = false;
+    if (canUnArchive) {
+      await this.unarchiveModel();
+    } else {
+      this.isCannotUnArchiveModelOpen = true;
+    }
+  }
+
+  @action
   async openDeleteModal() {
     this.isDeleteModelOpen = true;
     await this.checkForUsage();
@@ -199,7 +212,6 @@ export default class InventoryEditToolbar extends Component {
     this.isArchiving = false;
   }
 
-  @action
   async unarchiveModel() {
     this.isArchiving = true;
     try {

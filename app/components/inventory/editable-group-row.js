@@ -15,10 +15,13 @@ export default class InventoryEditableGroupRow extends Component {
 
   @tracked isEditing;
   @tracked label;
+
   @tracked isDeleteModelOpen;
   @tracked isDeleting;
+
   @tracked isArchiveModelOpen;
   @tracked isArchiving;
+  @tracked isCannotUnArchiveModelOpen;
   @tracked usageMessage;
   @tracked isCheckingForUsage;
 
@@ -118,9 +121,21 @@ export default class InventoryEditableGroupRow extends Component {
   }
 
   @action
+  async openUnArchiveModal() {
+    this.isCheckingForUsage = true;
+    const canUnArchive = await this.args.group.canUnArchive();
+    this.isCheckingForUsage = false;
+    if (canUnArchive) {
+      await this.unArchiveGroup();
+    } else {
+      this.isCannotUnArchiveModelOpen = true;
+    }
+  }
+
+  @action
   async openArchiveModal() {
-    this.isArchiveModelOpen = true;
     await this.checkForUsage();
+    this.isArchiveModelOpen = true;
   }
 
   @action
@@ -149,7 +164,7 @@ export default class InventoryEditableGroupRow extends Component {
     this.isArchiveModelOpen = false;
     this.isArchiving = false;
   }
-  @action
+
   async unArchiveGroup() {
     this.isArchiving = true;
     try {

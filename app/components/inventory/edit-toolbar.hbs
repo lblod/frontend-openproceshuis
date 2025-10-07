@@ -20,7 +20,7 @@
               @icon="undo"
               @skin="naked"
               @hideText={{true}}
-              {{on "click" this.unarchiveModel}}
+              {{on "click" this.openUnArchiveModal}}
             >Herstel</AuButton>
           {{else}}
             <AuButton
@@ -114,6 +114,26 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         {{on "click" (fn (mut this.isCannotArchiveModelOpen) false)}}
+      >Sluiten</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isCannotUnArchiveModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isCannotUnArchiveModelOpen) false}}
+>
+  <:title>Kan niet herstellen</:title>
+  <:body>
+    <span class="au-u-medium">{{@model.label}} </span>
+    kan niet hersteld worden. Zorg dat de bovenliggende entiteit niet
+    gearchiveerd is.
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        {{on "click" (fn (mut this.isCannotUnArchiveModelOpen) false)}}
       >Sluiten</AuButton>
     </AuButtonGroup>
   </:footer>
