@@ -46,4 +46,19 @@ export default class ProcessApiService extends Service {
       .filter((key) => options[key])
       .map((key) => `${key}=${options[key]}`);
   }
+
+  async getUsersForProcess(processId) {
+    const response = await fetch(
+      `/process-api/processes/${processId}/count-of-users`,
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        'Er liep iets mis bij het ophalen van het aantal gebruikers voor het process',
+      );
+    }
+    const { count } = await response.json();
+
+    return count ?? 0;
+  }
 }
