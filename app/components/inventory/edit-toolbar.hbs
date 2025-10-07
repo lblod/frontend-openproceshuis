@@ -30,7 +30,8 @@
               {{on "click" this.openEditModal}}
             >Pas aan</AuButton>
             <AuButton
-              @disabled={{not this.canArchive.value}}
+              @loading={{this.isCheckingForUsage}}
+              @hideLoadingMessage={{true}}
               @icon="archive"
               @skin="naked"
               @hideText={{true}}
@@ -94,6 +95,26 @@
         @loadingMessage="Aanpassen"
         {{on "click" this.updateModelLabel}}
       >Pas aan</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isCannotArchiveModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isCannotArchiveModelOpen) false}}
+>
+  <:title>Archiveren niet toegstaan</:title>
+  <:body>
+    <span class="au-u-medium">{{@model.label}} </span>
+    kan niet gearchiveerd worden.
+    {{this.cannotArchiveMessage}}
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        {{on "click" (fn (mut this.isCannotArchiveModelOpen) false)}}
+      >Sluiten</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>

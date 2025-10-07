@@ -7,7 +7,6 @@ import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 import { restartableTask, timeout } from 'ember-concurrency';
-import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
 export default class InventoryEditToolbar extends Component {
   @service store;
@@ -30,6 +29,7 @@ export default class InventoryEditToolbar extends Component {
 
   @tracked isArchiving;
   @tracked isArchiveModelOpen;
+  @tracked isCannotArchiveModelOpen;
 
   allowedModelNames = ['process-category', 'process-domain'];
 
@@ -57,9 +57,16 @@ export default class InventoryEditToolbar extends Component {
     return this.isValidLabel && this.cleanLabel !== this.args.model.label;
   }
 
-  canArchiveModel = restartableTask(async () => this.args.model.canArchive());
+  get cannotArchiveMessage() {
+    if (this.args.modelName === 'process-category') {
+      return 'Dit doordat er nog actieve domeinen gelinkt zijn. Archiveer eerst al de onderliggende domeinen als je deze categorie wil archiveren.';
+    }
+    if (this.args.modelName === 'process-category') {
+      return 'Dit doordat er nog actieve groepen gelinkt zijn. Archiveer eerst al de onderliggende groepen als je dit domein wil archiveren.';
+    }
 
-  canArchive = trackedTask(this, this.canArchiveModel, () => [this.args.model]);
+    return '';
+  }
 
   @action
   openEditModal() {
@@ -134,8 +141,15 @@ export default class InventoryEditToolbar extends Component {
 
   @action
   async openArchiveModal() {
-    this.isArchiveModelOpen = true;
     await this.checkForUsage();
+    this.isCheckingForUsage = true;
+    const canArchive = await this.args.model.canArchive();
+    this.isCheckingForUsage = false;
+    if (canArchive) {
+      this.isArchiveModelOpen = true;
+    } else {
+      this.isCannotArchiveModelOpen = true;
+    }
   }
 
   @action
