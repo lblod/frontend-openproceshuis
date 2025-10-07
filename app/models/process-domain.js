@@ -34,6 +34,7 @@ export default class ProcessDomainModel extends ArchivableModel {
     const groups = await this.store.query('process-group', {
       'filter[process-domains][id]': this.id,
       'filter[:exact:scheme]': ENV.conceptSchemes.processGroups,
+      'filter[:not:status]': ENV.resourceStates.archived,
     });
 
     return groups.length === 0;

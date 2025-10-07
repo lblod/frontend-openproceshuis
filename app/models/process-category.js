@@ -29,6 +29,7 @@ export default class ProcessCategoryModel extends ArchivableModel {
     const domains = await this.store.query('process-domain', {
       'filter[process-categories][id]': this.id,
       'filter[:exact:scheme]': ENV.conceptSchemes.processDomains,
+      'filter[:not:status]': ENV.resourceStates.archived,
     });
 
     return domains.length === 0;
