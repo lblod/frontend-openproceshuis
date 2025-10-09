@@ -46,7 +46,7 @@ export default class ProcessDomainModel extends ArchivableModel {
     await this.save();
   }
 
-  async canUnArchive() {
+  get canUnArchive() {
     if (!this.isArchived) {
       return false;
     }

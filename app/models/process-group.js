@@ -35,7 +35,7 @@ export default class ProcessGroupModel extends ArchivableModel {
     await this.save();
   }
 
-  async canUnArchive() {
+  get canUnArchive() {
     if (!this.isArchived) {
       return false;
     }

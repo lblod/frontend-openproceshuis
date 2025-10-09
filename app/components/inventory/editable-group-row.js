@@ -122,10 +122,7 @@ export default class InventoryEditableGroupRow extends Component {
 
   @action
   async openUnArchiveModal() {
-    this.isCheckingForUsage = true;
-    const canUnArchive = await this.args.group.canUnArchive();
-    this.isCheckingForUsage = false;
-    if (canUnArchive) {
+    if (this.args.group.canUnArchive) {
       await this.unArchiveGroup();
     } else {
       this.isCannotUnArchiveModelOpen = true;

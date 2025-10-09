@@ -11,7 +11,7 @@ export default class ArchivableModel extends Model {
     this.archivedAt = new Date();
   }
 
-  async canUnArchive() {
+  get canUnArchive() {
     return false;
   }
 

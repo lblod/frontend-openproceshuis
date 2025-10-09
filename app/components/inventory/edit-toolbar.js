@@ -153,10 +153,7 @@ export default class InventoryEditToolbar extends Component {
 
   @action
   async openUnArchiveModal() {
-    this.isCheckingForUsage = true;
-    const canUnArchive = await this.args.model.canUnArchive();
-    this.isCheckingForUsage = false;
-    if (canUnArchive) {
+    if (this.args.model.canUnArchive) {
       await this.unarchiveModel();
     } else {
       this.isCannotUnArchiveModelOpen = true;
