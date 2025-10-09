@@ -42,11 +42,7 @@ export default class ProcessCategoryModel extends ArchivableModel {
   }
 
   get canUnArchive() {
-    if (!this.isArchived) {
-      return false;
-    }
-
-    return true;
+    return this.isArchived;
   }
 
   async unArchive() {

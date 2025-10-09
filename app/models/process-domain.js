@@ -47,11 +47,7 @@ export default class ProcessDomainModel extends ArchivableModel {
   }
 
   get canUnArchive() {
-    if (!this.isArchived) {
-      return false;
-    }
-
-    return !this.processCategory.isArchived;
+    return this.isArchived && !this.processCategory.isArchived;
   }
 
   async unArchive() {

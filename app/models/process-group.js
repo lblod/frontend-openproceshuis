@@ -36,11 +36,7 @@ export default class ProcessGroupModel extends ArchivableModel {
   }
 
   get canUnArchive() {
-    if (!this.isArchived) {
-      return false;
-    }
-
-    return !this.processDomain.isArchived;
+    return this.isArchived && !this.processDomain.isArchived;
   }
 
   async unArchive() {
