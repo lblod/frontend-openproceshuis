@@ -12,6 +12,12 @@ export default class InventoryReplaceGroupModal extends Component {
   @tracked newDomain;
   @tracked newGroup;
 
+  constructor() {
+    super(...arguments);
+    this.newCategory = this.args.group.processDomain?.processCategory;
+    this.newDomain = this.args.group.processDomain;
+  }
+
   @action
   setNewProcessCategory({ model }) {
     this.newCategory = model;

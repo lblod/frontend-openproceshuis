@@ -182,8 +182,9 @@
   </:footer>
 </AuModal>
 
-<Inventory::ReplaceGroupModal
-  @group={{@group}}
-  @isOpen={{this.isReplaceModelOpen}}
-  @onCancel={{fn (mut this.isReplaceModelOpen) false}}
-/>
+{{#if this.isReplaceModelOpen}}
+  <Inventory::ReplaceGroupModal
+    @group={{@group}}
+    @onCancel={{fn (mut this.isReplaceModelOpen) false}}
+  />
+{{/if}}
