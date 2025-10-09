@@ -52,6 +52,7 @@ export default class InventorySelectGroup extends Component {
     this.args.onChange?.({
       filterKey: 'group',
       value: group?.id,
+      model: group,
     });
   }
 }

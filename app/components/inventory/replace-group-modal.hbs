@@ -23,10 +23,21 @@
           @selected={{this.newDomain.id}}
           @onChange={{this.setNewProcessDomain}}
           @category={{this.newCategory.id}}
+          @isDisabled={{not this.newCategory}}
+        />
+      </div>
+      <div>
+        <AuLabel for="filter-group">Groep</AuLabel>
+        <Inventory::SelectGroup
+          @id="filter-group"
+          @selected={{this.newGroup.id}}
+          @onChange={{this.setNewProcessGroup}}
+          @category={{this.newCategory.id}}
+          @domain={{this.newDomain.id}}
+          @isDisabled={{not this.newDomain}}
         />
       </div>
     </div>
-
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
