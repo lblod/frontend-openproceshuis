@@ -25,7 +25,7 @@ export default class InventoryReplaceGroupModal extends Component {
   });
 
   @action
-  setNewProcessCategory(category) {
-    console.log('new category', category);
+  setNewProcessCategory({ model }) {
+    console.log('new category', model);
   }
 }

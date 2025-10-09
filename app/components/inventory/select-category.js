@@ -38,6 +38,7 @@ export default class InventorySelectCategory extends Component {
     this.args.onChange?.({
       filterKey: 'category',
       value: category?.id,
+      model: category,
     });
   }
 }

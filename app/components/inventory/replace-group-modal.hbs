@@ -7,28 +7,18 @@
     groep te selecteren wordt het gebruik van huidige groep in de processen
     vervangen met de nieuwe groep.
 
-    <AuLabel
-      @required={{true}}
-      class="au-u-margin-top"
-    >Procescategorie</AuLabel>
-    <PowerSelect
-      @placeholder={{if
-        this.isLoadingOptions
-        "Laden…"
-        "Selecteer een categorie"
-      }}
-      @onChange={{this.setNewProcessCategory}}
-      @options={{this.categoryOptions}}
-      @selected={{this.newCategory}}
-      @searchEnabled={{true}}
-      @searchField="label"
-      @allowClear={{false}}
-      @onOpen={{perform this.loadCategories}}
-      @loading={{this.loadCategories.isRunning}}
-      as |category|
-    >
-      {{category.label}}
-    </PowerSelect>
+    <div class="au-o-flow au-u-margin-top">
+      <div>
+        <AuLabel for="filter-category">Categorie</AuLabel>
+        <Inventory::SelectCategory
+          @id="replace-category"
+          @selected={{this.newCategory}}
+          @onChange={{this.setNewProcessCategory}}
+          class="grow"
+        />
+      </div>
+    </div>
+
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
