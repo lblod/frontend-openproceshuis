@@ -1,7 +1,13 @@
-import Model, { attr } from '@ember-data/model';
+import ArchivableModel from './archivable';
+
+import { attr } from '@ember-data/model';
+import { service } from '@ember/service';
+
 import ENV from 'frontend-openproceshuis/config/environment';
 
-export default class ProcessCategoryModel extends Model {
+export default class ProcessCategoryModel extends ArchivableModel {
+  @service store;
+
   @attr('string') label;
   @attr('iso-date') created;
   @attr('iso-date') modified;
@@ -13,5 +19,35 @@ export default class ProcessCategoryModel extends Model {
 
   get isArchived() {
     return this.status === ENV.resourceStates.archived;
+  }
+
+  async canArchive() {
+    if (this.isArchived) {
+      return false;
+    }
+
+    const domains = await this.store.query('process-domain', {
+      'filter[process-categories][id]': this.id,
+      'filter[:exact:scheme]': ENV.conceptSchemes.processDomains,
+      'filter[:not:status]': ENV.resourceStates.archived,
+    });
+
+    return domains.length === 0;
+  }
+
+  async archive() {
+    super.archive();
+    this.status = ENV.resourceStates.archived;
+    await this.save();
+  }
+
+  get canUnArchive() {
+    return this.isArchived;
+  }
+
+  async unArchive() {
+    super.unArchive();
+    this.status = null;
+    await this.save();
   }
 }

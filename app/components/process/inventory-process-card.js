@@ -31,6 +31,10 @@ export default class ProcessInventoryProcessCard extends Component {
     this.edit = false;
   }
 
+  get hasProcessArchivedProperties() {
+    return this.args.process.linkedConcept?.processGroup?.isArchived;
+  }
+
   get processConceptTitle() {
     return this.args.process.linkedConcept?.title || '/';
   }

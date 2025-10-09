@@ -20,7 +20,6 @@ export default class InventorySelectGroup extends Component {
       sort: ':no-case:label',
       filter: {
         scheme: ENV.conceptSchemes.processGroups,
-        ':not:status': ENV.resourceStates.archived,
       },
     };
 

@@ -127,7 +127,7 @@
                           'is-selected'
                         }}"
                     >
-                      <td>
+                      <td class="au-u-flex au-u-vertical-align">
                         <AuLink
                           class="process-modal-link"
                           {{on "click" (fn this.selectProcessConcept process)}}
@@ -146,17 +146,34 @@
     </form>
   </:body>
   <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="secondary"
-        {{on "click" this.resetModel}}
-      >Annuleer</AuButton>
-      <AuButton
-        type="submit"
-        form="process-concept-selection-form"
-        @skin="primary"
-        @disabled={{this.saveButtonDisabled}}
-      >Proces selecteren</AuButton>
-    </AuButtonGroup>
+    <AuToolbar as |Group|>
+      <Group>
+        {{#if this.selectedProcessConcept.processGroup.isArchived}}
+          <div class="au-u-flex au-u-flex--row au-u-vertical-center color--warning">
+            <AuIcon
+              class=" au-u-margin-right-small"
+              @icon="alert-triangle"
+              @size="large"
+              @alignment="right"
+            />
+            <p>Dit process heeft gearchiveerde parameters.</p>
+          </div>
+        {{/if}}
+      </Group>
+      <Group>
+        <AuButtonGroup class="au-u-flex--end">
+          <AuButton
+            @skin="secondary"
+            {{on "click" this.resetModel}}
+          >Annuleer</AuButton>
+          <AuButton
+            type="submit"
+            form="process-concept-selection-form"
+            @skin="primary"
+            @disabled={{this.saveButtonDisabled}}
+          >Proces selecteren</AuButton>
+        </AuButtonGroup>
+      </Group>
+    </AuToolbar>
   </:footer>
 </AuModal>

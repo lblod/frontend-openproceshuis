@@ -1,109 +1,90 @@
-{{#if this.edit}}
-  <DataCard>
-    <:title>
-      Link met procesinventaris
-    </:title>
-    <:header>
-      <div class="au-u-flex au-u-flex--spaced-small au-u-flex--end">
-        <AuButton
-          @skin="secondary"
-          {{on "click" this.resetModel}}
-        >Annuleer</AuButton>
-      </div>
-    </:header>
-    <:card as |Card|>
-      <Card.Columns>
-        <:left as |Item|>
-          <Item>
-            <:label>Gelinkt proces</:label>
-            <:content>
-              <div class="au-u-flex au-u-flex--vertical-baseline">
-                {{#if @process.linkedConcept}}
-                  {{this.processConceptTitle}}
-                  <AuButton
-                    @skin="naked"
-                    {{on "click" this.openConceptModal}}
-                    class="process-change-button"
-                  >
-                    Wijzig
-                  </AuButton>
-                {{else}}
-                  <AuButton
-                    @skin="secondary"
-                    {{on "click" this.openConceptModal}}
-                    class="process-change-button"
-                  >Een proces selecteren</AuButton>
-                {{/if}}
-              </div>
-            </:content>
-          </Item>
-        </:left>
-        <:right as |Item|>
-          <Item>
-            <:label>Procesgroep</:label>
-            <:content>{{this.processGroupLabel}}</:content>
-          </Item>
-          <Item>
-            <:label>Procesdomein</:label>
-            <:content>{{this.processDomainLabel}}</:content>
-          </Item>
-          <Item>
-            <:label>Procescategorie</:label>
-            <:content>{{this.processCategoryLabel}}</:content>
-          </Item>
-        </:right>
-      </Card.Columns>
-    </:card>
-  </DataCard>
-
-  <Process::InventoryProcessCard::Popup
-    @openModal={{this.conceptModalOpened}}
-    @closeModal={{this.closeConceptModal}}
-    @process={{@process}}
-    @isEditing={{this.edit}}
-  />
-
-{{else}}
-  <DataCard>
-    <:title>
-      Link met procesinventaris
-    </:title>
-    <:header>
-      {{#if @canEdit}}
-        <AuButton
-          @skin="naked"
-          @icon="pencil"
-          {{on "click" this.toggleEdit}}
-        >Wijzig</AuButton>
-      {{/if}}
-    </:header>
-    <:card as |Card|>
-      <Card.Columns>
-        <:left as |Item|>
-          <div class="au-u-margin-bottom-small">
-            <Item>
-              <:label>Gelinkt proces</:label>
-              <:content>
+<DataCard>
+  <:title>
+    Link met procesinventaris
+  </:title>
+  <:header>
+    {{#if (and @canEdit (not this.edit))}}
+      <AuButton
+        @skin="naked"
+        @icon="pencil"
+        {{on "click" this.toggleEdit}}
+      >Wijzig</AuButton>
+    {{/if}}
+    {{#if this.edit}}
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.resetModel}}
+      >Annuleer</AuButton>
+    {{/if}}
+  </:header>
+  <:card as |Card|>
+    <Card.Columns>
+      <:left as |Item|>
+        <Item>
+          <:label>Gelinkt proces</:label>
+          <:content>
+            {{#if this.edit}}
+              {{#if @process.linkedConcept}}
                 {{this.processConceptTitle}}
-              </:content>
-            </Item>
-          </div>
-        </:left>
-        <:right as |Item|>
-          <Item>
-            <:label>Procesgroep</:label>
-            <:content>{{this.processGroupLabel}}</:content>
-          </Item>
-          <Item>
-            <:label>Procesdomein</:label>
-            <:content>{{this.processDomainLabel}}</:content>
-          </Item>
-          <Item>
-            <:label>Procescategorie</:label>
-            <:content>{{this.processCategoryLabel}}</:content>
-          </Item>
-        </:right>
-      </Card.Columns>
-    </:card>
-  </DataCard>
-{{/if}}
+                <AuButton
+                  @skin="naked"
+                  {{on "click" this.openConceptModal}}
+                  class="process-change-button"
+                >
+                  Wijzig
+                </AuButton>
+              {{else}}
+                <AuButton
+                  @skin="secondary"
+                  {{on "click" this.openConceptModal}}
+                  class="process-change-button"
+                >Een proces selecteren</AuButton>
+              {{/if}}
+            {{else}}
+              <div class="au-u-flex au-u-flex--row">
+                <div class="au-u-flex au-u-vertical-center">
+                  <p> {{this.processConceptTitle}}</p>
+                  {{#if this.hasProcessArchivedProperties}}
+                    <Shared::Tooltip
+                      @show={{true}}
+                      @text="Dit process heeft gearchiveerde parameters"
+                    >
+                      <AuIcon
+                        class="color--warning"
+                        @icon="alert-triangle"
+                        @size="large"
+                        @alignment="right"
+                      />
+                    </Shared::Tooltip>
+                  {{/if}}
+                </div>
+                <AuButton @skin="naked" class="process-change-button" />
+              </div>
+            {{/if}}
+          </:content>
+        </Item>
+      </:left>
+      <:right as |Item|>
+        <Item>
+          <:label>Procesgroep</:label>
+          <:content>{{this.processGroupLabel}}</:content>
+        </Item>
+        <Item>
+          <:label>Procesdomein</:label>
+          <:content>{{this.processDomainLabel}}</:content>
+        </Item>
+        <Item>
+          <:label>Procescategorie</:label>
+          <:content>{{this.processCategoryLabel}}</:content>
+        </Item>
+      </:right>
+    </Card.Columns>
+  </:card>
+</DataCard>
+
+<Process::InventoryProcessCard::Popup
+  @openModal={{this.conceptModalOpened}}
+  @closeModal={{this.closeConceptModal}}
+  @process={{@process}}
+  @isEditing={{this.edit}}
+/>

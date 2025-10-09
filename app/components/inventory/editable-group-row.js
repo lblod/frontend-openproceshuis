@@ -15,10 +15,13 @@ export default class InventoryEditableGroupRow extends Component {
 
   @tracked isEditing;
   @tracked label;
+
   @tracked isDeleteModelOpen;
   @tracked isDeleting;
+
   @tracked isArchiveModelOpen;
   @tracked isArchiving;
+  @tracked isCannotUnArchiveModelOpen;
   @tracked usageMessage;
   @tracked isCheckingForUsage;
 
@@ -118,9 +121,18 @@ export default class InventoryEditableGroupRow extends Component {
   }
 
   @action
+  async openUnArchiveModal() {
+    if (this.args.group.canUnArchive) {
+      await this.unArchiveGroup();
+    } else {
+      this.isCannotUnArchiveModelOpen = true;
+    }
+  }
+
+  @action
   async openArchiveModal() {
-    this.isArchiveModelOpen = true;
     await this.checkForUsage();
+    this.isArchiveModelOpen = true;
   }
 
   @action
@@ -133,8 +145,7 @@ export default class InventoryEditableGroupRow extends Component {
   async archiveGroup() {
     this.isArchiving = true;
     try {
-      this.args.group.status = ENV.resourceStates.archived;
-      await this.args.group.save();
+      await this.args.group.archive();
       this.toaster.success(`${this.args.group.label} gearchiveerd`, undefined, {
         timeOut: 5000,
       });
@@ -150,12 +161,11 @@ export default class InventoryEditableGroupRow extends Component {
     this.isArchiveModelOpen = false;
     this.isArchiving = false;
   }
-  @action
+
   async unArchiveGroup() {
     this.isArchiving = true;
     try {
-      this.args.group.status = null;
-      await this.args.group.save();
+      await this.args.group.unArchive();
       this.toaster.success(`${this.args.group.label} hersteld`, undefined, {
         timeOut: 5000,
       });

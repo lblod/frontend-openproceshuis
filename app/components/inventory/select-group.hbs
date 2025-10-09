@@ -13,4 +13,14 @@
   >
     {{group.label}}
   </PowerSelect>
+  {{#if this.selectedGroup.value.isArchived}}
+    <AuHelpText @skin="warning" @warning={{true}} class="color--warning">
+      <AuIcon
+        @icon="alert-triangle"
+        @size="small"
+        @alignment="right"
+      />
+      Gearchiveerd
+    </AuHelpText>
+  {{/if}}
 </div>

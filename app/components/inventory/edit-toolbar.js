@@ -4,8 +4,6 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
-import ENV from 'frontend-openproceshuis/config/environment';
-
 import { restartableTask, timeout } from 'ember-concurrency';
 
 export default class InventoryEditToolbar extends Component {
@@ -29,6 +27,8 @@ export default class InventoryEditToolbar extends Component {
 
   @tracked isArchiving;
   @tracked isArchiveModelOpen;
+  @tracked isCannotArchiveModelOpen;
+  @tracked isCannotUnArchiveModelOpen;
 
   allowedModelNames = ['process-category', 'process-domain'];
 
@@ -54,6 +54,17 @@ export default class InventoryEditToolbar extends Component {
 
   get canSaveLabel() {
     return this.isValidLabel && this.cleanLabel !== this.args.model.label;
+  }
+
+  get cannotArchiveMessage() {
+    if (this.args.modelName === 'process-category') {
+      return 'Dit doordat er nog actieve domeinen gelinkt zijn. Archiveer eerst al de onderliggende domeinen als je deze categorie wil archiveren.';
+    }
+    if (this.args.modelName === 'process-category') {
+      return 'Dit doordat er nog actieve groepen gelinkt zijn. Archiveer eerst al de onderliggende groepen als je dit domein wil archiveren.';
+    }
+
+    return '';
   }
 
   @action
@@ -129,8 +140,24 @@ export default class InventoryEditToolbar extends Component {
 
   @action
   async openArchiveModal() {
-    this.isArchiveModelOpen = true;
     await this.checkForUsage();
+    this.isCheckingForUsage = true;
+    const canArchive = await this.args.model.canArchive();
+    this.isCheckingForUsage = false;
+    if (canArchive) {
+      this.isArchiveModelOpen = true;
+    } else {
+      this.isCannotArchiveModelOpen = true;
+    }
+  }
+
+  @action
+  async openUnArchiveModal() {
+    if (this.args.model.canUnArchive) {
+      await this.unarchiveModel();
+    } else {
+      this.isCannotUnArchiveModelOpen = true;
+    }
   }
 
   @action
@@ -165,8 +192,7 @@ export default class InventoryEditToolbar extends Component {
   async archiveModel() {
     this.isArchiving = true;
     try {
-      this.args.model.status = ENV.resourceStates.archived;
-      await this.args.model.save();
+      await this.args.model.archive();
       this.toaster.success(`${this.args.model.label} gearchiveerd`, undefined, {
         timeOut: 5000,
       });
@@ -183,12 +209,10 @@ export default class InventoryEditToolbar extends Component {
     this.isArchiving = false;
   }
 
-  @action
   async unarchiveModel() {
     this.isArchiving = true;
     try {
-      this.args.model.status = null;
-      await this.args.model.save();
+      await this.args.model.unArchive();
       this.toaster.success(`${this.args.model.label} hersteld`, undefined, {
         timeOut: 5000,
       });

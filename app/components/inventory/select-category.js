@@ -16,7 +16,6 @@ export default class InventorySelectCategory extends Component {
       sort: ':no-case:label',
       filter: {
         scheme: ENV.conceptSchemes.processCategories,
-        ':not:status': ENV.resourceStates.archived,
       },
     };
 

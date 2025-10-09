@@ -35,7 +35,7 @@
             @icon="undo"
             @skin="naked"
             @size="large"
-            {{on "click" this.unArchiveGroup}}
+            {{on "click" this.openUnArchiveModal}}
           />
         {{else}}
           <AuButton
@@ -45,6 +45,8 @@
             {{on "click" this.toggleIsEditing}}
           />
           <AuButton
+            @loading={{this.isCheckingForUsage}}
+            @loadingMessage=""
             @icon="archive"
             @skin="naked"
             @size="large"
@@ -106,6 +108,26 @@
         @alert="true"
         {{on "click" this.deleteGroupFromDomain}}
       >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
+
+<AuModal
+  @modalOpen={{this.isCannotUnArchiveModelOpen}}
+  @closable={{true}}
+  @closeModal={{fn (mut this.isCannotUnArchiveModelOpen) false}}
+>
+  <:title>Kan groep niet herstellen</:title>
+  <:body>
+    <span class="au-u-medium">{{@group.label}} </span>
+    kan niet hersteld worden. Zorg dat het bovenliggende domein niet
+    gearchiveerd is.
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        {{on "click" (fn (mut this.isCannotUnArchiveModelOpen) false)}}
+      >Sluiten</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>
