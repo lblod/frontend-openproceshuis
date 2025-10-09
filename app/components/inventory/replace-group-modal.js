@@ -29,4 +29,8 @@ export default class InventoryReplaceGroupModal extends Component {
   setNewProcessGroup({ model }) {
     this.newGroup = model;
   }
+
+  get isNewGroupSameAsOld() {
+    return this.args.group?.id === this.newGroup?.id;
+  }
 }

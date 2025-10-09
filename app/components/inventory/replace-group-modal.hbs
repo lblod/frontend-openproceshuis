@@ -9,7 +9,7 @@
 
     <div class="au-o-flow au-u-margin-top">
       <div>
-        <AuLabel for="filter-category">Categorie</AuLabel>
+        <AuLabel for="replace-category">Categorie</AuLabel>
         <Inventory::SelectCategory
           @id="replace-category"
           @selected={{this.newCategory.id}}
@@ -17,9 +17,9 @@
         />
       </div>
       <div>
-        <AuLabel for="filter-domain">Domein</AuLabel>
+        <AuLabel for="replace-domain">Domein</AuLabel>
         <Inventory::SelectDomain
-          @id="filter-domain"
+          @id="replace-domain"
           @selected={{this.newDomain.id}}
           @onChange={{this.setNewProcessDomain}}
           @category={{this.newCategory.id}}
@@ -27,15 +27,24 @@
         />
       </div>
       <div>
-        <AuLabel for="filter-group">Groep</AuLabel>
+        <AuLabel
+          @error={{this.isNewGroupSameAsOld}}
+          for="replace-group"
+        >Groep</AuLabel>
         <Inventory::SelectGroup
-          @id="filter-group"
+          @id="replace-group"
+          @error={{this.isNewGroupSameAsOld}}
           @selected={{this.newGroup.id}}
           @onChange={{this.setNewProcessGroup}}
           @category={{this.newCategory.id}}
           @domain={{this.newDomain.id}}
           @isDisabled={{not this.newDomain}}
         />
+        {{#if this.isNewGroupSameAsOld}}
+          <AuHelpText @error={{true}}>
+            Kan de groep niet vervangen met zichzelf
+          </AuHelpText>
+        {{/if}}
       </div>
     </div>
   </:body>
