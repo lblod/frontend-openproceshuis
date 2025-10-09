@@ -3,9 +3,10 @@
   <:body>
     De groep
     <span class="au-u-medium">{{@group.label}} </span>
-    werd gevonden in een actief inventaris proces. Door hieronder een nieuwe
-    groep te selecteren wordt het gebruik van huidige groep in de processen
-    vervangen met de nieuwe groep.
+    werd gevonden in actieve inventaris processen
+    {{this.processCountInText}}. Door hieronder een nieuwe groep te selecteren
+    wordt het gebruik van huidige groep in de processen vervangen met de nieuwe
+    groep. De huidige groep wordt hierbij gearchiveerd.
 
     <div class="au-o-flow au-u-margin-top">
       <div>
@@ -50,7 +51,15 @@
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton {{on "click" @onCancel}}>Annuleer</AuButton>
+      <AuButton @skin="secondary" {{on "click" @onCancel}}>Annuleer</AuButton>
+      <AuButton
+        @disabled={{not this.canReplaceGroup}}
+        @loading={{this.isReplacing}}
+        @loadingMessage="Processen aanpassen"
+        {{on "click" this.replaceInProcesses}}
+      >
+        Vervang voor alle processen
+      </AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>
