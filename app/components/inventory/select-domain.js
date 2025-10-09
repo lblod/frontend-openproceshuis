@@ -45,6 +45,7 @@ export default class InventorySelectDomain extends Component {
     this.args.onChange?.({
       filterKey: 'domain',
       value: domain?.id,
+      model: domain,
     });
   }
 }

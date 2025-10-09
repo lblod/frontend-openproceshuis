@@ -12,9 +12,17 @@
         <AuLabel for="filter-category">Categorie</AuLabel>
         <Inventory::SelectCategory
           @id="replace-category"
-          @selected={{this.newCategory}}
+          @selected={{this.newCategory.id}}
           @onChange={{this.setNewProcessCategory}}
-          class="grow"
+        />
+      </div>
+      <div>
+        <AuLabel for="filter-domain">Domein</AuLabel>
+        <Inventory::SelectDomain
+          @id="filter-domain"
+          @selected={{this.newDomain.id}}
+          @onChange={{this.setNewProcessDomain}}
+          @category={{this.newCategory.id}}
         />
       </div>
     </div>
