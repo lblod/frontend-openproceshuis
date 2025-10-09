@@ -182,24 +182,8 @@
   </:footer>
 </AuModal>
 
-<AuModal
-  @modalOpen={{this.isReplaceModelOpen}}
-  @closable={{true}}
-  @closeModal={{fn (mut this.isReplaceModelOpen) false}}
->
-  <:title>Vervang groep in processen</:title>
-  <:body>
-    De groep
-    <span class="au-u-medium">{{@group.label}} </span>
-    werd gevonden in een actief inventaris proces. Door hieronder een nieuwe
-    groep te selecteren wordt het gebruik van huidige groep in de processen
-    vervangen met de nieuwe groep.
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        {{on "click" (fn (mut this.isReplaceModelOpen) false)}}
-      >Annuleer</AuButton>
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
+<Inventory::ReplaceGroupModal
+  @group={{@group}}
+  @isOpen={{this.isReplaceModelOpen}}
+  @onCancel={{fn (mut this.isReplaceModelOpen) false}}
+/>
