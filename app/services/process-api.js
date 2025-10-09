@@ -47,18 +47,18 @@ export default class ProcessApiService extends Service {
       .map((key) => `${key}=${options[key]}`);
   }
 
-  async getUsersForProcess(processId) {
+  async getOrganizationalProcessUsage(processId) {
     const response = await fetch(
-      `/process-api/processes/${processId}/count-of-users`,
+      `/process-api/processes/${processId}/organizational-usage`,
     );
 
     if (!response.ok) {
       throw new Error(
-        'Er liep iets mis bij het ophalen van het aantal gebruikers voor het process',
+        'Er liep iets mis bij het ophalen van de organisaties die dit process gebruiken',
       );
     }
-    const { count } = await response.json();
+    const usages = await response.json();
 
-    return count ?? 0;
+    return usages;
   }
 }

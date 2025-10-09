@@ -1,0 +1,31 @@
+<DataCard>
+  <:title>Gebruik van dit process</:title>
+  <:header>
+  </:header>
+
+  <:subheader>
+    <AuHelpText @skin="secondary">
+      Onderstaande organisaties hebben aangevinkt dat ze dit process gebruiken.
+    </AuHelpText>
+  </:subheader>
+  <:card>
+    {{#if this.usages.isRunning}}
+      <AuLoader @hideMessage={{true}} />
+    {{else}}
+      {{#if (eq this.usages.value.length 0)}}
+        <p class="au-u-padding-left"> Er zijn momenteel geen organisaties die dit process gebruiken</p>
+      {{else}}
+        <AuList class="au-o-layout--small au-u-padding-left" @divider={{true}} as |Item|>
+          {{#each this.usages.value as |usage|}}
+            <Item>
+              <div class="au-u-flex au-u-flex--between">
+                {{usage.label}}
+                <AuPill @skin="border">{{usage.type}}</AuPill>
+              </div>
+            </Item>
+          {{/each}}
+        </AuList>
+      {{/if}}
+    {{/if}}
+  </:card>
+</DataCard>
