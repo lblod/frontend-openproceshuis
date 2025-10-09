@@ -4,7 +4,6 @@ import { service } from '@ember/service';
 export default class ProcessesProcessIndexRoute extends Route {
   @service plausible;
   @service store;
-  @service processApi;
 
   async model() {
     const process = this.modelFor('processes.process');
@@ -26,14 +25,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     stats.processViews += 1;
     await stats.save();
 
-    const usedByUserCount = await this.processApi.getUsersForProcess(
-      process.id,
-    );
-
-    return {
-      process,
-      usedByUserCount,
-    };
+    return { process };
   }
 
   setupController(controller) {
