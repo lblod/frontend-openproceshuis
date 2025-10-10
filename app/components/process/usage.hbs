@@ -12,11 +12,16 @@
     {{#if this.usages.isRunning}}
       <AuLoader @hideMessage={{true}} />
     {{else}}
-      {{#if (eq this.usages.value.length 0)}}
-        <p class="au-u-padding-left"> Er zijn momenteel geen organisaties die dit process gebruiken</p>
+      {{#if (eq this.organizations.length 0)}}
+        <p class="au-u-padding-left">
+          Er zijn momenteel geen organisaties die dit process gebruiken</p>
       {{else}}
-        <AuList class="au-o-layout--small au-u-padding-left" @divider={{true}} as |Item|>
-          {{#each this.usages.value as |usage|}}
+        <AuList
+          class="au-o-layout--small au-u-padding-left"
+          @divider={{true}}
+          as |Item|
+        >
+          {{#each this.organizations as |usage|}}
             <Item>
               <div class="au-u-flex au-u-flex--between">
                 {{usage.label}}
