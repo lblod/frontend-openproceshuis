@@ -60,6 +60,8 @@ export default class InventoryReplaceGroupModal extends Component {
   async replaceInProcesses() {
     this.isReplacing = true;
     let replacedCount = 0;
+    this.newGroup.replacedGroups.push(this.args.group);
+    await this.newGroup.save();
     await Promise.all(
       this.processes.map(async (process) => {
         process.processGroups = [this.newGroup];
