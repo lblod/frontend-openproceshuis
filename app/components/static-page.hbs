@@ -1,17 +1,23 @@
-<AuContentHeader
-  @titlePartOne="Vlaanderen"
-  @titlePartTwo="is het Open Proces Huis"
->
-  <img
-    sizes="50vw"
-    src="/assets/images/loket-header-1600.jpg"
-    srcset="/assets/images/loket-header-320.jpg 320w, /assets/images/loket-header-1024.jpg 1024w, /assets/images/loket-header-1600.jpg 1600w"
-    alt=""
-    role="none"
-  />
-</AuContentHeader>
+<AuMainContainer as |m|>
+  <m.content @scroll={{true}}>
+    <AuContentHeader
+      @titlePartOne="Vlaanderen"
+      @titlePartTwo="is is het Open Proces Huis"
+    >
+      <img
+        sizes="50vw"
+        src="/assets/images/loket-header-1600.jpg"
+        srcset="/assets/images/loket-header-320.jpg 320w, /assets/images/loket-header-1024.jpg 1024w, /assets/images/loket-header-1600.jpg 1600w"
+        alt=""
+        role="none"
+      />
+    </AuContentHeader>
+    <section class="au-o-region-large">
+      <div class="au-o-layout">
+        {{yield}}
+      </div>
+    </section>
 
-<AuBodyContainer>
-  {{yield}}
-</AuBodyContainer>
-<Footer />
+    <Footer />
+  </m.content>
+</AuMainContainer>
