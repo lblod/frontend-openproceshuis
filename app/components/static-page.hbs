@@ -17,7 +17,8 @@
         {{yield}}
       </div>
     </section>
-
-    <Footer />
+    {{#unless @isFooterHidden}}
+      <Footer />
+    {{/unless}}
   </m.content>
 </AuMainContainer>
