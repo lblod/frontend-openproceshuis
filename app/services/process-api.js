@@ -46,19 +46,4 @@ export default class ProcessApiService extends Service {
       .filter((key) => options[key])
       .map((key) => `${key}=${options[key]}`);
   }
-
-  async getOrganizationalProcessUsage(processId) {
-    const response = await fetch(
-      `/process-api/processes/${processId}/organizational-usage`,
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        'Er liep iets mis bij het ophalen van de organisaties die dit process gebruiken',
-      );
-    }
-    const usages = await response.json();
-
-    return usages;
-  }
 }
