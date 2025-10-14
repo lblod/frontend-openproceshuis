@@ -16,6 +16,9 @@ export default class ProcessGroupModel extends ArchivableModel {
   @hasMany('process-domain', { inverse: null, async: false })
   processDomains;
 
+  @hasMany('process-group', { inverse: null, async: false })
+  replacedGroups;
+
   get processDomain() {
     if (!this.processDomains || this.processDomains.length === 0) return null;
     return this.processDomains[0];

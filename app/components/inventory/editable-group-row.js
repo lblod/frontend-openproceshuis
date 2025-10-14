@@ -25,6 +25,8 @@ export default class InventoryEditableGroupRow extends Component {
   @tracked usageMessage;
   @tracked isCheckingForUsage;
 
+  @tracked isReplaceModelOpen;
+
   get isArchived() {
     return this.args.group.status === ENV.resourceStates.archived;
   }
@@ -207,5 +209,11 @@ export default class InventoryEditableGroupRow extends Component {
     }
     this.isDeleteModelOpen = false;
     this.isDeleting = false;
+  }
+
+  @action
+  openReplaceModal() {
+    this.isArchiveModelOpen = false;
+    this.isReplaceModelOpen = true;
   }
 }

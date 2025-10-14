@@ -9,6 +9,8 @@
     @onChange={{this.onChange}}
     @allowClear={{true}}
     @triggerId={{@id}}
+    @disabled={{@isDisabled}}
+    @loading={{this.selectedGroup.isRunning}}
     as |group|
   >
     {{group.label}}

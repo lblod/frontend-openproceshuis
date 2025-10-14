@@ -159,7 +159,9 @@
       <AuButton
         @skin="secondary"
         {{on "click" (fn (mut this.isArchiveModelOpen) false)}}
-      >Annuleer</AuButton>
+      >
+        Annuleer
+      </AuButton>
       <AuButton
         @disabeld={{or this.isArchiving this.isCheckingForUsage}}
         @loading={{or this.isArchiving this.isCheckingForUsage}}
@@ -170,8 +172,24 @@
         }}
         @icon={{if this.usageMessage "alert-triangle" null}}
         @alert={{true}}
+        @skin={{if this.usageMessage "secondary" "primary"}}
         {{on "click" this.archiveGroup}}
-      >Archiveer</AuButton>
+      >
+        Archiveer
+      </AuButton>
+      {{#if this.usageMessage}}
+        <AuButton {{on "click" this.openReplaceModal}}>
+          Vervang
+        </AuButton>
+      {{/if}}
     </AuButtonGroup>
   </:footer>
 </AuModal>
+
+{{#if this.isReplaceModelOpen}}
+  <Inventory::ReplaceGroupModal
+    @group={{@group}}
+    @onCancel={{fn (mut this.isReplaceModelOpen) false}}
+    @onAllProcessesUpdated={{this.archiveGroup}}
+  />
+{{/if}}

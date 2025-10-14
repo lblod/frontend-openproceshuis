@@ -44,10 +44,10 @@
               <div class="au-u-flex au-u-flex--row">
                 <div class="au-u-flex au-u-vertical-center">
                   <p> {{this.processConceptTitle}}</p>
-                  {{#if this.hasProcessArchivedProperties}}
+                  {{#if this.linkedProcessWarnText}}
                     <Shared::Tooltip
                       @show={{true}}
-                      @text="Dit process heeft gearchiveerde parameters"
+                      @text={{this.linkedProcessWarnText}}
                     >
                       <AuIcon
                         class="color--warning"

@@ -3,6 +3,19 @@ import Service, { service } from '@ember/service';
 export default class ConceptualProcessService extends Service {
   @service store;
 
+  async getProcessesWithUsageOfGroup(groupId) {
+    if (!groupId) {
+      return [];
+    }
+
+    const usages = await this.store.query('conceptual-process', {
+      'filter[process-groups][id]': groupId,
+      page: { size: 9999 }, // or move it to the process service
+    });
+
+    return usages;
+  }
+
   async hasUsageInRelationOfConceptualProcess(modelId, modelName) {
     const filterMap = {
       ['process-category']: {

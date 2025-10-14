@@ -1,0 +1,65 @@
+<AuModal @modalOpen={{true}} @closable={{true}} @closeModal={{@onCancel}}>
+  <:title>Vervang groep in processen</:title>
+  <:body>
+    De groep
+    <span class="au-u-medium">{{@group.label}} </span>
+    werd gevonden in actieve inventaris processen
+    {{this.processCountInText}}. Door hieronder een nieuwe groep te selecteren
+    wordt het gebruik van huidige groep in de processen vervangen met de nieuwe
+    groep. De huidige groep wordt hierbij gearchiveerd.
+
+    <div class="au-o-flow au-u-margin-top">
+      <div>
+        <AuLabel for="replace-category">Categorie</AuLabel>
+        <Inventory::SelectCategory
+          @id="replace-category"
+          @selected={{this.newCategory.id}}
+          @onChange={{this.setNewProcessCategory}}
+        />
+      </div>
+      <div>
+        <AuLabel for="replace-domain">Domein</AuLabel>
+        <Inventory::SelectDomain
+          @id="replace-domain"
+          @selected={{this.newDomain.id}}
+          @onChange={{this.setNewProcessDomain}}
+          @category={{this.newCategory.id}}
+          @isDisabled={{not this.newCategory}}
+        />
+      </div>
+      <div>
+        <AuLabel
+          @error={{this.isNewGroupSameAsOld}}
+          for="replace-group"
+        >Groep</AuLabel>
+        <Inventory::SelectGroup
+          @id="replace-group"
+          @error={{this.isNewGroupSameAsOld}}
+          @selected={{this.newGroup.id}}
+          @onChange={{this.setNewProcessGroup}}
+          @category={{this.newCategory.id}}
+          @domain={{this.newDomain.id}}
+          @isDisabled={{not this.newDomain}}
+        />
+        {{#if this.isNewGroupSameAsOld}}
+          <AuHelpText @error={{true}}>
+            Kan de groep niet vervangen met zichzelf
+          </AuHelpText>
+        {{/if}}
+      </div>
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton @skin="secondary" {{on "click" @onCancel}}>Annuleer</AuButton>
+      <AuButton
+        @disabled={{not this.canReplaceGroup}}
+        @loading={{this.isReplacing}}
+        @loadingMessage="Processen aanpassen"
+        {{on "click" this.replaceInProcesses}}
+      >
+        Vervang voor alle processen
+      </AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
