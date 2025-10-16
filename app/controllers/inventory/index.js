@@ -20,6 +20,7 @@ export default class InventoryIndexController extends Controller {
   @service router;
   @service currentSession;
 
+  @tracked isLoadingRoute;
   @tracked page = 0;
   size = 20;
   @tracked sort = 'title';

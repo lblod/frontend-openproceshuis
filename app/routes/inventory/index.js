@@ -18,6 +18,9 @@ export default class InventoryIndexRoute extends Route {
   };
 
   async model(params) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
+    const controller = this.controllerFor('inventory.index');
+    controller.isLoadingRoute = true;
     let modifiedParams = { ...params };
     if (!params.size) {
       modifiedParams['size'] = 20;
@@ -38,6 +41,8 @@ export default class InventoryIndexRoute extends Route {
         couldNotFetchTableContent: true,
         params: modifiedParams,
       };
+    } finally {
+      controller.isLoadingRoute = false;
     }
   }
 }
