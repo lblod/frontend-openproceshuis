@@ -9,6 +9,7 @@ export default class InventorySidebarFilters extends Component {
     'group',
     'processTitle',
     'processNumber',
+    'sort',
   ];
 
   @action
