@@ -23,7 +23,7 @@ export default class InventorySelectGroup extends Component {
       },
     };
 
-    if (this.args.category)
+    if (this.args.category && !this.args.domain)
       query['filter[process-domains][process-categories][id]'] =
         this.args.category;
 
