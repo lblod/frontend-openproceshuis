@@ -1,8 +1,10 @@
 import Component from '@glimmer/component';
 
+import { A } from '@ember/array';
 import { service } from '@ember/service';
 import { action } from '@ember/object';
 
+import { tracked } from '@glimmer/tracking';
 import { restartableTask } from 'ember-concurrency';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
@@ -11,6 +13,8 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class InventorySelectGroup extends Component {
   @service router;
   @service store;
+
+  @tracked options = A([]);
 
   loadGroupsTask = restartableTask(async () => {
     const query = {
@@ -29,8 +33,9 @@ export default class InventorySelectGroup extends Component {
 
     if (this.args.domain)
       query['filter[process-domains][id]'] = this.args.domain;
-
-    return await this.store.query('process-group', query);
+    this.options.clear();
+    const options = await this.store.query('process-group', query);
+    this.options.pushObjects(options);
   });
 
   groups = trackedTask(this, this.loadGroupsTask, () => [

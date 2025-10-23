@@ -4,13 +4,14 @@
     @searchField="label"
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
-    @options={{this.groups.value}}
+    @options={{this.options}}
     @selected={{this.selectedGroup.value}}
     @onChange={{this.onChange}}
+    @onOpen={{perform this.loadGroupsTask}}
     @allowClear={{true}}
     @triggerId={{@id}}
     @disabled={{@isDisabled}}
-    @loading={{this.selectedGroup.isRunning}}
+    @loading={{or this.selectedGroup.isRunning this.loadGroupsTask.isRunning}}
     as |group|
   >
     {{group.label}}
