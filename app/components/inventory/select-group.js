@@ -27,21 +27,18 @@ export default class InventorySelectGroup extends Component {
       },
     };
 
-    if (this.args.category)
+    if (this.args.category && !this.args.domain) {
       query['filter[process-domains][process-categories][id]'] =
         this.args.category;
-
-    if (this.args.domain)
+    }
+    if (this.args.domain) {
       query['filter[process-domains][id]'] = this.args.domain;
+    }
+
     this.options.clear();
     const options = await this.store.query('process-group', query);
     this.options.pushObjects(options);
   });
-
-  groups = trackedTask(this, this.loadGroupsTask, () => [
-    this.args.category,
-    this.args.domain,
-  ]);
 
   loadSelectedGroup = restartableTask(async () => {
     if (!this.args.selected) return null;
