@@ -1,8 +1,8 @@
 <AuModal @modalOpen={{@isOpen}} @closable={{true}} @closeModal={{@onClose}}>
   <:title>Download processen</:title>
   <:body>
-    <p class="au-u-margin-bottom">Exporteer de processen van deze pagina of alle
-      inventarisprocessen naar een CSV-bestand.</p>
+    <p class="au-u-margin-bottom">Exporteerd de processen van deze pagina of
+      alle geselecteerde inventarisprocessen naar een CSV-bestand</p>
     <div class="au-u-flex au-u-flex--spaced">
       <AuLinkExternal
         role={{@role}}
@@ -21,7 +21,7 @@
         @icon="download"
         @iconAlignment="left"
         {{on "click" this.showIsDownloadingToast}}
-      >Alle processen</AuLinkExternal>
+      >Alle geselecteerde processen</AuLinkExternal>
     </div>
   </:body>
   <:footer>
