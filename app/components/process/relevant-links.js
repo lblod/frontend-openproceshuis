@@ -12,7 +12,7 @@ export default class ProcessRelevantLinks extends Component {
 
   @tracked isEditModalOpen = false;
   @tracked isDeleteModalOpen = false;
-  @tracked isAddingLink = false;
+  @tracked isExecutingAction = false;
 
   @tracked updateLinkModel;
   @tracked labelValue;
@@ -34,14 +34,18 @@ export default class ProcessRelevantLinks extends Component {
     if (!this.linkValue) {
       return false;
     }
-    return this.isLinkValid && !this.isAddingLink;
+    return this.isLinkValid && !this.isExecutingAction;
   }
 
   get canUpdateChanges() {
     if (!this.linkValue) {
       return false;
     }
-    return this.isLinkValid && this.isInputDivergingFromStartValue;
+    return (
+      this.isLinkValid &&
+      this.isInputDivergingFromStartValue &&
+      !this.isExecutingAction
+    );
   }
 
   get cleanLabel() {
@@ -96,6 +100,12 @@ export default class ProcessRelevantLinks extends Component {
     this.args.closeModal?.();
   }
 
+  @action
+  closeEditModal() {
+    this.isEditModalOpen = false;
+    this.resetLabelAndValueToNull();
+  }
+
   resetLabelAndValueToNull() {
     this.linkValue = null;
     this.labelValue = null;
@@ -103,7 +113,7 @@ export default class ProcessRelevantLinks extends Component {
 
   @action
   async addLink() {
-    this.isAddingLink = true;
+    this.isExecutingAction = true;
     const linkModel = this.store.createRecord('link', {
       label: this.cleanLabel,
       href: this.cleanLink,
@@ -124,7 +134,6 @@ export default class ProcessRelevantLinks extends Component {
       this.toaster.success('Link toegevoegd', undefined, {
         timeOut: 5000,
       });
-      this.resetLabelAndValueToNull();
       this.args.onLinkAdded?.();
     } catch (error) {
       this.closeAddModal();
@@ -136,12 +145,14 @@ export default class ProcessRelevantLinks extends Component {
         },
       );
     }
-    this.isAddingLink = false;
+    this.resetLabelAndValueToNull();
+    this.isExecutingAction = false;
   }
 
   @action
   async deleteLink() {
     try {
+      this.isExecutingAction = true;
       await this.updateLinkModel.destroyRecord();
       this.isDeleteModalOpen = false;
       this.updateLinkModel = null;
@@ -157,10 +168,12 @@ export default class ProcessRelevantLinks extends Component {
         },
       );
     }
+    this.isExecutingAction = false;
   }
 
   @action
   async updateLink() {
+    this.isExecutingAction = true;
     this.updateLinkModel.label = this.cleanLabel;
     this.updateLinkModel.href = this.cleanLink;
     try {
@@ -180,5 +193,7 @@ export default class ProcessRelevantLinks extends Component {
         },
       );
     }
+    this.resetLabelAndValueToNull();
+    this.isExecutingAction = false;
   }
 }

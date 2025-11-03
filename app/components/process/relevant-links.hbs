@@ -81,7 +81,7 @@
       <AuButton
         @icon="plus"
         @disabled={{not this.canSaveChanges}}
-        @loading={{this.isAddingLink}}
+        @loading={{this.isExecutingAction}}
         @loadingMessage="Link toevoegen"
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
@@ -125,11 +125,13 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="secondary"
-        {{on "click" (fn (mut this.isEditModalOpen) false)}}
+        {{on "click" this.closeEditModal}}
       >Annuleer</AuButton>
       <AuButton
         @icon="pencil"
         @disabled={{not this.canUpdateChanges}}
+        @loading={{this.isExecutingAction}}
+        @loadingMessage="Link aanpassen"
         {{on "click" this.updateLink}}
       >Update</AuButton>
     </AuButtonGroup>
@@ -154,6 +156,9 @@
       <AuButton
         @icon="trash"
         @alert={{true}}
+        @disabled={{this.isExecutingAction}}
+        @loading={{this.isExecutingAction}}
+        @loadingMessage="Link verwijderen"
         {{on "click" this.deleteLink}}
       >Verwijder</AuButton>
     </AuButtonGroup>
