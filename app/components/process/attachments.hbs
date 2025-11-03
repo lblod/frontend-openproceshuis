@@ -4,15 +4,23 @@
   <:header>
     <AuButtonGroup>
       {{#if @canEdit}}
-        <AuButton
-          @skin="secondary"
-          {{on "click" (fn (mut this.isAddLinkModalOpen) true)}}
-        >
-          Voeg link toe
-        </AuButton>
-        <AuButton @skin="secondary" {{on "click" this.openAddModal}}>
-          Voeg bestand toe
-        </AuButton>
+        {{! template-lint-disable require-context-role }}
+        <AuDropdown @title="Voeg toe" @skin="secondary" @alignment="center">
+          <AuButton
+            role="menuitem"
+            @skin="link"
+            {{on "click" (fn (mut this.isAddLinkModalOpen) true)}}
+          >
+            Link
+          </AuButton>
+          <AuButton
+            role="menuitem"
+            @skin="link"
+            {{on "click" this.openAddModal}}
+          >
+            Bestand
+          </AuButton>
+        </AuDropdown>
       {{/if}}
       <AuButton
         @disabled={{not this.attachments}}
