@@ -35,18 +35,6 @@
       </div>
     </Item>
   {{/each}}
-  {{#if @canEdit}}
-    <Item class="au-u-padding-left-small">
-      <AuButton
-        @icon="plus"
-        @iconAlignment="right"
-        @skin="naked"
-        {{on "click" this.openAddModal}}
-      >
-        Voeg een link toe
-      </AuButton>
-    </Item>
-  {{/if}}
 </AuList>
 
 <AuModal
