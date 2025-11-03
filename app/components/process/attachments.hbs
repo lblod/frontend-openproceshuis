@@ -4,6 +4,12 @@
   <:header>
     <AuButtonGroup>
       {{#if @canEdit}}
+        <AuButton
+          @skin="secondary"
+          {{on "click" (fn (mut this.isAddLinkModalOpen) true)}}
+        >
+          Voeg link toe
+        </AuButton>
         <AuButton @skin="secondary" {{on "click" this.openAddModal}}>
           Voeg bestand toe
         </AuButton>
@@ -28,7 +34,13 @@
   </:subheader>
 
   <:card>
-    <Process::RelevantLinks @canEdit={{@canEdit}} @process={{@process}} />
+    <Process::RelevantLinks
+      @process={{@process}}
+      @canEdit={{@canEdit}}
+      @isAddModalOpen={{this.isAddLinkModalOpen}}
+      @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
+      @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
+    />
     <AuDataTable
       @content={{this.attachments}}
       @isLoading={{this.attachmentsAreLoading}}

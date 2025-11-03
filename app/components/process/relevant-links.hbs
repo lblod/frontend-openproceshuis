@@ -37,10 +37,7 @@
   {{/each}}
 </AuList>
 
-<AuModal
-  @modalOpen={{this.isAddModalOpen}}
-  @closeModal={{fn (mut this.isAddModalOpen) false}}
->
+<AuModal @modalOpen={{@isAddModalOpen}} @closeModal={{this.closeAddModal}}>
   <:title>Voeg link toe</:title>
   <:body>
     <p>Voeg een link toe die relevant is voor dit proces. Kies een label voor
@@ -79,11 +76,13 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="secondary"
-        {{on "click" (fn (mut this.isAddModalOpen) false)}}
+        {{on "click" this.closeAddModal}}
       >Annuleer</AuButton>
       <AuButton
         @icon="plus"
         @disabled={{not this.canSaveChanges}}
+        @loading={{this.isAddingLink}}
+        @loadingMessage="Link toevoegen"
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
     </AuButtonGroup>

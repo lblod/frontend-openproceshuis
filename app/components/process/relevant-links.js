@@ -10,9 +10,9 @@ export default class ProcessRelevantLinks extends Component {
   @service store;
   @service toaster;
 
-  @tracked isAddModalOpen = false;
   @tracked isEditModalOpen = false;
   @tracked isDeleteModalOpen = false;
+  @tracked isAddingLink = false;
 
   @tracked updateLinkModel;
   @tracked labelValue;
@@ -34,7 +34,7 @@ export default class ProcessRelevantLinks extends Component {
     if (!this.linkValue) {
       return false;
     }
-    return this.isLinkValid;
+    return this.isLinkValid && !this.isAddingLink;
   }
 
   get canUpdateChanges() {
@@ -77,13 +77,6 @@ export default class ProcessRelevantLinks extends Component {
   }
 
   @action
-  openAddModal() {
-    this.isAddModalOpen = true;
-    this.labelValue = null;
-    this.linkValue = null;
-  }
-
-  @action
   openDeleteModal(link) {
     this.isDeleteModalOpen = true;
     this.updateLinkModel = link;
@@ -98,7 +91,19 @@ export default class ProcessRelevantLinks extends Component {
   }
 
   @action
+  closeAddModal() {
+    this.resetLabelAndValueToNull();
+    this.args.closeModal?.();
+  }
+
+  resetLabelAndValueToNull() {
+    this.linkValue = null;
+    this.labelValue = null;
+  }
+
+  @action
   async addLink() {
+    this.isAddingLink = true;
     const linkModel = this.store.createRecord('link', {
       label: this.cleanLabel,
       href: this.cleanLink,
@@ -119,9 +124,10 @@ export default class ProcessRelevantLinks extends Component {
       this.toaster.success('Link toegevoegd', undefined, {
         timeOut: 5000,
       });
-      this.isAddModalOpen = false;
-      this.linkValue = null;
+      this.resetLabelAndValueToNull();
+      this.args.onLinkAdded?.();
     } catch (error) {
+      this.closeAddModal();
       this.toaster.error(
         'Er liep iets mis bij het toevoegen van de link',
         undefined,
@@ -130,6 +136,7 @@ export default class ProcessRelevantLinks extends Component {
         },
       );
     }
+    this.isAddingLink = false;
   }
 
   @action
