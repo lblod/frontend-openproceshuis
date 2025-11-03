@@ -5,14 +5,14 @@
     <AuButtonGroup>
       {{#if @canEdit}}
         <AuButton @skin="secondary" {{on "click" this.openAddModal}}>
-          Voeg toe
+          Voeg bestand toe
         </AuButton>
       {{/if}}
       <AuButton
         @disabled={{not this.attachments}}
         {{on "click" (perform this.downloadAttachments)}}
       >
-        Download alles
+        Download alle bestanden
       </AuButton>
     </AuButtonGroup>
   </:header>
