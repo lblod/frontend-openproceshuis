@@ -5,7 +5,9 @@ import ENV from 'frontend-openproceshuis/config/environment';
 const EDITOR_ROLES = [
   'LoketLB-OpenProcesHuisGebruiker',
   'LoketLB-OpenProcesHuisAfnemer',
+  'LoketLB-admin',
 ];
+const MEDEWERKER_ROLE = 'Medewerker-fixed';
 const ADMIN_ROLE = 'LoketLB-admin';
 const ABB_DV_IDENTIFIERS = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
 
@@ -71,5 +73,9 @@ export default class CurrentSessionService extends Service {
     if (this.impersonation.isImpersonating)
       roles = this.impersonation.originalRoles || [];
     return roles?.includes(ADMIN_ROLE);
+  }
+
+  get isMedewerker() {
+    return this.roles?.includes(MEDEWERKER_ROLE);
   }
 }
