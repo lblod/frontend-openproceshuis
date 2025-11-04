@@ -8,7 +8,6 @@ export default class IpdcApiService extends Service {
 
   @tracked gebiedIds = [];
 
-  // This is a hack as we cannot apply any filters when fetching an instance by id
   async getProductByProductNumberOrIdForSession(productNumberOrId) {
     const productForId =
       await this.__getProductByProductNumberOrId(productNumberOrId);
@@ -17,11 +16,7 @@ export default class IpdcApiService extends Service {
       return null;
     }
 
-    const isInGeoLocation = productForId.geografischToepassingsgebieden.some(
-      (code) => this.gebiedIds.includes(code),
-    );
-
-    return isInGeoLocation ? productForId : null;
+    return this.__isProductInGeoLocation(productForId) ? productForId : null;
   }
 
   async __getProductByProductNumberOrId(productNumberOrId) {
@@ -39,67 +34,13 @@ export default class IpdcApiService extends Service {
     return product; // This product is not restricted to the current session
   }
 
-  async getProducts({ searchValue }) {
-    const hasSearchValue = Boolean(searchValue && searchValue.trim());
-    const instances = await this.__getInstances({ searchValue });
-
-    if (!hasSearchValue) {
-      return instances;
-    }
-    const concepts = await this.__getConcepts({ searchValue });
-
-    return [...instances, ...concepts];
-  }
-
-  async __getInstances({ searchValue }) {
+  async getProducts({ searchValue, page }) {
     const params = [
       {
-        key: 'sortBy',
-        value: 'LAATST_GEWIJZIGD',
-        isApplied: true,
+        key: 'page',
+        value: page,
+        isApplied: Boolean(page),
       },
-      {
-        key: 'gearchiveerd',
-        value: false,
-        isApplied: true,
-      },
-      {
-        key: 'includeParentGeografischeToepassingsgebieden',
-        value: false,
-        isApplied: true,
-      },
-      {
-        key: 'geografischeToepassingsgebieden',
-        value: this.gebiedIds.join(','),
-        isApplied: Boolean(this.gebiedIds?.length),
-      },
-      {
-        key: 'zoekterm',
-        value: searchValue,
-        isApplied: Boolean(searchValue && searchValue.trim()),
-      },
-    ].filter((param) => param.isApplied);
-    const queryParams = params
-      .map((param) => `${param.key}=${param.value}`)
-      .join('&');
-
-    const response = await fetch(`/ipdc/doc/instantie/export?${queryParams}`);
-    if (!response.ok) {
-      const errorMessage = `Er liep iets mis bij het vinden van instanties met zoekterm: "${searchValue ?? '*'}"`;
-      this.toaster.error(errorMessage, 'IPDC', {
-        timeOut: 5000,
-      });
-      throw new Error(errorMessage);
-    }
-
-    const instances = await response.json();
-    this._throwErrorOnUnsupportedResponseType(instances);
-
-    return instances.hydraMember ?? []; // Default limit is 25
-  }
-
-  async __getConcepts({ searchValue }) {
-    const params = [
       {
         key: 'sortBy',
         value: 'LAATST_GEWIJZIGD',
@@ -120,19 +61,20 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/concept/export?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/product?${queryParams}`);
     if (!response.ok) {
-      const errorMessage = `Er liep iets mis bij het vinden van concepten met zoekterm: "${searchValue ?? '*'}"`;
+      const errorMessage = `Er liep iets mis bij het vinden van producten met zoekterm: "${searchValue}"`;
       this.toaster.error(errorMessage, 'IPDC', {
         timeOut: 5000,
       });
       throw new Error(errorMessage);
     }
 
-    const concepts = await response.json();
-    this._throwErrorOnUnsupportedResponseType(concepts);
+    const result = await response.json();
+    this._throwErrorOnUnsupportedResponseType(result);
+    const products = result.hydraMember ?? []; // Default limit is 25
 
-    return concepts.hydraMember ?? []; // Default limit is 25
+    return products.filter((p) => this.__isProductInGeoLocation(p));
   }
 
   async getToepassingsGebiedenCodelist() {
@@ -162,6 +104,12 @@ export default class IpdcApiService extends Service {
       .filter((gebied) => name.includes(gebied.labels['nl']?.toLowerCase()))
       .map((gebied) => gebied.id)
       .filter((isPostCode) => isPostCode);
+  }
+
+  __isProductInGeoLocation(product) {
+    return product?.geografischToepassingsgebieden?.some((code) =>
+      this.gebiedIds.includes(code),
+    );
   }
 
   _throwErrorOnUnsupportedResponseType(jsonResponse) {
