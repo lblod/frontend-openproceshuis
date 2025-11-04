@@ -11,26 +11,20 @@ export default class IpdcApiService extends Service {
   // This is a hack as we cannot apply any filters when fetching an instance by id
   async getProductByProductNumberOrIdForSession(productNumberOrId) {
     const productForId =
-      await this.getProductByProductNumberOrId(productNumberOrId);
+      await this.__getProductByProductNumberOrId(productNumberOrId);
 
     if (!productForId) {
       return null;
     }
 
-    const searchValue = productForId.naam?.nl ?? null;
-    if (!searchValue) {
-      return null;
-    }
+    const isInGeoLocation = productForId.geografischToepassingsgebieden.some(
+      (code) => this.gebiedIds.includes(code),
+    );
 
-    const matches = await this.getProducts({ searchValue });
-    if (matches.find((product) => product.id == productForId.id)) {
-      return productForId;
-    }
-
-    return null;
+    return isInGeoLocation ? productForId : null;
   }
 
-  async getProductByProductNumberOrId(productNumberOrId) {
+  async __getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) {
       const errorMessage = `Kon het product niet vinden met nummer: ${productNumberOrId}`;
