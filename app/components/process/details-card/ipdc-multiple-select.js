@@ -47,17 +47,6 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
         content,
         language,
       }));
-      // TODO: Update the queryParams when the api supports only searching in title content
-      const dutchName = names
-        .find((name) => name.language === 'nl')
-        ?.content?.toLowerCase();
-      if (
-        !productNumberOrId &&
-        searchValue &&
-        !dutchName.startsWith(searchValue?.toLowerCase()) // Not fool proof as it filters in the 25 results
-      ) {
-        return null;
-      }
       const product = {
         name: names,
         productNumber: result.productnummer,
@@ -89,5 +78,34 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
     if (numberPattern.test(input) || uuidPattern.test(input)) return input;
 
     return null;
+  }
+
+  get searchInIpdcUrl() {
+    const params = [
+      {
+        key: 'sortBy',
+        value: 'LAATST_GEWIJZIGD',
+        isApplied: true,
+      },
+      {
+        key: 'gearchiveerd',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'includeParentGeografischeToepassingsgebieden',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'geografischeToepassingsgebieden',
+        value: this.ipdcApi.gebiedIds.join(','),
+        isApplied: Boolean(this.ipdcApi.gebiedIds?.length),
+      },
+    ].filter((param) => param.isApplied);
+    const queryParams = params
+      .map((param) => `${param.key}=${param.value}`)
+      .join('&');
+    return `https://productencatalogus-v3.vlaanderen.be/nl/producten?${queryParams}`;
   }
 }
