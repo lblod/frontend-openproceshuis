@@ -40,12 +40,19 @@ export default class IpdcApiService extends Service {
   }
 
   async getProducts({ searchValue }) {
+    const hasSearchValue = Boolean(searchValue && searchValue.trim());
+    const instances = await this.__getInstances({ searchValue });
+
+    if (!hasSearchValue) {
+      return instances;
+    }
+    const concepts = await this.__getConcepts({ searchValue });
+
+    return [...instances, ...concepts];
+  }
+
+  async __getInstances({ searchValue }) {
     const params = [
-      {
-        key: 'page',
-        value: 0,
-        isApplied: true,
-      },
       {
         key: 'sortBy',
         value: 'LAATST_GEWIJZIGD',
@@ -54,11 +61,6 @@ export default class IpdcApiService extends Service {
       {
         key: 'gearchiveerd',
         value: false,
-        isApplied: true,
-      },
-      {
-        key: 'doelgroepen',
-        value: 'LokaalBestuur',
         isApplied: true,
       },
       {
@@ -81,19 +83,56 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/product?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/instantie?${queryParams}`);
     if (!response.ok) {
-      const errorMessage = `Er liep iets mis bij het vinden van producten met zoekterm: "${searchValue}"`;
+      const errorMessage = `Er liep iets mis bij het vinden van instanties met zoekterm: "${searchValue ?? '*'}"`;
       this.toaster.error(errorMessage, 'IPDC', {
         timeOut: 5000,
       });
       throw new Error(errorMessage);
     }
 
-    const products = await response.json();
-    this._throwErrorOnUnsupportedResponseType(products);
+    const instances = await response.json();
+    this._throwErrorOnUnsupportedResponseType(instances);
 
-    return products.hydraMember ?? []; // Default limit is 25
+    return instances.hydraMember ?? []; // Default limit is 25
+  }
+
+  async __getConcepts({ searchValue }) {
+    const params = [
+      {
+        key: 'sortBy',
+        value: 'LAATST_GEWIJZIGD',
+        isApplied: true,
+      },
+      {
+        key: 'gearchiveerd',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'zoekterm',
+        value: searchValue,
+        isApplied: Boolean(searchValue && searchValue.trim()),
+      },
+    ].filter((param) => param.isApplied);
+    const queryParams = params
+      .map((param) => `${param.key}=${param.value}`)
+      .join('&');
+
+    const response = await fetch(`/ipdc/doc/concept?${queryParams}`);
+    if (!response.ok) {
+      const errorMessage = `Er liep iets mis bij het vinden van concepten met zoekterm: "${searchValue ?? '*'}"`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
+    }
+
+    const concepts = await response.json();
+    this._throwErrorOnUnsupportedResponseType(concepts);
+
+    return concepts.hydraMember ?? []; // Default limit is 25
   }
 
   async getToepassingsGebiedenCodelist() {
