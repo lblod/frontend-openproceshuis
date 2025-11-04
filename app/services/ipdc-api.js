@@ -83,7 +83,7 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/instantie?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/instantie/export?${queryParams}`);
     if (!response.ok) {
       const errorMessage = `Er liep iets mis bij het vinden van instanties met zoekterm: "${searchValue ?? '*'}"`;
       this.toaster.error(errorMessage, 'IPDC', {
@@ -120,7 +120,7 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/concept?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/concept/export?${queryParams}`);
     if (!response.ok) {
       const errorMessage = `Er liep iets mis bij het vinden van concepten met zoekterm: "${searchValue ?? '*'}"`;
       this.toaster.error(errorMessage, 'IPDC', {
