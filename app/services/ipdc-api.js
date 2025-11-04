@@ -41,18 +41,23 @@ export default class IpdcApiService extends Service {
 
   async getProducts({ searchValue }) {
     const hasSearchValue = Boolean(searchValue && searchValue.trim());
-    const instances = await this.__getInstances({ searchValue });
+    const instances = await this.__getInstances({ searchValue, limit: 10 });
 
     if (!hasSearchValue) {
       return instances;
     }
-    const concepts = await this.__getConcepts({ searchValue });
+    const concepts = await this.__getConcepts({ searchValue, limit: 10 });
 
     return [...instances, ...concepts];
   }
 
-  async __getInstances({ searchValue }) {
+  async __getInstances({ searchValue, limit }) {
     const params = [
+      {
+        key: 'limit',
+        value: limit,
+        isApplied: Boolean(limit),
+      },
       {
         key: 'sortBy',
         value: 'LAATST_GEWIJZIGD',
@@ -83,7 +88,7 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/instantie/export?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/instantie?${queryParams}`);
     if (!response.ok) {
       const errorMessage = `Er liep iets mis bij het vinden van instanties met zoekterm: "${searchValue ?? '*'}"`;
       this.toaster.error(errorMessage, 'IPDC', {
@@ -98,8 +103,13 @@ export default class IpdcApiService extends Service {
     return instances.hydraMember ?? []; // Default limit is 25
   }
 
-  async __getConcepts({ searchValue }) {
+  async __getConcepts({ searchValue, limit }) {
     const params = [
+      {
+        key: 'limit',
+        value: limit,
+        isApplied: Boolean(limit),
+      },
       {
         key: 'sortBy',
         value: 'LAATST_GEWIJZIGD',
@@ -120,7 +130,7 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/concept/export?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/concept?${queryParams}`);
     if (!response.ok) {
       const errorMessage = `Er liep iets mis bij het vinden van concepten met zoekterm: "${searchValue ?? '*'}"`;
       this.toaster.error(errorMessage, 'IPDC', {
