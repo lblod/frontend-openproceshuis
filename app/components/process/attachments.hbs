@@ -4,15 +4,33 @@
   <:header>
     <AuButtonGroup>
       {{#if @canEdit}}
-        <AuButton @skin="secondary" {{on "click" this.openAddModal}}>
-          Voeg toe
-        </AuButton>
+        {{! template-lint-disable require-context-role }}
+        <AuDropdown @title="Voeg toe" @skin="secondary" @alignment="center">
+          <AuButton
+            role="menuitem"
+            @icon="link-external"
+            @iconAlignment="left"
+            @skin="link"
+            {{on "click" (fn (mut this.isAddLinkModalOpen) true)}}
+          >
+            Link
+          </AuButton>
+          <AuButton
+            role="menuitem"
+            @icon="file"
+            @iconAlignment="left"
+            @skin="link"
+            {{on "click" this.openAddModal}}
+          >
+            Bestand
+          </AuButton>
+        </AuDropdown>
       {{/if}}
       <AuButton
         @disabled={{not this.attachments}}
         {{on "click" (perform this.downloadAttachments)}}
       >
-        Download alles
+        Download alle bestanden
       </AuButton>
     </AuButtonGroup>
   </:header>
@@ -28,7 +46,13 @@
   </:subheader>
 
   <:card>
-    <Process::RelevantLinks @canEdit={{@canEdit}} @process={{@process}} />
+    <Process::RelevantLinks
+      @process={{@process}}
+      @canEdit={{@canEdit}}
+      @isAddModalOpen={{this.isAddLinkModalOpen}}
+      @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
+      @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
+    />
     <AuDataTable
       @content={{this.attachments}}
       @isLoading={{this.attachmentsAreLoading}}

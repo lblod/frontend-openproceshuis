@@ -35,24 +35,9 @@
       </div>
     </Item>
   {{/each}}
-  {{#if @canEdit}}
-    <Item class="au-u-padding-left-small">
-      <AuButton
-        @icon="plus"
-        @iconAlignment="right"
-        @skin="naked"
-        {{on "click" this.openAddModal}}
-      >
-        Voeg een link toe
-      </AuButton>
-    </Item>
-  {{/if}}
 </AuList>
 
-<AuModal
-  @modalOpen={{this.isAddModalOpen}}
-  @closeModal={{fn (mut this.isAddModalOpen) false}}
->
+<AuModal @modalOpen={{@isAddModalOpen}} @closeModal={{this.closeAddModal}}>
   <:title>Voeg link toe</:title>
   <:body>
     <p>Voeg een link toe die relevant is voor dit proces. Kies een label voor
@@ -91,11 +76,13 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="secondary"
-        {{on "click" (fn (mut this.isAddModalOpen) false)}}
+        {{on "click" this.closeAddModal}}
       >Annuleer</AuButton>
       <AuButton
         @icon="plus"
         @disabled={{not this.canSaveChanges}}
+        @loading={{this.isExecutingAction}}
+        @loadingMessage="Link toevoegen"
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
     </AuButtonGroup>
@@ -138,11 +125,13 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="secondary"
-        {{on "click" (fn (mut this.isEditModalOpen) false)}}
+        {{on "click" this.closeEditModal}}
       >Annuleer</AuButton>
       <AuButton
         @icon="pencil"
         @disabled={{not this.canUpdateChanges}}
+        @loading={{this.isExecutingAction}}
+        @loadingMessage="Link aanpassen"
         {{on "click" this.updateLink}}
       >Update</AuButton>
     </AuButtonGroup>
@@ -167,6 +156,9 @@
       <AuButton
         @icon="trash"
         @alert={{true}}
+        @disabled={{this.isExecutingAction}}
+        @loading={{this.isExecutingAction}}
+        @loadingMessage="Link verwijderen"
         {{on "click" this.deleteLink}}
       >Verwijder</AuButton>
     </AuButtonGroup>
