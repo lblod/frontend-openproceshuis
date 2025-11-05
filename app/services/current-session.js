@@ -5,7 +5,6 @@ import ENV from 'frontend-openproceshuis/config/environment';
 const EDITOR_ROLES = [
   'LoketLB-OpenProcesHuisGebruiker',
   'LoketLB-OpenProcesHuisAfnemer',
-  'LoketLB-admin',
 ];
 const MEDEWERKER_ROLE = 'Medewerker-fixed';
 const ADMIN_ROLE = 'LoketLB-admin';
