@@ -1,24 +1,33 @@
 import Component from '@glimmer/component';
-import { task } from 'ember-concurrency';
-import { inject as service } from '@ember/service';
+
+import { A } from '@ember/array';
+import { tracked } from '@glimmer/tracking';
+import { service } from '@ember/service';
+
+import { restartableTask } from 'ember-concurrency';
+
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessIcrCardBlueprintMultipleSelectComponent extends Component {
   @service store;
 
-  @task
-  *loadBlueprintProcessesTask(params) {
+  @tracked processes = A([]);
+
+  loadBlueprintProcessesTask = restartableTask(async (params) => {
     const query = {
       filter: {
-        title: params,
         'is-blueprint': true,
         ':not:status': ENV.resourceStates.archived,
       },
+      sort: 'title',
     };
 
-    return yield this.store.query('process', query).then(
-      // fixme: frontend workaround because booleans are not interpreted correctly by the query
-      (results) => results.filter((process) => process.isBlueprint === true),
-    );
-  }
+    if (params && typeof params === 'string' && params.trim() !== '') {
+      query.filter.title = params;
+    }
+
+    const processes = await this.store.query('process', query);
+    this.processes.clear();
+    this.processes.pushObjects(processes);
+  });
 }

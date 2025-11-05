@@ -1,10 +1,12 @@
 <div class={{if @error "ember-power-select--error"}}>
   <PowerSelectMultiple
-    @searchEnabled="true"
+    @searchEnabled={{true}}
     @searchMessage="Typ om te zoeken"
     @loadingMessage="Aan het laden ..."
     @noMatchesMessage="Geen resultaten"
+    @options={{this.processes}}
     @search={{perform this.loadBlueprintProcessesTask}}
+    @onOpen={{perform this.loadBlueprintProcessesTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
     as |blueprintProcess|
