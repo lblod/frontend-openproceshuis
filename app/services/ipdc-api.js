@@ -56,7 +56,7 @@ export default class IpdcApiService extends Service {
       {
         key: 'limit',
         value: limit,
-        isApplied: Boolean(limit),
+        isApplied: Boolean(limit), // Default limit is 25
       },
       {
         key: 'sortBy',
@@ -100,7 +100,7 @@ export default class IpdcApiService extends Service {
     const instances = await response.json();
     this._throwErrorOnUnsupportedResponseType(instances);
 
-    return instances.hydraMember ?? []; // Default limit is 25
+    return instances.hydraMember ?? [];
   }
 
   async __getConcepts({ searchValue, limit }) {
@@ -108,7 +108,7 @@ export default class IpdcApiService extends Service {
       {
         key: 'limit',
         value: limit,
-        isApplied: Boolean(limit),
+        isApplied: Boolean(limit), // Default limit is 25
       },
       {
         key: 'sortBy',
@@ -142,7 +142,7 @@ export default class IpdcApiService extends Service {
     const concepts = await response.json();
     this._throwErrorOnUnsupportedResponseType(concepts);
 
-    return concepts.hydraMember ?? []; // Default limit is 25
+    return concepts.hydraMember ?? [];
   }
 
   async getToepassingsGebiedenCodelist() {
