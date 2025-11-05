@@ -95,6 +95,8 @@
                 </c.footer>
               </AuCard>
             </div>
+          {{/if}}
+          {{#if this.isProcessenMijnBestuurShown}}
             <div class="au-o-grid__item au-u-1-2@medium">
               <AuCard @flex={{true}} as |c|>
                 <c.header
@@ -120,7 +122,7 @@
               </AuCard>
             </div>
           {{/if}}
-          {{#if (or this.currentSession.canEdit this.currentSession.isAdmin)}}
+          {{#if this.currentSession.canEdit}}
             <div class="au-o-grid__item au-u-1-2@medium">
               <AuCard @flex={{true}} as |c|>
                 <c.header

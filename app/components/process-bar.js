@@ -8,4 +8,8 @@ export default class ProcessBar extends Component {
   get currentRouteIsInventory() {
     return this.router.currentRoute.parent?.name === 'inventory';
   }
+
+  get isProcessenMijnBestuurShown() {
+    return this.currentSession.isMedewerker || this.currentSession.canEdit;
+  }
 }
