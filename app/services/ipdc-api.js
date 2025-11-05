@@ -16,6 +16,9 @@ export default class IpdcApiService extends Service {
     if (!productForId) {
       return null;
     }
+    if (productForId['@type'] === 'Concept') {
+      return productForId;
+    }
 
     const isInGeoLocation = productForId.geografischToepassingsgebieden.some(
       (code) => this.gebiedIds.includes(code),
