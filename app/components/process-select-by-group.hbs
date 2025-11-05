@@ -5,14 +5,14 @@
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
     @searchMessage="Typ om te zoeken"
-    @searchField="group"
-    @search={{perform this.loadGroupsTask}}
+    @options={{this.groups}}
+    @onOpen={{perform this.loadGroupsTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
     @classifications={{@classifications}}
     @triggerId={{@id}}
     as |group|
   >
-    {{group}}
+    <p class="au-u-word-break-all">{{group}}</p>
   </PowerSelect>
 </div>
