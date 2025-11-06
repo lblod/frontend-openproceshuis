@@ -113,7 +113,10 @@ export default class FileUploadModalComponent extends Component {
       return;
     }
 
-    if (fileWrapper.name.endsWith('.bpmn')) {
+    if (
+      this.args.isSensitiveDataDetectInUploadFlow &&
+      fileWrapper.name.endsWith('.bpmn')
+    ) {
       try {
         const response = yield this.detectSensitiveData.perform(
           fileWrapper.file,
