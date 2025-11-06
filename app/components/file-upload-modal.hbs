@@ -1,6 +1,28 @@
 <AuModal @modalOpen={{@modalOpen}} @closeModal={{this.closeModal}}>
   <:title>{{@header}}</:title>
   <:body>
+    {{#if this.hasErrors}}
+      <AuAlert
+        @icon="alert-triangle"
+        @skin="error"
+        @size="small"
+        @closable={{false}}
+        class="au-u-margin-top-tiny"
+      >
+        <ul>
+          {{#each this.uploadErrorData as |data|}}
+            <li>
+              Fout bij het opladen van
+              {{data.filename}}.
+              {{#if data.error}}
+                (Foutmelding:
+                {{data.error}})
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </AuAlert>
+    {{/if}}
     {{#if this.showDropzone}}
       {{#let
         (this.fileQueueHelper
@@ -71,34 +93,14 @@
           </ul>
         {{/each}}
       {{/if}}
-
-      {{#if this.hasErrors}}
-        <AuAlert
-          @icon="alert-triangle"
-          @skin="error"
-          @size="small"
-          @closable={{false}}
-          class="au-u-margin-top-tiny"
-        >
-          <ul>
-            {{#each this.uploadErrorData as |data|}}
-              <li>
-                Fout bij het opladen van
-                {{data.filename}}.
-                {{#if data.error}}
-                  (Foutmelding:
-                  {{data.error}})
-                {{/if}}
-              </li>
-            {{/each}}
-          </ul>
-        </AuAlert>
-      {{/if}}
     {{/if}}
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton @skin="secondary" {{on "click" this.closeModal}}>Annuleer</AuButton>
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeModal}}
+      >Annuleer</AuButton>
       {{#if this.fileHasSensitiveInformation}}
         <AuButton
           @skin="primary"
