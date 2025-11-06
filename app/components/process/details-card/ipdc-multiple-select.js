@@ -1,8 +1,6 @@
 import Component from '@glimmer/component';
 
-import { A } from '@ember/array';
 import { service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 
 import { restartableTask, timeout } from 'ember-concurrency';
 
@@ -10,12 +8,10 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
   @service store;
   @service ipdcApi;
 
-  @tracked products = A([]);
-
   @restartableTask
   *loadIpdcProductsTask(searchParams = '') {
-    if (this.products.length >= 1) {
-      this.products.clear();
+    if (!searchParams?.trim()) {
+      return [];
     }
     yield timeout(500);
 
@@ -41,19 +37,17 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
       ['Instantie']: 'ipdc-instance',
       ['Concept']: 'ipdc-concept',
     };
-    this.products.clear();
-    results.map((result) => {
+    return results.map((result) => {
       const names = Object.entries(result.naam).map(([language, content]) => ({
         content,
         language,
       }));
-      const product = {
+      return {
         name: names,
         productNumber: result.productnummer,
         type: typeMapping[result['@type']],
         isDraft: true,
       };
-      this.products.pushObject(product);
     });
   }
 
