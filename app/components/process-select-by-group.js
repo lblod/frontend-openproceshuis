@@ -1,17 +1,17 @@
 import Component from '@glimmer/component';
+import { A } from '@ember/array';
 import { service } from '@ember/service';
-import { restartableTask, timeout } from 'ember-concurrency';
+import { restartableTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
+import { tracked } from '@glimmer/tracking';
 
 export default class ProcessSelectByGroupComponent extends Component {
   @service store;
 
+  @tracked groups = A([]);
+
   @restartableTask
-  *loadGroupsTask(searchParams = '') {
-    if (!searchParams?.trim()) return;
-
-    yield timeout(200);
-
+  *loadGroupsTask() {
     const processQuery = {
       'filter[:not:status]': ENV.resourceStates.archived,
       include: 'publisher,relevant-administrative-units',
@@ -43,11 +43,8 @@ export default class ProcessSelectByGroupComponent extends Component {
       sort: ':no-case:name',
     };
 
-    if (searchParams) {
-      groupQuery['filter[name]'] = searchParams;
-    }
-
     const result = yield this.store.query('group', groupQuery);
-    if (result) return [...new Set(result.map((r) => r.name))];
+    this.groups.clear();
+    this.groups.pushObjects([...new Set(result.map((r) => r.name))]);
   }
 }
