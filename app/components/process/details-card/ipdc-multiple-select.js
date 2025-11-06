@@ -1,8 +1,6 @@
 import Component from '@glimmer/component';
 
-import { A } from '@ember/array';
 import { service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 
 import { restartableTask, timeout } from 'ember-concurrency';
 
@@ -10,12 +8,10 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
   @service store;
   @service ipdcApi;
 
-  @tracked products = A([]);
-
   @restartableTask
   *loadIpdcProductsTask(searchParams = '') {
-    if (this.products.length >= 1) {
-      this.products.clear();
+    if (!searchParams?.trim()) {
+      return [];
     }
     yield timeout(500);
 
@@ -41,30 +37,17 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
       ['Instantie']: 'ipdc-instance',
       ['Concept']: 'ipdc-concept',
     };
-    this.products.clear();
-    results.map((result) => {
+    return results.map((result) => {
       const names = Object.entries(result.naam).map(([language, content]) => ({
         content,
         language,
       }));
-      // TODO: Update the queryParams when the api supports only searching in title content
-      const dutchName = names
-        .find((name) => name.language === 'nl')
-        ?.content?.toLowerCase();
-      if (
-        !productNumberOrId &&
-        searchValue &&
-        !dutchName.startsWith(searchValue?.toLowerCase()) // Not fool proof as it filters in the 25 results
-      ) {
-        return null;
-      }
-      const product = {
+      return {
         name: names,
         productNumber: result.productnummer,
         type: typeMapping[result['@type']],
         isDraft: true,
       };
-      this.products.pushObject(product);
     });
   }
 
@@ -89,5 +72,34 @@ export default class ProcessDetailsCardIpdcMultipleSelectComponent extends Compo
     if (numberPattern.test(input) || uuidPattern.test(input)) return input;
 
     return null;
+  }
+
+  get searchInIpdcUrl() {
+    const params = [
+      {
+        key: 'sortBy',
+        value: 'LAATST_GEWIJZIGD',
+        isApplied: true,
+      },
+      {
+        key: 'gearchiveerd',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'includeParentGeografischeToepassingsgebieden',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'geografischeToepassingsgebieden',
+        value: this.ipdcApi.gebiedIds.join(','),
+        isApplied: Boolean(this.ipdcApi.gebiedIds?.length),
+      },
+    ].filter((param) => param.isApplied);
+    const queryParams = params
+      .map((param) => `${param.key}=${param.value}`)
+      .join('&');
+    return `https://productencatalogus-v3.vlaanderen.be/nl/producten?${queryParams}`;
   }
 }

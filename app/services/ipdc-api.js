@@ -11,26 +11,23 @@ export default class IpdcApiService extends Service {
   // This is a hack as we cannot apply any filters when fetching an instance by id
   async getProductByProductNumberOrIdForSession(productNumberOrId) {
     const productForId =
-      await this.getProductByProductNumberOrId(productNumberOrId);
+      await this.__getProductByProductNumberOrId(productNumberOrId);
 
     if (!productForId) {
       return null;
     }
-
-    const searchValue = productForId.naam?.nl ?? null;
-    if (!searchValue) {
-      return null;
-    }
-
-    const matches = await this.getProducts({ searchValue });
-    if (matches.find((product) => product.id == productForId.id)) {
+    if (productForId['@type'] === 'Concept') {
       return productForId;
     }
 
-    return null;
+    const isInGeoLocation = productForId.geografischToepassingsgebieden.some(
+      (code) => this.gebiedIds.includes(code),
+    );
+
+    return isInGeoLocation ? productForId : null;
   }
 
-  async getProductByProductNumberOrId(productNumberOrId) {
+  async __getProductByProductNumberOrId(productNumberOrId) {
     const response = await fetch(`/ipdc/doc/product/${productNumberOrId}`);
     if (!response.ok) {
       const errorMessage = `Kon het product niet vinden met nummer: ${productNumberOrId}`;
@@ -46,11 +43,23 @@ export default class IpdcApiService extends Service {
   }
 
   async getProducts({ searchValue }) {
+    const hasSearchValue = Boolean(searchValue && searchValue.trim());
+    const instances = await this.__getInstances({ searchValue, limit: 10 });
+
+    if (!hasSearchValue) {
+      return instances;
+    }
+    const concepts = await this.__getConcepts({ searchValue, limit: 10 });
+
+    return [...instances, ...concepts];
+  }
+
+  async __getInstances({ searchValue, limit }) {
     const params = [
       {
-        key: 'page',
-        value: 0,
-        isApplied: true,
+        key: 'limit',
+        value: limit,
+        isApplied: Boolean(limit), // Default limit is 25
       },
       {
         key: 'sortBy',
@@ -60,11 +69,6 @@ export default class IpdcApiService extends Service {
       {
         key: 'gearchiveerd',
         value: false,
-        isApplied: true,
-      },
-      {
-        key: 'doelgroepen',
-        value: 'LokaalBestuur',
         isApplied: true,
       },
       {
@@ -87,19 +91,61 @@ export default class IpdcApiService extends Service {
       .map((param) => `${param.key}=${param.value}`)
       .join('&');
 
-    const response = await fetch(`/ipdc/doc/product?${queryParams}`);
+    const response = await fetch(`/ipdc/doc/instantie?${queryParams}`);
     if (!response.ok) {
-      const errorMessage = `Er liep iets mis bij het vinden van producten met zoekterm: "${searchValue}"`;
+      const errorMessage = `Er liep iets mis bij het vinden van instanties met zoekterm: "${searchValue ?? '*'}"`;
       this.toaster.error(errorMessage, 'IPDC', {
         timeOut: 5000,
       });
       throw new Error(errorMessage);
     }
 
-    const products = await response.json();
-    this._throwErrorOnUnsupportedResponseType(products);
+    const instances = await response.json();
+    this._throwErrorOnUnsupportedResponseType(instances);
 
-    return products.hydraMember ?? []; // Default limit is 25
+    return instances.hydraMember ?? [];
+  }
+
+  async __getConcepts({ searchValue, limit }) {
+    const params = [
+      {
+        key: 'limit',
+        value: limit,
+        isApplied: Boolean(limit), // Default limit is 25
+      },
+      {
+        key: 'sortBy',
+        value: 'LAATST_GEWIJZIGD',
+        isApplied: true,
+      },
+      {
+        key: 'gearchiveerd',
+        value: false,
+        isApplied: true,
+      },
+      {
+        key: 'zoekterm',
+        value: searchValue,
+        isApplied: Boolean(searchValue && searchValue.trim()),
+      },
+    ].filter((param) => param.isApplied);
+    const queryParams = params
+      .map((param) => `${param.key}=${param.value}`)
+      .join('&');
+
+    const response = await fetch(`/ipdc/doc/concept?${queryParams}`);
+    if (!response.ok) {
+      const errorMessage = `Er liep iets mis bij het vinden van concepten met zoekterm: "${searchValue ?? '*'}"`;
+      this.toaster.error(errorMessage, 'IPDC', {
+        timeOut: 5000,
+      });
+      throw new Error(errorMessage);
+    }
+
+    const concepts = await response.json();
+    this._throwErrorOnUnsupportedResponseType(concepts);
+
+    return concepts.hydraMember ?? [];
   }
 
   async getToepassingsGebiedenCodelist() {

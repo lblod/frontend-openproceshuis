@@ -1,18 +1,29 @@
-<div class={{if @error "ember-power-select--error"}}>
-  <PowerSelectMultiple
-    @searchEnabled={{true}}
-    @searchMessage="Typ om te zoeken"
-    @loadingMessage="Aan het laden ..."
-    @noMatchesMessage="Geen resultaten"
-    @options={{this.products}}
-    @search={{perform this.loadIpdcProductsTask}}
-    @onOpen={{perform this.loadIpdcProductsTask}}
-    @selected={{@selected}}
-    @onChange={{@onChange}}
-    @disabled={{@disabled}}
-    as |draftIpdcProduct|
-  >
-    {{language-string-set-nl draftIpdcProduct.name}}
-    ({{draftIpdcProduct.productNumber}})
-  </PowerSelectMultiple>
+<div>
+  <div class={{if @error "ember-power-select--error"}}>
+    <PowerSelectMultiple
+      @searchEnabled={{true}}
+      @searchMessage="Typ om te zoeken"
+      @loadingMessage="Aan het laden ..."
+      @noMatchesMessage="Geen resultaten"
+      @search={{perform this.loadIpdcProductsTask}}
+      @selected={{@selected}}
+      @onChange={{@onChange}}
+      @disabled={{@disabled}}
+      as |draftIpdcProduct|
+    >
+      {{language-string-set-nl draftIpdcProduct.name}}
+      ({{draftIpdcProduct.productNumber}})
+    </PowerSelectMultiple>
+  </div>
+  <div class="au-u-flex au-u-flex--between">
+    <AuHelpText
+      @skin="secondary"
+      class="au-u-margin-top-none au-u-flex-self-start"
+    >
+      Vul hier IPDC-productcodes of -URLs in. Je kan ook zoeken op trefwoorden.
+    </AuHelpText>
+    <AuLinkExternal class="au-u-flex-self-start" href={{this.searchInIpdcUrl}}>
+      Zoek in IPDC
+    </AuLinkExternal>
+  </div>
 </div>
