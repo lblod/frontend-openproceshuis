@@ -1,3 +1,62 @@
+## 1.5.0 (2025-11-12)
+
+#### :rocket: Enhancement
+
+- [#156](https://github.com/lblod/frontend-openproceshuis/pull/156) OPH-787 | Blueprint dropdown options are shown on open by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#157](https://github.com/lblod/frontend-openproceshuis/pull/157) OPH-789 | disable redaction screen on file upload by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#155](https://github.com/lblod/frontend-openproceshuis/pull/155) oph-785 | only add ipdc intances concepts from current bestuur by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#154](https://github.com/lblod/frontend-openproceshuis/pull/154) OPH-790 | the Processen mijn bestuur tab is shown when medewerker or editor by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#153](https://github.com/lblod/frontend-openproceshuis/pull/153) oph 786 | UI update for relevant online sources of a process by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#152](https://github.com/lblod/frontend-openproceshuis/pull/152) OPH-788 | Update text in export inventory processes modal by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#147](https://github.com/lblod/frontend-openproceshuis/pull/147) oph-722 | can replace process group by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#146](https://github.com/lblod/frontend-openproceshuis/pull/146) OPH-682 | Show usage of process over organizations by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#145](https://github.com/lblod/frontend-openproceshuis/pull/145) OPH-721 | Restrict archiving admin page by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#143](https://github.com/lblod/frontend-openproceshuis/pull/143) Oph-730 | ipdc filter also filters on number by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#139](https://github.com/lblod/frontend-openproceshuis/pull/139) Feature/oph 716 archive category domain group usage check by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#138](https://github.com/lblod/frontend-openproceshuis/pull/138) oph-711 | Add filters to inventory page by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#137](https://github.com/lblod/frontend-openproceshuis/pull/137) oph-448 | Only show IPDC products for the lokaal bestuur by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#136](https://github.com/lblod/frontend-openproceshuis/pull/136) OPH-707 | Redirect to last url when not logged in by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#134](https://github.com/lblod/frontend-openproceshuis/pull/134) OPH-665 | Inventory admin page by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#133](https://github.com/lblod/frontend-openproceshuis/pull/133) feat: user can find ipdc products by typing by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#132](https://github.com/lblod/frontend-openproceshuis/pull/132) Feature/oph 671 hyperlinks to relevant bronnen by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#131](https://github.com/lblod/frontend-openproceshuis/pull/131) Feature/oph 647 type in dropdowns by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#130](https://github.com/lblod/frontend-openproceshuis/pull/130) Feature/oph 662 export of inventory processes to csv by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#129](https://github.com/lblod/frontend-openproceshuis/pull/129) OPH-649 | Show tab "processen mijn bestuur" when logged on with userright "medewerker" (laagdrempelige autorisatie) by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#125](https://github.com/lblod/frontend-openproceshuis/pull/125) Reset IPDC filter on filters reset by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#123](https://github.com/lblod/frontend-openproceshuis/pull/123) OPH-702 | Show usage of blueprint on the overview page by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#122](https://github.com/lblod/frontend-openproceshuis/pull/122) OPH-701 | make the process clickable in blueprints-card by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#121](https://github.com/lblod/frontend-openproceshuis/pull/121) OPH-86 | When not logged in and direct link it show a white page by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#120](https://github.com/lblod/frontend-openproceshuis/pull/120) Hide edit buttons when not authorized to edit by [@andreo141](https://github.com/andreo141)
+- [#118](https://github.com/lblod/frontend-openproceshuis/pull/118) Edit/remove inventory process by [@andreo141](https://github.com/andreo141)
+- [#117](https://github.com/lblod/frontend-openproceshuis/pull/117) Add inventory process by [@andreo141](https://github.com/andreo141)
+- [#116](https://github.com/lblod/frontend-openproceshuis/pull/116) Update landing page by [@andreo141](https://github.com/andreo141)
+- [#115](https://github.com/lblod/frontend-openproceshuis/pull/115) Anonymize detected sensitive data in BPMN files on upload by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#114](https://github.com/lblod/frontend-openproceshuis/pull/114) Link process concept to process by [@andreo141](https://github.com/andreo141)
+- [#113](https://github.com/lblod/frontend-openproceshuis/pull/113) Introduce inventory by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#112](https://github.com/lblod/frontend-openproceshuis/pull/112) Bpmn anonymization pop up by [@andreo141](https://github.com/andreo141)
+- [#111](https://github.com/lblod/frontend-openproceshuis/pull/111) Add zoom buttons for diagrams by [@andreo141](https://github.com/andreo141)
+- [#110](https://github.com/lblod/frontend-openproceshuis/pull/110) Make 'relevant voor' only editable for uploader by [@andreo141](https://github.com/andreo141)
+
+#### :bug: Bug Fixes
+
+- [#151](https://github.com/lblod/frontend-openproceshuis/pull/151) BUG replacement groups disapearing by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#149](https://github.com/lblod/frontend-openproceshuis/pull/149) Feature/oph 739 filters lead to error by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#148](https://github.com/lblod/frontend-openproceshuis/pull/148) Bug/fix mock login not scrollable by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#144](https://github.com/lblod/frontend-openproceshuis/pull/144) BUG | oph 716 bug fix disappearing groups by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#142](https://github.com/lblod/frontend-openproceshuis/pull/142) oph-717 | Fix general scrolling of pages by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#140](https://github.com/lblod/frontend-openproceshuis/pull/140) OPH-642| Add breadcrum navigation to sparql endpoint by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+#### :wrench: Maintenance
+
+- [#109](https://github.com/lblod/frontend-openproceshuis/pull/109) Add release guidebook for frontend by [@andreo141](https://github.com/andreo141)
+- [#104](https://github.com/lblod/frontend-openproceshuis/pull/104) Feature: API error messages by [@andreo141](https://github.com/andreo141)
+
+#### Committers: 3
+
+- Andreo Van Onckelen ([@andreo141](https://github.com/andreo141))
+- Jonas Van Hoof ([@JonasVanHoof](https://github.com/JonasVanHoof))
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
 ## 1.4.0 (2025-06-18)
 
 #### :rocket: Enhancement
