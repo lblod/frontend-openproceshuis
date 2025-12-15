@@ -55,34 +55,151 @@ export const ERROR_CODES = {
       },
     )}`,
   ),
-  'oph.downloadLatestDiagramFailed': 'Bestand kon niet worden opgehaald',
+  'oph.downloadLatestDiagramFailed': htmlSafe(
+    `Het diagram kon niet worden gedownload. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout oph.downloadLatestDiagramFailed oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "oph.downloadLatestDiagramFailed" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
   'oph.addProcessFailed': 'Dit proces kon niet worden toegevoegd',
-  'bpmn.sessionIdNotFound': 'Session ID header werd niet gevonden.',
-  'bpmn.groupUriNotFound': 'Gebruiker maakt geen deel uit van een organisatie.',
-  'bpmn.emptyVirtualFileId':
-    'Bestand id ontbrak tijdens het uploaden van het bpmn bestand.',
-  'bpmn.virtualFileIdNotFound': 'Bestand id werd niet gevonden in onze server.',
-  'bpmn.physicalFileIdNotFound':
-    'Kon de fysieke bestandslocatie niet achterhalen',
-  'bpmn.emptyContent':
-    'Ongeldige inhoud: Het meegeleverde bestand bevat geen inhoud.',
-  'bpmn.invalidContent':
-    'Ongeldige inhoud: Het meegeleverde bestand heeft geen geldige inhoud.',
-  'bpmn.errorDuringJobExecution': 'Error tijdens het uitvoeren van job',
+  'bpmn.sessionIdNotFound': htmlSafe(
+    `De session ID header werd niet gevonden. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout bpmn.sessionIdNotFound oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "bpmn.sessionIdNotFound" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'bpmn.groupUriNotFound': htmlSafe(
+    `De actie die je wou uitvoeren is mislukt omdat je niet meer ingelogd bent. Log opnieuw in en probeer nog eens. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout bpmn.groupUriNotFound oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "bpmn.groupUriNotFound" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'bpmn.emptyVirtualFileId': htmlSafe(
+    `Het opladen van het bestand is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout bpmn.emptyVirtualFileId oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "bpmn.emptyVirtualFileId" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'bpmn.virtualFileIdNotFound': htmlSafe(
+    `De actie die je wou uitvoeren is mislukt omdat we het bestand niet kunnen lokaliseren. ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout bpmn.virtualFileIdNotFound oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "bpmn.virtualFileIdNotFound" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )} om dit probleem op te lossen.`,
+  ),
+  'bpmn.physicalFileIdNotFound': htmlSafe(
+    `De actie die je wou uitvoeren is mislukt omdat we het bestand niet kunnen lokaliseren. ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout bpmn.physicalFileIdNotFound oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "bpmn.physicalFileIdNotFound" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )} om dit probleem op te lossen.`,
+  ),
+  'bpmn.emptyContent': htmlSafe(
+    `Het opladen van het BPMN-bestand is mislukt. ${getContactMailToHtml({
+      visualText: 'Contacteer ons.',
+      mailSubject: 'OPH - fout bpmn.emptyContent oplossen',
+      mailBody: `Deze email wordt gestuurd om de fout "bpmn.emptyContent" op ${getTimestampForMailBody()} op te lossen.\nVoeg eventueel het bestand toe aan deze email, dan kunnen we je sneller helpen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+    })} om dit probleem op te lossen.`,
+  ),
+  'bpmn.invalidContent': htmlSafe(
+    `Het opladen van het BPMN-bestand is mislukt. ${getContactMailToHtml({
+      visualText: 'Contacteer ons.',
+      mailSubject: 'OPH - fout bpmn.invalidContent oplossen',
+      mailBody: `Deze email wordt gestuurd om de fout "bpmn.invalidContent" op ${getTimestampForMailBody()} op te lossen.\nVoeg eventueel het bestand toe aan deze email, dan kunnen we je sneller helpen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+    })} om dit probleem op te lossen.`,
+  ),
+  'bpmn.errorDuringJobExecution': htmlSafe(
+    `Het diagram kon niet worden geüpdatet. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout bpmn.errorDuringJobExecution oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "bpmn.errorDuringJobExecution" op ${getTimestampForMailBody()} op te lossen.\nVoeg eventueel het bestand toe aan deze email, dan kunnen we je sneller helpen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
   'bpmn.fallBackError': 'Onbekende fout tijdens extraheren van processtappen',
-  'visio.emptyVirtualFileId':
-    'Bestand id ontbrak tijdens het uploaden van het bpmn bestand.',
-  'visio.virtualFileIdNotFound': 'Bestand-ID werd niet teruggevonden.',
+  'visio.emptyVirtualFileId': htmlSafe(
+    `Het opladen van het bestand is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.emptyVirtualFileId oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.emptyVirtualFileId" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'visio.virtualFileIdNotFound': htmlSafe(
+    `De actie die je wou uitvoeren is mislukt omdat we het bestand niet kunnen lokaliseren. ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.virtualFileIdNotFound oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.virtualFileIdNotFound" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )} om dit probleem op te lossen.`,
+  ),
   'visio.vsdxFileTypeExpected':
     'Ongeldig bestandsformaat: .vsdx-extensie verwacht.',
-  'visio.physicalFileIdNotFound':
-    'Kon de fysieke bestandslocatie niet achterhalen.',
+  'visio.physicalFileIdNotFound': htmlSafe(
+    `De actie die je wou uitvoeren is mislukt omdat we het bestand niet kunnen lokaliseren. ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.physicalFileIdNotFound oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.physicalFileIdNotFound" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )} om dit probleem op te lossen.`,
+  ),
   'visio.targetExtensionNotSupported': 'Ongeldige doelformaat-extensie.',
-  'visio.pdfConversionFailed': 'Conversie naar PDF is mislukt.',
-  'visio.pdfConversionFilePathError':
-    'PDF-bestand werd niet gevonden na conversie.',
-  'visio.bpmnConversionFailed': 'Conversie naar BPMN is mislukt.',
-  'visio.fallBackError': 'Onbekende fout tijdens visio conversie',
+  'visio.pdfConversionFailed': htmlSafe(
+    `Het omzetten van het visio-bestand naar PDF is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.pdfConversionFailed oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.pdfConversionFailed" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'visio.pdfConversionFilePathError': htmlSafe(
+    `Het omzetten van het visio-bestand naar PDF is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.pdfConversionFilePathError oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.pdfConversionFilePathError" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'visio.bpmnConversionFailed': htmlSafe(
+    `Het omzetten van het visio-bestand naar BPMN is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.bpmnConversionFailed oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.bpmnConversionFailed" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
+  'visio.fallBackError': htmlSafe(
+    `Het omzetten van het diagram naar een ander formaat is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout visio.fallBackError oplossen',
+        mailBody: `Deze email wordt gestuurd om de fout "visio.fallBackError" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
+      },
+    )}`,
+  ),
 };
 
 export const getMessageForErrorCode = (key) =>
