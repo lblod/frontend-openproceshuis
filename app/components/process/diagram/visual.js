@@ -89,7 +89,7 @@ export default class ProcessDiagramVisual extends Component {
 
   @dropTask
   *extractBpmnElements(bpmnFileId) {
-    yield fetch(`/bpmn?id=${bpmnFileId}`, {
+    yield this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/vnd.api+json',
