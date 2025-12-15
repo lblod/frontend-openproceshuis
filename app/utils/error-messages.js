@@ -9,6 +9,7 @@ const getContactMailToHtml = ({ visualText, mailSubject, mailBody }) => {
 };
 
 const getTimestampForMailBody = () => new Date().toLocaleString();
+const getCommonOpeningLine = () => `Beste OPH gebruiker,`;
 
 export const ERROR_CODES = {
   'oph.fileDeletionError': htmlSafe(
@@ -16,11 +17,7 @@ export const ERROR_CODES = {
       {
         visualText: 'Contacteer ons.',
         mailSubject: 'OPH - fout oph.fileDeletionError oplossen',
-        mailBody: `
-        Deze email wordt gestuurd om de fout "oph.fileDeletionError" op ${getTimestampForMailBody()} op te lossen. 
-
-        Heb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
-      `,
+        mailBody: `${getCommonOpeningLine()}\n\nDeze email wordt gestuurd om de fout "oph.fileDeletionError" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
       },
     )}`,
   ),
@@ -29,11 +26,7 @@ export const ERROR_CODES = {
       {
         visualText: 'Contacteer ons.',
         mailSubject: 'OPH - fout oph.processDeletionError oplossen',
-        mailBody: `
-        Deze email wordt gestuurd om de fout "oph.processDeletionError" op ${getTimestampForMailBody()} op te lossen. 
-
-        Heb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
-      `,
+        mailBody: `${getCommonOpeningLine()}\n\nDeze email wordt gestuurd om de fout "oph.processDeletionError" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
       },
     )}`,
   ),
@@ -42,11 +35,7 @@ export const ERROR_CODES = {
       {
         visualText: 'Contacteer ons.',
         mailSubject: 'OPH - fout oph.updateModelFailed oplossen',
-        mailBody: `
-        Deze email wordt gestuurd om de fout "oph.updateModelFailed" op ${getTimestampForMailBody()} op te lossen. 
-
-        Heb je meer relevante details, zoals bijvoorbeeld de namen van de velden die je wou bijwerken, die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
-      `,
+        mailBody: `${getCommonOpeningLine()}\n\nDeze email wordt gestuurd om de fout "oph.updateModelFailed" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details, zoals bijvoorbeeld de namen van de velden die je wou bijwerken, die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
       },
     )}`,
   ),
@@ -55,11 +44,7 @@ export const ERROR_CODES = {
       {
         visualText: 'Contacteer ons.',
         mailSubject: 'OPH - fout oph.icrDataUpdateFailed oplossen',
-        mailBody: `
-        Deze email wordt gestuurd om de fout "oph.icrDataUpdateFailed" op ${getTimestampForMailBody()} op te lossen. 
-
-        Heb je meer relevante details, zoals bijvoorbeeld de namen van de velden die je wou bijwerken, die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
-      `,
+        mailBody: `${getCommonOpeningLine()}\n\nDeze email wordt gestuurd om de fout "oph.icrDataUpdateFailed" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details, zoals bijvoorbeeld de namen van de velden die je wou bijwerken, die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
       },
     )}`,
   ),
@@ -68,11 +53,7 @@ export const ERROR_CODES = {
       {
         visualText: 'Contacteer ons.',
         mailSubject: 'OPH - fout oph.visioLatestDiagramDownloadFailed oplossen',
-        mailBody: `
-        Deze email wordt gestuurd om de fout "oph.visioLatestDiagramDownloadFailed" op ${getTimestampForMailBody()} op te lossen. 
-
-        Heb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
-      `,
+        mailBody: `${getCommonOpeningLine()}\n\nDeze email wordt gestuurd om de fout "oph.visioLatestDiagramDownloadFailed" op ${getTimestampForMailBody()} op te lossen.\nHeb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier:`,
       },
     )}`,
   ),
