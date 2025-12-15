@@ -5,19 +5,22 @@ const getVisioDownloadErrorMessage = () => {
     'mailto:loketlokaalbestuur@vlaanderen.be' +
     `?subject=${encodeURIComponent('Visio kan niet downloaden als BPMN')}` +
     `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
-  const linkHtml = `<a href="${mailto}">Stuur ons een mailtje</a>`;
+  const linkHtml = `<a href="${mailto}">Contacteer ons</a>`;
   return htmlSafe(
-    `Dit visio-bestand kan niet worden gedownload als BPMN. ${linkHtml} met het proces waarover het gaat en een korte beschrijving van wat niet lukt. Dan kunnen we nagaan wat fout gaat en Open Proces Huis verder verbeteren.`,
+    `Het visio-bestand kon niet worden gedownload als BPMN. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${linkHtml}.`,
   );
 };
 
 export const ERROR_CODES = {
   // FRONTEND
-  'oph.fileDeletionError': 'Dit bestand kon niet verwijderd worden.',
-  'oph.processDeletionError': 'Dit proces kon niet verwijderd worden.',
-  'oph.updateModelFailed': 'Dit proces kon niet worden bijgewerkt.',
+  'oph.fileDeletionError':
+    'Het verwijderen van het bestand is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
+  'oph.processDeletionError':
+    'Het verwijderen van het proces is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
+  'oph.updateModelFailed':
+    'Het bijwerken van het proces is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
   'oph.icrDataUpdateFailed':
-    'Informatieclassificatie data kon niet worden bijgewerkt.',
+    'Het bijwerken van de informatieclassificatie data is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
   'oph.visioLatestDiagramDownloadFailed': getVisioDownloadErrorMessage(),
   'oph.downloadLatestDiagramFailed': 'Bestand kon niet worden opgehaald',
   'oph.addProcessFailed': 'Dit proces kon niet worden toegevoegd',
