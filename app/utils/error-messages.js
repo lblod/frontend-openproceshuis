@@ -1,30 +1,83 @@
 import { htmlSafe } from '@ember/template';
 
-const getVisioDownloadErrorMessage = () => {
+const getContactMailToHtml = ({ visualText, mailSubject, mailBody }) => {
   const mailto =
     'mailto:loketlokaalbestuur@vlaanderen.be' +
-    `?subject=${encodeURIComponent('Visio kan niet downloaden als BPMN')}` +
-    `?body=${encodeURIComponent(`\n\n${window.location.href}\n`)}`;
-  const linkHtml = `<a href="${mailto}">Contacteer ons</a>`;
-  return htmlSafe(
-    `Het visio-bestand kon niet worden gedownload als BPMN. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${linkHtml}.`,
-  );
+    `?subject=${encodeURIComponent(mailSubject)}` +
+    `&body=${encodeURIComponent(mailBody)}`;
+  return `<a href="${mailto}" target="_blank" >${visualText}</a>`;
 };
 
+const getTimestampForMailBody = () => new Date().toLocaleString();
+
 export const ERROR_CODES = {
-  // FRONTEND
-  'oph.fileDeletionError':
-    'Het verwijderen van het bestand is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
-  'oph.processDeletionError':
-    'Het verwijderen van het proces is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
-  'oph.updateModelFailed':
-    'Het bijwerken van het proces is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
-  'oph.icrDataUpdateFailed':
-    'Het bijwerken van de informatieclassificatie data is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? Contacteer ons.',
-  'oph.visioLatestDiagramDownloadFailed': getVisioDownloadErrorMessage(),
+  'oph.fileDeletionError': htmlSafe(
+    `Het verwijderen van het bestand is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout oph.fileDeletionError oplossen',
+        mailBody: `
+        Deze email wordt gestuurd om de fout "oph.fileDeletionError" op ${getTimestampForMailBody()} op te lossen. 
+
+        Heb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
+      `,
+      },
+    )}`,
+  ),
+  'oph.processDeletionError': htmlSafe(
+    `Het verwijderen van het proces is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout oph.processDeletionError oplossen',
+        mailBody: `
+        Deze email wordt gestuurd om de fout "oph.processDeletionError" op ${getTimestampForMailBody()} op te lossen. 
+
+        Heb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
+      `,
+      },
+    )}`,
+  ),
+  'oph.updateModelFailed': htmlSafe(
+    `Het bijwerken van het proces is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout oph.updateModelFailed oplossen',
+        mailBody: `
+        Deze email wordt gestuurd om de fout "oph.updateModelFailed" op ${getTimestampForMailBody()} op te lossen. 
+
+        Heb je meer relevante details, zoals bijvoorbeeld de namen van de velden die je wou bijwerken, die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
+      `,
+      },
+    )}`,
+  ),
+  'oph.icrDataUpdateFailed': htmlSafe(
+    `Het bijwerken van de informatieclassificatie data is mislukt. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout oph.icrDataUpdateFailed oplossen',
+        mailBody: `
+        Deze email wordt gestuurd om de fout "oph.icrDataUpdateFailed" op ${getTimestampForMailBody()} op te lossen. 
+
+        Heb je meer relevante details, zoals bijvoorbeeld de namen van de velden die je wou bijwerken, die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
+      `,
+      },
+    )}`,
+  ),
+  'oph.visioLatestDiagramDownloadFailed': htmlSafe(
+    `Het visio-bestand kon niet worden gedownload als BPMN. Herlaad de pagina en probeer opnieuw. Blijft het probleem? ${getContactMailToHtml(
+      {
+        visualText: 'Contacteer ons.',
+        mailSubject: 'OPH - fout oph.visioLatestDiagramDownloadFailed oplossen',
+        mailBody: `
+        Deze email wordt gestuurd om de fout "oph.visioLatestDiagramDownloadFailed" op ${getTimestampForMailBody()} op te lossen. 
+
+        Heb je meer relevante details die ons het probleem zouden kunnen helpen oplossen? Deel ze hier: 
+      `,
+      },
+    )}`,
+  ),
   'oph.downloadLatestDiagramFailed': 'Bestand kon niet worden opgehaald',
   'oph.addProcessFailed': 'Dit proces kon niet worden toegevoegd',
-  // BPMN
   'bpmn.sessionIdNotFound': 'Session ID header werd niet gevonden.',
   'bpmn.groupUriNotFound': 'Gebruiker maakt geen deel uit van een organisatie.',
   'bpmn.emptyVirtualFileId':
@@ -38,7 +91,6 @@ export const ERROR_CODES = {
     'Ongeldige inhoud: Het meegeleverde bestand heeft geen geldige inhoud.',
   'bpmn.errorDuringJobExecution': 'Error tijdens het uitvoeren van job',
   'bpmn.fallBackError': 'Onbekende fout tijdens extraheren van processtappen',
-  // VISIO
   'visio.emptyVirtualFileId':
     'Bestand id ontbrak tijdens het uploaden van het bpmn bestand.',
   'visio.virtualFileIdNotFound': 'Bestand-ID werd niet teruggevonden.',
