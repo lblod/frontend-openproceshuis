@@ -9,7 +9,7 @@ export default class ApiService extends Service {
     if (!res.ok) {
       const resJson = await res.json();
       const errorMessage = getMessageForErrorCode(resJson.errors[0].code);
-      this.toaster.error(`API error: ${errorMessage}`, 'Fout', {
+      this.toaster.error(errorMessage, 'API Fout', {
         timeOut: 5000,
       });
     }

@@ -236,7 +236,7 @@ export default class FileUploadModalComponent extends Component {
     formData.append('file', originalFileWrapper.file, originalFileWrapper.name);
     formData.append('pointers', JSON.stringify(this.sensitiveDataToAnonymize));
 
-    const response = yield fetch('/anonymization/bpmn/anonymize', {
+    const response = yield this.api.fetch('/anonymization/bpmn/anonymize', {
       method: 'POST',
       body: formData,
     });
