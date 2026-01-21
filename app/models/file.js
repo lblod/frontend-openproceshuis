@@ -1,4 +1,4 @@
-import Model, { attr, hasMany } from '@ember-data/model';
+import Model, { attr } from '@ember-data/model';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class FileModel extends Model {
@@ -6,11 +6,10 @@ export default class FileModel extends Model {
   @attr('string') format;
   @attr('number') size;
   @attr('string') extension;
+  @attr('string') version;
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
-
-  @hasMany('process', { inverse: 'files', async: false }) processes;
 
   get process() {
     if (!this.processes || this.processes.length === 0) return null;
