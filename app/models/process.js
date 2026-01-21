@@ -24,8 +24,10 @@ export default class ProcessModel extends Model {
     async: false,
   })
   linkedConcept;
-  @hasMany('file', { inverse: 'processes', async: false })
-  files;
+  @hasMany('list', { inverse: null, async: false })
+  diagramLists;
+  @hasMany('file', { inverse: null, async: false })
+  attachments;
   @hasMany('ipdc-product', {
     inverse: 'processes',
     async: false,
@@ -73,20 +75,6 @@ export default class ProcessModel extends Model {
 
   archive() {
     this.status = ENV.resourceStates.archived;
-  }
-
-  get diagram() {
-    const diagrams = this.files.filter(
-      (file) =>
-        (file.isBpmnFile || file.isVisioFile) &&
-        file.status !== ENV.resourceStates.archived,
-    );
-    if (diagrams.length === 0) return undefined;
-
-    const diagramsSorted = diagrams.sort(
-      (fileA, fileB) => fileB.created - fileA.created,
-    );
-    return diagramsSorted[0];
   }
 
   get isPublishedByAbbOrDv() {
