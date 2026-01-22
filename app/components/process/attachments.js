@@ -91,6 +91,11 @@ export default class ProcessAttachments extends Component {
       this.attachmentsAreLoading = true;
       this.attachmentsHaveErrored = false;
 
+      const processes = await this.store.query('process', {
+        'filter[id]': this.process.id,
+        include: 'attachments',
+      });
+
       const query = {
         reload: true,
         page: {
@@ -118,8 +123,9 @@ export default class ProcessAttachments extends Component {
         this.attachments = await this.store.query('file', query);
       } catch {
         this.attachmentsHaveErrored = true;
+      } finally {
+        this.attachmentsAreLoading = false;
       }
-      this.attachmentsAreLoading = false;
     },
   );
 
