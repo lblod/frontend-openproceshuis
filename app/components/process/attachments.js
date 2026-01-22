@@ -90,38 +90,13 @@ export default class ProcessAttachments extends Component {
       this.attachmentsAreLoading = true;
       this.attachmentsHaveErrored = false;
 
-      const processes = await this.store.query('process', {
-        'filter[id]': this.process.id,
-        include: 'attachments',
-      });
-
-      const query = {
-        reload: true,
-        page: {
-          number: this.pageAttachments,
-          size: this.sizeAttachments,
-        },
-        'filter[id]': processes[0]?.attachments?.map((a) => a.id).join(','),
-        'filter[:not:extension]': ['bpmn', 'vsdx'],
-        'filter[:not:status]': ENV.resourceStates.archived,
-      };
-
-      if (this.sortAttachments) {
-        const isDescending = this.sortAttachments.startsWith('-');
-
-        let sortValue = isDescending
-          ? this.sortAttachments.substring(1)
-          : this.sortAttachments;
-
-        if (sortValue === 'name' || sortValue === 'extension')
-          sortValue = `:no-case:${sortValue}`;
-        if (isDescending) sortValue = `-${sortValue}`;
-
-        query.sort = sortValue;
-      }
-
       try {
-        this.attachments = await this.store.query('file', query);
+        const processes = await this.store.query('process', {
+          'filter[id]': this.process.id,
+          'filter[attachments][:not:status]': ENV.resourceStates.archived,
+          include: 'attachments',
+        });
+        this.attachments = processes[0]?.attachments;
       } catch {
         this.attachmentsHaveErrored = true;
       } finally {
