@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
-import { task, keepLatestTask } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
 import ENV from 'frontend-openproceshuis/config/environment';
 
@@ -78,13 +78,12 @@ export default class DiagramService extends Service {
     }
   });
 
-  @keepLatestTask
-  *fetchLatestById(fileId) {
+  fetchLatestById = task({ keepLatest: true }, async (fileId) => {
     this.latestDiagramIsLoading = true;
     this.latestDiagramHasErrored = false;
 
     try {
-      this.latestDiagram = yield this.store.findRecord('file', fileId, {
+      this.latestDiagram = await this.store.findRecord('file', fileId, {
         reload: true,
       });
     } catch {
@@ -92,7 +91,7 @@ export default class DiagramService extends Service {
     }
 
     this.latestDiagramIsLoading = false;
-  }
+  });
 
   fetchVersions = task(
     {
