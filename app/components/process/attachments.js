@@ -91,7 +91,7 @@ export default class ProcessAttachments extends Component {
       this.attachmentsAreLoading = true;
       this.attachmentsHaveErrored = false;
 
-      const baseQuery = {
+      const query = {
         reload: true,
         page: {
           number: this.pageAttachments,
@@ -111,40 +111,11 @@ export default class ProcessAttachments extends Component {
           sortValue = `:no-case:${sortValue}`;
         if (isDescending) sortValue = `-${sortValue}`;
 
-        baseQuery.sort = sortValue;
+        query.sort = sortValue;
       }
 
       try {
-        const processFiles = await this.store.query('file', {
-          ...baseQuery,
-          'filter[:not:extension]': ['bpmn', 'vsdx'],
-          'filter[processes][id]': this.process.id,
-        });
-        const infoAssetIds = this.process.informationAssets.map(
-          (asset) => asset.id,
-        );
-        let infoAssetFiles = [];
-        if (infoAssetIds.length > 0) {
-          infoAssetFiles = await this.store.query('file', {
-            ...baseQuery,
-            'filter[information-asset][id]': infoAssetIds.join(','),
-            include: 'information-asset',
-          });
-        }
-        const allFiles = [
-          ...processFiles.map((file) => {
-            file._source = 'Proces';
-            return file;
-          }),
-          ...infoAssetFiles.map((file) => {
-            file._source = 'Informatie asset';
-            return file;
-          }),
-        ];
-        allFiles.sort((a, b) => {
-          return a.created - b.created;
-        });
-        this.attachments = allFiles;
+        this.attachments = await this.store.query('file', query);
       } catch {
         this.attachmentsHaveErrored = true;
       }
