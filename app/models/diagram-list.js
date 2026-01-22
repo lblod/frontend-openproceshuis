@@ -1,6 +1,6 @@
 import Model, { hasMany, attr } from '@ember-data/model';
 
-export default class ListModel extends Model {
+export default class DiagramListModel extends Model {
   @attr('string') order;
   @attr('string') version;
   @attr('string', {
