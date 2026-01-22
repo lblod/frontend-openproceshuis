@@ -14,6 +14,7 @@ export default class SharedProcessesIndexController extends Controller {
   @service store;
   @service currentSession;
   @service api;
+  @service diagram;
 
   @tracked page = 0;
   size = 20;
@@ -107,22 +108,22 @@ export default class SharedProcessesIndexController extends Controller {
     this.fileHasSensitiveInformation = false;
   }
 
-  @task
-  *createProcess(diagramId) {
-    const diagram = yield this.store.findRecord('file', diagramId);
-    const defaultRelevantUnit = yield this.currentSession.group.classification;
+  createProcess = task({ drop: true }, async (fileId) => {
+    const diagram = await this.store.findRecord('file', fileId);
+    const defaultRelevantUnit = await this.currentSession.group.classification;
     const created = new Date();
+    const diagramList = await this.diagram.createDiagramListForFile(fileId);
     const process = this.store.createRecord('process', {
       title: removeFileNameExtension(diagram.name, diagram.extension),
       created,
       modified: created,
       publisher: this.currentSession.group,
-      files: [diagram],
+      diagramLists: [diagramList],
       relevantAdministrativeUnits: [defaultRelevantUnit],
     });
-    yield process.save();
+    await process.save();
     this.newProcessId = process.id;
-  }
+  });
 
   @task({ enqueue: true, maxConcurrency: 3 })
   *extractBpmnElements(bpmnFileId) {
