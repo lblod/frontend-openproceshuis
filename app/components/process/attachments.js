@@ -72,9 +72,8 @@ export default class ProcessAttachments extends Component {
 
   addFileToProcess = task({ enqueue: true }, async (newFileId) => {
     const newFile = await this.store.findRecord('file', newFileId);
-    this.process.files.push(newFile);
-    this.process.modified = newFile.created;
-
+    const currentAttachments = await this.process.attachments;
+    this.process.attachments = [...currentAttachments, newFile];
     await this.process.save();
   });
 
