@@ -70,7 +70,7 @@ export default class ProcessAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  addFileToProcess = task({ enqueueTask: true }, async (newFileId) => {
+  addFileToProcess = task({ enqueue: true }, async (newFileId) => {
     const newFile = await this.store.findRecord('file', newFileId);
     this.process.files.push(newFile);
     this.process.modified = newFile.created;
@@ -91,13 +91,18 @@ export default class ProcessAttachments extends Component {
       this.attachmentsAreLoading = true;
       this.attachmentsHaveErrored = false;
 
+      const processes = await this.store.query('process', {
+        'filter[id]': this.process.id,
+        include: 'attachments',
+      });
+
       const query = {
         reload: true,
         page: {
           number: this.pageAttachments,
           size: this.sizeAttachments,
         },
-        'filter[processes][id]': this.process.id,
+        'filter[id]': processes[0]?.attachments?.map((a) => a.id).join(','),
         'filter[:not:extension]': ['bpmn', 'vsdx'],
         'filter[:not:status]': ENV.resourceStates.archived,
       };
@@ -120,12 +125,13 @@ export default class ProcessAttachments extends Component {
         this.attachments = await this.store.query('file', query);
       } catch {
         this.attachmentsHaveErrored = true;
+      } finally {
+        this.attachmentsAreLoading = false;
       }
-      this.attachmentsAreLoading = false;
     },
   );
 
-  downloadAttachments = task({ dropTask: true }, async () => {
+  downloadAttachments = task({ drop: true }, async () => {
     if (!this.attachments) return;
 
     if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
@@ -135,7 +141,7 @@ export default class ProcessAttachments extends Component {
     );
   });
 
-  deleteFile = task({ dropTask: true }, async () => {
+  deleteFile = task({ drop: true }, async () => {
     if (!this.fileToDelete) return;
 
     this.fileToDelete.archive();
