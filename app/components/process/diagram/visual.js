@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { inject as service } from '@ember/service';
-import { dropTask, enqueueTask } from 'ember-concurrency';
+import { service } from '@ember/service';
+import { dropTask, task } from 'ember-concurrency';
 import FileSaver from 'file-saver';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
@@ -78,14 +78,35 @@ export default class ProcessDiagramVisual extends Component {
     this.fileHasSensitiveInformation = false;
   }
 
-  @enqueueTask
-  *addFileToProcess(newFileId) {
-    const newFile = yield this.store.findRecord('file', newFileId);
-    this.process.files.push(newFile);
-    this.process.modified = newFile.created;
+  async createDiagramListForFile(fileId) {
+    const now = new Date();
+    const file = await this.store.findRecord('file', fileId);
+    const listItem = this.store.createRecord('list-item', {
+      position: 1,
+      created: now,
+      modified: now,
+      diagramFile: file,
+      subItems: [],
+    });
+    await listItem.save();
+    const diagramList = this.store.createRecord('diagram-list', {
+      order: 1,
+      created: now,
+      modified: now,
+      version: 'v0.0.1',
+      diagrams: [listItem],
+    });
+    await diagramList.save();
 
-    yield this.process.save();
+    return diagramList;
   }
+
+  addFileToProcess = task({ enqueue: true }, async (newFileId) => {
+    const diagramList = await this.createDiagramListForFile(newFileId);
+    const currentLists = await this.process.diagramLists;
+    this.process.diagramLists = [...currentLists, diagramList];
+    await this.process.save();
+  });
 
   @dropTask
   *extractBpmnElements(bpmnFileId) {
