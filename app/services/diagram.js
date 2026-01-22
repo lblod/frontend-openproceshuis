@@ -1,6 +1,6 @@
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
 import ENV from 'frontend-openproceshuis/config/environment';
@@ -102,33 +102,8 @@ export default class DiagramService extends Service {
       this.diagramsAreLoading = true;
       this.diagramsHaveErrored = false;
 
-      const files = await this.getDiagramListsFilesForProcessId(processId);
-      const query = {
-        reload: true,
-        page: {
-          number: this.pageVersions,
-          size: this.sizeVersions,
-        },
-        'filter[id]': files.map((file) => file.id).join(','),
-        'filter[:or:][extension]': ['bpmn', 'vsdx'],
-        'filter[:not:status]': ENV.resourceStates.archived,
-      };
-
-      if (this.sortVersions) {
-        const isDescending = this.sortVersions.startsWith('-');
-
-        let sortValue = isDescending
-          ? this.sortVersions.substring(1)
-          : this.sortVersions;
-
-        if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-        if (isDescending) sortValue = `-${sortValue}`;
-
-        query.sort = sortValue;
-      }
-
       try {
-        this.diagrams = await this.store.query('file', query);
+        this.diagrams = await this.getDiagramListsFilesForProcessId(processId);
       } catch {
         this.diagramsHaveErrored = true;
       }
