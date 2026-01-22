@@ -28,7 +28,7 @@ export default class ProcessModel extends Model {
     async: false,
   })
   linkedConcept;
-  @hasMany('list', { inverse: null, async: false })
+  @hasMany('diagram-list', { inverse: null, async: false })
   diagramLists;
   @hasMany('file', { inverse: null, async: false })
   attachments;
@@ -96,5 +96,10 @@ export default class ProcessModel extends Model {
 
   get href() {
     return `${window.location.origin}/processen/${this.id}`;
+  }
+
+  async save() {
+    this.modified = new Date();
+    await super.save(...arguments);
   }
 }
