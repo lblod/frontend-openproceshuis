@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
-import { keepLatestTask } from 'ember-concurrency';
+import { task, keepLatestTask } from 'ember-concurrency';
 import { action } from '@ember/object';
 import ENV from 'frontend-openproceshuis/config/environment';
 
@@ -38,31 +38,40 @@ export default class DiagramService extends Service {
     this.downloadModalOpened = false;
   }
 
-  @keepLatestTask
-  *fetchLatest(processId) {
+  fetchLatest = task({ keepLatest: true }, async (processId) => {
     this.latestDiagramIsLoading = true;
     this.latestDiagramHasErrored = false;
 
-    const query = {
-      reload: true,
-      page: {
-        number: 0,
-        size: 1,
-      },
-      'filter[processes][id]': processId,
-      'filter[:or:][extension]': ['bpmn', 'vsdx'],
-      sort: '-created',
-    };
-
     try {
-      const diagrams = yield this.store.query('file', query);
-      this.latestDiagram = diagrams?.[0];
+      const processWithLists = await this.store.query('process', {
+        'filter[id]': processId,
+        include:
+          'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
+      });
+      const diagramLists = processWithLists[0]?.diagramLists;
+      const filesOfLists = diagramLists
+        .map((list) => {
+          return list.diagrams[0].diagramFile;
+        })
+        .filter(
+          (file) =>
+            (file.isBpmnFile || file.isVisioFile) &&
+            file.status !== ENV.resourceStates.archived,
+        );
+
+      const latestDiagramFile = filesOfLists.reduce((latest, current) => {
+        return current.modified > latest.modified ? current : latest;
+      });
+
+      this.latestDiagram = latestDiagramFile;
+      return latestDiagramFile;
     } catch (e) {
+      this.latestDiagramFile = null;
       this.latestDiagramHasErrored = true;
     } finally {
       this.latestDiagramIsLoading = false;
     }
-  }
+  });
 
   @keepLatestTask
   *fetchLatestById(fileId) {
