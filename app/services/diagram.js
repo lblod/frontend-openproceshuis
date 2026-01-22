@@ -38,28 +38,33 @@ export default class DiagramService extends Service {
     this.downloadModalOpened = false;
   }
 
+  async getDiagramListsFilesForProcessId(processId) {
+    const processWithLists = await this.store.query('process', {
+      'filter[id]': processId,
+      include:
+        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
+    });
+    const diagramLists = processWithLists[0]?.diagramLists;
+    const filesOfLists = diagramLists
+      .map((list) => {
+        return list.diagrams[0].diagramFile;
+      })
+      .filter(
+        (file) =>
+          (file.isBpmnFile || file.isVisioFile) &&
+          file.status !== ENV.resourceStates.archived,
+      );
+
+    return filesOfLists;
+  }
+
   fetchLatest = task({ keepLatest: true }, async (processId) => {
     this.latestDiagramIsLoading = true;
     this.latestDiagramHasErrored = false;
 
     try {
-      const processWithLists = await this.store.query('process', {
-        'filter[id]': processId,
-        include:
-          'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
-      });
-      const diagramLists = processWithLists[0]?.diagramLists;
-      const filesOfLists = diagramLists
-        .map((list) => {
-          return list.diagrams[0].diagramFile;
-        })
-        .filter(
-          (file) =>
-            (file.isBpmnFile || file.isVisioFile) &&
-            file.status !== ENV.resourceStates.archived,
-        );
-
-      const latestDiagramFile = filesOfLists.reduce((latest, current) => {
+      const files = await this.getDiagramListsFilesForProcessId(processId);
+      const latestDiagramFile = files.reduce((latest, current) => {
         return current.modified > latest.modified ? current : latest;
       });
 
@@ -89,45 +94,49 @@ export default class DiagramService extends Service {
     this.latestDiagramIsLoading = false;
   }
 
-  @keepLatestTask({
-    observes: ['pageVersions', 'sortVersions'],
-  })
-  *fetchVersions(processId) {
-    this.diagramsAreLoading = true;
-    this.diagramsHaveErrored = false;
+  fetchVersions = task(
+    {
+      keepLatest: true,
+      observes: ['pageVersions', 'sortVersions'],
+    },
+    async (processId) => {
+      this.diagramsAreLoading = true;
+      this.diagramsHaveErrored = false;
 
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageVersions,
-        size: this.sizeVersions,
-      },
-      'filter[processes][id]': processId,
-      'filter[:or:][extension]': ['bpmn', 'vsdx'],
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
+      const files = await this.getDiagramListsFilesForProcessId(processId);
+      const query = {
+        reload: true,
+        page: {
+          number: this.pageVersions,
+          size: this.sizeVersions,
+        },
+        'filter[id]': files.map((file) => file.id).join(','),
+        'filter[:or:][extension]': ['bpmn', 'vsdx'],
+        'filter[:not:status]': ENV.resourceStates.archived,
+      };
 
-    if (this.sortVersions) {
-      const isDescending = this.sortVersions.startsWith('-');
+      if (this.sortVersions) {
+        const isDescending = this.sortVersions.startsWith('-');
 
-      let sortValue = isDescending
-        ? this.sortVersions.substring(1)
-        : this.sortVersions;
+        let sortValue = isDescending
+          ? this.sortVersions.substring(1)
+          : this.sortVersions;
 
-      if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
+        if (sortValue === 'name') sortValue = `:no-case:${sortValue}`;
+        if (isDescending) sortValue = `-${sortValue}`;
 
-      query.sort = sortValue;
-    }
+        query.sort = sortValue;
+      }
 
-    try {
-      this.diagrams = yield this.store.query('file', query);
-    } catch {
-      this.diagramsHaveErrored = true;
-    }
+      try {
+        this.diagrams = await this.store.query('file', query);
+      } catch {
+        this.diagramsHaveErrored = true;
+      }
 
-    this.diagramsAreLoading = false;
-  }
+      this.diagramsAreLoading = false;
+    },
+  );
 
   refreshVersions(processId) {
     this.fetchVersions.perform(processId);
