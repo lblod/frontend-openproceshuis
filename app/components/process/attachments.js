@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { enqueueTask, keepLatestTask, dropTask } from 'ember-concurrency';
-import { inject as service } from '@ember/service';
+import { task } from 'ember-concurrency';
+import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
 import {
   downloadFileByUrl,
@@ -70,14 +70,13 @@ export default class ProcessAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  @enqueueTask
-  *addFileToProcess(newFileId) {
-    const newFile = yield this.store.findRecord('file', newFileId);
+  addFileToProcess = task({ enqueueTask: true }, async (newFileId) => {
+    const newFile = await this.store.findRecord('file', newFileId);
     this.process.files.push(newFile);
     this.process.modified = newFile.created;
 
-    yield this.process.save();
-  }
+    await this.process.save();
+  });
 
   @action
   attachmentsUploaded(_, queueInfo) {
@@ -86,63 +85,63 @@ export default class ProcessAttachments extends Component {
     this.fetchAttachments.perform();
   }
 
-  @keepLatestTask({ observes: ['pageAttachments', 'sortAttachments'] })
-  *fetchAttachments() {
-    this.attachmentsAreLoading = true;
-    this.attachmentsHaveErrored = false;
+  fetchAttachments = task(
+    { keepLatest: true, observes: ['pageAttachments', 'sortAttachments'] },
+    async () => {
+      this.attachmentsAreLoading = true;
+      this.attachmentsHaveErrored = false;
 
-    const query = {
-      reload: true,
-      page: {
-        number: this.pageAttachments,
-        size: this.sizeAttachments,
-      },
-      'filter[processes][id]': this.process.id,
-      'filter[:not:extension]': ['bpmn', 'vsdx'],
-      'filter[:not:status]': ENV.resourceStates.archived,
-    };
+      const query = {
+        reload: true,
+        page: {
+          number: this.pageAttachments,
+          size: this.sizeAttachments,
+        },
+        'filter[processes][id]': this.process.id,
+        'filter[:not:extension]': ['bpmn', 'vsdx'],
+        'filter[:not:status]': ENV.resourceStates.archived,
+      };
 
-    if (this.sortAttachments) {
-      const isDescending = this.sortAttachments.startsWith('-');
+      if (this.sortAttachments) {
+        const isDescending = this.sortAttachments.startsWith('-');
 
-      let sortValue = isDescending
-        ? this.sortAttachments.substring(1)
-        : this.sortAttachments;
+        let sortValue = isDescending
+          ? this.sortAttachments.substring(1)
+          : this.sortAttachments;
 
-      if (sortValue === 'name' || sortValue === 'extension')
-        sortValue = `:no-case:${sortValue}`;
-      if (isDescending) sortValue = `-${sortValue}`;
+        if (sortValue === 'name' || sortValue === 'extension')
+          sortValue = `:no-case:${sortValue}`;
+        if (isDescending) sortValue = `-${sortValue}`;
 
-      query.sort = sortValue;
-    }
+        query.sort = sortValue;
+      }
 
-    try {
-      this.attachments = yield this.store.query('file', query);
-    } catch {
-      this.attachmentsHaveErrored = true;
-    }
-    this.attachmentsAreLoading = false;
-  }
+      try {
+        this.attachments = await this.store.query('file', query);
+      } catch {
+        this.attachmentsHaveErrored = true;
+      }
+      this.attachmentsAreLoading = false;
+    },
+  );
 
-  @dropTask
-  *downloadAttachments() {
+  downloadAttachments = task({ dropTask: true }, async () => {
     if (!this.attachments) return;
 
     if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
-    yield downloadFilesAsZip(
+    await downloadFilesAsZip(
       this.attachments,
       this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
     );
-  }
+  });
 
-  @dropTask
-  *deleteFile() {
+  deleteFile = task({ dropTask: true }, async () => {
     if (!this.fileToDelete) return;
 
     this.fileToDelete.archive();
 
     try {
-      yield this.fileToDelete.save();
+      await this.fileToDelete.save();
       this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
         timeOut: 5000,
       });
@@ -156,5 +155,5 @@ export default class ProcessAttachments extends Component {
     this.fetchAttachments.perform();
 
     this.closeDeleteModal();
-  }
+  });
 }
