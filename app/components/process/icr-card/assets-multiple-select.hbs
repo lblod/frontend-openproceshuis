@@ -12,9 +12,19 @@
   >
     {{asset.title}}
     {{#if asset.isDraft}}
-      ⌛ (Concept)
+      <AuPill
+        @skin="default"
+        @icon="clock"
+        @size="small"
+        class="au-u-margin-left-tiny"
+      >
+        Concept
+      </AuPill>
     {{else}}
-      ✅ (Gepubliceerd)
+      <AuPill @skin="success" @size="small" class="au-u-margin-left-tiny">
+        Gepubliceerd
+      </AuPill>
     {{/if}}
+
   </PowerSelectMultiple>
 </div>
