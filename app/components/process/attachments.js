@@ -93,11 +93,13 @@ export default class ProcessAttachments extends Component {
       try {
         const processes = await this.store.query('process', {
           'filter[id]': this.process.id,
-          'filter[attachments][:not:status]': ENV.resourceStates.archived,
           include: 'attachments',
         });
-        this.attachments = processes[0]?.attachments;
+        this.attachments = processes[0]?.attachments.filter(
+          (file) => file.status !== ENV.resourceStates.archived,
+        );
       } catch {
+        this.attachments = [];
         this.attachmentsHaveErrored = true;
       } finally {
         this.attachmentsAreLoading = false;
