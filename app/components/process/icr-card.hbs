@@ -86,19 +86,56 @@
                   @checked={{this.containsPersonalData}}
                   @disabled="true"
                 >
-                  Professionele gegevens
+                  <label for="contains-personal-data">Professionele gegevens</label>
+                  <Shared::Tooltip
+                    @show={{true}}
+                    @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
+                    @placement="top"
+                  >
+                    <AuIcon
+                      class="color--info"
+                      @icon="circle-question"
+                      @size="large"
+                      @alignment="right"
+                    />
+                  </Shared::Tooltip>
                 </AuCheckbox>
                 <AuCheckbox
                   @checked={{this.containsProfessionalData}}
                   @disabled="true"
                 >
-                  Persoonsgegevens
+                  <label
+                    for="contains-professional-data"
+                  >Persoonsgegevens</label>
+                  <Shared::Tooltip
+                    @show={{true}}
+                    @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                  >
+                    <AuIcon
+                      class="color--info"
+                      @icon="circle-question"
+                      @size="large"
+                      @alignment="right"
+                    />
+                  </Shared::Tooltip>
                 </AuCheckbox>
                 <AuCheckbox
                   @checked={{this.containsSensitivePersonalData}}
                   @disabled="true"
                 >
-                  Bijzondere persoonsgegevens
+                  <label for="contains-sensitive-personal-data">Bijzondere
+                    persoonsgegevens</label>
+                  <Shared::Tooltip
+                    @show={{true}}
+                    @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                  >
+                    <AuIcon
+                      class="color--info"
+                      @icon="circle-question"
+                      @size="large"
+                      @alignment="right"
+                    />
+                  </Shared::Tooltip>
                 </AuCheckbox>
               </div>
             </:content>
