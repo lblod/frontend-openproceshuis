@@ -170,9 +170,11 @@ tr:hover .inventory-row-button-group .au-c-button {
 .color--warning {
   color: var(--au-orange-700);
 }
+
 .no-border {
   border: none !important;
 }
+
 .pointer {
   cursor: pointer;
 }
@@ -184,10 +186,12 @@ tr:hover .inventory-row-button-group .au-c-button {
     border-color: var(--vl-orange-100);
     transition: 0.2s ease-in-out;
   }
+
   &:active {
     scale: 0.95;
   }
 }
+
 .assets-multiple-select {
   .ember-power-select-multiple-options > li {
     flex-grow: 0;
