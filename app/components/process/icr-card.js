@@ -7,18 +7,20 @@ import { action } from '@ember/object';
 
 import { dropTask } from 'ember-concurrency';
 
-import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessIcrCardComponent extends Component {
   @service store;
   @service toaster;
 
-  @tracked draftInformationAssets = [];
+  @tracked informationAssets = [];
   @tracked blueprintUsages = A([]);
 
   @tracked edit = false;
   @tracked formIsValid = false;
+
+  @tracked showIcrModal = false;
+  @tracked selectedAsset = null;
 
   constructor() {
     super(...arguments);
@@ -34,9 +36,51 @@ export default class ProcessIcrCardComponent extends Component {
     }
   }
 
+  get confidentialityScore() {
+    return Math.max(
+      ...this.args.process.informationAssets.map(
+        (asset) => asset.confidentialityScore,
+      ),
+    );
+  }
+  get integrityScore() {
+    return Math.max(
+      ...this.args.process.informationAssets.map(
+        (asset) => asset.integrityScore,
+      ),
+    );
+  }
+  get availabilityScore() {
+    return Math.max(
+      ...this.args.process.informationAssets.map(
+        (asset) => asset.availabilityScore,
+      ),
+    );
+  }
+  get containsPersonalData() {
+    return this.args.process.informationAssets.some(
+      (asset) => asset.containsPersonalData,
+    );
+  }
+  get containsProfessionalData() {
+    return this.args.process.informationAssets.some(
+      (asset) => asset.containsProfessionalData,
+    );
+  }
+  get containsSensitivePersonalData() {
+    return this.args.process.informationAssets.some(
+      (asset) => asset.containsSensitivePersonalData,
+    );
+  }
+
+  @action openIcrModal(asset) {
+    this.selectedAsset = asset;
+    this.showIcrModal = true;
+  }
+
   @action
   toggleEdit() {
-    this.draftInformationAssets = this.args.process?.informationAssets ?? [];
+    this.informationAssets = this.args.process?.informationAssets ?? [];
     this.edit = !this.edit;
     this.validateForm();
   }
@@ -44,17 +88,12 @@ export default class ProcessIcrCardComponent extends Component {
   @action
   resetModel() {
     this.args.process?.rollbackAttributes();
-    this.draftInformationAssets = this.args.process?.informationAssets ?? [];
+    this.informationAssets = this.args.process?.informationAssets ?? [];
     this.edit = false;
   }
 
   validateForm() {
-    this.formIsValid =
-      this.args.process?.validate() &&
-      (this.args.process?.hasDirtyAttributes ||
-        this.draftInformationAssets.length <
-          this.args.process?.informationAssets?.length ||
-        this.draftInformationAssets.some((asset) => asset.isDraft));
+    this.formIsValid = true;
   }
 
   @dropTask
@@ -66,21 +105,7 @@ export default class ProcessIcrCardComponent extends Component {
       this.args.process.modified = new Date();
 
       try {
-        this.args.process.informationAssets = yield Promise.all(
-          this.draftInformationAssets.map(async (asset) => {
-            if (!asset.id) {
-              const newAsset = this.store.createRecord('information-asset', {
-                label: asset.label,
-                scheme: ENV.conceptSchemes.informationAssets,
-              });
-              await newAsset.save();
-              return newAsset;
-            }
-            delete asset.isDraft;
-            return asset;
-          }),
-        );
-
+        this.args.process.informationAssets = this.informationAssets;
         yield this.args.process.save();
 
         this.edit = false;
@@ -104,80 +129,39 @@ export default class ProcessIcrCardComponent extends Component {
   }
 
   @action
-  setAvailabilityScore(value) {
-    if (!this.args.process) return;
-    this.args.process.availabilityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setIntegrityScore(value) {
-    if (!this.args.process) return;
-    this.args.process.integrityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setConfidentialityScore(value) {
-    if (!this.args.process) return;
-    this.args.process.confidentialityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsPersonalData(value) {
-    if (!this.args.process) return;
-
-    this.args.process.containsPersonalData = value;
-
-    if (!value) {
-      this.args.process.containsProfessionalData = false;
-      this.args.process.containsSensitivePersonalData = false;
+  setInformationAssets(assets = []) {
+    if (!assets.length) {
+      this.informationAssets = [];
+      this.validateForm();
+      return;
     }
 
-    this.validateForm();
-  }
-
-  @action
-  setContainsProfessionalData(value) {
-    if (!this.args.process) return;
-    if (!this.args.process.containsPersonalData) return;
-
-    this.args.process.containsProfessionalData = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsSensitivePersonalData(value) {
-    if (!this.args.process) return;
-    if (!this.args.process.containsPersonalData) return;
-
-    this.args.process.containsSensitivePersonalData = value;
-    if (value) this.args.process.containsProfessionalData = true;
-    this.validateForm();
-  }
-
-  @action
-  setAdditionalInformation(event) {
-    if (!this.args.process) return;
-    this.args.process.additionalInformation = event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setControlMeasure(event) {
-    if (!this.args.process) return;
-    this.args.process.hasControlMeasure = event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setDraftInformationAssets(event) {
-    const assetLabels = event.map((asset) => asset.label.toLowerCase());
-    const hasDuplicates = new Set(assetLabels).size !== assetLabels.length;
+    const lowerCaseTitles = assets.map((asset) => asset.title.toLowerCase());
+    const hasDuplicates =
+      new Set(lowerCaseTitles).size !== lowerCaseTitles.length;
     if (hasDuplicates) return;
 
-    this.draftInformationAssets = event;
+    const lastDraftAsset = [...assets].reverse().find((asset) => asset.isDraft);
+
+    this.selectedAsset = lastDraftAsset
+      ? {
+          ...lastDraftAsset,
+          title: lastDraftAsset.title || '',
+          description: '',
+          availabilityScore: 0,
+          confidentialityScore: 0,
+          integrityScore: 0,
+          containsSensitivePersonalData: false,
+          containsProfessionalData: false,
+          containsPersonalData: false,
+          created: new Date(),
+          modified: new Date(),
+        }
+      : null;
+
+    this.showIcrModal = lastDraftAsset && assets.at(-1).isDraft;
+
+    this.informationAssets = assets;
     this.validateForm();
   }
 
@@ -188,5 +172,10 @@ export default class ProcessIcrCardComponent extends Component {
       .get('errors')
       .filter((error) => error.attribute === attribute);
     return errorsForAttribute.length;
+  }
+
+  @action closeIcrModal() {
+    this.showIcrModal = false;
+    this.selectedAsset = null;
   }
 }

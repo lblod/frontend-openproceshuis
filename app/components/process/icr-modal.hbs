@@ -1,0 +1,141 @@
+<AuModal @modalOpen={{@modalOpen}} @closeModal={{this.closeModal}}>
+  <:title>{{this.header}}</:title>
+  <:body>
+
+    <form {{on "submit" (perform this.updateModel)}}>
+      <div class="au-u-margin-bottom">
+        <label
+          class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
+        >Titel</label>
+        <AuInput
+          value={{@selected.title}}
+          {{on "input" this.setTitle}}
+          rows="4"
+          @width="block"
+          @error={{this.hasError "title"}}
+        />
+      </div>
+      <div class="au-u-margin-bottom">
+        <label
+          class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
+        >Beschrijving</label>
+        <AuTextarea
+          value={{@selected.description}}
+          {{on "input" this.setDescription}}
+          rows="4"
+          @width="block"
+          @error={{this.hasError "description"}}
+        />
+      </div>
+      <AuCard class="no-border" as |c|>
+        <c.content>
+          <div class="au-o-grid">
+            <div class="au-u-1-1">
+              <label
+                class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
+              >Beschikbaarheid</label>
+              <Process::IcrCard::Score
+                @selectedScore={{@selected.availabilityScore}}
+                @onScoreChange={{this.setAvailabilityScore}}
+              />
+            </div>
+            <div class="au-u-1-1">
+              <label
+                class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
+              >Integriteit</label>
+              <Process::IcrCard::Score
+                @selectedScore={{@selected.integrityScore}}
+                @onScoreChange={{this.setIntegrityScore}}
+              />
+            </div>
+            <div class="au-u-1-1">
+              <label
+                class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
+              >Vertrouwelijkheid</label>
+              <Process::IcrCard::Score
+                @selectedScore={{@selected.confidentialityScore}}
+                @onScoreChange={{this.setConfidentialityScore}}
+              />
+            </div>
+          </div>
+        </c.content>
+      </AuCard>
+
+      <label
+        class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
+      >Persoonsgegevens</label>
+
+      <div class="au-u-flex au-u-flex--column au-u-flex--spaced-small">
+        <AuCheckbox
+          id="contains-personal-data"
+          @checked={{@selected.containsPersonalData}}
+          @onChange={{this.setContainsPersonalData}}
+        >
+          <label for="contains-personal-data">Professionele gegevens</label>
+          <Shared::Tooltip
+            @show={{true}}
+            @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
+            @placement="top"
+          >
+            <AuIcon
+              class="color--info"
+              @icon="circle-question"
+              @size="large"
+              @alignment="right"
+            />
+          </Shared::Tooltip>
+        </AuCheckbox>
+        <AuCheckbox
+          id="contains-professional-data"
+          @checked={{@selected.containsProfessionalData}}
+          @onChange={{this.setContainsProfessionalData}}
+        >
+          <label for="contains-professional-data">Persoonsgegevens</label>
+
+          <Shared::Tooltip
+            @show={{true}}
+            @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+          >
+            <AuIcon
+              class="color--info"
+              @icon="circle-question"
+              @size="large"
+              @alignment="right"
+            />
+          </Shared::Tooltip>
+        </AuCheckbox>
+        <AuCheckbox
+          id="contains-sensitive-personal-data"
+          @checked={{@selected.containsSensitivePersonalData}}
+          @onChange={{this.setContainsSensitivePersonalData}}
+        >
+          <label for="contains-sensitive-personal-data">Bijzondere
+            persoonsgegevens</label>
+          <Shared::Tooltip
+            @show={{true}}
+            @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+          >
+            <AuIcon
+              class="color--info"
+              @icon="circle-question"
+              @size="large"
+              @alignment="right"
+            />
+          </Shared::Tooltip>
+        </AuCheckbox>
+      </div>
+    </form>
+  </:body>
+
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton @skin="naked" {{on "click" this.closeModal}}>Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        {{on "click" (perform this.updateModel)}}
+        @loading={{this.updateModel.isRunning}}
+        @disabled={{not this.formIsValid}}
+      >Opslaan</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
