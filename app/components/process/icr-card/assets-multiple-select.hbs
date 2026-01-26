@@ -1,4 +1,4 @@
-<div class={{if @error "ember-power-select--error"}}>
+<div class={{if @error "ember-power-select--error" "assets-multiple-select"}}>
   <PowerSelectMultiple
     @searchEnabled="true"
     @searchMessage="Typ om te zoeken"
@@ -7,8 +7,24 @@
     @search={{perform this.loadInformationAssetsTask}}
     @selected={{@selected}}
     @onChange={{@onChange}}
+    @searchField="title"
     as |asset|
   >
-    {{asset.label}}
+    {{asset.title}}
+    {{#if asset.isDraft}}
+      <AuPill
+        @skin="default"
+        @icon="clock"
+        @size="small"
+        class="au-u-margin-left-tiny"
+      >
+        Concept
+      </AuPill>
+    {{else}}
+      <AuPill @skin="success" @size="small" class="au-u-margin-left-tiny">
+        Gepubliceerd
+      </AuPill>
+    {{/if}}
+
   </PowerSelectMultiple>
 </div>
