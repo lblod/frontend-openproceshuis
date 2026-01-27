@@ -36,6 +36,17 @@ export default class InformationAssetsIndexRoute extends Route {
       'filter[:not:status]': ENV.resourceStates.archived,
       sort: ':no-case:title',
     };
+    if (params.sort) {
+      if (params.sort.includes('title')) {
+        if (params.sort.startsWith('-')) {
+          query.sort = `-:no-case:${params.sort.slice(1)}`;
+        } else {
+          query.sort = `:no-case:${params.sort}`;
+        }
+      } else {
+        query.sort = params.sort;
+      }
+    }
     if (params.title) {
       query['filter[title]'] = params.title;
     }
