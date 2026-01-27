@@ -8,11 +8,8 @@ import { restartableTask, timeout } from 'ember-concurrency';
 export default class InformationAssetsIndexController extends Controller {
   size = 20;
   queryParams = ['page', 'size'];
-  @service store;
-  @service router;
   @service currentSession;
 
-  @tracked isLoadingRoute;
   @tracked page = 0;
   @tracked sort = 'title';
   @tracked title = null;
@@ -20,7 +17,7 @@ export default class InformationAssetsIndexController extends Controller {
   get informationAssets() {
     return this.model.informationAssets.isFinished
       ? this.model.informationAssets.value
-      : this.model.loadedInformationAssets;
+      : null;
   }
 
   get isLoading() {
