@@ -35,5 +35,7 @@ export default class InformationAssetsIndexController extends Controller {
   @action
   resetFilters() {
     this.title = null;
+    this.page = 0;
+    this.sort = 'title';
   }
 }
