@@ -1,6 +1,13 @@
 <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
   <AuHeading @level="2" @skin="3">Diagram</AuHeading>
   <AuButtonGroup>
+    <AuLink
+      @route="processes.process.diagrams"
+      @model={{@process.id}}
+      @skin="button-secondary"
+    >
+      Bekijk alle diagrammen
+    </AuLink>
     {{#if @canEdit}}
       <AuButton
         @skin="secondary"

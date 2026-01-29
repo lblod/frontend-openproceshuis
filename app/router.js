@@ -30,6 +30,7 @@ Router.map(function () {
   this.route('processes', { path: 'processen' }, function () {
     this.route('process', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
+      this.route('diagrams', { path: 'diagrammen' });
     });
   });
 

@@ -1,0 +1,44 @@
+{{page-title "Diagrams"}}
+
+<div class="au-o-flow au-o-box">
+  {{#if this.selectedMainDiagramFile}}
+    {{#if this.selectedMainDiagramFile.isBpmnFile}}
+      <BpmnViewer @diagram={{this.selectedMainDiagramFile}} />
+    {{else if this.selectedMainDiagramFile.isVisioFile}}
+      <PdfViewer @diagram={{this.selectedMainDiagramFile}} />
+    {{/if}}
+  {{/if}}
+
+  <div class="au-o-flow--tiny">
+    {{#each @model.lists as |diagramList|}}
+      {{! template-lint-disable no-invalid-interactive }}
+      {{! template-lint-disable style-concatenation }}
+      {{! template-lint-disable no-inline-styles }}
+      <div
+        {{on "click" (fn this.openDiagramList diagramList)}}
+        class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small"
+        style="
+               {{if
+          (eq this.selectedDiagramList.id diagramList.id)
+          'background-color: var(--au-select-text-bg);'
+          ''
+        }} border-radius:5px;border:1.5px solid var(--au-gray-200); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px; "
+      >
+        <div class="au-u-flex au-u-flex--between">
+          <div class="au-u-flex--column">
+            <p class="au-u-muted au-u-medium">Toegevoegd op</p>
+            <p>{{date-format diagramList.created true}}</p>
+          </div>
+          <div class="au-u-flex--column">
+            <p class="au-u-muted au-u-medium">Versie</p>
+            <p>{{diagramList.displayVersion}}</p>
+          </div>
+          <div class="au-u-flex--column">
+            <p class="au-u-muted au-u-medium">Aantal diagrammen</p>
+            <p>{{diagramList.diagrams.length}}</p>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
