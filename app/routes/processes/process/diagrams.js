@@ -19,10 +19,19 @@ export default class ProcessesProcessDiagramsRoute extends Route {
       include:
         'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
     });
-    const diagramLists = processWithLists[0]?.diagramLists;
+    const diagramLists = Array.from(processWithLists[0]?.diagramLists);
+    const sortedOnCreatedDiagrams = diagramLists.sort((latest, current) =>
+      current.created > latest.created ? current : latest,
+    );
 
     return {
-      lists: diagramLists,
+      lists: sortedOnCreatedDiagrams,
+      fallbackFirstDiagramList: sortedOnCreatedDiagrams[0],
     };
+  }
+
+  setupController(controller, model) {
+    super.setupController(...arguments);
+    controller.selectedDiagramList = model.fallbackFirstDiagramList;
   }
 }

@@ -22,19 +22,12 @@
                 'background-color: var(--au-white);'
               }} border-radius:5px;border:1.5px solid var(--au-gray-200); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px; "
             >
-              <div class="au-u-flex au-u-flex--between">
-                <div class="au-u-flex--column">
-                  <p class="au-u-muted au-u-medium">Toegevoegd op</p>
-                  <p>{{date-format diagramList.created true}}</p>
-                </div>
-                <div class="au-u-flex--column">
-                  <p class="au-u-muted au-u-medium">Versie</p>
-                  <p>{{diagramList.displayVersion}}</p>
-                </div>
-                <div class="au-u-flex--column">
-                  <p class="au-u-muted au-u-medium">Aantal diagrammen</p>
-                  <p>{{diagramList.diagrams.length}}</p>
-                </div>
+              <div class="au-u-flex au-u-flex--column au-u-flex--between">
+                <p class="au-u-h4">{{diagramList.displayVersion}}</p>
+                <p class="au-u-muted">{{date-format
+                    diagramList.created
+                    true
+                  }}</p>
               </div>
             </div>
           {{/each}}
@@ -44,11 +37,11 @@
   </:sidebar>
   <:content>
     <div class="au-o-box">
-      {{#if this.selectedMainDiagramFile}}
-        {{#if this.selectedMainDiagramFile.isBpmnFile}}
-          <BpmnViewer @diagram={{this.selectedMainDiagramFile}} />
-        {{else if this.selectedMainDiagramFile.isVisioFile}}
-          <PdfViewer @diagram={{this.selectedMainDiagramFile}} />
+      {{#if this.showcasedMainDiagramFile}}
+        {{#if this.showcasedMainDiagramFile.isBpmnFile}}
+          <BpmnViewer @diagram={{this.showcasedMainDiagramFile}} />
+        {{else if this.showcasedMainDiagramFile.isVisioFile}}
+          <PdfViewer @diagram={{this.showcasedMainDiagramFile}} />
         {{/if}}
       {{/if}}
     </div>
