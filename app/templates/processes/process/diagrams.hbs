@@ -33,14 +33,17 @@
     </div>
   </:sidebar>
   <:content>
-    <div class="au-o-box">
+    <div class="au-o-box au-o-flow">
       {{#if this.showcasedMainDiagramFile}}
         <File::Viewer @file={{this.showcasedMainDiagramFile}} />
-        <File::MetadataCard
-          @file={{this.showcasedMainDiagramFile}}
-          class="au-u-margin-top"
-        />
+        <File::MetadataCard @file={{this.showcasedMainDiagramFile}} />
       {{/if}}
+      <p class="au-u-h4 au-u-medium">Diagrammen</p>
+      <DiagramList::Table
+        @diagramList={{this.selectedDiagramList}}
+        @onDiagramFileSelected={{this.openDiagramList}}
+        @canEdit={{this.canEdit}}
+      />
     </div>
   </:content>
 </SidebarContainer>

@@ -25,6 +25,7 @@ export default class ProcessesProcessDiagramsRoute extends Route {
     );
 
     return {
+      process: process,
       lists: sortedOnCreatedDiagrams,
       fallbackFirstDiagramList: sortedOnCreatedDiagrams[0],
     };

@@ -1,0 +1,90 @@
+<div ...attributes>
+  <AuDataTable
+    @content={{this.activeDiagrams}}
+    @page={{this.page}}
+    @size={{this.size}}
+    @fields="name created size"
+    @noDataMessage="Geen diagrammen gevonden"
+    as |row|
+  >
+    <row.content class="au-c-data-table__table--small" as |c|>
+      <c.header>
+        <AuDataTableThSortable
+          @field="name"
+          @currentSorting={{this.sort}}
+          @label="Bestandsnaam"
+        />
+        <AuDataTableThSortable
+          @field="created"
+          @currentSorting={{this.sort}}
+          @label="Toegevoegd op"
+        />
+        <AuDataTableThSortable
+          @field="size"
+          @currentSorting={{this.sort}}
+          @label="Grootte"
+        />
+        <th></th>
+        {{#if @canEdit}}<th></th>{{/if}}
+      </c.header>
+      {{#if this.diagramsHaveErrored}}
+        <TableMessage::Error />
+      {{else if this.diagramsHaveNoResults}}
+        <TableMessage>
+          <p>Er werden geen zoekresultaten gevonden.</p>
+        </TableMessage>
+      {{else}}
+        <c.body as |diagram|>
+          <td>
+            {{diagram.diagramFile.name}}
+          </td>
+          <td>{{date-format diagram.diagramFile.created true}}</td>
+          <td>{{file-size-format diagram.diagramFile.size}}</td>
+          <td>
+            <AuButton
+              @icon="download"
+              @skin="link"
+              @width="block"
+              @hideText="true"
+              {{on "click" (fn this.downloadFile diagram.diagramFile)}}
+            >Download</AuButton>
+          </td>
+          {{#if @canEdit}}
+            <td>
+              <AuButton
+                @icon="bin"
+                @skin="naked"
+                @alert="true"
+                @width="block"
+                @hideText="true"
+                {{on "click" (fn this.openDeleteModal diagram.diagramFile)}}
+              >Verwijder</AuButton>
+            </td>
+          {{/if}}
+        </c.body>
+      {{/if}}
+    </row.content>
+  </AuDataTable>
+</div>
+
+<AuModal
+  @modalOpen={{this.isDeleteModalOpen}}
+  @closeModal={{this.closeDeleteModal}}
+>
+  <:title>Verwijder {{this.fileToDelete.name}}</:title>
+  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="secondary"
+        {{on "click" this.closeDeleteModal}}
+      >Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        {{on "click" (perform this.deleteFile)}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
