@@ -20,9 +20,11 @@ export default class ProcessesProcessDiagramsRoute extends Route {
         'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
-    const sortedOnCreatedDiagramsLists = diagramLists.sort((latest, current) =>
-      current.created > latest.created ? current : latest,
-    );
+    const sortedOnCreatedDiagramsLists = diagramLists
+      .sort((latest, current) =>
+        current.created > latest.created ? current : latest,
+      )
+      .filter((list) => list.diagrams.some((d) => !d.diagramFile.isArchived));
 
     return {
       process: process,
