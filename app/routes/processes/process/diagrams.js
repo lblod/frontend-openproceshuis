@@ -29,14 +29,14 @@ export default class ProcessesProcessDiagramsRoute extends Route {
     return {
       process: process,
       lists: sortedOnCreatedDiagramsLists,
-      fallbackFirstDiagramList: sortedOnCreatedDiagramsLists[0],
+      activeDiagramList: sortedOnCreatedDiagramsLists[0],
     };
   }
 
   setupController(controller, model) {
     super.setupController(...arguments);
-    controller.selectedDiagramList = model.fallbackFirstDiagramList;
+    controller.selectedDiagramList = model.activeDiagramList;
     controller.selectedDiagramFile =
-      model.fallbackFirstDiagramList.diagrams[0]?.diagramFile;
+      model.activeDiagramList.diagrams[0]?.diagramFile;
   }
 }
