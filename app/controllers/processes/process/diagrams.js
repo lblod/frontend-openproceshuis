@@ -7,19 +7,22 @@ import { service } from '@ember/service';
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
   @tracked selectedDiagramList;
+  @tracked selectedDiagramFile;
 
   @action
   openDiagramList(diagramList) {
     this.selectedDiagramList = diagramList;
+    this.selectedDiagramFile = diagramList.diagrams[0]?.diagramFile;
+  }
+
+  @action
+  openDiagramFile(diagramFile) {
+    this.selectedDiagramFile = diagramFile;
   }
 
   @action
   isDiagramListSelected(diagramListId) {
     return this.selectedDiagramList?.id === diagramListId;
-  }
-
-  get showcasedMainDiagramFile() {
-    return this.selectedDiagramList?.diagrams[0]?.diagramFile;
   }
 
   get canEdit() {

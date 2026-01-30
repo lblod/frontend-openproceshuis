@@ -34,14 +34,14 @@
   </:sidebar>
   <:content>
     <div class="au-o-box au-o-flow">
-      {{#if this.showcasedMainDiagramFile}}
-        <File::Viewer @file={{this.showcasedMainDiagramFile}} />
-        <File::MetadataCard @file={{this.showcasedMainDiagramFile}} />
+      {{#if this.selectedDiagramFile}}
+        <File::Viewer @file={{this.selectedDiagramFile}} />
+        <File::MetadataCard @file={{this.selectedDiagramFile}} />
       {{/if}}
       <p class="au-u-h4 au-u-medium">Diagrammen</p>
       <DiagramList::Table
         @diagramList={{this.selectedDiagramList}}
-        @onDiagramFileSelected={{this.openDiagramList}}
+        @onDiagramFileSelected={{this.openDiagramFile}}
         @canEdit={{this.canEdit}}
       />
     </div>

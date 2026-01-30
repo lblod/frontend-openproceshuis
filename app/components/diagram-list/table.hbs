@@ -36,7 +36,12 @@
       {{else}}
         <c.body as |diagram|>
           <td>
-            {{diagram.diagramFile.name}}
+            <AuButton
+              @skin="link"
+              {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+            >
+              {{diagram.diagramFile.name}}
+            </AuButton>
           </td>
           <td>{{date-format diagram.diagramFile.created true}}</td>
           <td>{{file-size-format diagram.diagramFile.size}}</td>
