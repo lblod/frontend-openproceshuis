@@ -42,4 +42,15 @@ export default class ProcessesProcessDiagramsController extends Controller {
       this.selectedDiagramList.id === this.model.activeDiagramList.id
     );
   }
+
+  get canEdit() {
+    return (
+      this.currentSession.canEdit &&
+      this.currentSession.group &&
+      this.model.process?.publisher &&
+      (this.model.process.publisher.id === this.currentSession.group.id ||
+        (this.model.process.isPublishedByAbbOrDv &&
+          this.currentSession.isAbbOrDv))
+    );
+  }
 }
