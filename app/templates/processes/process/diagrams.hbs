@@ -1,17 +1,17 @@
 {{page-title "Diagrammen"}}
 
+{{! template-lint-disable no-invalid-interactive }}
+{{! template-lint-disable style-concatenation }}
+{{! template-lint-disable no-inline-styles }}
 <SidebarContainer>
   <:sidebar>
-    <div class="au-c-sidebar au-o-box">
+    <div class="au-c-sidebar au-o-box" style="min-width: 25vw">
       <div>
         <AuHeading @skin="5" class="au-u-muted au-u-margin-bottom-small">
           Versies
         </AuHeading>
         <div class="au-o-flow--tiny">
           {{#each @model.lists as |diagramList|}}
-            {{! template-lint-disable no-invalid-interactive }}
-            {{! template-lint-disable style-concatenation }}
-            {{! template-lint-disable no-inline-styles }}
             <div
               {{on "click" (fn this.openDiagramList diagramList)}}
               class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small"
@@ -23,11 +23,8 @@
               }} border-radius:5px;border:1.5px solid var(--au-gray-200); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px; "
             >
               <div class="au-u-flex au-u-flex--column au-u-flex--between">
-                <p class="au-u-h4">{{diagramList.displayVersion}}</p>
-                <p class="au-u-muted">{{date-format
-                    diagramList.created
-                    true
-                  }}</p>
+                <p class="au-u-h5">{{date-format diagramList.created true}}</p>
+                <p class="au-u-muted">{{diagramList.displayVersion}}</p>
               </div>
             </div>
           {{/each}}
@@ -38,11 +35,11 @@
   <:content>
     <div class="au-o-box">
       {{#if this.showcasedMainDiagramFile}}
-        {{#if this.showcasedMainDiagramFile.isBpmnFile}}
-          <BpmnViewer @diagram={{this.showcasedMainDiagramFile}} />
-        {{else if this.showcasedMainDiagramFile.isVisioFile}}
-          <PdfViewer @diagram={{this.showcasedMainDiagramFile}} />
-        {{/if}}
+        <File::Viewer @file={{this.showcasedMainDiagramFile}} />
+        <File::MetadataCard
+          @file={{this.showcasedMainDiagramFile}}
+          class="au-u-margin-top"
+        />
       {{/if}}
     </div>
   </:content>
