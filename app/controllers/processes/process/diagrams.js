@@ -35,4 +35,11 @@ export default class ProcessesProcessDiagramsController extends Controller {
           this.currentSession.isAbbOrDv))
     );
   }
+
+  get canEditFilesInTable() {
+    return (
+      this.canEdit &&
+      this.selectedDiagramList.id === this.model.activeDiagramList.id
+    );
+  }
 }
