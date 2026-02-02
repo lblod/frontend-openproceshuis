@@ -59,3 +59,25 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
 .au-c-list-navigation__link {
   padding: $au-unit-small;
 }
+
+.au-c-sidebar-container__sidebar {
+  height: 100%;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1020px) {
+  .au-c-sidebar-container__sidebar {
+    height: auto;
+  }
+}
+
+.au-c-sidebar-container__content {
+  height: 100%;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.au-c-sidebar {
+  overflow: scroll;
+}
