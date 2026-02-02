@@ -119,20 +119,20 @@ export default class DiagramService extends Service {
   async createDiagramListForFile(fileId) {
     const now = new Date();
     const file = await this.store.findRecord('file', fileId);
-    const listItem = this.store.createRecord('list-item', {
+    const diagramListItem = this.store.createRecord('diagram-list-item', {
       position: 1,
       created: now,
       modified: now,
       diagramFile: file,
       subItems: [],
     });
-    await listItem.save();
+    await diagramListItem.save();
     const diagramList = this.store.createRecord('diagram-list', {
       order: 1,
       created: now,
       modified: now,
       version: 'v0.0.1',
-      diagrams: [listItem],
+      diagrams: [diagramListItem],
     });
     await diagramList.save();
 
