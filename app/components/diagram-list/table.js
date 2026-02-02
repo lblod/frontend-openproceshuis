@@ -21,9 +21,7 @@ export default class DiagramListTable extends Component {
     const diagrams = this.args.diagramList.diagrams;
     return diagrams
       .filter((diagrams) => !diagrams.diagramFile.isArchived)
-      .sort((latest, current) =>
-        current.position > latest.position ? current : latest,
-      );
+      .sort((latest, current) => latest.position - current.position);
   }
 
   @action
