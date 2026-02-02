@@ -46,9 +46,7 @@ export default class DiagramService extends Service {
     });
     const diagramLists = processWithLists[0]?.diagramLists;
     const filesOfLists = diagramLists
-      .map((list) => {
-        return list.diagrams[0].diagramFile;
-      })
+      .map((list) => list.diagrams[0].diagramFile)
       .filter(
         (file) =>
           (file.isBpmnFile || file.isVisioFile) &&
@@ -64,9 +62,9 @@ export default class DiagramService extends Service {
 
     try {
       const files = await this.getDiagramListsFilesForProcessId(processId);
-      const latestDiagramFile = files.reduce((latest, current) => {
-        return current.modified > latest.modified ? current : latest;
-      });
+      const latestDiagramFile = files.reduce((latest, current) =>
+        current.modified > latest.modified ? current : latest,
+      );
 
       this.latestDiagram = latestDiagramFile;
       return latestDiagramFile;
@@ -128,7 +126,6 @@ export default class DiagramService extends Service {
     });
     await diagramListItem.save();
     const diagramList = this.store.createRecord('diagram-list', {
-      order: 1,
       created: now,
       modified: now,
       version: 'v0.0.1',
