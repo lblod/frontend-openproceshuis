@@ -1,5 +1,6 @@
 import Route from '@ember/routing/route';
 
+import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { keepLatestTask } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
@@ -52,5 +53,10 @@ export default class InformationAssetsIndexRoute extends Route {
     }
 
     return yield this.store.query('information-asset', query);
+  }
+
+  @action
+  refreshModel() {
+    this.refresh();
   }
 }

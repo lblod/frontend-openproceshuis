@@ -36,10 +36,9 @@
       <:action>
         {{#if this.currentSession.isAdmin}}
           <AuButton
-            @skin="secondary"
             @icon="add"
             iconAlignment="left"
-            {{on "click" (fn this.openUpsertModal null)}}
+            {{on "click" this.openNewModal}}
           >Nieuwe informatie asset</AuButton>
         {{/if}}
       </:action>
@@ -49,6 +48,7 @@
       @isLoading={{this.isLoading}}
       @page={{this.page}}
       @size={{this.size}}
+      @noDataMessage={{this.noDataMessage}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
@@ -68,12 +68,19 @@
             @currentSorting={{this.sort}}
             @label="Auteur"
           />
-
           <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sort}}
-            @label="Laatst aangemaakt op"
+            @label="Aangemaakt op"
           />
+          {{#if this.canEdit}}
+            <th>
+              <span class="au-u-hidden au-u-sr-only">Wijzig</span>
+            </th>
+            <th>
+              <span class="au-u-hidden au-u-sr-only">Verwijder</span>
+            </th>
+          {{/if}}
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -85,13 +92,12 @@
           </TableMessage>
         {{else}}
           <c.body as |informationAsset|>
-            <td
-              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-            >
+            <td>
               <LinkTo
                 class="au-c-link"
                 @model={{informationAsset.id}}
-                @route="information-assets.information-asset"
+                @route="information-assets.edit"
+                @query={{hash edit=null}}
               >
                 {{informationAsset.title}}
               </LinkTo>
@@ -101,9 +107,49 @@
               {{informationAsset.creator.name}}
             </td>
             <td>{{date-format informationAsset.created}}</td>
+            {{#if this.canEdit}}
+              <td>
+                <div class="au-u-flex au-u-flex--center">
+                  <AuLink
+                    @route="information-assets.edit"
+                    @model={{informationAsset.id}}
+                    @query={{hash edit=true}}
+                    @skin="button-naked"
+                    @icon="pencil"
+                  >Wijzig</AuLink>
+                </div>
+              </td>
+              <td>
+                <div class="au-u-flex au-u-flex--center">
+                  <AuButton
+                    @skin="naked"
+                    @icon="trash"
+                    @alert="true"
+                    {{on "click" (fn this.openDeleteModal informationAsset)}}
+                  >Verwijder</AuButton>
+                </div>
+              </td>
+            {{/if}}
           </c.body>
         {{/if}}
       </t.content>
     </AuDataTable>
   </:content>
 </SidebarContainer>
+
+{{#if this.canEdit}}
+  <Shared::DeleteModal
+    @isModalOpen={{this.isDeleteModalOpen}}
+    @closeModal={{this.closeDeleteModal}}
+    @onDelete={{fn (perform this.onDeleteAsset)}}
+    @type="informatie asset"
+    @isLoading={{this.isDeleting}}
+    @title={{this.informationAssetToDelete.title}}
+  />
+
+  <Process::IcrModal
+    @selected={{this.informationAsset}}
+    @modalOpen={{this.isCreateModalOpen}}
+    @closeModal={{this.closeNewModal}}
+  />
+{{/if}}

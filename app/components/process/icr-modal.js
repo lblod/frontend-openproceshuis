@@ -29,7 +29,9 @@ export default class IcrModalComponent extends Component {
       const newOptions = this.draftInformationAssets.filter(
         (asset) => asset.isDraft !== true,
       );
-      this.args.setOptions(newOptions);
+      if (this.args.setOptions) {
+        this.args.setOptions(newOptions);
+      }
     }
     this.args.closeModal();
   }
@@ -56,39 +58,6 @@ export default class IcrModalComponent extends Component {
   }
 
   @action
-  setIntegrityScore(value) {
-    if (!this.args.selected) return;
-    this.args.selected.integrityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setConfidentialityScore(value) {
-    if (!this.args.selected) return;
-    this.args.selected.confidentialityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsPersonalData(value) {
-    if (!this.args.selected) return;
-    this.args.selected.containsPersonalData = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsProfessionalData(value) {
-    this.args.selected.containsProfessionalData = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsSensitivePersonalData(value) {
-    this.args.selected.containsSensitivePersonalData = value;
-    this.validateForm();
-  }
-
-  @action
   resetModal() {
     this.draftInformationAssets = this.args.options || [];
     this.formIsValid = false;
@@ -109,9 +78,8 @@ export default class IcrModalComponent extends Component {
 
     this.isLoading = true;
 
-    let assetRecord;
-
-    const assetData = {
+    const oldAsset = this.args.selected;
+    const newAssetData = {
       title: this.args.selected.title,
       availabilityScore: this.args.selected.availabilityScore,
       confidentialityScore: this.args.selected.confidentialityScore,
@@ -121,43 +89,36 @@ export default class IcrModalComponent extends Component {
       containsSensitivePersonalData:
         this.args.selected.containsSensitivePersonalData,
       created: new Date(),
+      modified: new Date(),
       description: this.args.selected.description,
       status: this.args.selected.status,
       creator: this.currentSession.group,
     };
+    const newAsset = this.store.createRecord('information-asset', newAssetData);
 
     try {
-      if (this.args.selected.isDraft) {
-        assetRecord = this.store.createRecord('information-asset', assetData);
-        yield assetRecord.save();
-      } else {
-        assetRecord = this.args.selected;
-        assetRecord.setProperties(assetData);
-
-        const savedAsset = yield assetRecord.save();
-
-        this.args.process.informationAssets = [
-          ...this.args.process.informationAssets.filter(
-            (ia) => ia.id !== savedAsset.id,
-          ),
-          savedAsset,
-        ];
-
-        yield this.args.process.save();
+      let isNew = false;
+      if (oldAsset.isDraft) {
+        isNew = true;
+        yield newAsset.save();
       }
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
       );
-      this.args.setOptions([...nonDraftAssets, assetRecord]);
+      if (this.args.setOptions) {
+        this.args.setOptions([...nonDraftAssets, newAsset]);
+      }
 
       this.toaster.success(
-        'Informatieclassificatie succesvol bijgewerkt',
+        isNew
+          ? 'Nieuwe informatie asset succesvol toegevoegd.'
+          : 'Informatie asset succesvol bijgewerkt.',
         'Gelukt!',
         { timeOut: 5000 },
       );
 
       this.resetModal();
-      this.args.closeModal();
+      this.args.closeModal(newAsset);
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.icrDataUpdateFailed');

@@ -8,10 +8,12 @@ import { action } from '@ember/object';
 import { dropTask } from 'ember-concurrency';
 
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessIcrCardComponent extends Component {
   @service store;
   @service toaster;
+  @service router;
 
   @tracked informationAssets = [];
   @tracked blueprintUsages = A([]);
@@ -36,6 +38,9 @@ export default class ProcessIcrCardComponent extends Component {
     }
   }
 
+  get archivedUri() {
+    return ENV.resourceStates.archived;
+  }
   get confidentialityScore() {
     return Math.max(
       ...this.args.process.informationAssets.map(
@@ -73,9 +78,10 @@ export default class ProcessIcrCardComponent extends Component {
     );
   }
 
-  @action openIcrModal(asset) {
-    this.selectedAsset = asset;
-    this.showIcrModal = true;
+  @action editAsset(asset) {
+    this.router.transitionTo('information-assets.edit', asset.id, {
+      queryParams: { edit: true, process: this.args.process.id },
+    });
   }
 
   @action
