@@ -1,7 +1,11 @@
 import Model, { hasMany, attr } from '@ember-data/model';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class DiagramListModel extends Model {
-  @attr('string') order;
+  @attr('string', {
+    defaultValue: ENV.diagramList.unordered,
+  })
+  order;
   @attr('string') version;
   @attr('string', {
     defaultValue: new Date(),
