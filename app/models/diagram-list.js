@@ -9,6 +9,6 @@ export default class DiagramListModel extends Model {
   created;
   @attr('string') modified;
 
-  @hasMany('list-item', { inverse: null, async: false })
+  @hasMany('diagram-list-item', { inverse: null, async: false })
   diagrams;
 }
