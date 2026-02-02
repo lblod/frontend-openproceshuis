@@ -114,22 +114,27 @@ export default class DiagramService extends Service {
     this.fetchVersions.perform(processId);
   }
 
-  async createDiagramListForFile(fileId) {
-    const now = new Date();
-    const file = await this.store.findRecord('file', fileId);
-    const diagramListItem = this.store.createRecord('diagram-list-item', {
-      position: 1,
-      created: now,
-      modified: now,
-      diagramFile: file,
-      subItems: [],
+  async createDiagramListForFiles(fileIds) {
+    const files = await this.store.query('file', {
+      'filter[id]': fileIds.join(','),
     });
-    await diagramListItem.save();
+    const now = new Date();
+    const diagramListItems = files.map((file, index) => {
+      return this.store.createRecord('diagram-list-item', {
+        position: index + 1,
+        created: now,
+        modified: now,
+        diagramFile: file,
+        subItems: [],
+      });
+    });
+
+    await Promise.all(diagramListItems.map(async (item) => await item.save()));
     const diagramList = this.store.createRecord('diagram-list', {
       created: now,
       modified: now,
       version: 'v0.0.1',
-      diagrams: [diagramListItem],
+      diagrams: diagramListItems,
     });
     await diagramList.save();
 
