@@ -35,15 +35,11 @@
       (or this.latestDiagram.isBpmnFile this.latestDiagram.isVisioFile)
     )
   }}
-    {{#if this.latestDiagram.isBpmnFile}}
-      <BpmnViewer
-        @diagram={{this.latestDiagram}}
-        @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
-        @onSvgLoaded={{this.setLatestDiagramAsSvg}}
-      />
-    {{else if this.latestDiagram.isVisioFile}}
-      <PdfViewer @diagram={{this.latestDiagram}} />
-    {{/if}}
+    <File::Viewer
+      @file={{this.latestDiagram}}
+      @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
+      @onSvgLoaded={{this.setLatestDiagramAsSvg}}
+    />
     <DataCard class="au-u-margin-top-small">
       <:header></:header>
       <:title>
