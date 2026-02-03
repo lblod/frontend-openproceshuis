@@ -3,7 +3,7 @@ import Controller from '@ember/controller';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { restartableTask, task, timeout } from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 
 export default class InformationAssetsIndexController extends Controller {
   size = 20;
@@ -46,7 +46,7 @@ export default class InformationAssetsIndexController extends Controller {
       : 'Er werden geen resultaten gevonden.';
   }
 
-  setTitle = restartableTask(async (event) => {
+  setTitle = task({ drop: true }, async (event) => {
     await timeout(250);
     this.title = event.target?.value;
   });
@@ -99,8 +99,7 @@ export default class InformationAssetsIndexController extends Controller {
     this.sort = 'title';
   }
 
-  @task
-  *onDeleteAsset() {
+  deleteFile = task({ drop: true }, async () => {
     try {
       this.isDeleting = true;
       if (!this.informationAssetToDelete) {
@@ -115,7 +114,7 @@ export default class InformationAssetsIndexController extends Controller {
       }
       this.informationAssetToDelete.archive();
       this.informationAssetToDelete.modified = new Date();
-      yield this.informationAssetToDelete.save();
+      await this.informationAssetToDelete.save();
 
       this.toaster.success('Informatie asset succesvol verwijderd', undefined, {
         timeOut: 5000,
@@ -132,5 +131,5 @@ export default class InformationAssetsIndexController extends Controller {
         { timeOut: 5000 },
       );
     }
-  }
+  });
 }

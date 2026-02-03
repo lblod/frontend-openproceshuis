@@ -1,6 +1,6 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import { dropTask } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 import { tracked } from 'tracked-built-ins';
 import { service } from '@ember/service';
 
@@ -68,8 +68,7 @@ export default class IcrModalComponent extends Component {
     this.formIsValid = this.args.selected.title?.trim().length > 0;
   }
 
-  @dropTask
-  *updateModel(event) {
+  updateModel = task({ drop: true }, async (event) => {
     event.preventDefault();
 
     if (!this.args.selected || !this.formIsValid) {
@@ -100,7 +99,7 @@ export default class IcrModalComponent extends Component {
       let isNew = false;
       if (oldAsset.isDraft) {
         isNew = true;
-        yield newAsset.save();
+        await newAsset.save();
       }
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
@@ -129,5 +128,5 @@ export default class IcrModalComponent extends Component {
     } finally {
       this.isLoading = false;
     }
-  }
+  });
 }

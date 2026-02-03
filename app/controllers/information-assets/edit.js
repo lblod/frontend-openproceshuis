@@ -2,7 +2,7 @@ import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { keepLatestTask } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 
 export default class InformationAssetIndexController extends Controller {
   queryParams = ['edit', 'process'];
@@ -196,40 +196,42 @@ export default class InformationAssetIndexController extends Controller {
     }
   }
 
-  @keepLatestTask({ cancelOn: 'deactivate' })
-  *loadFullHistory(asset) {
-    if (!asset) return [];
+  loadFullHistory = task(
+    { keepLatest: true, cancelOn: 'deactivate' },
+    async (asset) => {
+      if (!asset) return [];
 
-    const visited = new Set();
-    const allAssets = [];
+      const visited = new Set();
+      const allAssets = [];
 
-    function* traverse(a) {
-      if (!a || visited.has(a.id)) return;
-      visited.add(a.id);
+      async function traverse(a) {
+        if (!a || visited.has(a.id)) return;
+        visited.add(a.id);
 
-      if (a.previousVersion) yield a.previousVersion;
-      const previousVersions = yield a.previousVersions;
-      const nextVersions = yield a.nextVersions;
+        if (a.previousVersion) await a.previousVersion;
+        const previousVersions = await a.previousVersions;
+        const nextVersions = await a.nextVersions;
 
-      allAssets.push(a);
+        allAssets.push(a);
 
-      if (a.previousVersion) yield* traverse(a.previousVersion);
+        if (a.previousVersion) await traverse(a.previousVersion);
 
-      for (let prev of previousVersions) {
-        yield* traverse(prev);
+        for (let prev of previousVersions) {
+          await traverse(prev);
+        }
+
+        for (let next of nextVersions) {
+          await traverse(next);
+        }
       }
 
-      for (let next of nextVersions) {
-        yield* traverse(next);
-      }
-    }
+      await traverse(asset);
 
-    yield* traverse(asset);
+      allAssets.sort((a, b) => new Date(a.created) - new Date(b.created));
 
-    allAssets.sort((a, b) => new Date(a.created) - new Date(b.created));
-
-    return allAssets;
-  }
+      return allAssets;
+    },
+  );
 
   @action
   loadTimeline() {
