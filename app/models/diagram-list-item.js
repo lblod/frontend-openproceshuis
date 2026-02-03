@@ -1,7 +1,10 @@
 import Model, { belongsTo, hasMany, attr } from '@ember-data/model';
 
 export default class DiagramListItemModel extends Model {
-  @attr('number') position;
+  @attr('number', {
+    defaultValue: 1,
+  })
+  position;
   @attr('string', {
     defaultValue: new Date(),
   })

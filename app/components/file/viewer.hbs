@@ -1,0 +1,11 @@
+{{#if @file}}
+  {{#if @file.isBpmnFile}}
+    <BpmnViewer
+      @diagram={{@file}}
+      @onBpmnLoaded={{@onBpmnLoaded}}
+      @onSvgLoaded={{@onSvgLoaded}}
+    />
+  {{else if @file.isVisioFile}}
+    <PdfViewer @diagram={{@file}} />
+  {{/if}}
+{{/if}}
