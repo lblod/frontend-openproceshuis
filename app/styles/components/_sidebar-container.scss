@@ -71,7 +71,7 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
     flex-shrink: 0 !important;
   }
 
-  @media (max-width: 1020px) {
+  @media (width <= 1023px) {
     .au-c-sidebar-container__sidebar {
       height: auto !important;
     }
