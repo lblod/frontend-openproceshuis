@@ -50,6 +50,10 @@ Router.map(function () {
     this.route('admin');
   });
 
+  this.route('information-assets', { path: 'informatie-assets' }, function () {
+    this.route('information-asset', { path: '/:id' });
+  });
+
   this.route('legal', { path: '/legaal' }, function () {
     this.route('disclaimer');
     this.route('cookiestatement', { path: '/cookieverklaring' });
