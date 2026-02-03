@@ -15,4 +15,8 @@ export default class DiagramListModel extends Model {
 
   @hasMany('diagram-list-item', { inverse: null, async: false })
   diagrams;
+
+  get displayVersion() {
+    return this.version ?? '/';
+  }
 }
