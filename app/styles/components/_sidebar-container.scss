@@ -60,24 +60,26 @@ Tracking issue: https://github.com/appuniversum/ember-appuniversum/issues/86 */
   padding: $au-unit-small;
 }
 
-.au-c-sidebar-container__sidebar {
-  height: 100%;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-@media (max-width: 1020px) {
-  .au-c-sidebar-container__sidebar {
-    height: auto;
+.diagrams {
+  .au-c-sidebar {
+    overflow-y: auto !important;
   }
-}
 
-.au-c-sidebar-container__content {
-  height: 100%;
-  overflow-y: auto;
-  flex-grow: 1;
-}
+  .au-c-sidebar-container__sidebar {
+    height: 100% !important;
+    overflow-y: auto !important;
+    flex-shrink: 0 !important;
+  }
 
-.au-c-sidebar {
-  overflow-y: scroll;
+  @media (max-width: 1020px) {
+    .au-c-sidebar-container__sidebar {
+      height: auto !important;
+    }
+  }
+
+  .au-c-sidebar-container__content {
+    height: 100% !important;
+    overflow-y: auto !important;
+    flex-grow: 1 !important;
+  }
 }
