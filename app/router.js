@@ -28,7 +28,10 @@ Router.map(function () {
   this.route('index', { path: '' });
 
   this.route('processes', { path: 'processen' }, function () {
-    this.route('process', { path: '/:id/' }, function () {});
+    this.route('process', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+      this.route('diagrams', { path: 'diagrammen' });
+    });
   });
 
   this.route('shared-processes', { path: 'gedeelde-processen' }, function () {
