@@ -1,0 +1,71 @@
+{{page-title "Diagrammen"}}
+{{breadcrumb "Diagram" route="processes.process.diagrams" model=@model.id}}
+{{! template-lint-disable no-invalid-interactive }}
+{{! template-lint-disable style-concatenation }}
+{{! template-lint-disable no-inline-styles }}
+
+<SidebarContainer class="diagrams">
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div>
+        <AuHeading
+          @skin="5"
+          class="au-u-muted au-u-margin-bottom-small au-u-padding-left au-u-padding-top"
+        >
+          Versies
+        </AuHeading>
+        <div class="">
+          {{#each @model.lists as |diagramList|}}
+            <div
+              {{on "click" (fn this.openDiagramList diagramList)}}
+              class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom"
+              style="
+               {{if
+                (eq this.selectedDiagramList.id diagramList.id)
+                'background-color: var(--au-select-text-bg);'
+                'background-color: var(--au-white);'
+              }} border:1.5px solid var(--au-gray-200); "
+            >
+              <div class="au-u-flex au-u-flex--column au-u-flex--between">
+                <p class="au-u-h5">{{date-format diagramList.created true}}</p>
+                <p class="au-u-muted">{{diagramList.displayVersion}}</p>
+              </div>
+              {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
+                <div class="au-u-flex au-u-flex--end">
+                  <AuIcon
+                    @icon="lock-closed"
+                    @size={{this.size}}
+                    @alignment={{this.alignment}}
+                    @ariaHidden={{this.ariaHidden}}
+                  />
+                </div>
+              {{/unless}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <AuToolbar @size="small" class="au-u-padding-top" as |Group|>
+      <Group />
+      <Group class="au-c-toolbar__group--actions">
+        <AuPill @icon="clock-rewind">Laatst aangepast op
+          {{date-format this.selectedDiagramList.modified true}}</AuPill>
+      </Group>
+    </AuToolbar>
+    <div class="au-o-box">
+      {{#if this.selectedDiagramFile}}
+        <File::Viewer @file={{this.selectedDiagramFile}} />
+        <File::MetadataCard @file={{this.selectedDiagramFile}} />
+      {{/if}}
+      <p class="au-u-h4 au-u-medium au-u-margin-top">Diagrammen</p>
+      <DiagramList::Table
+        @diagramList={{this.selectedDiagramList}}
+        @onDiagramFileSelected={{this.openDiagramFile}}
+        @canEdit={{this.canEditFilesInTable}}
+        @canDeleteLastItem={{false}}
+      />
+    </div>
+  </:content>
+</SidebarContainer>
