@@ -125,6 +125,7 @@ export default class ProcessRelevantLinks extends Component {
       });
       linkModel.deleteRecord();
       this.linkValue = null;
+      this.isExecutingAction = false;
       return;
     }
     links.push(linkModel);

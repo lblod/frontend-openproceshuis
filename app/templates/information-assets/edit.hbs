@@ -259,6 +259,11 @@
         </:card>
 
       </DataCard>
+      <br />
+      <Icr::Attachments
+        @canEdit={{this.canEdit}}
+        @informationAsset={{this.informationAsset}}
+      />
     </div>
     <aside class="au-o-grid__item au-u-2-6@medium">
       <div class="u-top-sticky">
@@ -336,13 +341,10 @@
             {{else}}
               <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
             {{/if}}
-
           {{/if}}
-
         </AuContent>
       </div>
     </aside>
-
   </div>
 </AuBodyContainer>
 

@@ -26,6 +26,13 @@ export default class InformationAssetModel extends Model {
   @belongsTo('group', { inverse: null, async: false }) creator;
   @hasMany('processes', { inverse: null, async: false })
   processes;
+  @hasMany('file', { inverse: 'informationAsset', async: false })
+  attachments;
+  @hasMany('link', {
+    inverse: null,
+    async: true,
+  })
+  links;
 
   archive() {
     this.status = ENV.resourceStates.archived;
