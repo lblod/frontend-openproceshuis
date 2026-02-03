@@ -119,7 +119,6 @@ export default class IcrAttachments extends Component {
 
       try {
         this.attachments = await this.store.query('file', query);
-        console.log(this.attachments);
       } catch {
         this.attachmentsHaveErrored = true;
       }
