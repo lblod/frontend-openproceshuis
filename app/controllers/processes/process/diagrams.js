@@ -6,18 +6,24 @@ import { service } from '@ember/service';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
+  @service router;
   @tracked selectedDiagramList;
   @tracked selectedDiagramFile;
 
   @action
-  openDiagramList(diagramList) {
+  async openDiagramList(diagramList) {
     this.selectedDiagramList = diagramList;
-    this.selectedDiagramFile = diagramList.diagrams[0]?.diagramFile;
+    const latestDiagrams = await diagramList.diagrams;
+    this.selectedDiagramFile = latestDiagrams[0]?.diagramFile;
   }
 
   @action
-  openDiagramFile(diagramFile) {
-    this.selectedDiagramFile = diagramFile;
+  async openDiagramFile(diagramFile) {
+    if (!diagramFile) {
+      await this.openDiagramList(this.selectedDiagramList);
+    } else {
+      this.selectedDiagramFile = diagramFile;
+    }
   }
 
   @action

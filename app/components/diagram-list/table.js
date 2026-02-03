@@ -54,6 +54,7 @@ export default class DiagramListTable extends Component {
 
     try {
       await this.fileToDelete.save();
+      this.args.onDiagramFileSelected?.(null);
       this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
         timeOut: 5000,
       });
