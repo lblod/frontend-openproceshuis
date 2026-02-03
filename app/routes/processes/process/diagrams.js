@@ -31,7 +31,8 @@ export default class ProcessesProcessDiagramsRoute extends Route {
   setupController(controller, model) {
     super.setupController(...arguments);
     controller.selectedDiagramList = model.activeDiagramList;
-    controller.selectedDiagramFile =
-      model.activeDiagramList.diagrams[0]?.diagramFile;
+    controller.selectedDiagramFile = this.diagram.getFirstFileOfList(
+      model.activeDiagramList,
+    );
   }
 }

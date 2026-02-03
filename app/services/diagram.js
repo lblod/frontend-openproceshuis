@@ -43,6 +43,7 @@ export default class DiagramService extends Service {
       'filter[id]': processId,
       include:
         'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
+      reload: true,
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
     return diagramLists.filter((list) =>
@@ -53,10 +54,22 @@ export default class DiagramService extends Service {
   async getLatestDiagramList(processId) {
     const allDiagramLists =
       await this.getDiagramListsWithFilesForProcess(processId);
-    const sortedOnCreatedLists = allDiagramLists.sort((a, b) => {
-      return new Date(b.created) - new Date(a.created);
-    });
+    const sortedOnCreatedLists = allDiagramLists.sort(
+      (a, b) => new Date(b.created) - new Date(a.created),
+    );
     return sortedOnCreatedLists[0];
+  }
+
+  getFirstFileOfList(list) {
+    const sortedDiagrams = Array.from(list.diagrams).sort(
+      (a, b) => a.position - b.position,
+    );
+    const diagrams = sortedDiagrams.filter(
+      (diagram) =>
+        (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
+        diagram.diagramFile.status !== ENV.resourceStates.archived,
+    );
+    return diagrams[0].diagramFile;
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {
@@ -65,16 +78,7 @@ export default class DiagramService extends Service {
 
     try {
       const list = await this.getLatestDiagramList(processId);
-      const files = list.diagrams
-        .map((diagram) => diagram.diagramFile)
-        .filter(
-          (file) =>
-            (file.isBpmnFile || file.isVisioFile) &&
-            file.status !== ENV.resourceStates.archived,
-        );
-      const latestDiagramFile = files.reduce((latest, current) =>
-        current.modified > latest.modified ? current : latest,
-      );
+      const latestDiagramFile = this.getFirstFileOfList(list);
 
       this.latestDiagram = latestDiagramFile;
       return latestDiagramFile;
