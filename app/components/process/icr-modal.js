@@ -13,6 +13,7 @@ export default class IcrModalComponent extends Component {
   @tracked isLoading = false;
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
+  @service currentSession;
 
   get header() {
     if (this.args.selected.isDraft) {
@@ -122,6 +123,7 @@ export default class IcrModalComponent extends Component {
       created: new Date(),
       description: this.args.selected.description,
       status: this.args.selected.status,
+      creator: this.currentSession.group,
     };
 
     try {

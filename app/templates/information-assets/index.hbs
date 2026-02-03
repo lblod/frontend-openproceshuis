@@ -1,0 +1,109 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+        >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
+          <div>
+            <AuLabel for="filter-title">Titel</AuLabel>
+            <AuInput
+              @id="filter-title"
+              @type="hidden"
+              value={{this.title}}
+              {{on "keyup" (perform this.setTitle)}}
+            />
+          </div>
+          <div class="au-u-flex au-u-flex--end">
+            <AuButton
+              @icon="cross"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none au-u-medium"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <PageHeader>
+      <:title>Informatie assets</:title>
+      <:action>
+        {{#if this.currentSession.isAdmin}}
+          <AuButton
+            @skin="secondary"
+            @icon="add"
+            iconAlignment="left"
+            {{on "click" (fn this.openUpsertModal null)}}
+          >Nieuwe informatie asset</AuButton>
+        {{/if}}
+      </:action>
+    </PageHeader>
+    <AuDataTable
+      @content={{this.informationAssets}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="title"
+            @currentSorting={{this.sort}}
+            @label="Titel"
+          />
+          <AuDataTableThSortable
+            @field="description"
+            @currentSorting={{this.sort}}
+            @label="Beschrijving"
+          />
+          <AuDataTableThSortable
+            @field="creator"
+            @currentSorting={{this.sort}}
+            @label="Auteur"
+          />
+
+          <AuDataTableThSortable
+            @field="created"
+            @currentSorting={{this.sort}}
+            @label="Laatst aangemaakt op"
+          />
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |informationAsset|>
+            <td
+              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+            >
+              <LinkTo
+                class="au-c-link"
+                @model={{informationAsset.id}}
+                @route="information-assets.information-asset"
+              >
+                {{informationAsset.title}}
+              </LinkTo>
+            </td>
+            <td>{{or (truncate informationAsset.description 150 true) "/"}}</td>
+            <td>
+              {{informationAsset.creator.name}}
+            </td>
+            <td>{{date-format informationAsset.created}}</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

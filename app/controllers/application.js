@@ -40,6 +40,7 @@ export default class ApplicationController extends Controller {
       'shared-processes',
       'my-local-government',
       'inventory',
+      'information-assets',
     ].includes(this.compareRouteName);
   }
 
