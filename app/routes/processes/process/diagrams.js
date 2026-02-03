@@ -21,10 +21,10 @@ export default class ProcessesProcessDiagramsRoute extends Route {
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
     const sortedOnCreatedDiagramsLists = diagramLists
-      .sort((latest, current) =>
-        current.created > latest.created ? current : latest,
-      )
-      .filter((list) => list.diagrams.some((d) => !d.diagramFile.isArchived));
+      .filter((list) => list.diagrams.some((d) => !d.diagramFile.isArchived))
+      .sort((a, b) => {
+        return new Date(b.created) - new Date(a.created);
+      });
 
     return {
       process: process,
