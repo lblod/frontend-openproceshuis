@@ -98,10 +98,9 @@ export default class ProcessDiagramVisual extends Component {
   }
 
   @action
-  diagramUploaded(uploadedFileId) {
+  diagramUploaded() {
     this.replaceModalOpened = false;
-    this.diagram.fetchLatestById.perform(uploadedFileId);
-    this.diagram.refreshVersions(this.process.id);
+    this.diagram.fetchLatest.perform(this.process.id);
   }
 
   @dropTask
