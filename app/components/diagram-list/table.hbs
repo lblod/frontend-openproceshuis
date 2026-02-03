@@ -67,7 +67,23 @@
   @closeModal={{this.closeDeleteModal}}
 >
   <:title>Verwijder {{this.fileToDelete.name}}</:title>
-  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:body>
+    {{#unless this.canDeleteFile}}
+      <AuAlert
+        @title="Niet toegestaan"
+        @skin="warning"
+        @icon="cross"
+        @size="small"
+        @closable={{false}}
+      >
+        <p>Het laatste diagram in de lijst kan niet worden verwijderd. Vervang
+          de huidige diagram(men) om een nieuwe versie aan te maken.</p>
+      </AuAlert>
+    {{/unless}}
+    <p>
+      Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?
+    </p>
+  </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
@@ -78,6 +94,9 @@
         @skin="primary"
         @icon="bin"
         @alert="true"
+        @disabled={{not this.canDeleteFile}}
+        @loading={{this.deleteFile.isRunning}}
+        @loadingMessage="Verwijderen"
         {{on "click" (perform this.deleteFile)}}
       >Verwijder</AuButton>
     </AuButtonGroup>

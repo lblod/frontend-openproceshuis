@@ -16,6 +16,7 @@ export default class DiagramListTable extends Component {
 
   @tracked fileToDelete;
   @tracked isDeleteModalOpen;
+  @tracked canDeleteFile = true;
 
   get activeDiagrams() {
     const diagrams = this.args.diagramList.diagrams;
@@ -31,6 +32,11 @@ export default class DiagramListTable extends Component {
 
   @action
   openDeleteModal(fileToDelete) {
+    this.canDeleteFile = true;
+    if (!this.args.canDeleteLastItem && this.activeDiagrams.length === 1) {
+      this.canDeleteFile = false;
+    }
+
     this.fileToDelete = fileToDelete;
     this.isDeleteModalOpen = true;
   }
