@@ -13,6 +13,7 @@ export default class FileUploadModalComponent extends Component {
   fileQueueHelper = fileQueue;
   @service fileQueue;
   @service api;
+  @service store;
 
   @tracked uploadErrorData = [];
   @tracked showDropzone = true;
@@ -169,24 +170,34 @@ export default class FileUploadModalComponent extends Component {
       }
     }
 
-    // let bpmnFileId = fileId;
-    // if (fileIds.name.endsWith('.vsdx')) {
-    //   try {
-    //     bpmnFileId = this.convertVisioToBpmn.perform(fileId);
-    //   } catch (e) {
-    //     console.error(e);
-    //     bpmnFileId = null;
-    //   }
-    // }
-
-    // if (this.args.extractBpmnElements && bpmnFileId) {
-    //   this.args.extractBpmnElements.perform(bpmnFileId);
-    // }
+    try {
+      // NOTE - this should be done in another way, just refactored it to handel multiple
+      await this.extractBpmnElements(fileIds);
+    } catch (error) {
+      console.log(error);
+    }
 
     this.notifyQueueUpdate();
 
     if (Boolean(fileIds) && this.args.onFinishUpload) {
       this.args.onFinishUpload();
+    }
+  }
+
+  async extractBpmnElements(fileIds) {
+    const fileModels = await this.store.query('file', {
+      'filter[id]': fileIds.join(','),
+    });
+    for (let index = 0; index < fileModels.length; index++) {
+      const file = fileModels[index];
+      let bpmnFileId = file.id;
+      if (file.name.endsWith('.vsdx')) {
+        bpmnFileId = await this.convertVisioToBpmn(file.id);
+      }
+
+      if (this.args.extractBpmnElements && bpmnFileId) {
+        await this.args.extractBpmnElements.perform(bpmnFileId);
+      }
     }
   }
 
@@ -207,13 +218,16 @@ export default class FileUploadModalComponent extends Component {
     }
   }
 
-  @task
-  *convertVisioToBpmn(visioFileId) {
-    const response = yield this.api.fetch(`/visio?id=${visioFileId}`, {
-      method: 'POST',
-    });
-    const body = yield response.json();
-    return body['bpmn-file-id'];
+  async convertVisioToBpmn(visioFileId) {
+    try {
+      await this.api.fetch(`/visio?id=${visioFileId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    return null;
   }
 
   @task
