@@ -13,21 +13,24 @@
 .border-bottom-left-radius {
   border-bottom-left-radius: 5px;
 }
+
 .border-left-selected {
   border-left: 0.45rem solid var(--au-select-text-color) !important;
   border-style: inset;
 }
+
 .width-full {
   width: 100%;
 }
 
+/* Could not find the grey background class that is used for the collapsible */
 .background-gray {
-  background-color: #f4f5f6; // NOTE - could not find the collapsible background color
+  background-color: #f4f5f6;
 }
+
+/* Could not find the white background class from AU */
 .background-white {
-  background-color: var(
-    --au-white
-  ); // NOTE - could not find the au-white background class
+  background-color: var(--au-white);
 }
 
 .thin-scrollbar {
