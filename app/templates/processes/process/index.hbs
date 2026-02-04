@@ -41,10 +41,10 @@
     @process={{this.process}}
   />
 
-  <Process::Diagram::Visual
-    @canEdit={{this.canEdit}}
-    @process={{this.process}}
-    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
+  <DiagramList::DiagramsInTabs
+    @diagramList={{@model.diagramList}}
+    @processId={{this.process.id}}
+    {{!-- @trackDownloadFileEvent={{this.trackDownloadFileEvent}} // TODO - do not forget to track moving download button --}}
   />
 
   {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
