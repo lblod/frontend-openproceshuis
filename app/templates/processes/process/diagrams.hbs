@@ -3,45 +3,58 @@
 
 {{! template-lint-disable no-invalid-interactive }}
 {{! template-lint-disable no-inline-styles }}
+<div>
+  <div>
+    <AuHeading
+      @skin="3"
+      class="au-u-muted au-u-margin-bottom-small au-u-padding-left au-u-padding-top"
+    >
+      Versies
+    </AuHeading>
+    <div class="au-u-flex au-u-flex--row background-light-blue">
+      <AuButton
+        @skin="naked"
+        @size="large"
+        @icon="plus"
+        @iconAlignment="right"
+        @width="block"
+      >
+        Maak een nieuwe versie aan
+      </AuButton>
+    </div>
+  </div>
+</div>
 <SidebarContainer class="diagrams">
   <:sidebar>
     <div class="au-c-sidebar background-white thin-scrollbar">
       <div>
-        <AuHeading
-          @skin="5"
-          class="au-u-muted au-u-margin-bottom-small au-u-padding-left au-u-padding-top"
-        >
-          Versies
-        </AuHeading>
-        <div class="">
-          {{#each @model.lists as |diagramList|}}
-            <div
-              {{on "click" (fn this.openDiagramList diagramList)}}
-              class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom
-                {{if
-                  (eq this.selectedDiagramList.id diagramList.id)
-                  'background-gray border-left-selected'
-                  'background-white'
-                }}"
-              style="border:1.5px solid var(--au-gray-200); "
-            >
-              <div class="au-u-flex au-u-flex--column au-u-flex--between">
-                <p class="au-u-h5">{{date-format diagramList.created true}}</p>
-                <p class="au-u-muted">{{diagramList.displayVersion}}</p>
-              </div>
-              {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
-                <div class="au-u-flex au-u-flex--end">
-                  <AuIcon
-                    @icon="lock-closed"
-                    @size={{this.size}}
-                    @alignment={{this.alignment}}
-                    @ariaHidden={{this.ariaHidden}}
-                  />
-                </div>
-              {{/unless}}
+        {{#each @model.lists as |diagramList|}}
+          <div
+            {{on "click" (fn this.openDiagramList diagramList)}}
+            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom
+              {{if
+                (eq this.selectedDiagramList.id diagramList.id)
+                'background-gray border-left-selected'
+                'background-white'
+              }}"
+            style="border:1.5px solid var(--au-gray-200); "
+          >
+            <div class="au-u-flex au-u-flex--column au-u-flex--between">
+              <p class="au-u-h5">{{date-format diagramList.created true}}</p>
+              <p class="au-u-muted">{{diagramList.displayVersion}}</p>
             </div>
-          {{/each}}
-        </div>
+            {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
+              <div class="au-u-flex au-u-flex--end">
+                <AuIcon
+                  @icon="lock-closed"
+                  @size={{this.size}}
+                  @alignment={{this.alignment}}
+                  @ariaHidden={{this.ariaHidden}}
+                />
+              </div>
+            {{/unless}}
+          </div>
+        {{/each}}
       </div>
     </div>
   </:sidebar>
