@@ -5,7 +5,7 @@
 {{! template-lint-disable no-inline-styles }}
 <SidebarContainer class="diagrams">
   <:sidebar>
-    <div class="au-c-sidebar background-white">
+    <div class="au-c-sidebar background-white thin-scrollbar">
       <div>
         <AuHeading
           @skin="5"
@@ -20,7 +20,7 @@
               class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom
                 {{if
                   (eq this.selectedDiagramList.id diagramList.id)
-                  'background-gray border-right-selected'
+                  'background-gray border-left-selected'
                   'background-white'
                 }}"
               style="border:1.5px solid var(--au-gray-200); "

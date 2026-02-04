@@ -13,8 +13,8 @@
 .border-bottom-left-radius {
   border-bottom-left-radius: 5px;
 }
-.border-right-selected {
-  border-right: 0.4rem solid var(--au-select-text-color) !important;
+.border-left-selected {
+  border-left: 0.45rem solid var(--au-select-text-color) !important;
   border-style: inset;
 }
 .width-full {
@@ -28,4 +28,9 @@
   background-color: var(
     --au-white
   ); // NOTE - could not find the au-white background class
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
