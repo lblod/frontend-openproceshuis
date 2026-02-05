@@ -62,21 +62,25 @@
             @field="name"
             @currentSorting={{this.sortAttachments}}
             @label="Bestandsnaam"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <AuDataTableThSortable
             @field="size"
             @currentSorting={{this.sortAttachments}}
             @label="Grootte"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <AuDataTableThSortable
             @field="extension"
             @currentSorting={{this.sortAttachments}}
             @label="Extensie"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sortAttachments}}
             @label="Toegevoegd op"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <th></th>
           {{#if @canEdit}}<th></th>{{/if}}

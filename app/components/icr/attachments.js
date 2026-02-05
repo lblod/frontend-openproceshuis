@@ -40,6 +40,12 @@ export default class IcrAttachments extends Component {
   }
 
   @action
+  updateSort(newSort) {
+    this.sortAttachments = newSort;
+    this.fetchAttachments.perform();
+  }
+
+  @action
   openAddModal() {
     this.addModalOpened = true;
   }

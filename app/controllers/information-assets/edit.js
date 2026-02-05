@@ -17,7 +17,6 @@ export default class InformationAssetIndexController extends Controller {
   @tracked formIsValid = this.informationAsset.title?.trim().length > 0;
   @tracked isDeleteModalOpen = false;
   @tracked isSaving = false;
-
   @tracked versionTimeline = [];
 
   get canEdit() {
@@ -25,7 +24,8 @@ export default class InformationAssetIndexController extends Controller {
       this.currentSession.canEdit &&
       this.currentSession.group &&
       this.currentSession.isAbbOrDv &&
-      this.currentSession.isAdmin
+      this.currentSession.isAdmin &&
+      !this.isArchived
     );
   }
 
