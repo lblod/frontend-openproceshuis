@@ -5,8 +5,9 @@
     <AuButtonGroup>
       {{#if @canEdit}}
         <AuDropdown @title="Voeg toe" @skin="secondary" @alignment="center">
+          {{! template-lint-disable require-context-role }}
           <AuButton
-            @role="menuitem"
+            role="menuitem"
             @icon="link-external"
             @iconAlignment="left"
             @skin="link"
@@ -15,7 +16,7 @@
             Link
           </AuButton>
           <AuButton
-            @role="menuitem"
+            role="menuitem"
             @icon="file"
             @iconAlignment="left"
             @skin="link"
