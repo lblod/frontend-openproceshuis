@@ -68,7 +68,6 @@ export default class ProcessesProcessDiagramsController extends Controller {
     const currentLists = await this.model.process.diagramLists;
     this.model.process.diagramLists = [...currentLists, diagramList];
     await this.model.process.save();
-    this.diagram.fetchLatest.perform(this.model.process.id);
   });
 
   extractBpmnElements = task({ drop: true }, async (bpmnFileId) => {
