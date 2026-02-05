@@ -134,7 +134,7 @@
         @skin="primary"
         {{on "click" (perform this.updateModel)}}
         @loading={{this.updateModel.isRunning}}
-        @disabled={{not this.formIsValid}}
+        @disabled={{not this.validForm}}
       >Opslaan</AuButton>
     </AuButtonGroup>
   </:footer>

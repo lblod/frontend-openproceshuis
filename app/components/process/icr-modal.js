@@ -15,6 +15,10 @@ export default class IcrModalComponent extends Component {
   @tracked draftInformationAssets = this.args.options || [];
   @service currentSession;
 
+  get validForm() {
+    return this.formIsValid || this.args.selected.title?.trim().length > 0;
+  }
+
   get header() {
     if (this.args.selected.isDraft) {
       return 'Nieuwe informatieclassificatie';
@@ -71,7 +75,7 @@ export default class IcrModalComponent extends Component {
   updateModel = task({ drop: true }, async (event) => {
     event.preventDefault();
 
-    if (!this.args.selected || !this.formIsValid) {
+    if (!this.args.selected || !this.validForm) {
       return;
     }
 
