@@ -35,7 +35,8 @@ export default class InformationAssetsIndexController extends Controller {
     return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
-      this.currentSession.isAbbOrDv
+      this.currentSession.isAbbOrDv &&
+      this.currentSession.isAdmin
     );
   }
 
