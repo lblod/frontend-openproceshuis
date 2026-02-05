@@ -18,6 +18,7 @@
         @icon="plus"
         @iconAlignment="right"
         @width="block"
+        {{on "click" this.openCreateModal}}
       >
         Maak een nieuwe versie aan
       </AuButton>
@@ -81,3 +82,17 @@
     </div>
   </:content>
 </SidebarContainer>
+
+<FileUploadModal
+  @header="Maak een nieuwe versie aan"
+  @title="BPMN- of Visiobestand selecteren"
+  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+  @multiple={{true}}
+  @accept=".bpmn,.vsdx"
+  @isSensitiveDataDetectInUploadFlow={{false}}
+  @updateProcess={{this.addFileToProcess}}
+  @extractBpmnElements={{this.extractBpmnElements}}
+  @onFinishUpload={{this.diagramUploaded}}
+  @modalOpen={{this.isCreateModalOpen}}
+  @closeModal={{this.closeCreateModal}}
+/>

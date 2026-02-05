@@ -4,9 +4,17 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
+import { task } from 'ember-concurrency';
+
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
   @service router;
+  @service diagram;
+  @service api;
+  @service toaster;
+
+  @tracked isCreateModalOpen = false;
+
   @tracked selectedDiagramList;
   @tracked selectedDiagramFile;
 
@@ -47,5 +55,42 @@ export default class ProcessesProcessDiagramsController extends Controller {
       this.canEdit &&
       this.selectedDiagramList.id === this.model.activeDiagramList.id
     );
+  }
+
+  @action
+  openCreateModal() {
+    this.isCreateModalOpen = true;
+  }
+
+  addFileToProcess = task({ enqueue: true }, async (newFileIds) => {
+    const diagramList =
+      await this.diagram.createDiagramListForFiles(newFileIds);
+    const currentLists = await this.model.process.diagramLists;
+    this.model.process.diagramLists = [...currentLists, diagramList];
+    await this.model.process.save();
+    this.diagram.fetchLatest.perform(this.model.process.id);
+  });
+
+  extractBpmnElements = task({ drop: true }, async (bpmnFileId) => {
+    await this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+  });
+
+  @action
+  diagramUploaded() {
+    this.isCreateModalOpen = false;
+    this.toaster.success('Nieuwe versie werd aangemaakt', null, {
+      timeOut: 2500,
+    });
+    this.router.refresh();
+  }
+
+  @action
+  closeCreateModal() {
+    this.isCreateModalOpen = false;
   }
 }
