@@ -23,10 +23,6 @@ export default class IcrAttachments extends Component {
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
 
-  get informationAsset() {
-    return this.args.informationAsset;
-  }
-
   @tracked pageAttachments = 0;
   @tracked sortAttachments = 'name';
   sizeAttachments = 10;
@@ -73,11 +69,11 @@ export default class IcrAttachments extends Component {
 
   addFileToIcr = task({ enqueue: true }, async (newFileId) => {
     const newFile = await this.store.findRecord('file', newFileId);
-    newFile.informationAsset = this.informationAsset;
-    this.informationAsset.attachments.push(newFile);
-    this.informationAsset.modified = newFile.created;
+    newFile.informationAsset = this.args.informationAsset;
+    this.args.informationAsset.attachments.push(newFile);
+    this.args.informationAsset.modified = newFile.created;
     await newFile.save();
-    await this.informationAsset.save();
+    await this.args.informationAsset.save();
   });
 
   @action
@@ -99,7 +95,7 @@ export default class IcrAttachments extends Component {
           number: this.pageAttachments,
           size: this.sizeAttachments,
         },
-        'filter[information-asset][:id:]': this.informationAsset.id,
+        'filter[information-asset][:id:]': this.args.informationAsset.id,
         'filter[:not:status]': ENV.resourceStates.archived,
       };
 
@@ -132,8 +128,8 @@ export default class IcrAttachments extends Component {
     if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
     await downloadFilesAsZip(
       this.attachments,
-      this.informationAsset?.title
-        ? `Bijlagen ${this.informationAsset.title}`
+      this.args.informationAsset?.title
+        ? `Bijlagen ${this.args.informationAsset.title}`
         : 'Bijlagen',
     );
   });
