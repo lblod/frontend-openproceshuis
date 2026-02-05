@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 
