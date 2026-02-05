@@ -32,7 +32,7 @@
         {{#each @model.lists as |diagramList|}}
           <div
             {{on "click" (fn this.openDiagramList diagramList)}}
-            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom
+            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom pointer
               {{if
                 (eq this.selectedDiagramList.id diagramList.id)
                 'background-gray border-left-selected'
@@ -60,6 +60,16 @@
     </div>
   </:sidebar>
   <:content>
+    {{#unless (eq this.selectedDiagramList.id @model.activeDiagramList.id)}}
+      <AuAlert
+        @skin="warning"
+        @icon="info-circle"
+        @size="tiny"
+        @closable={{false}}
+      >
+        <p>Je bent een oudere versie van de diagrammen aan het bekijken</p>
+      </AuAlert>
+    {{/unless}}
     <AuToolbar @size="small" class="au-u-padding-top" as |Group|>
       <Group />
       <Group class="au-c-toolbar__group--actions">

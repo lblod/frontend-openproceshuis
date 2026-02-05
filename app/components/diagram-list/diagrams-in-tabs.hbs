@@ -5,7 +5,7 @@
         {{! template-lint-disable no-invalid-interactive }}
         <div
           {{on "click" (fn this.selectDiagramFile diagram.diagramFile)}}
-          class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small border-top-left-radius border-bottom-left-radius
+          class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small border-top-left-radius border-bottom-left-radius pointer
             {{if
               (eq this.selectedDiagramFile.id diagram.diagramFile.id)
               'background-gray'
