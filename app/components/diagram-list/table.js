@@ -14,6 +14,7 @@ export default class DiagramListTable extends Component {
   size = 5;
   sort = '-created';
 
+  @tracked fileToDownload;
   @tracked fileToDelete;
   @tracked isDeleteModalOpen;
   @tracked canDeleteFile = true;
