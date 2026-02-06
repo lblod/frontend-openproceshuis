@@ -17,6 +17,7 @@ export default class DiagramListTable extends Component {
   @tracked fileToDelete;
   @tracked isDeleteModalOpen;
   @tracked canDeleteFile = true;
+  @tracked fileToDownload;
 
   get activeDiagrams() {
     const diagrams = this.args.diagramList.diagrams;
