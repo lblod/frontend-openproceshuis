@@ -1,9 +1,11 @@
 import Route from '@ember/routing/route';
+
 import { service } from '@ember/service';
 
 export default class ProcessesProcessIndexRoute extends Route {
   @service plausible;
   @service store;
+  @service diagram;
 
   async model() {
     const process = this.modelFor('processes.process');
@@ -25,7 +27,10 @@ export default class ProcessesProcessIndexRoute extends Route {
     stats.processViews += 1;
     await stats.save();
 
-    return { process };
+    return {
+      process,
+      diagramList: await this.diagram.getLatestDiagramList(process.id),
+    };
   }
 
   setupController(controller) {

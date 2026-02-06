@@ -1,52 +1,65 @@
 {{page-title "Diagrammen"}}
-{{breadcrumb "Diagram" route="processes.process.diagrams" model=@model.id}}
-{{! template-lint-disable no-invalid-interactive }}
-{{! template-lint-disable style-concatenation }}
-{{! template-lint-disable no-inline-styles }}
+{{breadcrumb "Diagrammen" route="processes.process.diagrams" model=@model.id}}
 
+{{! template-lint-disable no-invalid-interactive }}
+{{! template-lint-disable no-inline-styles }}
+<PageHeader>
+  <:title>Versies</:title>
+  <:action>
+    <AuButton
+      @skin="primary"
+      @iconAlignment="right"
+      {{on "click" this.openCreateModal}}
+    >
+      Maak een nieuwe versie aan
+    </AuButton>
+  </:action>
+</PageHeader>
 <SidebarContainer class="diagrams">
   <:sidebar>
-    <div class="au-c-sidebar">
+    <div class="au-c-sidebar background-white thin-scrollbar">
       <div>
-        <AuHeading
-          @skin="5"
-          class="au-u-muted au-u-margin-bottom-small au-u-padding-left au-u-padding-top"
-        >
-          Versies
-        </AuHeading>
-        <div class="">
-          {{#each @model.lists as |diagramList|}}
-            <div
-              {{on "click" (fn this.openDiagramList diagramList)}}
-              class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom"
-              style="
-               {{if
+        {{#each @model.lists as |diagramList|}}
+          <div
+            {{on "click" (fn this.openDiagramList diagramList)}}
+            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom pointer
+              {{if
                 (eq this.selectedDiagramList.id diagramList.id)
-                'background-color: var(--au-select-text-bg);'
-                'background-color: var(--au-white);'
-              }} border:1.5px solid var(--au-gray-200); "
-            >
-              <div class="au-u-flex au-u-flex--column au-u-flex--between">
-                <p class="au-u-h5">{{date-format diagramList.created true}}</p>
-                <p class="au-u-muted">{{diagramList.displayVersion}}</p>
-              </div>
-              {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
-                <div class="au-u-flex au-u-flex--end">
-                  <AuIcon
-                    @icon="lock-closed"
-                    @size={{this.size}}
-                    @alignment={{this.alignment}}
-                    @ariaHidden={{this.ariaHidden}}
-                  />
-                </div>
-              {{/unless}}
+                'background-gray border-left-selected'
+                'background-white'
+              }}"
+            style="border:1.5px solid var(--au-gray-200); "
+          >
+            <div class="au-u-flex au-u-flex--column au-u-flex--between">
+              <p class="au-u-h5">{{date-format diagramList.created true}}</p>
+              <p class="au-u-muted">{{diagramList.displayVersion}}</p>
             </div>
-          {{/each}}
-        </div>
+            {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
+              <div class="au-u-flex au-u-flex--end">
+                <AuIcon
+                  @icon="lock-closed"
+                  @size={{this.size}}
+                  @alignment={{this.alignment}}
+                  @ariaHidden={{this.ariaHidden}}
+                />
+              </div>
+            {{/unless}}
+          </div>
+        {{/each}}
       </div>
     </div>
   </:sidebar>
   <:content>
+    {{#unless (eq this.selectedDiagramList.id @model.activeDiagramList.id)}}
+      <AuAlert
+        @skin="warning"
+        @icon="info-circle"
+        @size="tiny"
+        @closable={{false}}
+      >
+        <p>Je bent een oudere versie van de diagrammen aan het bekijken</p>
+      </AuAlert>
+    {{/unless}}
     <AuToolbar @size="small" class="au-u-padding-top" as |Group|>
       <Group />
       <Group class="au-c-toolbar__group--actions">
@@ -69,3 +82,17 @@
     </div>
   </:content>
 </SidebarContainer>
+
+<FileUploadModal
+  @header="Maak een nieuwe versie aan"
+  @title="BPMN- of Visiobestand selecteren"
+  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+  @multiple={{true}}
+  @accept=".bpmn,.vsdx"
+  @isSensitiveDataDetectInUploadFlow={{false}}
+  @updateProcess={{this.addFileToProcess}}
+  @extractBpmnElements={{this.extractBpmnElements}}
+  @onFinishUpload={{this.diagramUploaded}}
+  @modalOpen={{this.isCreateModalOpen}}
+  @closeModal={{this.closeCreateModal}}
+/>
