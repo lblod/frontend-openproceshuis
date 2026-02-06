@@ -53,6 +53,7 @@ export default class InformationAssetIndexController extends Controller {
   cancelEdit() {
     this.informationAsset.rollbackAttributes();
     this.edit = false;
+    this.errorMessageTitle = null;
   }
 
   @action
@@ -67,16 +68,12 @@ export default class InformationAssetIndexController extends Controller {
     this.informationAsset.description = event.target.value;
   }
 
-  @action
-  async saveChanges() {
+  saveChanges = task({ drop: true }, async () => {
     try {
-      this.isSaving = true;
-
       if (!this.informationAsset.hasDirtyAttributes) {
         this.toaster.success('Geen wijzigingen om op te slaan', undefined, {
           timeOut: 3000,
         });
-        this.isSaving = false;
         this.edit = false;
         if (this.process) {
           return this.router.transitionTo('processes.process', this.process);
@@ -85,25 +82,32 @@ export default class InformationAssetIndexController extends Controller {
       }
 
       const oldAsset = this.informationAsset;
-
-      const checkDuplicateTitle = await this.store.query('information-asset', {
-        filter: {
-          ':exact:title': oldAsset.title,
-          ':not:status': ENV.resourceStates.archived,
-        },
-        page: { size: 1 },
-      });
-      if (checkDuplicateTitle.length !== 0) {
-        this.toaster.error(
-          'Er bestaat al een informatieclassificatie met deze titel',
-          { timeOut: 5000 },
+      let changes = this.informationAsset.changedAttributes();
+      let titleChanged = 'title' in changes;
+      if (titleChanged) {
+        const checkDuplicateTitle = await this.store.query(
+          'information-asset',
+          {
+            filter: {
+              ':exact:title': oldAsset.title?.trim(),
+              ':not:status': ENV.resourceStates.archived,
+            },
+            page: { size: 1 },
+          },
         );
-        this.errorMessageTitle = 'Deze titel bestaat al';
-        return;
+        if (checkDuplicateTitle.length !== 0) {
+          this.toaster.error(
+            'Er bestaat al een informatieclassificatie met deze titel',
+            null,
+            { timeOut: 5000 },
+          );
+          this.errorMessageTitle = 'Deze titel bestaat al';
+          return;
+        }
       }
 
       const newAsset = this.store.createRecord('information-asset', {
-        title: oldAsset.title,
+        title: oldAsset.title?.trim(),
         description: oldAsset.description,
         confidentialityScore: oldAsset.confidentialityScore,
         integrityScore: oldAsset.integrityScore,
@@ -150,7 +154,7 @@ export default class InformationAssetIndexController extends Controller {
     } finally {
       this.isSaving = false;
     }
-  }
+  });
 
   @action
   openDeleteModal() {
@@ -162,11 +166,9 @@ export default class InformationAssetIndexController extends Controller {
     this.isDeleteModalOpen = false;
   }
 
-  @action
-  onDeleteAsset() {
+  onDeleteAsset = task({ drop: true }, async () => {
     try {
-      this.isSaving = true;
-      this.isDeleteModalOpen = false;
+      this.closeDeleteModal();
 
       if (this.informationAsset.processes) {
         this.informationAsset.processes.forEach((process) => {
@@ -184,7 +186,6 @@ export default class InformationAssetIndexController extends Controller {
       });
       this.router.transitionTo('information-assets.index');
       this.router.refresh();
-      this.isSaving = false;
     } catch (error) {
       console.error(error);
       this.toaster.error(
@@ -192,9 +193,8 @@ export default class InformationAssetIndexController extends Controller {
         undefined,
         { timeOut: 5000 },
       );
-      this.isSaving = false;
     }
-  }
+  });
 
   @action
   copyUrl() {

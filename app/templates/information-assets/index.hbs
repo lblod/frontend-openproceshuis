@@ -122,7 +122,6 @@
                 <div class="au-u-flex au-u-flex--center">
                   <AuButton
                     @skin="naked"
-                    @icon="trash"
                     @alert="true"
                     {{on "click" (fn this.openDeleteModal informationAsset)}}
                   >Verwijder</AuButton>
@@ -142,7 +141,7 @@
     @closeModal={{this.closeDeleteModal}}
     @onDelete={{fn (perform this.onDeleteAsset)}}
     @type="informatie asset"
-    @isLoading={{this.isDeleting}}
+    @isLoading={{this.onDeleteAsset.isRunning}}
     @title={{this.informationAssetToDelete.title}}
   />
 

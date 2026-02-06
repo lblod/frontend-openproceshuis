@@ -64,8 +64,8 @@
                 <AuButton
                   @skin="primary"
                   @icon="check"
-                  @loading={{this.isSaving}}
-                  {{on "click" this.saveChanges}}
+                  @loading={{this.saveChanges.isRunning}}
+                  {{on "click" (perform this.saveChanges)}}
                   @disabled={{not this.formIsValid}}
                 >Opslaan</AuButton>
               {{else}}
@@ -365,10 +365,13 @@
   </div>
 </AuBodyContainer>
 
-<Shared::DeleteModal
-  @isModalOpen={{this.isDeleteModalOpen}}
-  @closeModal={{this.closeDeleteModal}}
-  @onDelete={{this.onDeleteAsset}}
-  @type="informatie asset"
-  @title={{this.informationAsset.title}}
-/>
+{{#if this.canEdit}}
+  <Shared::DeleteModal
+    @isModalOpen={{this.isDeleteModalOpen}}
+    @closeModal={{this.closeDeleteModal}}
+    @onDelete={{fn (perform this.onDeleteAsset)}}
+    @type="informatie asset"
+    @isLoading={{this.onDeleteAsset.isRunning}}
+    @title={{this.informationAsset.title}}
+  />
+{{/if}}

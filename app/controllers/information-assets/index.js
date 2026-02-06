@@ -18,7 +18,6 @@ export default class InformationAssetsIndexController extends Controller {
   @tracked isDeleteModalOpen = false;
   @tracked isCreateModalOpen = false;
   @tracked informationAssetToDelete = null;
-  @tracked isDeleting = false;
   @tracked informationAsset = null;
 
   get informationAssets() {
@@ -100,12 +99,9 @@ export default class InformationAssetsIndexController extends Controller {
     this.sort = 'title';
   }
 
-  deleteFile = task({ drop: true }, async () => {
+  onDeleteAsset = task({ drop: true }, async () => {
     try {
-      this.isDeleting = true;
-      if (!this.informationAssetToDelete) {
-        return;
-      }
+      if (!this.informationAssetToDelete) return;
 
       if (this.informationAssetToDelete.processes) {
         this.informationAssetToDelete.processes.forEach((process) => {
@@ -120,11 +116,9 @@ export default class InformationAssetsIndexController extends Controller {
       this.toaster.success('Informatie asset succesvol verwijderd', undefined, {
         timeOut: 5000,
       });
-      this.isDeleting = false;
       this.isDeleteModalOpen = false;
       this.send('refreshModel');
     } catch (error) {
-      this.isDeleting = false;
       console.error(error);
       this.toaster.error(
         'Er liep iets mis bij het verwijderen van de informatie asset',

@@ -12,7 +12,6 @@ export default class IcrModalComponent extends Component {
   @service toaster;
   @service currentSession;
 
-  @tracked isLoading = false;
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
   @tracked selected;
@@ -40,6 +39,7 @@ export default class IcrModalComponent extends Component {
         this.args.setOptions(newOptions);
       }
     }
+    this.errorMessageTitle = null;
     this.args.closeModal();
   }
 
@@ -83,10 +83,9 @@ export default class IcrModalComponent extends Component {
       return;
     }
 
-    this.isLoading = true;
     const checkDuplicateTitle = await this.store.query('information-asset', {
       filter: {
-        ':exact:title': this.args.selected.title,
+        ':exact:title': this.args.selected.title?.trim(),
         ':not:status': ENV.resourceStates.archived,
       },
       page: { size: 1 },
@@ -94,14 +93,16 @@ export default class IcrModalComponent extends Component {
     if (checkDuplicateTitle.length !== 0) {
       this.toaster.error(
         'Er bestaat al een informatieclassificatie met deze titel',
+        null,
         { timeOut: 5000 },
       );
-      return (this.errorMessageTitle = 'Deze titel bestaat al');
+      this.errorMessageTitle = 'Deze titel bestaat al';
+      return;
     }
 
     const oldAsset = this.args.selected;
     const newAssetData = {
-      title: this.args.selected.title,
+      title: this.args.selected.title?.trim(),
       availabilityScore: this.args.selected.availabilityScore,
       confidentialityScore: this.args.selected.confidentialityScore,
       integrityScore: this.args.selected.integrityScore,
@@ -147,8 +148,6 @@ export default class IcrModalComponent extends Component {
 
       this.resetModal();
       this.args.closeModal();
-    } finally {
-      this.isLoading = false;
     }
   });
 }
