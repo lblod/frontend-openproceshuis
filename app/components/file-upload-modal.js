@@ -13,10 +13,13 @@ export default class FileUploadModalComponent extends Component {
   fileQueueHelper = fileQueue;
   @service fileQueue;
   @service api;
+  @service store;
 
   @tracked uploadErrorData = [];
   @tracked showDropzone = true;
   @tracked preview = undefined;
+
+  @tracked uploadedFileIds = [];
 
   @tracked fileHasSensitiveInformation = false;
   @tracked sensitiveDataResults = [];
@@ -88,8 +91,7 @@ export default class FileUploadModalComponent extends Component {
     );
   }
 
-  @task
-  *upload(fileWrapper) {
+  upload = task({ enqueue: true }, async (fileWrapper) => {
     this.resetErrors();
 
     const forbidden = this.args.forbidden?.split(',') ?? [];
@@ -118,13 +120,13 @@ export default class FileUploadModalComponent extends Component {
       fileWrapper.name.endsWith('.bpmn')
     ) {
       try {
-        const response = yield this.detectSensitiveData.perform(
+        const response = await this.detectSensitiveData.perform(
           fileWrapper.file,
         );
         const results = response['pii_results'];
         if (results.length > 0) {
           this.showDropzone = false;
-          this.preview = yield fileWrapper.file.text();
+          this.preview = await fileWrapper.file.text();
 
           this.sensitiveDataResults = results;
           this.fileHasSensitiveInformation = true;
@@ -137,83 +139,95 @@ export default class FileUploadModalComponent extends Component {
       return;
     }
 
-    yield this.processFile.perform(fileWrapper);
-  }
-
-  @task
-  *processFile(fileWrapper) {
-    let fileId;
-    try {
-      fileId = yield this.uploadFileTask.perform(fileWrapper);
-    } catch {
-      this.addError(
-        fileWrapper,
-        'Er ging iets mis tijdens het opslaan van het bestand.',
-      );
-      this.removeFileFromQueue(fileWrapper);
-      return;
+    const savedFileId = await this.saveFileInDatabase(fileWrapper);
+    this.uploadedFileIds.push(savedFileId);
+    if (this.queue.files.length === 0) {
+      await this.processFile(this.uploadedFileIds);
+      this.uploadedFileIds = [];
     }
+  });
 
+  async processFile(fileIds) {
     if (this.args.updateProcess) {
       try {
-        yield this.args.updateProcess.perform(fileId);
+        await this.args.updateProcess.perform(fileIds);
       } catch {
         this.addError(
-          fileWrapper,
+          fileIds,
           'Er ging iets mis tijdens het bijwerken van het proces.',
         );
-        this.removeFileFromQueue(fileWrapper);
         return;
       }
     } else if (this.args.createProcess) {
       try {
-        yield this.args.createProcess.perform(fileId);
+        await this.args.createProcess.perform(fileIds);
       } catch {
         this.addError(
-          fileWrapper,
+          fileIds,
           'Er ging iets mis tijdens het aanmaken van het proces.',
         );
-        this.removeFileFromQueue(fileWrapper);
         return;
       }
     }
 
-    let bpmnFileId = fileId;
-    if (fileWrapper.name.endsWith('.vsdx')) {
-      try {
-        bpmnFileId = yield this.convertVisioToBpmn.perform(fileId);
-      } catch (e) {
-        console.error(e);
-        bpmnFileId = null;
-      }
-    }
-
-    if (this.args.extractBpmnElements && bpmnFileId) {
-      yield this.args.extractBpmnElements.perform(bpmnFileId);
+    try {
+      // NOTE - this should be done in another way, just refactored it to handel multiple
+      await this.extractBpmnElements(fileIds);
+    } catch (error) {
+      console.log(error);
     }
 
     this.notifyQueueUpdate();
 
-    if (fileId && this.args.onFinishUpload)
-      this.args.onFinishUpload(fileId, this.calculateQueueInfo());
+    if (Boolean(fileIds) && this.args.onFinishUpload) {
+      this.args.onFinishUpload();
+    }
   }
 
-  @task({ enqueue: true, maxConcurrency: 3 })
-  *uploadFileTask(file) {
-    const response = yield file.upload(this.endPoint, {
-      'Content-Type': 'multipart/form-data',
+  async extractBpmnElements(fileIds) {
+    const fileModels = await this.store.query('file', {
+      'filter[id]': fileIds.join(','),
     });
-    const body = yield response.json();
-    return body?.data?.id;
+    for (let index = 0; index < fileModels.length; index++) {
+      const file = fileModels[index];
+      let bpmnFileId = file.id;
+      if (file.name.endsWith('.vsdx')) {
+        bpmnFileId = await this.convertVisioToBpmn(file.id);
+      }
+
+      if (this.args.extractBpmnElements && bpmnFileId) {
+        await this.args.extractBpmnElements.perform(bpmnFileId);
+      }
+    }
   }
 
-  @task
-  *convertVisioToBpmn(visioFileId) {
-    const response = yield this.api.fetch(`/visio?id=${visioFileId}`, {
-      method: 'POST',
-    });
-    const body = yield response.json();
-    return body['bpmn-file-id'];
+  async saveFileInDatabase(uploadedFile) {
+    try {
+      const response = await uploadedFile.upload(this.endPoint, {
+        'Content-Type': 'multipart/form-data',
+      });
+      const body = await response.json();
+      return body?.data?.id;
+    } catch {
+      this.addError(
+        uploadedFile,
+        'Er ging iets mis tijdens het opslaan van het bestand.',
+      );
+      this.removeFileFromQueue(uploadedFile);
+      return;
+    }
+  }
+
+  async convertVisioToBpmn(visioFileId) {
+    try {
+      await this.api.fetch(`/visio?id=${visioFileId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    return null;
   }
 
   @task
@@ -323,7 +337,7 @@ export default class FileUploadModalComponent extends Component {
 
   calculateQueueInfo() {
     const filesQueueInfo = {
-      isQueueEmpty: this.uploadFileTask.isIdle,
+      isQueueEmpty: this.saveFileInDatabase.isIdle,
     };
     return filesQueueInfo;
   }

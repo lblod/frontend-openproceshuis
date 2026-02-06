@@ -38,22 +38,38 @@ export default class DiagramService extends Service {
     this.downloadModalOpened = false;
   }
 
-  async getDiagramListsFilesForProcessId(processId) {
+  async getDiagramListsWithFilesForProcess(processId) {
     const processWithLists = await this.store.query('process', {
       'filter[id]': processId,
       include:
         'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
+      reload: true,
     });
-    const diagramLists = processWithLists[0]?.diagramLists;
-    const filesOfLists = diagramLists
-      .map((list) => list.diagrams[0].diagramFile)
-      .filter(
-        (file) =>
-          (file.isBpmnFile || file.isVisioFile) &&
-          file.status !== ENV.resourceStates.archived,
-      );
+    const diagramLists = Array.from(processWithLists[0]?.diagramLists);
+    return diagramLists.filter((list) =>
+      list.diagrams.some((d) => !d.diagramFile.isArchived),
+    );
+  }
 
-    return filesOfLists;
+  async getLatestDiagramList(processId) {
+    const allDiagramLists =
+      await this.getDiagramListsWithFilesForProcess(processId);
+    const sortedOnCreatedLists = allDiagramLists.sort(
+      (a, b) => new Date(b.created) - new Date(a.created),
+    );
+    return sortedOnCreatedLists[0];
+  }
+
+  getFirstFileOfList(list) {
+    const sortedDiagrams = Array.from(list.diagrams).sort(
+      (a, b) => a.position - b.position,
+    );
+    const diagrams = sortedDiagrams.filter(
+      (diagram) =>
+        (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
+        diagram.diagramFile.status !== ENV.resourceStates.archived,
+    );
+    return diagrams[0].diagramFile;
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {
@@ -61,10 +77,8 @@ export default class DiagramService extends Service {
     this.latestDiagramHasErrored = false;
 
     try {
-      const files = await this.getDiagramListsFilesForProcessId(processId);
-      const latestDiagramFile = files.reduce((latest, current) =>
-        current.modified > latest.modified ? current : latest,
-      );
+      const list = await this.getLatestDiagramList(processId);
+      const latestDiagramFile = this.getFirstFileOfList(list);
 
       this.latestDiagram = latestDiagramFile;
       return latestDiagramFile;
@@ -114,22 +128,27 @@ export default class DiagramService extends Service {
     this.fetchVersions.perform(processId);
   }
 
-  async createDiagramListForFile(fileId) {
-    const now = new Date();
-    const file = await this.store.findRecord('file', fileId);
-    const diagramListItem = this.store.createRecord('diagram-list-item', {
-      position: 1,
-      created: now,
-      modified: now,
-      diagramFile: file,
-      subItems: [],
+  async createDiagramListForFiles(fileIds) {
+    const files = await this.store.query('file', {
+      'filter[id]': fileIds.join(','),
     });
-    await diagramListItem.save();
+    const now = new Date();
+    const diagramListItems = files.map((file, index) => {
+      return this.store.createRecord('diagram-list-item', {
+        position: index + 1,
+        created: now,
+        modified: now,
+        diagramFile: file,
+        subItems: [],
+      });
+    });
+
+    await Promise.all(diagramListItems.map(async (item) => await item.save()));
     const diagramList = this.store.createRecord('diagram-list', {
       created: now,
       modified: now,
       version: 'v0.0.1',
-      diagrams: [diagramListItem],
+      diagrams: diagramListItems,
     });
     await diagramList.save();
 
