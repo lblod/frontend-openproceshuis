@@ -4,8 +4,8 @@
   <:header>
     <AuButtonGroup>
       {{#if @canEdit}}
-        {{! template-lint-disable require-context-role }}
         <AuDropdown @title="Voeg toe" @skin="secondary" @alignment="center">
+          {{! template-lint-disable require-context-role }}
           <AuButton
             role="menuitem"
             @icon="link-external"
@@ -37,17 +37,14 @@
 
   <:subheader>
     <AuHelpText @skin="secondary">
-      Bijlagen kunnen worden toegevoegd om het diagram te verduidelijken in alle
-      bestandsformaten, behalve
-      <span class="au-u-italic">.bpmn</span>
-      en
-      <span class="au-u-italic">.vsdx</span>.
+      Bijlagen kunnen worden toegevoegd om de informatie asset te verduidelijken
+      in alle bestandsformaten.
     </AuHelpText>
   </:subheader>
 
   <:card>
     <Process::RelevantLinks
-      @process={{@process}}
+      @process={{@informationAsset}}
       @canEdit={{@canEdit}}
       @isAddModalOpen={{this.isAddLinkModalOpen}}
       @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
@@ -66,23 +63,26 @@
             @field="name"
             @currentSorting={{this.sortAttachments}}
             @label="Bestandsnaam"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <AuDataTableThSortable
             @field="size"
             @currentSorting={{this.sortAttachments}}
             @label="Grootte"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <AuDataTableThSortable
             @field="extension"
             @currentSorting={{this.sortAttachments}}
             @label="Extensie"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
           <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sortAttachments}}
             @label="Toegevoegd op"
+            {{on "click" (fn this.updateSort this.sortAttachments)}}
           />
-          <th>Gekoppeld aan</th>
           <th></th>
           {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
@@ -99,16 +99,6 @@
             <td>{{file-size-format attachment.size}}</td>
             <td>{{attachment.extension}}</td>
             <td>{{date-format attachment.created true}}</td>
-            <td>{{attachment._source}}
-              {{#if attachment.informationAsset}}
-                <AuLink
-                  @route="information-assets.edit"
-                  @model={{attachment.informationAsset.id}}
-                >
-                  ({{attachment.informationAsset.title}})
-                </AuLink>
-              {{/if}}
-            </td>
             <td>
               <AuButton
                 @icon="download"
@@ -126,7 +116,6 @@
                   @alert="true"
                   @width="block"
                   @hideText="true"
-                  @disabled={{attachment.informationAsset}}
                   {{on "click" (fn this.openDeleteModal attachment)}}
                 >Verwijder</AuButton>
               </td>
@@ -142,9 +131,9 @@
   @header="Voeg bijlage toe"
   @title="Bestand selecteren"
   @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
-  @forbidden=".bpmn,.vsdx"
   @multiple="true"
-  @updateModel={{this.addFileToProcess}}
+  @modelName="Informatie asset"
+  @updateModel={{this.addFileToIcr}}
   @onFinishUpload={{this.attachmentsUploaded}}
   @modalOpen={{this.addModalOpened}}
   @closeModal={{this.closeAddModal}}

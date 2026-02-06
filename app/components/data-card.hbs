@@ -8,22 +8,23 @@
           <div class="au-u-flex au-u-flex--vertical-center">
             <button
               type="button"
-              class="au-u-flex au-u-flex--spaced-tiny"
+              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
               {{on "click" this.toggleCollapse}}
             >
               <AuIcon
                 @icon={{if this.isCollapsed "chevron-up" "chevron-down"}}
                 @size="large"
               />
+
+              {{#if (has-block "title")}}
+                <AuHeading
+                  @level={{or @headingLevel "3"}}
+                  @skin={{or @headingSkin "4"}}
+                >
+                  {{yield to="title"}}
+                </AuHeading>
+              {{/if}}
             </button>
-            {{#if (has-block "title")}}
-              <AuHeading
-                @level={{or @headingLevel "3"}}
-                @skin={{or @headingSkin "4"}}
-              >
-                {{yield to="title"}}
-              </AuHeading>
-            {{/if}}
           </div>
           {{#unless this.isCollapsed}}
             <div>
@@ -33,14 +34,20 @@
         </div>
       </div>
       {{#unless this.isCollapsed}}
-        <div class="au-u-flex">
-          <div class="card-helptext"></div>
-          {{! width of the chevron button }}
-          <div class="au-u-flex-grow-1 au-u-margin-bottom-small">
-            {{yield to="subheader"}}
+        {{#if (or (has-block "helpText") (has-block "subheader"))}}
+          <div class="au-u-flex">
+            {{#if (has-block "helpText")}}
+              <div class="helpText">{{yield to="helpText"}}</div>
+            {{/if}}
+            {{! width of the chevron button }}
+            {{#if (has-block "subheader")}}
+              <div class="au-u-flex-grow-1 au-u-margin-bottom-small">
+                {{yield to="subheader"}}
+              </div>
+            {{/if}}
           </div>
-        </div>
-        <AuHr @size="default" />
+        {{/if}}
+        <AuHr @size="default" class="au-u-margin-top-tiny" />
       {{/unless}}
 
     </div>

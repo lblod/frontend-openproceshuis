@@ -37,4 +37,11 @@ export default class ProcessesProcessIndexRoute extends Route {
     super.resetController(...arguments);
     controller.reset();
   }
+  didTransition() {
+    const scrollTo = this.paramsFor('processes.process')?.scrollTo;
+    if (scrollTo) {
+      const el = document.getElementById(scrollTo);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }

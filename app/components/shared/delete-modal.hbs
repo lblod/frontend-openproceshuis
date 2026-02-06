@@ -1,0 +1,23 @@
+<AuModal @modalOpen={{@isModalOpen}} @closeModal={{@closeModal}}>
+  <:title>Verwijder {{@title}}</:title>
+  <:body>Ben je zeker dat je
+    {{#if @title}}
+      "{{@title}}"
+    {{/if}}
+    {{#if @type}}
+      {{@type}}
+    {{/if}}
+    wilt verwijderen?</:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton @skin="secondary" {{on "click" @closeModal}}>Annuleer</AuButton>
+      <AuButton
+        @skin="primary"
+        @icon="bin"
+        @alert="true"
+        @loading={{@isLoading}}
+        {{on "click" @onDelete}}
+      >Verwijder</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>

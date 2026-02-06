@@ -10,21 +10,18 @@ import {
 } from 'frontend-openproceshuis/utils/file-downloader';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
-export default class ProcessAttachments extends Component {
+export default class IcrAttachments extends Component {
   constructor() {
     super(...arguments);
     this.fetchAttachments.perform();
   }
+
   @service api;
   @service store;
   @service toaster;
   @tracked addModalOpened = false;
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
-
-  get process() {
-    return this.args.process;
-  }
 
   @tracked pageAttachments = 0;
   @tracked sortAttachments = 'name';
@@ -40,6 +37,12 @@ export default class ProcessAttachments extends Component {
       !this.attachmentsHaveErrored &&
       this.attachments?.length === 0
     );
+  }
+
+  @action
+  updateSort(newSort) {
+    this.sortAttachments = newSort;
+    this.fetchAttachments.perform();
   }
 
   @action
@@ -70,12 +73,13 @@ export default class ProcessAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  addFileToProcess = task({ enqueue: true }, async (newFileId) => {
+  addFileToIcr = task({ enqueue: true }, async (newFileId) => {
     const newFile = await this.store.findRecord('file', newFileId);
-    this.process.files.push(newFile);
-    this.process.modified = newFile.created;
-
-    await this.process.save();
+    newFile.informationAsset = this.args.informationAsset;
+    this.args.informationAsset.attachments.push(newFile);
+    this.args.informationAsset.modified = newFile.created;
+    await newFile.save();
+    await this.args.informationAsset.save();
   });
 
   @action
@@ -91,12 +95,13 @@ export default class ProcessAttachments extends Component {
       this.attachmentsAreLoading = true;
       this.attachmentsHaveErrored = false;
 
-      const baseQuery = {
+      const query = {
         reload: true,
         page: {
           number: this.pageAttachments,
           size: this.sizeAttachments,
         },
+        'filter[information-asset][:id:]': this.args.informationAsset.id,
         'filter[:not:status]': ENV.resourceStates.archived,
       };
 
@@ -111,40 +116,11 @@ export default class ProcessAttachments extends Component {
           sortValue = `:no-case:${sortValue}`;
         if (isDescending) sortValue = `-${sortValue}`;
 
-        baseQuery.sort = sortValue;
+        query.sort = sortValue;
       }
 
       try {
-        const processFiles = await this.store.query('file', {
-          ...baseQuery,
-          'filter[:not:extension]': ['bpmn', 'vsdx'],
-          'filter[processes][id]': this.process.id,
-        });
-        const infoAssetIds = this.process.informationAssets.map(
-          (asset) => asset.id,
-        );
-        let infoAssetFiles = [];
-        if (infoAssetIds.length > 0) {
-          infoAssetFiles = await this.store.query('file', {
-            ...baseQuery,
-            'filter[information-asset][id]': infoAssetIds.join(','),
-            include: 'information-asset',
-          });
-        }
-        const allFiles = [
-          ...processFiles.map((file) => {
-            file._source = 'Proces';
-            return file;
-          }),
-          ...infoAssetFiles.map((file) => {
-            file._source = 'Informatie asset';
-            return file;
-          }),
-        ];
-        allFiles.sort((a, b) => {
-          return a.created - b.created;
-        });
-        this.attachments = allFiles;
+        this.attachments = await this.store.query('file', query);
       } catch {
         this.attachmentsHaveErrored = true;
       }
@@ -158,7 +134,9 @@ export default class ProcessAttachments extends Component {
     if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
     await downloadFilesAsZip(
       this.attachments,
-      this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
+      this.args.informationAsset?.title
+        ? `Bijlagen ${this.args.informationAsset.title}`
+        : 'Bijlagen',
     );
   });
 

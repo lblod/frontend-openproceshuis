@@ -197,3 +197,19 @@ tr:hover .inventory-row-button-group .au-c-button {
     flex-grow: 0;
   }
 }
+
+.u-color-top-border-yellow {
+  border-top: solid 0.5rem var(--au-yellow-300);
+}
+
+.u-color-top-border-gray {
+  border-top: solid 0.5rem var(--au-gray-300);
+}
+
+.animate-left {
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateX(-0.5rem);
+  }
+}
