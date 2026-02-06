@@ -68,17 +68,19 @@
       </Group>
     </AuToolbar>
     <div class="au-o-box">
-      {{#if this.selectedDiagramFile}}
-        <File::Viewer @file={{this.selectedDiagramFile}} />
-        <File::MetadataCard @file={{this.selectedDiagramFile}} />
-      {{/if}}
-      <p class="au-u-h4 au-u-medium au-u-margin-top">Diagrammen</p>
+      <p class="au-u-h4 au-u-medium au-u-margin-bottom">Diagrammen</p>
       <DiagramList::Table
         @diagramList={{this.selectedDiagramList}}
         @onDiagramFileSelected={{this.openDiagramFile}}
         @canEdit={{this.canEditFilesInTable}}
         @canDeleteLastItem={{false}}
       />
+    </div>
+    <div class="au-o-box">
+      {{#if this.selectedDiagramFile}}
+        <File::Viewer @file={{this.selectedDiagramFile}} />
+        <File::MetadataCard @file={{this.selectedDiagramFile}} />
+      {{/if}}
     </div>
   </:content>
 </SidebarContainer>

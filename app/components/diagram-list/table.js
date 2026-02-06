@@ -11,7 +11,7 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 export default class DiagramListTable extends Component {
   @service toaster;
   page = 0;
-  size = 5;
+  size = 5; // TODO - fix the status to 5 with pagination
   sort = '-created';
 
   @tracked fileToDownload;
