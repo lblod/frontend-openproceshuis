@@ -4,20 +4,34 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
+import { task } from 'ember-concurrency';
+
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
+  @service router;
+  @service diagram;
+  @service api;
+  @service toaster;
+
+  @tracked isCreateModalOpen = false;
+
   @tracked selectedDiagramList;
   @tracked selectedDiagramFile;
 
   @action
-  openDiagramList(diagramList) {
+  async openDiagramList(diagramList) {
     this.selectedDiagramList = diagramList;
-    this.selectedDiagramFile = diagramList.diagrams[0]?.diagramFile;
+    const latestDiagrams = await diagramList.diagrams;
+    this.selectedDiagramFile = latestDiagrams[0]?.diagramFile;
   }
 
   @action
-  openDiagramFile(diagramFile) {
-    this.selectedDiagramFile = diagramFile;
+  async openDiagramFile(diagramFile) {
+    if (!diagramFile) {
+      await this.openDiagramList(this.selectedDiagramList);
+    } else {
+      this.selectedDiagramFile = diagramFile;
+    }
   }
 
   @action
@@ -41,5 +55,41 @@ export default class ProcessesProcessDiagramsController extends Controller {
       this.canEdit &&
       this.selectedDiagramList.id === this.model.activeDiagramList.id
     );
+  }
+
+  @action
+  openCreateModal() {
+    this.isCreateModalOpen = true;
+  }
+
+  addFileToProcess = task({ enqueue: true }, async (newFileIds) => {
+    const diagramList =
+      await this.diagram.createDiagramListForFiles(newFileIds);
+    const currentLists = await this.model.process.diagramLists;
+    this.model.process.diagramLists = [...currentLists, diagramList];
+    await this.model.process.save();
+  });
+
+  extractBpmnElements = task({ drop: true }, async (bpmnFileId) => {
+    await this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+  });
+
+  @action
+  diagramUploaded() {
+    this.isCreateModalOpen = false;
+    this.toaster.success('Nieuwe versie werd aangemaakt', null, {
+      timeOut: 2500,
+    });
+    this.router.refresh();
+  }
+
+  @action
+  closeCreateModal() {
+    this.isCreateModalOpen = false;
   }
 }
