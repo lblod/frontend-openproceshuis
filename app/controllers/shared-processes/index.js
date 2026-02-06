@@ -108,13 +108,13 @@ export default class SharedProcessesIndexController extends Controller {
     this.fileHasSensitiveInformation = false;
   }
 
-  createProcess = task({ drop: true }, async (fileId) => {
-    const diagram = await this.store.findRecord('file', fileId);
+  createProcess = task({ drop: true }, async (fileIds) => {
     const defaultRelevantUnit = await this.currentSession.group.classification;
     const created = new Date();
-    const diagramList = await this.diagram.createDiagramListForFile(fileId);
+    const diagramList = await this.diagram.createDiagramListForFiles(fileIds);
+    const firstDiagram = diagramList.diagrams[0]?.diagramFile;
     const process = this.store.createRecord('process', {
-      title: removeFileNameExtension(diagram.name, diagram.extension),
+      title: removeFileNameExtension(firstDiagram.name, firstDiagram.extension),
       created,
       modified: created,
       publisher: this.currentSession.group,
