@@ -3,7 +3,7 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
-
+import ENV from 'frontend-openproceshuis/config/environment';
 export default class InformationAssetIndexController extends Controller {
   queryParams = ['edit', 'process'];
 
@@ -18,6 +18,7 @@ export default class InformationAssetIndexController extends Controller {
   @tracked isDeleteModalOpen = false;
   @tracked isSaving = false;
   @tracked versionTimeline = [];
+  @tracked errorMessageTitle;
 
   get canEdit() {
     return (
@@ -56,6 +57,7 @@ export default class InformationAssetIndexController extends Controller {
 
   @action
   setTitle(event) {
+    this.errorMessageTitle = null;
     this.informationAsset.title = event.target.value;
     this.validateForm();
   }
@@ -83,6 +85,21 @@ export default class InformationAssetIndexController extends Controller {
       }
 
       const oldAsset = this.informationAsset;
+
+      const checkDuplicateTitle = await this.store.query('information-asset', {
+        filter: {
+          ':exact:title': oldAsset.title,
+          ':not:status': ENV.resourceStates.archived,
+        },
+        page: { size: 1 },
+      });
+      if (checkDuplicateTitle.length !== 0) {
+        this.toaster.error(
+          'Er bestaat al een informatieclassificatie met deze titel',
+        );
+        this.errorMessageTitle = 'Deze titel bestaat al';
+        return;
+      }
 
       const newAsset = this.store.createRecord('information-asset', {
         title: oldAsset.title,

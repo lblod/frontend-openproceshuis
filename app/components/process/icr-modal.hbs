@@ -4,16 +4,24 @@
 
     <form {{on "submit" (perform this.updateModel)}}>
       <div class="au-u-margin-bottom">
-        <label
-          class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
-        >Titel</label>
+        <AuLabel
+          @error={{this.errorMessage}}
+          @required={{true}}
+          for="new-information-asset"
+        >Titel</AuLabel>
         <AuInput
+          id="new-information-asset"
           value={{@selected.title}}
           {{on "input" this.setTitle}}
           rows="4"
           @width="block"
-          @error={{this.hasError "title"}}
+          @error={{this.errorMessageTitle}}
         />
+        {{#if this.errorMessageTitle}}
+          <AuHelpText @error="true">
+            {{this.errorMessageTitle}}
+          </AuHelpText>
+        {{/if}}
       </div>
       <div class="au-u-margin-bottom">
         <label
@@ -24,7 +32,6 @@
           {{on "input" this.setDescription}}
           rows="4"
           @width="block"
-          @error={{this.hasError "description"}}
         />
       </div>
       <AuCard class="no-border" as |c|>

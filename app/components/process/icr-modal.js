@@ -3,17 +3,20 @@ import Component from '@glimmer/component';
 import { task } from 'ember-concurrency';
 import { tracked } from 'tracked-built-ins';
 import { service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class IcrModalComponent extends Component {
   @service store;
   @service toaster;
-  @tracked selected;
+  @service currentSession;
+
   @tracked isLoading = false;
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
-  @service currentSession;
+  @tracked selected;
+  @tracked errorMessageTitle;
 
   get validForm() {
     return this.formIsValid || this.args.selected.title?.trim().length > 0;
@@ -50,6 +53,7 @@ export default class IcrModalComponent extends Component {
   @action
   setTitle(event) {
     if (!this.args.selected) return;
+    this.errorMessageTitle = null;
     this.args.selected.title = event.target.value;
     this.validateForm();
   }
@@ -80,6 +84,19 @@ export default class IcrModalComponent extends Component {
     }
 
     this.isLoading = true;
+    const checkDuplicateTitle = await this.store.query('information-asset', {
+      filter: {
+        ':exact:title': this.args.selected.title,
+        ':not:status': ENV.resourceStates.archived,
+      },
+      page: { size: 1 },
+    });
+    if (checkDuplicateTitle.length !== 0) {
+      this.toaster.error(
+        'Er bestaat al een informatieclassificatie met deze titel',
+      );
+      return (this.errorMessageTitle = 'Deze titel bestaat al');
+    }
 
     const oldAsset = this.args.selected;
     const newAssetData = {

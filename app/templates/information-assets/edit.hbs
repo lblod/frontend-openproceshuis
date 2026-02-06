@@ -91,14 +91,31 @@
           >
             <:left as |Item|>
               <Item>
-                <:label>Titel</:label>
+                <:label>
+                  {{#if this.edit}}
+                    <AuLabel
+                      @error={{this.errorMessage}}
+                      @required={{true}}
+                      for="edit-information-asset"
+                    >Titel</AuLabel>
+                  {{else}}
+                    Titel
+                  {{/if}}
+                </:label>
                 <:content>
                   {{#if this.edit}}
                     <AuInput
-                      @width="block"
+                      id="edit-information-asset"
                       value={{this.informationAsset.title}}
                       {{on "input" this.setTitle}}
+                      @width="block"
+                      @error={{this.errorMessageTitle}}
                     />
+                    {{#if this.errorMessageTitle}}
+                      <AuHelpText @error="true">
+                        {{this.errorMessageTitle}}
+                      </AuHelpText>
+                    {{/if}}
                   {{else}}
                     {{#if this.informationAsset.title}}
                       {{this.informationAsset.title}}
