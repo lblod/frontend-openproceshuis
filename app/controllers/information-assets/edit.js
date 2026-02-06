@@ -96,6 +96,7 @@ export default class InformationAssetIndexController extends Controller {
       if (checkDuplicateTitle.length !== 0) {
         this.toaster.error(
           'Er bestaat al een informatieclassificatie met deze titel',
+          { timeOut: 5000 },
         );
         this.errorMessageTitle = 'Deze titel bestaat al';
         return;

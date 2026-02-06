@@ -94,6 +94,7 @@ export default class IcrModalComponent extends Component {
     if (checkDuplicateTitle.length !== 0) {
       this.toaster.error(
         'Er bestaat al een informatieclassificatie met deze titel',
+        { timeOut: 5000 },
       );
       return (this.errorMessageTitle = 'Deze titel bestaat al');
     }
