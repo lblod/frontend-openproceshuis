@@ -78,34 +78,13 @@ export default class ProcessDiagramVisual extends Component {
     this.fileHasSensitiveInformation = false;
   }
 
-  async createDiagramListForFile(fileId) {
-    const now = new Date();
-    const file = await this.store.findRecord('file', fileId);
-    const listItem = this.store.createRecord('list-item', {
-      position: 1,
-      created: now,
-      modified: now,
-      diagramFile: file,
-      subItems: [],
-    });
-    await listItem.save();
-    const diagramList = this.store.createRecord('diagram-list', {
-      order: 1,
-      created: now,
-      modified: now,
-      version: 'v0.0.1',
-      diagrams: [listItem],
-    });
-    await diagramList.save();
-
-    return diagramList;
-  }
-
-  addFileToProcess = task({ enqueue: true }, async (newFileId) => {
-    const diagramList = await this.createDiagramListForFile(newFileId);
+  addFileToProcess = task({ enqueue: true }, async (newFileIds) => {
+    const diagramList =
+      await this.diagram.createDiagramListForFiles(newFileIds);
     const currentLists = await this.process.diagramLists;
     this.process.diagramLists = [...currentLists, diagramList];
     await this.process.save();
+    this.diagram.fetchLatest.perform(this.process.id);
   });
 
   @dropTask
