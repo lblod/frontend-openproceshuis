@@ -1,6 +1,6 @@
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
@@ -21,14 +21,17 @@ export default class FileUploadModalComponent extends Component {
   @tracked fileHasSensitiveInformation = false;
   @tracked sensitiveDataResults = [];
   @tracked sensitiveDataToAnonymize = [];
+  modelName = this.args.modelName || 'Proces';
 
   get uploadingMsg() {
     if (this.queue.files.length && !this.detectSensitiveData?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
-    if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
+    if (this.args.updateModel?.isRunning)
+      return `${this.modelName} bijwerken ...`;
 
-    if (this.args.createProcess?.isRunning) return 'Proces aanmaken ...';
+    if (this.args.createModel?.isRunning)
+      return `${this.modelName} aanmaken ...`;
 
     if (this.args.extractBpmnElements?.isRunning) {
       return 'Processtappen extraheren ...';
@@ -82,8 +85,8 @@ export default class FileUploadModalComponent extends Component {
   get isBusy() {
     return (
       this.queue.files.length ||
-      this.args.updateProcess?.isRunning ||
-      this.args.createProcess?.isRunning ||
+      this.args.updateModel?.isRunning ||
+      this.args.createModel?.isRunning ||
       this.args.extractBpmnElements?.isRunning
     );
   }
@@ -154,9 +157,9 @@ export default class FileUploadModalComponent extends Component {
       return;
     }
 
-    if (this.args.updateProcess) {
+    if (this.args.updateModel) {
       try {
-        yield this.args.updateProcess.perform(fileId);
+        yield this.args.updateModel.perform(fileId);
       } catch {
         this.addError(
           fileWrapper,
@@ -165,9 +168,9 @@ export default class FileUploadModalComponent extends Component {
         this.removeFileFromQueue(fileWrapper);
         return;
       }
-    } else if (this.args.createProcess) {
+    } else if (this.args.createModel) {
       try {
-        yield this.args.createProcess.perform(fileId);
+        yield this.args.createModel.perform(fileId);
       } catch {
         this.addError(
           fileWrapper,

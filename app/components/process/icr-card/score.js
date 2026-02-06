@@ -5,20 +5,18 @@ import { action } from '@ember/object';
 export default class ProcessIcrCardScoreComponent extends Component {
   allowedScores = [1, 2, 3, 4, 5];
 
-  @tracked selectedScore = this.allowedScores.includes(this.args.selectedScore)
-    ? this.args.selectedScore
-    : undefined;
   @tracked hoveredScore = null;
 
-  getSvgPath = (score) => {
-    if (score === this.selectedScore) {
+  @action
+  getSvgPath(score) {
+    if (score === this.args.selectedScore) {
       return `/assets/images/icr/fill-${score}.svg`;
     } else if (score === this.hoveredScore) {
       return `/assets/images/icr/outline-${score}.svg`;
     } else {
       return `/assets/images/icr/neutral-${score}.svg`;
     }
-  };
+  }
 
   @action
   onMouseEnter(score) {
@@ -32,11 +30,10 @@ export default class ProcessIcrCardScoreComponent extends Component {
 
   @action
   onMouseClick(score) {
-    if (this.selectedScore === score) score = undefined;
+    let newScore = score === this.args.selectedScore ? undefined : score;
 
-    this.selectedScore = score;
     if (this.args.onScoreChange) {
-      this.args.onScoreChange(score);
+      this.args.onScoreChange(newScore);
     }
   }
 }

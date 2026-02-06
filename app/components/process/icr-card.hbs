@@ -52,32 +52,28 @@
     <:card as |Card|>
       <Card.Columns class="au-u-flex au-u-flex--spaced-small au-u-flex--wrap">
         <:left as |Item|>
-          {{#unless this.showIcrModal}}
-            <Item>
-              <:label>Beschikbaarheid</:label>
-              <:content>
-                <Process::IcrCard::Score
-                  @selectedScore={{this.availabilityScore}}
-                />
-              </:content>
-            </Item>
-            <Item>
-              <:label>Integriteit</:label>
-              <:content>
-                <Process::IcrCard::Score
-                  @selectedScore={{this.integrityScore}}
-                />
-              </:content>
-            </Item>
-            <Item>
-              <:label>Vertrouwelijkheid</:label>
-              <:content>
-                <Process::IcrCard::Score
-                  @selectedScore={{this.confidentialityScore}}
-                />
-              </:content>
-            </Item>
-          {{/unless}}
+          <Item>
+            <:label>Beschikbaarheid</:label>
+            <:content>
+              <Process::IcrCard::Score
+                @selectedScore={{this.availabilityScore}}
+              />
+            </:content>
+          </Item>
+          <Item>
+            <:label>Integriteit</:label>
+            <:content>
+              <Process::IcrCard::Score @selectedScore={{this.integrityScore}} />
+            </:content>
+          </Item>
+          <Item>
+            <:label>Vertrouwelijkheid</:label>
+            <:content>
+              <Process::IcrCard::Score
+                @selectedScore={{this.confidentialityScore}}
+              />
+            </:content>
+          </Item>
           <Item>
             <:label>Persoonsgegevens</:label>
             <:content>
@@ -148,13 +144,15 @@
               {{#if @process.informationAssets.length}}
                 <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
                   {{#each @process.informationAssets as |asset|}}
-                    <AuPill
-                      class="pointer information-asset-pill"
-                      {{on "click" (fn this.openIcrModal asset)}}
-                    >
-                      {{asset.title}}
-                      <AuIcon @icon="pencil" />
-                    </AuPill>
+                    {{#if (not-eq asset.status this.archivedUri)}}
+                      <AuPill
+                        class="pointer information-asset-pill"
+                        {{on "click" (fn this.editAsset asset)}}
+                      >
+                        {{asset.title}}
+                        <AuIcon @icon="pencil" />
+                      </AuPill>
+                    {{/if}}
                   {{/each}}
                 </div>
               {{else}}

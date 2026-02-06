@@ -1,19 +1,25 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import { dropTask } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 import { tracked } from 'tracked-built-ins';
 import { service } from '@ember/service';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class IcrModalComponent extends Component {
   @service store;
   @service toaster;
-  @tracked selected;
-  @tracked isLoading = false;
+  @service currentSession;
+
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
-  @service currentSession;
+  @tracked selected;
+  @tracked errorMessageTitle;
+
+  get validForm() {
+    return this.formIsValid || this.args.selected.title?.trim().length > 0;
+  }
 
   get header() {
     if (this.args.selected.isDraft) {
@@ -29,8 +35,11 @@ export default class IcrModalComponent extends Component {
       const newOptions = this.draftInformationAssets.filter(
         (asset) => asset.isDraft !== true,
       );
-      this.args.setOptions(newOptions);
+      if (this.args.setOptions) {
+        this.args.setOptions(newOptions);
+      }
     }
+    this.errorMessageTitle = null;
     this.args.closeModal();
   }
 
@@ -44,6 +53,7 @@ export default class IcrModalComponent extends Component {
   @action
   setTitle(event) {
     if (!this.args.selected) return;
+    this.errorMessageTitle = null;
     this.args.selected.title = event.target.value;
     this.validateForm();
   }
@@ -52,39 +62,6 @@ export default class IcrModalComponent extends Component {
   setDescription(event) {
     if (!this.args.process) return;
     this.args.selected.description = event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setIntegrityScore(value) {
-    if (!this.args.selected) return;
-    this.args.selected.integrityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setConfidentialityScore(value) {
-    if (!this.args.selected) return;
-    this.args.selected.confidentialityScore = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsPersonalData(value) {
-    if (!this.args.selected) return;
-    this.args.selected.containsPersonalData = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsProfessionalData(value) {
-    this.args.selected.containsProfessionalData = value;
-    this.validateForm();
-  }
-
-  @action
-  setContainsSensitivePersonalData(value) {
-    this.args.selected.containsSensitivePersonalData = value;
     this.validateForm();
   }
 
@@ -99,20 +76,33 @@ export default class IcrModalComponent extends Component {
     this.formIsValid = this.args.selected.title?.trim().length > 0;
   }
 
-  @dropTask
-  *updateModel(event) {
+  updateModel = task({ drop: true }, async (event) => {
     event.preventDefault();
 
-    if (!this.args.selected || !this.formIsValid) {
+    if (!this.args.selected || !this.validForm) {
       return;
     }
 
-    this.isLoading = true;
+    const checkDuplicateTitle = await this.store.query('information-asset', {
+      filter: {
+        ':exact:title': this.args.selected.title?.trim(),
+        ':not:status': ENV.resourceStates.archived,
+      },
+      page: { size: 1 },
+    });
+    if (checkDuplicateTitle.length !== 0) {
+      this.toaster.error(
+        'Er bestaat al een informatieclassificatie met deze titel',
+        null,
+        { timeOut: 5000 },
+      );
+      this.errorMessageTitle = 'Deze titel bestaat al';
+      return;
+    }
 
-    let assetRecord;
-
-    const assetData = {
-      title: this.args.selected.title,
+    const oldAsset = this.args.selected;
+    const newAssetData = {
+      title: this.args.selected.title?.trim(),
       availabilityScore: this.args.selected.availabilityScore,
       confidentialityScore: this.args.selected.confidentialityScore,
       integrityScore: this.args.selected.integrityScore,
@@ -121,43 +111,36 @@ export default class IcrModalComponent extends Component {
       containsSensitivePersonalData:
         this.args.selected.containsSensitivePersonalData,
       created: new Date(),
+      modified: new Date(),
       description: this.args.selected.description,
       status: this.args.selected.status,
       creator: this.currentSession.group,
     };
+    const newAsset = this.store.createRecord('information-asset', newAssetData);
 
     try {
-      if (this.args.selected.isDraft) {
-        assetRecord = this.store.createRecord('information-asset', assetData);
-        yield assetRecord.save();
-      } else {
-        assetRecord = this.args.selected;
-        assetRecord.setProperties(assetData);
-
-        const savedAsset = yield assetRecord.save();
-
-        this.args.process.informationAssets = [
-          ...this.args.process.informationAssets.filter(
-            (ia) => ia.id !== savedAsset.id,
-          ),
-          savedAsset,
-        ];
-
-        yield this.args.process.save();
+      let isNew = false;
+      if (oldAsset.isDraft) {
+        isNew = true;
+        await newAsset.save();
       }
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
       );
-      this.args.setOptions([...nonDraftAssets, assetRecord]);
+      if (this.args.setOptions) {
+        this.args.setOptions([...nonDraftAssets, newAsset]);
+      }
 
       this.toaster.success(
-        'Informatieclassificatie succesvol bijgewerkt',
+        isNew
+          ? 'Nieuwe informatie asset succesvol toegevoegd.'
+          : 'Informatie asset succesvol bijgewerkt.',
         'Gelukt!',
         { timeOut: 5000 },
       );
 
       this.resetModal();
-      this.args.closeModal();
+      this.args.closeModal(newAsset);
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.icrDataUpdateFailed');
@@ -165,8 +148,6 @@ export default class IcrModalComponent extends Component {
 
       this.resetModal();
       this.args.closeModal();
-    } finally {
-      this.isLoading = false;
     }
-  }
+  });
 }

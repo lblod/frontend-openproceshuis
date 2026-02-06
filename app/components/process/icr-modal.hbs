@@ -4,16 +4,24 @@
 
     <form {{on "submit" (perform this.updateModel)}}>
       <div class="au-u-margin-bottom">
-        <label
-          class="au-u-flex au-c-card-item__label au-c-card-item__label--data au-u-h6 au-u-margin-bottom-tiny"
-        >Titel</label>
+        <AuLabel
+          @error={{this.errorMessage}}
+          @required={{true}}
+          for="new-information-asset"
+        >Titel</AuLabel>
         <AuInput
+          id="new-information-asset"
           value={{@selected.title}}
           {{on "input" this.setTitle}}
           rows="4"
           @width="block"
-          @error={{this.hasError "title"}}
+          @error={{this.errorMessageTitle}}
         />
+        {{#if this.errorMessageTitle}}
+          <AuHelpText @error="true">
+            {{this.errorMessageTitle}}
+          </AuHelpText>
+        {{/if}}
       </div>
       <div class="au-u-margin-bottom">
         <label
@@ -24,7 +32,6 @@
           {{on "input" this.setDescription}}
           rows="4"
           @width="block"
-          @error={{this.hasError "description"}}
         />
       </div>
       <AuCard class="no-border" as |c|>
@@ -36,7 +43,7 @@
               >Beschikbaarheid</label>
               <Process::IcrCard::Score
                 @selectedScore={{@selected.availabilityScore}}
-                @onScoreChange={{this.setAvailabilityScore}}
+                @onScoreChange={{fn (mut @selected.availabilityScore)}}
               />
             </div>
             <div class="au-u-1-1">
@@ -45,7 +52,7 @@
               >Integriteit</label>
               <Process::IcrCard::Score
                 @selectedScore={{@selected.integrityScore}}
-                @onScoreChange={{this.setIntegrityScore}}
+                @onScoreChange={{fn (mut @selected.integrityScore)}}
               />
             </div>
             <div class="au-u-1-1">
@@ -54,7 +61,7 @@
               >Vertrouwelijkheid</label>
               <Process::IcrCard::Score
                 @selectedScore={{@selected.confidentialityScore}}
-                @onScoreChange={{this.setConfidentialityScore}}
+                @onScoreChange={{fn (mut @selected.confidentialityScore)}}
               />
             </div>
           </div>
@@ -68,8 +75,8 @@
       <div class="au-u-flex au-u-flex--column au-u-flex--spaced-small">
         <AuCheckbox
           id="contains-personal-data"
-          @checked={{@selected.containsPersonalData}}
-          @onChange={{this.setContainsPersonalData}}
+          @checked={{@selected.containsProfessionalData}}
+          @onChange={{fn (mut @selected.containsProfessionalData)}}
         >
           <label for="contains-personal-data">Professionele gegevens</label>
           <Shared::Tooltip
@@ -87,8 +94,8 @@
         </AuCheckbox>
         <AuCheckbox
           id="contains-professional-data"
-          @checked={{@selected.containsProfessionalData}}
-          @onChange={{this.setContainsProfessionalData}}
+          @checked={{@selected.containsPersonalData}}
+          @onChange={{fn (mut @selected.containsPersonalData)}}
         >
           <label for="contains-professional-data">Persoonsgegevens</label>
 
@@ -107,7 +114,7 @@
         <AuCheckbox
           id="contains-sensitive-personal-data"
           @checked={{@selected.containsSensitivePersonalData}}
-          @onChange={{this.setContainsSensitivePersonalData}}
+          @onChange={{fn (mut @selected.containsSensitivePersonalData)}}
         >
           <label for="contains-sensitive-personal-data">Bijzondere
             persoonsgegevens</label>
@@ -134,7 +141,7 @@
         @skin="primary"
         {{on "click" (perform this.updateModel)}}
         @loading={{this.updateModel.isRunning}}
-        @disabled={{not this.formIsValid}}
+        @disabled={{not this.validForm}}
       >Opslaan</AuButton>
     </AuButtonGroup>
   </:footer>

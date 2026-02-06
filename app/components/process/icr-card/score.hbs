@@ -1,16 +1,19 @@
 <div class="icr-score">
   {{#each this.allowedScores as |score|}}
-    {{#if @onScoreChange}}
+    {{#if (and @onScoreChange (not @readonly))}}
       {{! template-lint-disable no-invalid-interactive }}
       <img
-        src={{this.getSvgPath score}}
+        src={{this.getSvgPath score (eq score @selectedScore)}}
         alt={{score}}
         {{on "mouseenter" (fn this.onMouseEnter score)}}
         {{on "mouseleave" this.onMouseLeave}}
         {{on "click" (fn this.onMouseClick score)}}
       />
     {{else}}
-      <img src={{this.getSvgPath score}} alt={{score}} />
+      <img
+        src={{this.getSvgPath score (eq score @selectedScore)}}
+        alt={{score}}
+      />
     {{/if}}
   {{/each}}
 </div>

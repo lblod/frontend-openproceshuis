@@ -1,0 +1,377 @@
+{{breadcrumb
+  (if this.isArchived "Archief " "Bewerk ")
+  this.informationAsset.title
+  route="information-assets.edit"
+  model=this.informationAsset.id
+}}
+
+<PageHeader>
+  <:title>
+    <div class="au-u-flex au-u-flex--vertical-center">
+      <AuLink
+        @skin="button-naked"
+        @icon="arrow-left"
+        @iconAlignment="left"
+        @size="large"
+        @route="information-assets.index"
+        @hideText={{true}}
+        class="au-u-margin-right-small animate-left"
+        title="Terug naar informatie assets overzicht"
+      >Previous</AuLink>
+      {{this.informationAsset.title}}
+      <AuButton
+        class="au-u-padding-left-small"
+        @icon="link"
+        @skin="link"
+        @hideText={{true}}
+        {{on "click" this.copyUrl}}
+      /></div>
+  </:title>
+  <:action>
+    {{#if this.isArchived}}
+      <AuPill @icon="clock-rewind">Gearchiveerd op
+        {{date-format this.informationAsset.modified true}}</AuPill>
+    {{else}}
+      <AuPill @icon="clock-rewind" @skin="success">Aangemaakt op
+        {{date-format this.informationAsset.created true}}</AuPill>
+    {{/if}}
+  </:action>
+</PageHeader>
+
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+  <div class="au-o-grid au-o-grid--small">
+    <div class="au-o-grid__item au-u-4-6@medium">
+      <DataCard
+        class={{if
+          (or this.isArchived this.edit)
+          "u-color-top-border-gray"
+          "u-color-top-border-yellow"
+        }}
+      >
+        <:title>
+          Informatieclassificatie
+        </:title>
+        <:header>
+          {{#if this.isArchived}}
+            <AuPill @icon="clock-rewind">Gearchiveerd </AuPill>
+          {{else}}
+            {{#if this.canEdit}}
+              {{#if this.edit}}
+                <AuButton
+                  @skin="naked"
+                  {{on "click" this.cancelEdit}}
+                >Annuleer</AuButton>
+                <AuButton
+                  @skin="primary"
+                  @icon="check"
+                  @loading={{this.saveChanges.isRunning}}
+                  {{on "click" (perform this.saveChanges)}}
+                  @disabled={{not this.formIsValid}}
+                >Opslaan</AuButton>
+              {{else}}
+                <AuButton
+                  @skin="naked"
+                  @icon="pencil"
+                  {{on "click" this.toggleEdit}}
+                >Wijzig</AuButton>
+                <AuButton
+                  @skin="naked"
+                  @icon="trash"
+                  @alert="true"
+                  {{on "click" this.openDeleteModal}}
+                >Verwijder</AuButton>
+              {{/if}}
+            {{/if}}
+          {{/if}}
+        </:header>
+
+        <:card as |Card|>
+          <Card.Columns
+            class="au-u-flex au-u-flex--spaced-small au-u-flex--wrap"
+          >
+            <:left as |Item|>
+              <Item>
+                <:label>
+                  {{#if this.edit}}
+                    <AuLabel
+                      @error={{this.errorMessage}}
+                      @required={{true}}
+                      for="edit-information-asset"
+                    >Titel</AuLabel>
+                  {{else}}
+                    Titel
+                  {{/if}}
+                </:label>
+                <:content>
+                  {{#if this.edit}}
+                    <AuInput
+                      id="edit-information-asset"
+                      value={{this.informationAsset.title}}
+                      {{on "input" this.setTitle}}
+                      @width="block"
+                      @error={{this.errorMessageTitle}}
+                    />
+                    {{#if this.errorMessageTitle}}
+                      <AuHelpText @error="true">
+                        {{this.errorMessageTitle}}
+                      </AuHelpText>
+                    {{/if}}
+                  {{else}}
+                    {{#if this.informationAsset.title}}
+                      {{this.informationAsset.title}}
+                    {{else}}
+                      <span>Geen titel</span>
+                    {{/if}}
+                  {{/if}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Korte beschrijving</:label>
+                <:content>
+                  {{#if this.edit}}
+                    <AuTextarea
+                      @width="block"
+                      value={{this.informationAsset.description}}
+                      {{on "input" this.setDescription}}
+                    />
+                  {{else}}
+                    {{#if this.informationAsset.description}}
+                      {{this.informationAsset.description}}
+                    {{else}}
+                      <span>Geen beschrijving</span>
+                    {{/if}}
+                  {{/if}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Aangemaakt door</:label>
+                <:content>
+                  {{#if this.informationAsset.creator.name}}
+                    {{this.informationAsset.creator.name}}
+                  {{else}}
+                    <span>Geen eigenaar</span>
+                  {{/if}}
+                </:content>
+              </Item>
+
+            </:left>
+            <:right as |Item|>
+
+              <Item>
+                <:label>Beschikbaarheid</:label>
+                <:content>
+                  <Process::IcrCard::Score
+                    @readonly={{not this.edit}}
+                    @onScoreChange={{fn
+                      (mut this.informationAsset.availabilityScore)
+                    }}
+                    @selectedScore={{this.informationAsset.availabilityScore}}
+                  />
+                </:content>
+              </Item>
+              <Item>
+                <:label>Integriteit</:label>
+                <:content>
+                  <Process::IcrCard::Score
+                    @readonly={{not this.edit}}
+                    @onScoreChange={{fn
+                      (mut this.informationAsset.integrityScore)
+                    }}
+                    @selectedScore={{this.informationAsset.integrityScore}}
+                  />
+                </:content>
+              </Item>
+              <Item>
+                <:label>Vertrouwelijkheid</:label>
+                <:content>
+                  <Process::IcrCard::Score
+                    @readonly={{not this.edit}}
+                    @onScoreChange={{fn
+                      (mut this.informationAsset.confidentialityScore)
+                    }}
+                    @selectedScore={{this.informationAsset.confidentialityScore}}
+                  />
+                </:content>
+              </Item>
+              <Item>
+                <:label>Persoonsgegevens</:label>
+                <:content>
+                  <div
+                    class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
+                  >
+                    <AuCheckbox
+                      id="contains-personal-data"
+                      @onChange={{fn
+                        (mut this.informationAsset.containsProfessionalData)
+                      }}
+                      @checked={{this.informationAsset.containsProfessionalData}}
+                      @disabled={{not this.edit}}
+                    >
+                      <label for="contains-personal-data">Professionele gegevens</label>
+                      <Shared::Tooltip
+                        @show={{true}}
+                        @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
+                        @placement="top"
+                      >
+                        <AuIcon
+                          class="color--info"
+                          @icon="circle-question"
+                          @size="large"
+                          @alignment="right"
+                        />
+                      </Shared::Tooltip>
+                    </AuCheckbox>
+                    <AuCheckbox
+                      id="contains-professional-data"
+                      @onChange={{fn
+                        (mut this.informationAsset.containsPersonalData)
+                      }}
+                      @checked={{this.informationAsset.containsPersonalData}}
+                      @disabled={{not this.edit}}
+                    >
+                      <label
+                        for="contains-professional-data"
+                      >Persoonsgegevens</label>
+                      <Shared::Tooltip
+                        @show={{true}}
+                        @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                      >
+                        <AuIcon
+                          class="color--info"
+                          @icon="circle-question"
+                          @size="large"
+                          @alignment="right"
+                        />
+                      </Shared::Tooltip>
+                    </AuCheckbox>
+                    <AuCheckbox
+                      id="contains-sensitive-personal-data"
+                      @onChange={{fn
+                        (mut
+                          this.informationAsset.containsSensitivePersonalData
+                        )
+                      }}
+                      @checked={{this.informationAsset.containsSensitivePersonalData}}
+                      @disabled={{not this.edit}}
+                    >
+                      <label for="contains-sensitive-personal-data">Bijzondere
+                        persoonsgegevens</label>
+                      <Shared::Tooltip
+                        @show={{true}}
+                        @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                      >
+                        <AuIcon
+                          class="color--info"
+                          @icon="circle-question"
+                          @size="large"
+                          @alignment="right"
+                        />
+                      </Shared::Tooltip>
+                    </AuCheckbox>
+                  </div>
+                </:content>
+              </Item>
+            </:right>
+          </Card.Columns>
+        </:card>
+
+      </DataCard>
+      <br />
+      <Icr::Attachments
+        @canEdit={{this.canEdit}}
+        @informationAsset={{this.informationAsset}}
+      />
+    </div>
+    <aside class="au-o-grid__item au-u-2-6@medium">
+      <div class="u-top-sticky">
+        <AuContent class="au-u-margin-top">
+          {{#unless this.isArchived}}
+            <h2 class="au-u-h4 au-u-medium">
+              Gelinkte
+              <AuLink @route="processes">processen</AuLink>
+            </h2>
+            <AuHr @size="default" class="au-u-margin-top-small" />
+            {{#if this.informationAsset.processes.length}}
+              {{#each this.informationAsset.processes as |process|}}
+                <AuPill class="au-u-margin-top-small">
+                  <AuLink @route="processes.process" @model={{process.id}}>
+                    {{process.title}}
+                  </AuLink>
+                </AuPill>
+              {{/each}}
+            {{else}}
+              <p class="au-u-margin-top-small">Geen processen gevonden</p>
+            {{/if}}
+          {{/unless}}
+          <h2 class="au-u-h4 au-u-medium">
+            Versiegeschiedenis
+          </h2>
+          <AuHr @size="default" class="au-u-margin-top-small" />
+
+          {{#if this.versionTimeline.isRunning}}
+            <span class="au-u-loading au-u-flex au-u-flex--align-center">
+              <AuLoader @inline={{true}}>Geschiedenis laden</AuLoader>
+            </span>
+          {{else}}
+
+            {{#if this.versionTimeline.value.length}}
+              <ol class="timeline">
+                {{#each this.versionTimeline.value as |item|}}
+                  <li class="timeline__item">
+                    <span class="timeline__dot"></span>
+
+                    <AuPill
+                      class="au-u-margin-top-small"
+                      @skin={{if item.status "default" "success"}}
+                    >
+                      <AuLink
+                        @route="information-assets.edit"
+                        @model={{item.id}}
+                        @query={{hash edit=null}}
+                        @icon="link"
+                        @skin={{if
+                          (eq item.id this.informationAsset.id)
+                          "primary"
+                          "secondary"
+                        }}
+                      >
+                        {{item.title}}
+
+                        {{#if (not item.status)}}
+                          — aangemaakt:
+                          {{date-format item.created true}}
+                        {{else if item.modified}}
+                          — gewijzigd:
+                          {{date-format item.modified true}}
+                        {{/if}}
+                      </AuLink>
+                    </AuPill>
+
+                    {{#unless item.status}}
+                      <span class="au-u-muted au-u-margin-left-small">
+                        (gepubliceerde versie)
+                      </span>
+                    {{/unless}}
+                  </li>
+                {{/each}}
+              </ol>
+            {{else}}
+              <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
+            {{/if}}
+          {{/if}}
+        </AuContent>
+      </div>
+    </aside>
+  </div>
+</AuBodyContainer>
+
+{{#if this.canEdit}}
+  <Shared::DeleteModal
+    @isModalOpen={{this.isDeleteModalOpen}}
+    @closeModal={{this.closeDeleteModal}}
+    @onDelete={{fn (perform this.onDeleteAsset)}}
+    @type="informatie asset"
+    @isLoading={{this.onDeleteAsset.isRunning}}
+    @title={{this.informationAsset.title}}
+  />
+{{/if}}
