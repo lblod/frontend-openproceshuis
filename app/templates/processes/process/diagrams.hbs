@@ -3,28 +3,18 @@
 
 {{! template-lint-disable no-invalid-interactive }}
 {{! template-lint-disable no-inline-styles }}
-<div>
-  <div>
-    <AuHeading
-      @skin="3"
-      class="au-u-muted au-u-margin-bottom-small au-u-padding-left au-u-padding-top"
+<PageHeader>
+  <:title>Versies</:title>
+  <:action>
+    <AuButton
+      @skin="primary"
+      @iconAlignment="right"
+      {{on "click" this.openCreateModal}}
     >
-      Versies
-    </AuHeading>
-    <div class="au-u-flex au-u-flex--row background-light-blue">
-      <AuButton
-        @skin="naked"
-        @size="large"
-        @icon="plus"
-        @iconAlignment="right"
-        @width="block"
-        {{on "click" this.openCreateModal}}
-      >
-        Maak een nieuwe versie aan
-      </AuButton>
-    </div>
-  </div>
-</div>
+      Maak een nieuwe versie aan
+    </AuButton>
+  </:action>
+</PageHeader>
 <SidebarContainer class="diagrams">
   <:sidebar>
     <div class="au-c-sidebar background-white thin-scrollbar">
