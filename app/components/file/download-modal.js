@@ -31,7 +31,7 @@ export default class FileDownloadModal extends Component {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
           const blob = await this.createBlobForVisioFile(this.args.fileModel);
-          await this.downloadFileBlob(blob);
+          await this.downloadFileBlob(blob, 'vsdx');
         },
         buttonSkin: 'primary',
       },
@@ -65,7 +65,7 @@ export default class FileDownloadModal extends Component {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
           const blob = await this.createBlobForPngFile(this.args.fileModel);
-          await this.downloadFileBlob(blob);
+          await this.downloadFileBlob(blob, 'png');
         },
         buttonSkin: 'secondary',
       },
@@ -77,7 +77,7 @@ export default class FileDownloadModal extends Component {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
           const blob = await this.createBlobForSvgFile(this.args.fileModel);
-          await this.downloadFileBlob(blob);
+          await this.downloadFileBlob(blob, 'svg');
         },
         buttonSkin: 'secondary',
       },
@@ -88,8 +88,19 @@ export default class FileDownloadModal extends Component {
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
-          const blob = await this.createBlobForPdfFile(this.args.fileModel);
-          await this.downloadFileBlob(blob);
+          let blob = null;
+          if (this.args.fileModel.isVisioFile) {
+            const url = generateVisioConversionUrl(
+              this.args.fileModel.id,
+              'pdf',
+            );
+            const response = await fetch(url);
+            if (!response.ok) throw Error(response.status);
+            blob = await response.blob();
+          } else {
+            blob = await this.createBlobForPdfFile(this.args.fileModel);
+          }
+          await this.downloadFileBlob(blob, 'pdf');
         },
         buttonSkin: 'secondary',
       },
