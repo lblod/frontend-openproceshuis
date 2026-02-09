@@ -106,6 +106,6 @@
 <File::DownloadModal
   @isModalOpen={{this.fileToDownload}}
   @onModalClosed={{fn (mut this.fileToDownload) undefined}}
-  @onDownloadSuccesful={{fn (mut this.fileToDownload) undefined}}
+  @onDownloadSuccesful={{this.onFileDownloadedSuccessful}}
   @fileModel={{this.fileToDownload}}
 />

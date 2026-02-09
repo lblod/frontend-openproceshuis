@@ -122,7 +122,7 @@ export default class FileDownloadModal extends Component {
       this.toaster.success('Bestand werd succesvol gedownload', null, {
         timeOut: 2500,
       });
-      this.args.onDownloadSuccesful?.();
+      this.args.onDownloadSuccesful?.(this.args.fileModel, targetExtension);
     } catch (error) {
       console.error(error);
       let errorMessage = getMessageForErrorCode(
