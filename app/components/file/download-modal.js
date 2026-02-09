@@ -3,6 +3,8 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import FileSaver from 'file-saver';
 
+import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer';
+
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 import {
@@ -20,55 +22,58 @@ export default class FileDownloadModal extends Component {
         label: 'Visio',
         extensionLabel: '.vsdx',
         canDownload: this.args.fileModel?.isVisioFile,
-        download: async () =>
-          await this.downloadFile(this.createBlobForVisioFile),
+        download: async () => {
+          const blob = await this.createBlobForVisioFile(this.args.fileModel);
+          await this.downloadFileBlob(blob);
+        },
         buttonSkin: 'primary',
       },
       {
         label: 'BPMN',
         extensionLabel: '.bpmn',
         canDownload: this.args.fileModel?.isBpmnFile,
-        download: async () =>
-          await this.downloadFile(this.createBlobForBpmnFile),
+        download: async () => {
+          const blob = await this.createBlobForBpmnFile(this.args.fileModel);
+          await this.downloadFileBlob(blob);
+        },
         buttonSkin: 'primary',
       },
       {
         label: 'Afbeelding',
         extensionLabel: '.png',
-        canDownload: this.canDownloadAsSvg,
-        download: async () =>
-          await this.downloadFile(this.createBlobForPngFile),
+        canDownload: true,
+        download: async () => {
+          const blob = await this.createBlobForPngFile(this.args.fileModel);
+          await this.downloadFileBlob(blob);
+        },
         buttonSkin: 'secondary',
       },
       {
         label: 'Vectorafbeelding',
         extensionLabel: '.svg',
-        canDownload: this.canDownloadAsSvg,
-        download: async () =>
-          await this.downloadFile(this.createBlobForSvgFile),
+        canDownload: true,
+        download: async () => {
+          const blob = await this.createBlobForSvgFile(this.args.fileModel);
+          await this.downloadFileBlob(blob);
+        },
         buttonSkin: 'secondary',
       },
       {
         label: 'PDF',
         extensionLabel: '.pdf',
         canDownload: true,
-        download: async () =>
-          await this.downloadFile(this.createBlobForPdfFile),
+        download: async () => {
+          const blob = await this.createBlobForPdfFile(this.args.fileModel);
+          await this.downloadFileBlob(blob);
+        },
         buttonSkin: 'secondary',
       },
     ];
   }
 
-  get canDownloadAsSvg() {
-    // TODO - transform to svg
-    return true;
-  }
-
-  async downloadFile(createBlobCb) {
+  async downloadFileBlob(blob) {
     const file = this.args.fileModel;
-
     try {
-      const blob = await createBlobCb(file);
       if (!blob) throw Error;
 
       const fileName = `${removeFileNameExtension(
@@ -116,21 +121,41 @@ export default class FileDownloadModal extends Component {
     );
   }
 
-  async createBlobForPngFile() {
-    // TODO - get the svg of the file
-    return await convertSvgToPng(this.latestDiagramAsSvg);
+  async createBlobForPngFile(fileModel) {
+    const svg = await this.fileToSvg(fileModel);
+    return await convertSvgToPng(svg);
   }
 
-  async createBlobForSvgFile() {
-    // TODO - get the svg of the file
+  async createBlobForSvgFile(fileModel) {
+    const svg = await this.fileToSvg(fileModel);
+
     return Promise.resolve(
-      new Blob([this.latestDiagramAsSvg], {
+      new Blob([svg], {
         type: 'image/svg+xml;charset=utf-8',
       }),
     );
   }
-  async createBlobForPdfFile() {
-    // TODO - get the svg of the file
-    return await convertSvgToPdf(this.latestDiagramAsSvg);
+  async createBlobForPdfFile(fileModel) {
+    const svg = await this.fileToSvg(fileModel);
+    return await convertSvgToPdf(svg);
+  }
+
+  async fileToSvg(fileModel) {
+    const url = generateFileDownloadUrl(fileModel.id);
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const xml = await resp.text();
+
+    // NOTE - this is a hack so we have the svg in the correct size
+    const bpmnContainer =
+      document.getElementsByClassName('bpmn-container')?.[0];
+    const viewer = new NavigatedViewer({
+      container: bpmnContainer,
+    });
+    await viewer.importXML(xml);
+    const { svg } = await viewer.saveSVG();
+    viewer?.destroy();
+
+    return svg;
   }
 }
