@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 
 import { service } from '@ember/service';
 import FileSaver from 'file-saver';
+
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 import {
@@ -9,6 +10,7 @@ import {
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
 import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
+
 export default class FileDownloadModal extends Component {
   @service toaster;
 
@@ -63,22 +65,28 @@ export default class FileDownloadModal extends Component {
   }
 
   async downloadFile(createBlobCb) {
+    const file = this.args.fileModel;
+
     try {
-      const blob = await createBlobCb();
+      const blob = await createBlobCb(file);
       if (!blob) throw Error;
 
       const fileName = `${removeFileNameExtension(
-        this.args.file.name,
-        this.args.file.extension,
-      )}.${this.args.file.extension}`;
+        file.name,
+        file.extension,
+      )}.${file.extension}`;
 
       FileSaver.saveAs(blob, fileName);
+      this.toaster.success('Bestand werd succesvol gedownload', null, {
+        timeOut: 2500,
+      });
+      this.args.onDownloadSuccesful?.();
     } catch (error) {
       console.error(error);
       let errorMessage = getMessageForErrorCode(
         'oph.downloadLatestDiagramFailed',
       );
-      if (this.args.file.isVisioFile && this.args.file.extension === 'bpmn') {
+      if (file.isVisioFile && file.extension === 'bpmn') {
         errorMessage = getMessageForErrorCode(
           'oph.visioLatestDiagramDownloadFailed',
         );
@@ -86,36 +94,35 @@ export default class FileDownloadModal extends Component {
       this.toaster.error(errorMessage, 'Fout');
       return;
     }
-
-    this.args.trackDownloadFileEvent(
-      this.args.file.id,
-      this.args.file.name,
-      'bpmn',
-      this.args.file.extension,
-    );
+    // TODO - track the download
   }
 
-  async createBlobForVisioFile() {
-    const url = generateFileDownloadUrl(this.args.file.id);
+  async createBlobForVisioFile(fileModel) {
+    const url = generateFileDownloadUrl(fileModel.id);
     const response = await fetch(url);
     if (!response.ok) throw Error(response.status);
     return await response.blob();
   }
 
-  async createBlobForBpmnFile() {
+  async createBlobForBpmnFile(fileModel) {
+    const url = generateFileDownloadUrl(fileModel.id);
+    const response = await fetch(url);
+    if (!response.ok) throw Error(response.status);
+    const octetStreamBlob = await response.blob();
     return Promise.resolve(
-      new Blob([this.latestDiagramAsBpmn], {
+      new Blob([octetStreamBlob], {
         type: 'application/xml;charset=utf-8',
       }),
     );
   }
 
   async createBlobForPngFile() {
+    // TODO - get the svg of the file
     return await convertSvgToPng(this.latestDiagramAsSvg);
   }
 
   async createBlobForSvgFile() {
-    // TODO - get elements for creating sv
+    // TODO - get the svg of the file
     return Promise.resolve(
       new Blob([this.latestDiagramAsSvg], {
         type: 'image/svg+xml;charset=utf-8',
@@ -123,13 +130,7 @@ export default class FileDownloadModal extends Component {
     );
   }
   async createBlobForPdfFile() {
+    // TODO - get the svg of the file
     return await convertSvgToPdf(this.latestDiagramAsSvg);
-  }
-
-  onDownloadSuccess() {
-    this.toaster.success('Bestand werd succesvol gedownload', null, {
-      timeOut: 2500,
-    });
-    this.args.onDownloadSuccesful?.();
   }
 }
