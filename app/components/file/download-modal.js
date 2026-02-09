@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 
+import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import FileSaver from 'file-saver';
 
@@ -11,8 +12,9 @@ import {
   convertSvgToPdf,
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
-import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
-import { tracked } from '@glimmer/tracking';
+import generateFileDownloadUrl, {
+  generateVisioConversionUrl,
+} from 'frontend-openproceshuis/utils/file-download-url';
 
 export default class FileDownloadModal extends Component {
   @service toaster;
@@ -36,14 +38,24 @@ export default class FileDownloadModal extends Component {
       {
         label: 'BPMN',
         extensionLabel: '.bpmn',
-        canDownload: this.args.fileModel?.isBpmnFile,
+        canDownload:
+          this.args.fileModel?.isBpmnFile || this.args.fileModel?.isVisioFile,
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
-          const blob = await this.createBlobForBpmnFile(this.args.fileModel);
-          await this.downloadFileBlob(blob);
+          let conversionDownloadUrl = null;
+          if (this.args.fileModel?.isVisioFile) {
+            conversionDownloadUrl = generateVisioConversionUrl(
+              this.args.fileModel.id,
+              'bpmn',
+            );
+          }
+          const blob = await this.createBlobForBpmnFile(this.args.fileModel, {
+            downloadUrl: conversionDownloadUrl,
+          });
+          await this.downloadFileBlob(blob, 'bpmn');
         },
-        buttonSkin: 'primary',
+        buttonSkin: this.args.fileModel?.isBpmnFile ? 'primary' : 'secondary',
       },
       {
         label: 'Afbeelding',
@@ -84,7 +96,7 @@ export default class FileDownloadModal extends Component {
     ];
   }
 
-  async downloadFileBlob(blob) {
+  async downloadFileBlob(blob, targetExtension) {
     const file = this.args.fileModel;
     try {
       if (!blob) throw Error;
@@ -92,7 +104,7 @@ export default class FileDownloadModal extends Component {
       const fileName = `${removeFileNameExtension(
         file.name,
         file.extension,
-      )}.${file.extension}`;
+      )}.${targetExtension ?? file.extension}`;
 
       FileSaver.saveAs(blob, fileName);
       this.toaster.success('Bestand werd succesvol gedownload', null, {
@@ -129,8 +141,8 @@ export default class FileDownloadModal extends Component {
     }
   }
 
-  async createBlobForBpmnFile(fileModel) {
-    const url = generateFileDownloadUrl(fileModel.id);
+  async createBlobForBpmnFile(fileModel, { downloadUrl }) {
+    const url = downloadUrl ?? generateFileDownloadUrl(fileModel.id);
     try {
       const response = await fetch(url);
       if (!response.ok) throw Error(response.status);
