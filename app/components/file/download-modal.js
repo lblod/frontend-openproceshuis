@@ -193,9 +193,8 @@ export default class FileDownloadModal extends Component {
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const xml = await resp.text();
 
-      // NOTE - this is a hack so we have the svg in the correct size
-      const bpmnContainer =
-        document.getElementsByClassName('bpmn-container')?.[0];
+      // NOTE - this is a hack so we have the svg in a size
+      const bpmnContainer = document.getElementsByClassName('diagrams')?.[0];
       const viewer = new NavigatedViewer({
         container: bpmnContainer,
       });
