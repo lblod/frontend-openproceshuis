@@ -8,6 +8,7 @@
           {{#if downloadOption.canDownload}}
             <AuButton
               @skin={{downloadOption.buttonSkin}}
+              @disabled={{this.isDownloading}}
               {{on "click" downloadOption.download}}
             >
               {{downloadOption.label}}
@@ -22,7 +23,13 @@
   </:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton @skin="naked" {{on "click" @onModalClosed}}>Annuleer</AuButton>
+      <AuButton
+        @skin="naked"
+        @disabled={{this.isDownloading}}
+        @loading={{this.isDownloading}}
+        @loadingMessage="Downloaden"
+        {{on "click" @onModalClosed}}
+      >Annuleer</AuButton>
     </AuButtonGroup>
   </:footer>
 </AuModal>

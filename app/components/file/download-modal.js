@@ -12,9 +12,12 @@ import {
   convertSvgToPng,
 } from 'frontend-openproceshuis/utils/svg-convertors';
 import generateFileDownloadUrl from 'frontend-openproceshuis/utils/file-download-url';
+import { tracked } from '@glimmer/tracking';
 
 export default class FileDownloadModal extends Component {
   @service toaster;
+
+  @tracked isDownloading = false;
 
   get downloadOptions() {
     return [
@@ -23,6 +26,8 @@ export default class FileDownloadModal extends Component {
         extensionLabel: '.vsdx',
         canDownload: this.args.fileModel?.isVisioFile,
         download: async () => {
+          // eslint-disable-next-line ember/no-side-effects
+          this.isDownloading = true;
           const blob = await this.createBlobForVisioFile(this.args.fileModel);
           await this.downloadFileBlob(blob);
         },
@@ -33,6 +38,8 @@ export default class FileDownloadModal extends Component {
         extensionLabel: '.bpmn',
         canDownload: this.args.fileModel?.isBpmnFile,
         download: async () => {
+          // eslint-disable-next-line ember/no-side-effects
+          this.isDownloading = true;
           const blob = await this.createBlobForBpmnFile(this.args.fileModel);
           await this.downloadFileBlob(blob);
         },
@@ -43,6 +50,8 @@ export default class FileDownloadModal extends Component {
         extensionLabel: '.png',
         canDownload: true,
         download: async () => {
+          // eslint-disable-next-line ember/no-side-effects
+          this.isDownloading = true;
           const blob = await this.createBlobForPngFile(this.args.fileModel);
           await this.downloadFileBlob(blob);
         },
@@ -53,6 +62,8 @@ export default class FileDownloadModal extends Component {
         extensionLabel: '.svg',
         canDownload: true,
         download: async () => {
+          // eslint-disable-next-line ember/no-side-effects
+          this.isDownloading = true;
           const blob = await this.createBlobForSvgFile(this.args.fileModel);
           await this.downloadFileBlob(blob);
         },
@@ -63,6 +74,8 @@ export default class FileDownloadModal extends Component {
         extensionLabel: '.pdf',
         canDownload: true,
         download: async () => {
+          // eslint-disable-next-line ember/no-side-effects
+          this.isDownloading = true;
           const blob = await this.createBlobForPdfFile(this.args.fileModel);
           await this.downloadFileBlob(blob);
         },
@@ -98,64 +111,103 @@ export default class FileDownloadModal extends Component {
       }
       this.toaster.error(errorMessage, 'Fout');
       return;
+    } finally {
+      this.isDownloading = false;
     }
     // TODO - track the download
   }
 
   async createBlobForVisioFile(fileModel) {
-    const url = generateFileDownloadUrl(fileModel.id);
-    const response = await fetch(url);
-    if (!response.ok) throw Error(response.status);
-    return await response.blob();
+    try {
+      const url = generateFileDownloadUrl(fileModel.id);
+      const response = await fetch(url);
+      if (!response.ok) throw Error(response.status);
+      return await response.blob();
+    } catch (error) {
+      this.toaster.error('Fout tijdens het converteren voor visio', 'Fout');
+      this.isDownloading = false;
+    }
   }
 
   async createBlobForBpmnFile(fileModel) {
     const url = generateFileDownloadUrl(fileModel.id);
-    const response = await fetch(url);
-    if (!response.ok) throw Error(response.status);
-    const octetStreamBlob = await response.blob();
-    return Promise.resolve(
-      new Blob([octetStreamBlob], {
-        type: 'application/xml;charset=utf-8',
-      }),
-    );
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw Error(response.status);
+      const octetStreamBlob = await response.blob();
+      return Promise.resolve(
+        new Blob([octetStreamBlob], {
+          type: 'application/xml;charset=utf-8',
+        }),
+      );
+    } catch (error) {
+      this.toaster.error(
+        'Fout tijdens het converteren van het bestand',
+        'Fout',
+      );
+      this.isDownloading = false;
+    }
   }
-
   async createBlobForPngFile(fileModel) {
-    const svg = await this.fileToSvg(fileModel);
-    return await convertSvgToPng(svg);
+    try {
+      const svg = await this.fileToSvg(fileModel);
+      return await convertSvgToPng(svg);
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('Fout tijdens het converteren voor PNG', 'Fout');
+      this.isDownloading = false;
+    }
   }
 
   async createBlobForSvgFile(fileModel) {
-    const svg = await this.fileToSvg(fileModel);
+    try {
+      const svg = await this.fileToSvg(fileModel);
 
-    return Promise.resolve(
-      new Blob([svg], {
-        type: 'image/svg+xml;charset=utf-8',
-      }),
-    );
+      return Promise.resolve(
+        new Blob([svg], {
+          type: 'image/svg+xml;charset=utf-8',
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('Fout tijdens het converteren voor SVG', 'Fout');
+      this.isDownloading = false;
+    }
   }
+
   async createBlobForPdfFile(fileModel) {
-    const svg = await this.fileToSvg(fileModel);
-    return await convertSvgToPdf(svg);
+    try {
+      const svg = await this.fileToSvg(fileModel);
+      return await convertSvgToPdf(svg);
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('Fout tijdens het converteren voor PDF', 'Fout');
+      this.isDownloading = false;
+    }
   }
 
   async fileToSvg(fileModel) {
-    const url = generateFileDownloadUrl(fileModel.id);
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const xml = await resp.text();
+    try {
+      const url = generateFileDownloadUrl(fileModel.id);
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const xml = await resp.text();
 
-    // NOTE - this is a hack so we have the svg in the correct size
-    const bpmnContainer =
-      document.getElementsByClassName('bpmn-container')?.[0];
-    const viewer = new NavigatedViewer({
-      container: bpmnContainer,
-    });
-    await viewer.importXML(xml);
-    const { svg } = await viewer.saveSVG();
-    viewer?.destroy();
+      // NOTE - this is a hack so we have the svg in the correct size
+      const bpmnContainer =
+        document.getElementsByClassName('bpmn-container')?.[0];
+      const viewer = new NavigatedViewer({
+        container: bpmnContainer,
+      });
+      await viewer.importXML(xml);
+      const { svg } = await viewer.saveSVG();
+      viewer?.destroy();
 
-    return svg;
+      return svg;
+    } catch (error) {
+      console.error(error);
+      this.toaster.error('Fout tijdens het converteren voor SVG', 'Fout');
+      this.isDownloading = false;
+    }
   }
 }
