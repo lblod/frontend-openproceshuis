@@ -1,7 +1,8 @@
+import Component from '@glimmer/component';
+
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import { inject as service } from '@ember/service';
-import Component from '@glimmer/component';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import fileQueue from 'ember-file-upload/helpers/file-queue';
@@ -29,9 +30,9 @@ export default class FileUploadModalComponent extends Component {
     if (this.queue.files.length && !this.detectSensitiveData?.isRunning)
       return `Bezig met het opladen van ${this.queue.files.length} bestand(en). (${this.queue.progress}%)`;
 
-    if (this.args.updateProcess?.isRunning) return 'Proces bijwerken ...';
+    if (this.args.updateModel?.isRunning) return 'Proces bijwerken ...';
 
-    if (this.args.createProcess?.isRunning) return 'Proces aanmaken ...';
+    if (this.args.createModel?.isRunning) return 'Proces aanmaken ...';
 
     if (this.args.extractBpmnElements?.isRunning) {
       return 'Processtappen extraheren ...';
@@ -85,8 +86,8 @@ export default class FileUploadModalComponent extends Component {
   get isBusy() {
     return (
       this.queue.files.length ||
-      this.args.updateProcess?.isRunning ||
-      this.args.createProcess?.isRunning ||
+      this.args.updateModel?.isRunning ||
+      this.args.createModel?.isRunning ||
       this.args.extractBpmnElements?.isRunning
     );
   }
@@ -148,9 +149,9 @@ export default class FileUploadModalComponent extends Component {
   });
 
   async processFile(fileIds) {
-    if (this.args.updateProcess) {
+    if (this.args.updateModel) {
       try {
-        await this.args.updateProcess.perform(fileIds);
+        await this.args.updateModel.perform(fileIds);
       } catch {
         this.addError(
           fileIds,
@@ -158,9 +159,9 @@ export default class FileUploadModalComponent extends Component {
         );
         return;
       }
-    } else if (this.args.createProcess) {
+    } else if (this.args.createModel) {
       try {
-        await this.args.createProcess.perform(fileIds);
+        await this.args.createModel.perform(fileIds);
       } catch {
         this.addError(
           fileIds,
