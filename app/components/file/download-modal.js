@@ -60,7 +60,7 @@ export default class FileDownloadModal extends Component {
       {
         label: 'Afbeelding',
         extensionLabel: '.png',
-        canDownload: true,
+        canDownload: this.args.fileModel?.isBpmnFile,
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
@@ -72,7 +72,7 @@ export default class FileDownloadModal extends Component {
       {
         label: 'Vectorafbeelding',
         extensionLabel: '.svg',
-        canDownload: true,
+        canDownload: this.args.fileModel?.isBpmnFile,
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
@@ -84,7 +84,8 @@ export default class FileDownloadModal extends Component {
       {
         label: 'PDF',
         extensionLabel: '.pdf',
-        canDownload: true,
+        canDownload:
+          this.args.fileModel?.isBpmnFile || this.args.fileModel?.isVisioFile,
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
@@ -217,9 +218,10 @@ export default class FileDownloadModal extends Component {
       const xml = await resp.text();
 
       // NOTE - this is a hack so we have the svg in a size
-      const bpmnContainer = document.getElementsByClassName('diagrams')?.[0];
+      const diagramsContainer =
+        document.getElementsByClassName('diagrams')?.[0];
       const viewer = new NavigatedViewer({
-        container: bpmnContainer,
+        container: diagramsContainer,
       });
       await viewer.importXML(xml);
       const { svg } = await viewer.saveSVG();
