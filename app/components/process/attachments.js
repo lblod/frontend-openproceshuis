@@ -70,16 +70,17 @@ export default class ProcessAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  addFileToProcess = task({ enqueue: true }, async (newFileId) => {
-    const newFile = await this.store.findRecord('file', newFileId);
+  addFilesToProcess = task({ enqueue: true }, async (newFileIds) => {
+    const newFiles = await this.store.query('file', {
+      'filter[id]': newFileIds.join(','),
+    });
     const currentAttachments = await this.process.attachments;
-    this.process.attachments = [...currentAttachments, newFile];
+    this.process.attachments = [...currentAttachments, ...newFiles];
     await this.process.save();
   });
 
   @action
-  attachmentsUploaded(_, queueInfo) {
-    if (!queueInfo.isQueueEmpty) return;
+  attachmentsUploaded() {
     this.addModalOpened = false;
     this.fetchAttachments.perform();
   }
