@@ -13,10 +13,6 @@ export default class DiagramListTable extends Component {
   @service store;
   @service plausible;
 
-  page = 0;
-  size = 5; // TODO - fix the status to 5 with pagination
-  sort = '-created';
-
   @tracked fileToDownload;
   @tracked fileToDelete;
   @tracked isDeleteModalOpen;
