@@ -67,8 +67,7 @@ export default class IcrAttachments extends Component {
   });
 
   @action
-  attachmentsUploaded(_, queueInfo) {
-    if (!queueInfo.isQueueEmpty) return;
+  attachmentsUploaded() {
     this.addModalOpened = false;
     this.fetchAttachments.perform();
   }
