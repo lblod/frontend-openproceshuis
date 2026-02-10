@@ -73,18 +73,23 @@ export default class IcrAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  addFileToIcr = task({ enqueue: true }, async (newFileId) => {
-    const newFile = await this.store.findRecord('file', newFileId);
-    newFile.informationAsset = this.args.informationAsset;
-    this.args.informationAsset.attachments.push(newFile);
-    this.args.informationAsset.modified = newFile.created;
-    await newFile.save();
+  addFilesToIcr = task({ enqueue: true }, async (newFileIds) => {
+    const newFiles = await this.store.query('file', {
+      'filter[id]': newFileIds.join(','),
+    });
+    this.args.informationAsset.attachments.push(...newFiles);
+    this.args.informationAsset.modified = newFiles[0].created;
+
+    const promiseArray = newFiles.map(async (fileModel) => {
+      fileModel.informationAsset = this.args.informationAsset;
+      await fileModel.save();
+    });
+    await Promise.all(promiseArray);
     await this.args.informationAsset.save();
   });
 
   @action
-  attachmentsUploaded(_, queueInfo) {
-    if (!queueInfo.isQueueEmpty) return;
+  attachmentsUploaded() {
     this.addModalOpened = false;
     this.fetchAttachments.perform();
   }
