@@ -27,7 +27,7 @@ export default class ProcessAttachments extends Component {
   }
 
   pageAttachments = 0;
-  sortAttachments = 'name';
+  sortAttachments = '-name';
   sizeAttachments = 10;
 
   @tracked attachments = undefined;
@@ -99,15 +99,28 @@ export default class ProcessAttachments extends Component {
         });
         const process = processes[0];
         const processFileIds = process?.attachments.map((file) => file.id);
+
+        const infoAssetIds = this.process.informationAssets.map(
+          (asset) => asset.id,
+        );
+        const infoAssetFiles = await this.store.query('file', {
+          reload: true,
+          'filter[information-asset][id]': infoAssetIds.join(','),
+          'filter[:not:status]': ENV.resourceStates.archived,
+
+          include: 'information-asset',
+          sort: this.sortAttachments,
+        });
+        const infoAssetFileIds = infoAssetFiles.map((file) => file.id);
+
         let files = [];
-        if (processFileIds.length >= 1) {
+        if (processFileIds.length >= 1 || infoAssetFiles.length >= 1) {
           files = await this.store.query('file', {
-            reload: true,
             page: {
               number: this.pageAttachments,
               size: this.sizeAttachments,
             },
-            'filter[id]': processFileIds.join(','),
+            'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
             'filter[:not:status]': ENV.resourceStates.archived,
             sort: this.sortAttachments,
           });
