@@ -101,7 +101,6 @@
             <td>{{date-format attachment.created true}}</td>
             <td>{{attachment._source}}
               {{#if attachment.informationAsset}}
-                Informatie asset
                 <AuLink
                   @route="information-assets.edit"
                   @model={{attachment.informationAsset.id}}
