@@ -31,6 +31,7 @@ export default class ProcessesProcessRoute extends Route {
           'linked-concept',
           'linked-concept.process-groups.process-domains',
           'linked-concept.process-groups.process-domains.process-categories',
+          'relevant-administrative-units',
         ].join(','),
         reload: true,
       });
