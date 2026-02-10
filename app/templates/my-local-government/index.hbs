@@ -105,7 +105,6 @@
             <td>{{or (truncate process.description 150 true) "/"}}</td>
             <td>
               <ul>
-                <li>{{process.publisher.classification.label}}</li>
                 {{#each process.relevantAdministrativeUnits as |adminUnit|}}
                   <li>{{adminUnit.label}}</li>
                 {{/each}}
