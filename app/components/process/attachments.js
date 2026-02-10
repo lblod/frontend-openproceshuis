@@ -26,8 +26,8 @@ export default class ProcessAttachments extends Component {
     return this.args.process;
   }
 
-  @tracked pageAttachments = 0;
-  @tracked sortAttachments = 'name';
+  pageAttachments = 0;
+  sortAttachments = 'name';
   sizeAttachments = 10;
 
   @tracked attachments = undefined;
@@ -95,10 +95,24 @@ export default class ProcessAttachments extends Component {
         const processes = await this.store.query('process', {
           'filter[id]': this.process.id,
           include: 'attachments',
+          page: { size: 1 },
         });
-        this.attachments = processes[0]?.attachments.filter(
-          (file) => file.status !== ENV.resourceStates.archived,
-        );
+        const process = processes[0];
+        const processFileIds = process?.attachments.map((file) => file.id);
+        let files = [];
+        if (processFileIds.length >= 1) {
+          files = await this.store.query('file', {
+            reload: true,
+            page: {
+              number: this.pageAttachments,
+              size: this.sizeAttachments,
+            },
+            'filter[id]': processFileIds.join(','),
+            'filter[:not:status]': ENV.resourceStates.archived,
+            sort: this.sortAttachments,
+          });
+        }
+        this.attachments = files;
       } catch {
         this.attachments = [];
         this.attachmentsHaveErrored = true;
