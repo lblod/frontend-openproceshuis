@@ -5,6 +5,19 @@ import { service } from '@ember/service';
 
 export default class DiagramsDiagramIndexController extends Controller {
   @service toaster;
+  @service router;
+
+  @action
+  goToPreviousRoute() {
+    if (this.model.linkedProcesses.length >= 1) {
+      this.router.transitionTo(
+        'processes.process.diagrams',
+        this.model.linkedProcesses[0].id,
+      );
+    } else {
+      this.router.transitionTo('processes');
+    }
+  }
 
   @action
   copyUrl() {
