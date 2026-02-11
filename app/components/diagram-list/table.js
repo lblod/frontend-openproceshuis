@@ -6,7 +6,6 @@ import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
-import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class DiagramListTable extends Component {
   @service toaster;
@@ -15,7 +14,6 @@ export default class DiagramListTable extends Component {
 
   @tracked fileToDownload;
   @tracked fileToDelete;
-  @tracked isDeleteModalOpen;
   @tracked canDeleteFile = true;
 
   get activeDiagrams() {
@@ -29,44 +27,6 @@ export default class DiagramListTable extends Component {
   async downloadFile(file) {
     await downloadFileByUrl(file.id, file.name);
   }
-
-  @action
-  openDeleteModal(fileToDelete) {
-    this.canDeleteFile = true;
-    if (!this.args.canDeleteLastItem && this.activeDiagrams.length === 1) {
-      this.canDeleteFile = false;
-    }
-
-    this.fileToDelete = fileToDelete;
-    this.isDeleteModalOpen = true;
-  }
-
-  @action
-  closeDeleteModal() {
-    this.fileToDelete = undefined;
-    this.isDeleteModalOpen = false;
-  }
-
-  deleteFile = task({ drop: true }, async () => {
-    if (!this.fileToDelete) return;
-
-    this.fileToDelete.archive();
-
-    try {
-      await this.fileToDelete.save();
-      this.args.onDiagramFileSelected?.(null);
-      this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
-        timeOut: 5000,
-      });
-    } catch (error) {
-      console.error(error);
-      const errorMessage = getMessageForErrorCode('oph.fileDeletionError');
-      this.toaster.error(errorMessage, 'Fout');
-      this.fileToDelete.rollbackAttributes();
-    }
-
-    this.closeDeleteModal();
-  });
 
   @action
   onFileDownloadedSuccessful(fileModel, targetExtension) {

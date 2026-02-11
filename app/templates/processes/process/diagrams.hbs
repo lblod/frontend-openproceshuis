@@ -60,29 +60,18 @@
         <p>Je bent een oudere versie van de diagrammen aan het bekijken</p>
       </AuAlert>
     {{/unless}}
-    <AuToolbar @size="small" class="au-u-padding-top" as |Group|>
-      <Group />
-      <Group class="au-c-toolbar__group--actions">
-        <AuPill @icon="clock-rewind">Laatst aangepast op
-          {{date-format this.selectedDiagramList.modified true}}</AuPill>
-      </Group>
-    </AuToolbar>
-    <div class="au-o-box au-u-padding-top-none">
-      <p class="au-u-h4 au-u-medium au-u-margin-bottom">Diagrammen</p>
-      <DiagramList::Table
-        @diagramList={{this.selectedDiagramList}}
-        @onDiagramFileSelected={{this.openDiagramFile}}
-        @canEdit={{this.canEditFilesInTable}}
-        @canDeleteLastItem={{false}}
-        @process={{@model.process}}
-      />
-    </div>
-    <div class="au-o-box">
-      {{#if this.selectedDiagramFile}}
+    {{#if this.selectedDiagramFile}}
+      <div class="au-o-box">
         <File::Viewer @file={{this.selectedDiagramFile}} />
-        <File::MetadataCard @file={{this.selectedDiagramFile}} />
-      {{/if}}
-    </div>
+      </div>
+    {{/if}}
+    <DiagramList::Table
+      @diagramList={{this.selectedDiagramList}}
+      @onDiagramFileSelected={{this.openDiagramFile}}
+      @canEdit={{this.canEditFilesInTable}}
+      @canDeleteLastItem={{false}}
+      @process={{@model.process}}
+    />
   </:content>
 </SidebarContainer>
 
