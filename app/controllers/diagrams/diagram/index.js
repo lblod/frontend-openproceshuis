@@ -6,6 +6,7 @@ import { service } from '@ember/service';
 export default class DiagramsDiagramIndexController extends Controller {
   @service toaster;
   @service router;
+  @service eventTracking;
 
   @action
   goToPreviousRoute() {
@@ -36,5 +37,20 @@ export default class DiagramsDiagramIndexController extends Controller {
       );
       throw error;
     }
+  }
+
+  @action
+  onFileDownloadedSuccessful(fileModel, targetExtension) {
+    this.eventTracking.trackDownloadFileEvent(
+      fileModel.id,
+      fileModel.name,
+      fileModel.extension,
+      targetExtension,
+      this.model.linkedProcesses?.[0],
+    );
+    this.eventTracking.incrementFileDownloads.perform(
+      targetExtension,
+      this.model.linkedProcesses?.[0]?.id,
+    );
   }
 }

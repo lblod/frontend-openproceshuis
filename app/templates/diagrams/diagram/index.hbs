@@ -105,7 +105,11 @@
             Download
           </h2>
           <AuHr @size="default" class="au-u-margin-top-small" />
-          <File::Download @showAsButtons={{true}} @fileModel={{@model.file}} />
+          <File::Download
+            @showAsButtons={{true}}
+            @fileModel={{@model.file}}
+            @onDownloadSuccesful={{this.onFileDownloadedSuccessful}}
+          />
         </AuContent>
       </div>
     </aside>
