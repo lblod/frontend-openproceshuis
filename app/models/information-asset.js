@@ -30,7 +30,7 @@ export default class InformationAssetModel extends Model {
   attachments;
   @hasMany('link', {
     inverse: null,
-    async: true,
+    async: false,
   })
   links;
 

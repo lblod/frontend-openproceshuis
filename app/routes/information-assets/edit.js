@@ -13,9 +13,14 @@ export default class InformationAssetIndexRoute extends Route {
   async model() {
     const { id } = this.paramsFor('information-assets.edit');
 
-    return await this.store.findRecord('information-asset', id, {
-      include: 'creator,processes,previous-version',
-    });
+    const informationAsset = await this.store.findRecord(
+      'information-asset',
+      id,
+      {
+        include: 'creator,processes,previous-version,links',
+      },
+    );
+    return informationAsset;
   }
 
   setupController(controller, model) {

@@ -8,13 +8,64 @@
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
           <div>
-            <AuLabel for="filter-title">Titel</AuLabel>
-            <AuInput
+            <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+            <ProcessSelectByTitle
               @id="filter-title"
-              @type="hidden"
-              value={{this.title}}
-              {{on "keyup" (perform this.setTitle)}}
+              @selected={{this.title}}
+              @onChange={{this.setTitle}}
+              class="grow"
             />
+          </div>
+          <div>
+            <AuLabel for="filter-availability">Beschikbaarheid</AuLabel>
+            <Process::IcrCard::Score
+              @id="filter-availability"
+              @selectedScore={{this.availabilityScore}}
+              @onScoreChange={{fn (mut this.availabilityScore)}}
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-availability">Integriteit</AuLabel>
+            <Process::IcrCard::Score
+              @id="filter-integrity"
+              @selectedScore={{this.integrityScore}}
+              @onScoreChange={{fn (mut this.integrityScore)}}
+            />
+          </div>
+          <div>
+            <AuLabel for="filter-availability">Confidentialiteit</AuLabel>
+            <Process::IcrCard::Score
+              @id="filter-confidentiality"
+              @selectedScore={{this.confidentialityScore}}
+              @onScoreChange={{fn (mut this.confidentialityScore)}}
+            />
+          </div>
+          <div class="au-c-control-group">
+            <AuLabel>Persoonsgegevens</AuLabel>
+            <AuCheckbox
+              id="filter-professional-data"
+              @checked={{this.containsProfessionalData}}
+              @onChange={{this.setContainsProfessionalData}}
+            >
+              <label for="filter-professional-data">Professionele gegevens
+              </label>
+            </AuCheckbox>
+            <AuCheckbox
+              id="filter-personal-data"
+              @checked={{this.containsPersonalData}}
+              @onChange={{this.setContainsPersonalData}}
+            >
+              <label for="filter-personal-data">Persoonsgegevens
+              </label>
+            </AuCheckbox>
+            <AuCheckbox
+              id="filter-sensitive-data"
+              @checked={{this.containsSensitivePersonalData}}
+              @onChange={{this.setContainsSensitivePersonalData}}
+            >
+              <label for="filter-sensitive-data">Bijzondere persoonsgegevens
+              </label>
+            </AuCheckbox>
           </div>
           <div class="au-u-flex au-u-flex--end">
             <AuButton
@@ -69,6 +120,24 @@
             @label="Auteur"
           />
           <AuDataTableThSortable
+            @field="availabilityScore"
+            @currentSorting={{this.sort}}
+            @label="Beschikbaarheid"
+          />
+          <AuDataTableThSortable
+            @field="integrityScore"
+            @currentSorting={{this.sort}}
+            @label="Integriteit"
+          />
+          <AuDataTableThSortable
+            @field="confidentialityScore"
+            @currentSorting={{this.sort}}
+            @label="Confidentialiteit"
+          />
+          <th>
+            <span>Persoonsgegevens</span>
+          </th>
+          <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sort}}
             @label="Aangemaakt op"
@@ -105,6 +174,53 @@
             <td>{{or (truncate informationAsset.description 150 true) "/"}}</td>
             <td>
               {{informationAsset.creator.name}}
+            </td>
+            <td>
+              {{if
+                informationAsset.availabilityScore
+                informationAsset.availabilityScore
+                "/"
+              }}
+            </td>
+            <td>
+              {{if
+                informationAsset.integrityScore
+                informationAsset.integrityScore
+                "/"
+              }}
+            </td>
+            <td>
+              {{if
+                informationAsset.confidentialityScore
+                informationAsset.confidentialityScore
+                "/"
+              }}
+            </td>
+            <td>
+              <div class="au-u-flex au-u-flex--column au-u-flex--spaced-tiny">
+                {{#if informationAsset.containsProfessionalData}}
+                  <span class="au-u-flex au-u-flex--spaced-tiny"><AuBadge
+                      @skin="brand"
+                      @icon="check"
+                      @size="small"
+                    />Professionele gegevens</span>
+                {{/if}}
+                {{#if informationAsset.containsPersonalData}}
+                  <span class="au-u-flex au-u-flex--spaced-tiny"><AuBadge
+                      @skin="brand"
+                      @icon="check"
+                      @size="small"
+                    />Persoonsgegevens</span>
+                {{/if}}
+                {{#if informationAsset.containsSensitivePersonalData}}
+                  <span class="au-u-flex au-u-flex--spaced-tiny"><AuBadge
+                      @skin="brand"
+                      @icon="check"
+                      @size="small"
+                    />Bijzondere persoonsgegevens
+                  </span>
+                {{/if}}
+              </div>
             </td>
             <td>{{date-format informationAsset.created}}</td>
             {{#if this.canEdit}}

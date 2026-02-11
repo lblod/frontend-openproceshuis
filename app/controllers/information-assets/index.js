@@ -3,22 +3,39 @@ import Controller from '@ember/controller';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, timeout } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 
 export default class InformationAssetsIndexController extends Controller {
   size = 20;
-  queryParams = ['page', 'size', 'title'];
+  queryParams = [
+    'page',
+    'size',
+    'title',
+    'sort',
+    'availabilityScore',
+    'integrityScore',
+    'confidentialityScore',
+    'containsPersonalData',
+    'containsProfessionalData',
+    'containsSensitivePersonalData',
+  ];
   @service currentSession;
   @service toaster;
   @service store;
 
   @tracked page = 0;
-  @tracked sort = 'title';
+  @tracked sort = '-created';
   @tracked title = null;
+  @tracked availabilityScore = null;
+  @tracked integrityScore = null;
+  @tracked confidentialityScore = null;
   @tracked isDeleteModalOpen = false;
   @tracked isCreateModalOpen = false;
   @tracked informationAssetToDelete = null;
   @tracked informationAsset = null;
+  @tracked containsPersonalData = null;
+  @tracked containsProfessionalData = null;
+  @tracked containsSensitivePersonalData = null;
 
   get informationAssets() {
     return this.model.informationAssets.isFinished
@@ -46,10 +63,24 @@ export default class InformationAssetsIndexController extends Controller {
       : 'Er werden geen resultaten gevonden.';
   }
 
-  setTitle = task({ drop: true }, async (event) => {
-    await timeout(250);
-    this.title = event.target?.value;
-  });
+  @action
+  setTitle(selection) {
+    this.title = selection;
+  }
+
+  @action
+  setContainsProfessionalData(selection) {
+    this.containsProfessionalData = selection ? true : null;
+  }
+  @action
+  setContainsPersonalData(selection) {
+    this.containsPersonalData = selection ? true : null;
+  }
+
+  @action
+  setContainsSensitivePersonalData(selection) {
+    this.containsSensitivePersonalData = selection ? true : null;
+  }
 
   @action
   openDeleteModal(informationAsset) {
@@ -95,8 +126,14 @@ export default class InformationAssetsIndexController extends Controller {
   @action
   resetFilters() {
     this.title = null;
+    this.availabilityScore = null;
+    this.integrityScore = null;
+    this.confidentialityScore = null;
+    this.containsPersonalData = null;
+    this.containsProfessionalData = null;
+    this.containsSensitivePersonalData = null;
     this.page = 0;
-    this.sort = 'title';
+    this.sort = null;
   }
 
   onDeleteAsset = task({ drop: true }, async () => {
