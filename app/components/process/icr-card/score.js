@@ -7,9 +7,19 @@ export default class ProcessIcrCardScoreComponent extends Component {
 
   @tracked hoveredScore = null;
 
+  get selectedScore() {
+    if (
+      this.args.selectedScore === null ||
+      this.args.selectedScore === undefined
+    ) {
+      return null;
+    }
+    return Number(this.args.selectedScore);
+  }
+
   @action
   getSvgPath(score) {
-    if (score === this.args.selectedScore) {
+    if (score === this.selectedScore) {
       return `/assets/images/icr/fill-${score}.svg`;
     } else if (score === this.hoveredScore) {
       return `/assets/images/icr/outline-${score}.svg`;
@@ -30,7 +40,7 @@ export default class ProcessIcrCardScoreComponent extends Component {
 
   @action
   onMouseClick(score) {
-    let newScore = score === this.args.selectedScore ? undefined : score;
+    let newScore = score === this.selectedScore ? null : score;
 
     if (this.args.onScoreChange) {
       this.args.onScoreChange(newScore);
