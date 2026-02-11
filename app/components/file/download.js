@@ -30,6 +30,7 @@ export default class FileDownload extends Component {
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
+          this.showDownloadStartedToasterMessage();
           const blob = await this.createBlobForVisioFile(this.args.fileModel);
           await this.downloadFileBlob(blob, 'vsdx');
         },
@@ -43,6 +44,7 @@ export default class FileDownload extends Component {
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
+          this.showDownloadStartedToasterMessage();
           let conversionDownloadUrl = null;
           if (this.args.fileModel?.isVisioFile) {
             conversionDownloadUrl = generateVisioConversionUrl(
@@ -64,6 +66,7 @@ export default class FileDownload extends Component {
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
+          this.showDownloadStartedToasterMessage();
           const blob = await this.createBlobForPngFile(this.args.fileModel);
           await this.downloadFileBlob(blob, 'png');
         },
@@ -76,6 +79,7 @@ export default class FileDownload extends Component {
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
+          this.showDownloadStartedToasterMessage();
           const blob = await this.createBlobForSvgFile(this.args.fileModel);
           await this.downloadFileBlob(blob, 'svg');
         },
@@ -89,6 +93,7 @@ export default class FileDownload extends Component {
         download: async () => {
           // eslint-disable-next-line ember/no-side-effects
           this.isDownloading = true;
+          this.showDownloadStartedToasterMessage();
           let blob = null;
           if (this.args.fileModel.isVisioFile) {
             const url = generateVisioConversionUrl(
@@ -138,7 +143,6 @@ export default class FileDownload extends Component {
     } finally {
       this.isDownloading = false;
     }
-    // TODO - track the download
   }
 
   async createBlobForVisioFile(fileModel) {
@@ -232,5 +236,11 @@ export default class FileDownload extends Component {
       this.toaster.error('Fout tijdens het converteren voor SVG', 'Fout');
       this.isDownloading = false;
     }
+  }
+
+  showDownloadStartedToasterMessage() {
+    this.toaster.success('Het downloaden van het bestand is gestart', null, {
+      timeOut: 2500,
+    });
   }
 }
