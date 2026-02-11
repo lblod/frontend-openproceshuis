@@ -3,7 +3,7 @@
 <PageHeader>
   <:title>
     <div class="au-u-flex au-u-flex--vertical-center">
-      <AuLink
+      <AuButton
         @skin="naked"
         @icon="arrow-left"
         @iconAlignment="left"
@@ -11,7 +11,9 @@
         @hideText={{true}}
         class="au-u-margin-right-small animate-left"
         {{on "click" this.goToPreviousRoute}}
-      >Previous</AuLink>
+      >
+        Previous
+      </AuButton>
       {{@model.file.name}}
       <AuButton
         class="au-u-padding-left-small"
@@ -19,7 +21,8 @@
         @skin="link"
         @hideText={{true}}
         {{on "click" this.copyUrl}}
-      /></div>
+      />
+    </div>
   </:title>
   <:action>
   </:action>
