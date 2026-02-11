@@ -76,7 +76,12 @@
   </:content>
 </SidebarContainer>
 
-<FileUploadModal
+<Process::Wizard 
+  @isModalOpen={{this.isCreateModalOpen}}
+  @closeModal={{this.closeCreateModal}}
+/>
+
+{{!-- <FileUploadModal
   @header="Maak een nieuwe versie aan"
   @title="BPMN- of Visiobestand selecteren"
   @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
@@ -88,4 +93,4 @@
   @onFinishUpload={{this.diagramUploaded}}
   @modalOpen={{this.isCreateModalOpen}}
   @closeModal={{this.closeCreateModal}}
-/>
+/> --}}
