@@ -16,7 +16,7 @@ import generateFileDownloadUrl, {
   generateVisioConversionUrl,
 } from 'frontend-openproceshuis/utils/file-download-url';
 
-export default class FileDownloadModal extends Component {
+export default class FileDownload extends Component {
   @service toaster;
 
   @tracked isDownloading = false;
@@ -218,10 +218,9 @@ export default class FileDownloadModal extends Component {
       const xml = await resp.text();
 
       // NOTE - this is a hack so we have the svg in a size
-      const diagramsContainer =
-        document.getElementsByClassName('diagrams')?.[0];
+      const viewContainer = document.getElementsByClassName('au-c-app')?.[0];
       const viewer = new NavigatedViewer({
-        container: diagramsContainer,
+        container: viewContainer,
       });
       await viewer.importXML(xml);
       const { svg } = await viewer.saveSVG();

@@ -13,8 +13,6 @@
       /></div>
   </:title>
   <:action>
-    <AuPill @icon="clock-rewind" @skin="success">Aangemaakt op
-      {{date-format @model.diagram.created true}}</AuPill>
   </:action>
 </PageHeader>
 
@@ -91,6 +89,14 @@
               </AuPill>
             {{/each}}
           {{/if}}
+          <h2 class="au-u-h4 au-u-medium">
+            Download
+          </h2>
+          <AuHr @size="default" class="au-u-margin-top-small" />
+          <File::Download
+            @showAsButtons={{true}}
+            @fileModel={{@model.file}}
+          />
         </AuContent>
       </div>
     </aside>
