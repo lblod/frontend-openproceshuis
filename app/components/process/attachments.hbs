@@ -107,6 +107,10 @@
                 >
                   ({{attachment.informationAsset.title}})
                 </AuLink>
+              {{else}}
+                <AuLink @route="processes.process" @model={{@process.id}}>
+                  ({{@process.title}})
+                </AuLink>
               {{/if}}
             </td>
             <td>
