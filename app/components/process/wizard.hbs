@@ -1,0 +1,31 @@
+<AuModal class="process-wizard-modal" @modalOpen={{true}} @closable={{true}}>
+  <:title>
+    {{this.activeStep.title}}
+  </:title>
+  <:body>
+
+  </:body>
+  <:footer>
+    <AuToolbar as |Group|>
+      <Group class="flex-grow">
+        {{#unless this.activeStep.isFirstStep}}
+          <AuButton {{on "click" this.previousStep}} @skin="secondary">
+            Vorige
+          </AuButton>
+        {{/unless}}
+      </Group>
+      <Group>
+        {{#if this.activeStep.isFinalStep}}
+          <AuLink>Ga naar process</AuLink>
+        {{else}}
+          <AuButton
+            {{on "click" this.nextStep}}
+            @disabled={{not this.activeStep.canGoToNextStep}}
+          >
+            Volgende
+          </AuButton>
+        {{/if}}
+      </Group>
+    </AuToolbar>
+  </:footer>
+</AuModal>
