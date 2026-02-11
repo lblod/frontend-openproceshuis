@@ -8,8 +8,14 @@ export default class ProcessWizard extends Component {
 
   @tracked process = null;
 
+  @tracked fileWrappers = [];
   @tracked mainProcessFile = null;
   @tracked isBpmnElementExtractionDone = false;
+
+  @action
+  addFileToUploadedList(fileWrappers) {
+    this.fileWrappers = fileWrappers;
+  }
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -75,13 +81,6 @@ export default class ProcessWizard extends Component {
         title: 'Selecteer het hoofdproces',
         isStepShown: true,
         canGoToNextStep: this.mainProcessFile,
-        canGoToPreviousStep: false,
-      },
-      {
-        // TODO - future step
-        title: 'Detectie van gevoelige informatie',
-        isStepShown: false,
-        canGoToNextStep: false,
         canGoToPreviousStep: false,
       },
       {

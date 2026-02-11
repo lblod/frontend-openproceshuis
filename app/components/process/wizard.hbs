@@ -4,6 +4,13 @@
   </:title>
   <:body>
 
+    {{#if (eq this.activeStepIndex 1)}}
+      <File::Dropzone
+        @multiple={{true}}
+        @accept=".bpmn,.vsdx"
+        @onFileUploaded={{this.addFileToUploadedList}}
+      />
+    {{/if}}
   </:body>
   <:footer>
     <AuToolbar as |Group|>

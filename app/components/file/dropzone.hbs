@@ -1,0 +1,44 @@
+{{#let
+  (this.fileQueueHelper name=this.queueName onFileAdded=(perform this.upload))
+  as |queue|
+}}
+  <FileDropzone
+    @queue={{queue}}
+    @filter={{this.filter}}
+    class="au-c-file-upload"
+    ...attributes
+    as |dropzone|
+  >
+    {{#if dropzone.active}}
+      <p class="au-c-file-upload-message">
+        <AuIcon @icon="attachment" @alignment="left" />
+        <AuHelpText @skin="secondary">Sleep de bestanden naar hier om toe te
+          voegen</AuHelpText>
+      </p>
+    {{else if this.isBusy}}
+      <p class="au-c-file-upload-message">
+        <small class="au-c-small-text">{{this.uploadingMsg}}</small>
+      </p>
+    {{else}}
+      <label>
+        <input
+          accept={{@accept}}
+          multiple={{@multiple}}
+          type="file"
+          hidden=""
+          {{queue.selectFile filter=this.filter}}
+        />
+        <span class="au-c-file-upload-label">
+          <span class="au-c-file-upload-label__title">
+            <AuIcon @icon="attachment" @alignment="left" />
+            Bestanden toevoegen
+          </span>
+          {{#if dropzone.supported}}
+            <AuHelpText @skin="secondary">Sleep de bestanden naar hier om toe te
+              voegen</AuHelpText>
+          {{/if}}
+        </span>
+      </label>
+    {{/if}}
+  </FileDropzone>
+{{/let}}
