@@ -60,18 +60,20 @@
         <p>Je bent een oudere versie van de diagrammen aan het bekijken</p>
       </AuAlert>
     {{/unless}}
+    <div style="min-height:30vh">
+      <DiagramList::Table
+        @diagramList={{this.selectedDiagramList}}
+        @onDiagramFileSelected={{this.openDiagramFile}}
+        @canEdit={{this.canEditFilesInTable}}
+        @canDeleteLastItem={{false}}
+        @process={{@model.process}}
+      />
+    </div>
     {{#if this.selectedDiagramFile}}
       <div class="au-o-box">
         <File::Viewer @file={{this.selectedDiagramFile}} />
       </div>
     {{/if}}
-    <DiagramList::Table
-      @diagramList={{this.selectedDiagramList}}
-      @onDiagramFileSelected={{this.openDiagramFile}}
-      @canEdit={{this.canEditFilesInTable}}
-      @canDeleteLastItem={{false}}
-      @process={{@model.process}}
-    />
   </:content>
 </SidebarContainer>
 
