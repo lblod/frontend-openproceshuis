@@ -16,10 +16,14 @@ export default class DiagramsDiagramIndexRoute extends Route {
       include: ['diagram-file', 'sub-items'].join(','),
       reload: true,
     });
+    const processes = await this.store.query('process', {
+      'filter[diagram-lists][diagrams][id]': diagram.id,
+    });
 
     return {
       diagram: diagram,
       file: diagram.diagramFile,
+      linkedProcesses: processes,
     };
   }
 }
