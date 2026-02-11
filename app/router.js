@@ -34,6 +34,13 @@ Router.map(function () {
     });
   });
 
+  // diagram-list-items route
+  this.route('diagrams', function () {
+    this.route('diagram', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+    });
+  });
+
   this.route('shared-processes', { path: 'gedeelde-processen' }, function () {
     this.route('index', { path: '' });
   });

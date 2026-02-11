@@ -1,0 +1,88 @@
+{{breadcrumb @model.file.name route="diagrams.diagram" model=@model.diagram.id}}
+
+<PageHeader>
+  <:title>
+    <div class="au-u-flex au-u-flex--vertical-center">
+      {{@model.file.name}}
+      <AuButton
+        class="au-u-padding-left-small"
+        @icon="link"
+        @skin="link"
+        @hideText={{true}}
+        {{on "click" this.copyUrl}}
+      /></div>
+  </:title>
+  <:action>
+    <AuPill @icon="clock-rewind" @skin="success">Aangemaakt op
+      {{date-format @model.diagram.created true}}</AuPill>
+  </:action>
+</PageHeader>
+
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+  <div class="au-o-grid au-o-grid--small">
+    <div class="au-o-grid__item au-u-4-6@medium">
+      <div class="au-u-margin-bottom">
+        <File::Viewer @file={{@model.file}} />
+      </div>
+      <DataCard class="u-color-top-border-yellow">
+        <:title>
+          Metadata
+        </:title>
+        <:header>
+        </:header>
+        <:card as |Card|>
+          <Card.Columns
+            class="au-u-flex au-u-flex--spaced-small au-u-flex--wrap"
+          >
+            <:left as |Item|>
+              <Item>
+                <:label>Bestandsnaam</:label>
+                <:content>
+                  {{@model.diagram.diagramFile.name}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Toegevoegd op</:label>
+                <:content>
+                  {{date-format @model.file.modified true}}
+                </:content>
+              </Item>
+            </:left>
+            <:right as |Item|>
+              <Item>
+                <:label>Grootte</:label>
+                <:content>
+                  {{file-size-format @model.file.size}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Extensie</:label>
+                <:content>
+                  {{@model.file.extension}}
+                </:content>
+              </Item>
+              <Item>
+                <:label>Formaat</:label>
+                <:content>
+                  {{@model.file.format}}
+                </:content>
+              </Item>
+            </:right>
+          </Card.Columns>
+        </:card>
+      </DataCard>
+    </div>
+    <aside class="au-o-grid__item au-u-2-6@medium">
+      <div class="u-top-sticky">
+        <AuContent class="au-u-margin-top">
+          <h2 class="au-u-h4 au-u-medium">
+            Gelinkte
+            <AuLink @route="processes">processen</AuLink>
+          </h2>
+          <AuHr @size="default" class="au-u-margin-top-small" />
+          <p class="au-u-margin-top-small">Geen processen gevonden</p>
+        </AuContent>
+      </div>
+    </aside>
+  </div>
+</AuBodyContainer>

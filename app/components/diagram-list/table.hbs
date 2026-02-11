@@ -40,8 +40,13 @@
           </AuButton>
         </td>
         <td>
-          <AuButton @skin="naked">Detail
-          </AuButton>
+          <AuLink
+            @route="diagrams.diagram.index"
+            @skin="button-naked"
+            @model={{diagram.id}}
+          >
+            Detail
+          </AuLink>
         </td>
       </c.body>
     {{/if}}
