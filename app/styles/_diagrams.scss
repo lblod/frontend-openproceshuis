@@ -19,6 +19,11 @@
   border-style: inset;
 }
 
+.border-left-transparent {
+  border-left: 0.45rem solid transparent !important;
+  border-style: inset;
+}
+
 .width-full {
   width: 100%;
 }
