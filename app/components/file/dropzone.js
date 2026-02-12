@@ -89,6 +89,7 @@ export default class FileDropzone extends Component {
       return;
     }
     this.queue.remove(fileWrapper);
+    this.args.onFileUploaded?.(this.queue.fileQueue.files);
   };
 }
 

@@ -3,7 +3,7 @@
     {{this.activeStep.title}}
   </:title>
   <:body>
-    {{#if (eq this.activeStepIndex 1)}}
+    {{#if (eq this.activeStepIndex 0)}}
       <File::Dropzone
         @multiple={{true}}
         @accept=".bpmn,.vsdx"
@@ -16,23 +16,26 @@
   <:footer>
     <AuToolbar as |Group|>
       <Group class="flex-grow">
-        {{#unless this.activeStep.isFirstStep}}
+        {{#if
+          (not
+            (or
+              this.activeStep.isFirstStep
+              (not this.activeStep.canGoToPreviousStep)
+            )
+          )
+        }}
           <AuButton {{on "click" this.previousStep}} @skin="secondary">
             Vorige
           </AuButton>
-        {{/unless}}
+        {{/if}}
       </Group>
       <Group>
-        {{#if this.activeStep.isFinalStep}}
-          <AuLink>Ga naar process</AuLink>
-        {{else}}
-          <AuButton
-            {{on "click" this.nextStep}}
-            @disabled={{not this.activeStep.canGoToNextStep}}
-          >
-            Volgende
-          </AuButton>
-        {{/if}}
+        <AuButton
+          {{on "click" this.nextStep}}
+          @disabled={{not this.activeStep.canGoToNextStep}}
+        >
+          {{this.activeStep.nextStepButtonLabel}}
+        </AuButton>
       </Group>
     </AuToolbar>
   </:footer>

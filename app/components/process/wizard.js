@@ -2,15 +2,15 @@ import Component from '@glimmer/component';
 
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { task } from 'ember-concurrency';
 
 export default class ProcessWizard extends Component {
-  @tracked activeStepIndex = 1;
+  @tracked activeStepIndex = 0;
 
   @tracked process = null;
 
   @tracked fileWrappers = [];
   @tracked mainProcessFile = null;
-  @tracked isBpmnElementExtractionDone = false;
 
   @action
   addFileToUploadedList(fileWrappers) {
@@ -63,44 +63,35 @@ export default class ProcessWizard extends Component {
   get steps() {
     return [
       {
-        // TODO - future step
-        title: 'Selecteer een bestaand bestanden',
-        isStepShown: false,
-        canGoToNextStep: false,
-        canGoToPreviousStep: false,
-        isFirstStep: true,
-      },
-      {
-        title: 'Upload nieuwe bestanden',
+        title: 'Upload bestanden',
         isStepShown: true,
-        canGoToNextStep: true,
+        canGoToNextStep: this.fileWrappers.length >= 1,
+        nextStepButtonLabel: 'Uploaden',
         canGoToPreviousStep: false,
         isFirstStep: true,
+        actionOnNextStep: async () =>
+          task({ drop: true }, async () => {}).perform(),
       },
       {
         title: 'Selecteer het hoofdproces',
         isStepShown: true,
         canGoToNextStep: this.mainProcessFile,
+        nextStepButtonLabel: 'Process aanmaken',
         canGoToPreviousStep: false,
       },
       {
         title: 'Proces aanmaken',
         isStepShown: true,
         canGoToNextStep: this.process,
-        canGoToPreviousStep: false,
-      },
-      {
-        title: 'Bpmn element extractie',
-        isStepShown: true,
-        canGoToNextStep: this.isBpmnElementExtractionDone,
+        nextStepButtonLabel: 'Volgende',
         canGoToPreviousStep: false,
       },
       {
         title: 'Process aangemaakt',
         isStepShown: true,
         canGoToNextStep: this.isBpmnElementExtractionDone,
+        nextStepButtonLabel: 'Volgende',
         canGoToPreviousStep: false,
-        isFinalStep: true,
       },
     ];
   }
