@@ -1,0 +1,35 @@
+<AuModal @modalOpen={{@isModalOpen}} @closeModal={{@onModalClosed}}>
+  <:title>Download diagram</:title>
+  <:body>
+    <div class="au-o-flow">
+      <p>Het geselecteerde diagram is beschikbaar in verschillende formaten:</p>
+      <AuButtonGroup class="au-u-flex au-u-flex--around">
+        {{#each this.downloadOptions as |downloadOption|}}
+          {{#if downloadOption.canDownload}}
+            <AuButton
+              @skin={{downloadOption.buttonSkin}}
+              @disabled={{this.isDownloading}}
+              {{on "click" downloadOption.download}}
+            >
+              {{downloadOption.label}}
+              <span
+                class="au-u-para-tiny au-u-regular"
+              >({{downloadOption.extensionLabel}})</span>
+            </AuButton>
+          {{/if}}
+        {{/each}}
+      </AuButtonGroup>
+    </div>
+  </:body>
+  <:footer>
+    <AuButtonGroup class="au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        @disabled={{this.isDownloading}}
+        @loading={{this.isDownloading}}
+        @loadingMessage="Downloaden"
+        {{on "click" @onModalClosed}}
+      >Annuleer</AuButton>
+    </AuButtonGroup>
+  </:footer>
+</AuModal>
