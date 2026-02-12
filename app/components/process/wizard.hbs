@@ -12,6 +12,30 @@
         @canEditFileQueue={{true}}
       />
     {{/if}}
+    {{#if (eq this.activeStepIndex 1)}}
+      {{#if this.isCreatingFiles}}
+        <p class="au-u-muted">{{this.uploadFileMessage}}</p>
+      {{/if}}
+      {{#if this.areFilesCreated}}
+        <AuLabel
+          @required={{true}}
+          class="au-u-margin-top"
+        >Hoofddiagram</AuLabel>
+        <PowerSelect
+          @searchEnabled={{true}}
+          @searchField="name"
+          @loadingMessage="Aan het laden..."
+          @noMatchesMessage="Geen bestanden gevonden"
+          @options={{this.files}}
+          @selected={{this.mainProcessFile}}
+          @onChange={{this.setMainProcessFile}}
+          @allowClear={{false}}
+          as |file|
+        >
+          {{file.name}}
+        </PowerSelect>
+      {{/if}}
+    {{/if}}
   </:body>
   <:footer>
     <AuToolbar as |Group|>
