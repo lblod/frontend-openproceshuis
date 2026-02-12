@@ -8,8 +8,8 @@
           class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small border-top-left-radius border-bottom-left-radius pointer
             {{if
               (eq this.selectedDiagramFile.id diagram.diagramFile.id)
-              'background-gray'
-              'background-white'
+              'background-gray border-left-selected'
+              'background-white border-left-transparent'
             }}"
         >
           {{diagram.diagramFile.name}}
