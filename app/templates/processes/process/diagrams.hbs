@@ -70,11 +70,9 @@
         @process={{@model.process}}
       />
     </div>
-    {{#if this.selectedDiagramFile}}
-      <div class="au-o-box">
-        <File::Viewer @file={{this.selectedDiagramFile}} />
-      </div>
-    {{/if}}
+    <div class="au-o-box">
+      <File::Viewer @file={{this.selectedDiagramFile}} />
+    </div>
   </:content>
 </SidebarContainer>
 
