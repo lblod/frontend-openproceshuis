@@ -21,12 +21,14 @@
       </TableMessage>
     {{else}}
       <c.body as |diagram|>
+        {{! template-lint-disable no-invalid-interactive }}
         <td
           class="{{if
               (eq diagram.diagramFile.id @selectedDiagramFile.id)
               'border-left-selected'
               'border-left-transparent'
             }}"
+          {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
         >
           <AuButton
             @skin="link"

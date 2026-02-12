@@ -17,11 +17,25 @@
 .border-left-selected {
   border-left: 0.45rem solid var(--au-select-text-color) !important;
   border-style: inset;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    border-left: 0.45rem solid var(--au-gray-500) !important;
+    border-style: inset;
+  }
 }
 
 .border-left-transparent {
   border-left: 0.45rem solid transparent !important;
   border-style: inset;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    border-left: 0.45rem solid var(--au-gray-500) !important;
+    border-style: inset;
+  }
 }
 
 .width-full {
