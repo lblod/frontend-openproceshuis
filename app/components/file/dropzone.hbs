@@ -17,7 +17,9 @@
       </p>
     {{else if this.isBusy}}
       <p class="au-c-file-upload-message">
-        <small class="au-c-small-text">{{this.uploadingMsg}}</small>
+        <small class="au-c-small-text">{{this.uploadingMsg}}
+          +
+          {{this.onFileToRemove.name}}</small>
       </p>
     {{else}}
       <label>
@@ -41,4 +43,29 @@
       </label>
     {{/if}}
   </FileDropzone>
+  {{#if @isQueueListShown}}
+    <div class="au-u-flex au-u-flex--column">
+      <p class="au-u-h4 au-u-margin-top">Opgeladen bestanden</p>
+      <AuHr />
+      {{#if (eq this.queue.files.length 0)}}
+        <p class="au-u-muted">Er werden nog geen bestanden opgeladen</p>
+      {{/if}}
+      <div>
+        {{#each this.queue.files as |fileWrapper|}}
+          <div
+            class="au-u-flex au-u-flex--between au-u-flex--vertical-center au-u-background-gray-100 border-line-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
+          >
+            <p>{{fileWrapper.name}}</p>
+            {{#if @canEditFileQueue}}
+              <AuButton
+                @skin="naked"
+                @alert="true"
+                {{on "click" (fn this.removeFileFromQueue fileWrapper)}}
+              >Verwijder</AuButton>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
 {{/let}}
