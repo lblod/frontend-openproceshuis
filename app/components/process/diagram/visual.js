@@ -79,9 +79,11 @@ export default class ProcessDiagramVisual extends Component {
   }
 
   addFileToProcess = task({ enqueue: true }, async (newFileIds) => {
-    const diagramList =
-      await this.diagram.createDiagramListForFiles(newFileIds);
     const currentLists = await this.process.diagramLists;
+    const diagramList = await this.diagram.createDiagramListForFiles(
+      newFileIds,
+      currentLists,
+    );
     this.process.diagramLists = [...currentLists, diagramList];
     await this.process.save();
     this.diagram.fetchLatest.perform(this.process.id);
