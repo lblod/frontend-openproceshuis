@@ -1,107 +1,68 @@
-<div ...attributes>
-  <AuDataTable
-    @content={{this.activeDiagrams}}
-    @fields="name created size"
-    @noDataMessage="Geen diagrammen gevonden"
-    as |row|
-  >
-    <row.content class="au-c-data-table__table--small" as |c|>
-      <c.header>
-        <th>Bestandsnaam</th>
-        <th>Toegevoegd</th>
-        <th>Grootte</th>
-        <th>Positie</th>
-        <th></th>
-        {{#if @canEdit}}<th></th>{{/if}}
-      </c.header>
-      {{#if this.diagramsHaveErrored}}
-        <TableMessage::Error />
-      {{else if this.diagramsHaveNoResults}}
-        <TableMessage>
-          <p>Er werden geen zoekresultaten gevonden.</p>
-        </TableMessage>
-      {{else}}
-        <c.body as |diagram|>
-          <td>
-            <AuButton
-              @skin="link"
-              {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
-            >
-              {{diagram.diagramFile.name}}
-            </AuButton>
-          </td>
-          <td>{{date-format diagram.diagramFile.created true}}</td>
-          <td>{{file-size-format diagram.diagramFile.size}}</td>
-          <td>{{diagram.position}}</td>
-          <td>
-            <AuButton
-              @icon="download"
-              @skin="link"
-              @width="block"
-              @hideText="true"
-              {{on "click" (fn (mut this.fileToDownload) diagram.diagramFile)}}
-            >Download</AuButton>
-          </td>
-          {{#if @canEdit}}
-            <td>
-              <AuButton
-                @icon="bin"
-                @skin="naked"
-                @alert="true"
-                @width="block"
-                @hideText="true"
-                {{on "click" (fn this.openDeleteModal diagram.diagramFile)}}
-              >Verwijder</AuButton>
-            </td>
-          {{/if}}
-        </c.body>
-      {{/if}}
-    </row.content>
-  </AuDataTable>
-</div>
-
-<AuModal
-  @modalOpen={{this.isDeleteModalOpen}}
-  @closeModal={{this.closeDeleteModal}}
+<AuDataTable
+  @content={{this.activeDiagrams}}
+  @fields="name created size"
+  @noDataMessage="Geen diagrammen gevonden"
+  as |row|
 >
-  <:title>Verwijder {{this.fileToDelete.name}}</:title>
-  <:body>
-    {{#unless this.canDeleteFile}}
-      <AuAlert
-        @title="Niet toegestaan"
-        @skin="warning"
-        @icon="cross"
-        @size="small"
-        @closable={{false}}
-      >
-        <p>Het laatste diagram in de lijst kan niet worden verwijderd. Vervang
-          de huidige diagram(men) om een nieuwe versie aan te maken.</p>
-      </AuAlert>
-    {{/unless}}
-    <p>
-      Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?
-    </p>
-  </:body>
-  <:footer>
-    <AuButtonGroup class="au-u-flex--end">
-      <AuButton
-        @skin="secondary"
-        {{on "click" this.closeDeleteModal}}
-      >Annuleer</AuButton>
-      <AuButton
-        @skin="primary"
-        @icon="bin"
-        @alert="true"
-        @disabled={{not this.canDeleteFile}}
-        @loading={{this.deleteFile.isRunning}}
-        @loadingMessage="Verwijderen"
-        {{on "click" (perform this.deleteFile)}}
-      >Verwijder</AuButton>
-    </AuButtonGroup>
-  </:footer>
-</AuModal>
+  <row.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <th>Bestandsnaam</th>
+      <th>Toegevoegd</th>
+      <th>Grootte</th>
+      <th>Positie</th>
+      <th></th>
+      <th></th>
+    </c.header>
+    {{#if this.diagramsHaveErrored}}
+      <TableMessage::Error />
+    {{else if this.diagramsHaveNoResults}}
+      <TableMessage>
+        <p>Er werden geen zoekresultaten gevonden.</p>
+      </TableMessage>
+    {{else}}
+      <c.body as |diagram|>
+        {{! template-lint-disable no-invalid-interactive }}
+        <td
+          class="{{if
+              (eq diagram.diagramFile.id @selectedDiagramFile.id)
+              'border-left-selected'
+              'border-left-transparent'
+            }}"
+          {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+        >
+          <AuButton
+            @skin="link"
+            {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+          >
+            {{diagram.diagramFile.name}}
+          </AuButton>
+        </td>
+        <td>{{date-format diagram.diagramFile.created true}}</td>
+        <td>{{file-size-format diagram.diagramFile.size}}</td>
+        <td>{{diagram.position}}</td>
+        <td>
+          <AuButton
+            @skin="naked"
+            {{on "click" (fn (mut this.fileToDownload) diagram.diagramFile)}}
+          >Download
+          </AuButton>
+        </td>
+        <td>
+          <AuLink
+            @route="diagrams.diagram.index"
+            @skin="button-naked"
+            @model={{diagram.id}}
+          >
+            Detail
+          </AuLink>
+        </td>
+      </c.body>
+    {{/if}}
+  </row.content>
+</AuDataTable>
 
-<File::DownloadModal
+<File::Download
+  @showAsModal={{true}}
   @isModalOpen={{this.fileToDownload}}
   @onModalClosed={{fn (mut this.fileToDownload) undefined}}
   @onDownloadSuccesful={{this.onFileDownloadedSuccessful}}

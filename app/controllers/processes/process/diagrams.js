@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
-import { task } from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
@@ -20,17 +20,22 @@ export default class ProcessesProcessDiagramsController extends Controller {
 
   @action
   async openDiagramList(diagramList) {
+    this.selectedDiagramFile = null;
+    await timeout(25); // NOTE - so bad
     this.selectedDiagramList = diagramList;
-    const latestDiagrams = await diagramList.diagrams;
-    this.selectedDiagramFile = latestDiagrams[0]?.diagramFile;
+    const firstOfSortedDiagramFiles =
+      this.diagram.getFirstFileOfList(diagramList);
+    this.selectedDiagramFile = firstOfSortedDiagramFiles;
   }
 
   @action
   async openDiagramFile(diagramFile) {
-    if (!diagramFile) {
-      await this.openDiagramList(this.selectedDiagramList);
-    } else {
+    if (diagramFile) {
+      this.selectedDiagramFile = null;
+      await timeout(25); // NOTE - so bad
       this.selectedDiagramFile = diagramFile;
+    } else {
+      await this.openDiagramList(this.selectedDiagramList);
     }
   }
 
@@ -63,9 +68,11 @@ export default class ProcessesProcessDiagramsController extends Controller {
   }
 
   addFileToProcess = task({ enqueue: true }, async (newFileIds) => {
-    const diagramList =
-      await this.diagram.createDiagramListForFiles(newFileIds);
     const currentLists = await this.model.process.diagramLists;
+    const diagramList = await this.diagram.createDiagramListForFiles(
+      newFileIds,
+      currentLists,
+    );
     this.model.process.diagramLists = [...currentLists, diagramList];
     await this.model.process.save();
   });
