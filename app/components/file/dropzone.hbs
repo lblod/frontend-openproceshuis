@@ -43,7 +43,7 @@
       </label>
     {{/if}}
   </FileDropzone>
-  {{#if @isQueueListShown}}
+  {{#if (and @isQueueListShown this.queue.files)}}
     <div class="au-u-flex au-u-flex--column">
       <p class="au-u-h4 au-u-margin-top">Opgeladen bestanden</p>
       <AuHr />
