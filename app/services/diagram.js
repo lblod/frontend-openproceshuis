@@ -129,7 +129,7 @@ export default class DiagramService extends Service {
     this.fetchVersions.perform(processId);
   }
 
-  async createDiagramListForFiles(fileIds) {
+  async createDiagramListForFiles(fileIds, currentList = null) {
     const files = await this.store.query('file', {
       'filter[id]': fileIds.join(','),
     });
@@ -148,7 +148,7 @@ export default class DiagramService extends Service {
     const diagramList = this.store.createRecord('diagram-list', {
       created: now,
       modified: now,
-      version: 'v0.0.1',
+      version: `v0.0.${(currentList?.length ?? 0) + 1}`,
       diagrams: diagramListItems,
     });
     await diagramList.save();
