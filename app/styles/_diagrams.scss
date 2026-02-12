@@ -14,6 +14,14 @@
   border-bottom-left-radius: 5px;
 }
 
+.border-radius {
+  border-radius: 5px;
+}
+
+.border-line-200 {
+  border: 0.2rem solid var(--au-gray-200);
+}
+
 .border-left-selected {
   border-left: 0.45rem solid var(--au-select-text-color) !important;
   border-style: inset;

@@ -3,12 +3,13 @@
     {{this.activeStep.title}}
   </:title>
   <:body>
-
     {{#if (eq this.activeStepIndex 1)}}
       <File::Dropzone
         @multiple={{true}}
         @accept=".bpmn,.vsdx"
         @onFileUploaded={{this.addFileToUploadedList}}
+        @isQueueListShown={{true}}
+        @canEditFileQueue={{true}}
       />
     {{/if}}
   </:body>

@@ -84,9 +84,12 @@ export default class FileDropzone extends Component {
     return this.fileQueue.findOrCreate(this.queueName);
   }
 
-  removeFileFromQueue(fileWrapper) {
+  removeFileFromQueue = (fileWrapper) => {
+    if (!fileWrapper) {
+      return;
+    }
     this.queue.remove(fileWrapper);
-  }
+  };
 }
 
 function isValidFileType(file, accept) {
