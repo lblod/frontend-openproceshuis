@@ -1,8 +1,6 @@
 <div ...attributes>
   <AuDataTable
     @content={{this.activeDiagrams}}
-    @page={{this.page}}
-    @size={{this.size}}
     @fields="name created size"
     @noDataMessage="Geen diagrammen gevonden"
     as |row|
@@ -41,7 +39,7 @@
               @skin="link"
               @width="block"
               @hideText="true"
-              {{on "click" (fn this.downloadFile diagram.diagramFile)}}
+              {{on "click" (fn (mut this.fileToDownload) diagram.diagramFile)}}
             >Download</AuButton>
           </td>
           {{#if @canEdit}}
@@ -102,3 +100,10 @@
     </AuButtonGroup>
   </:footer>
 </AuModal>
+
+<File::DownloadModal
+  @isModalOpen={{this.fileToDownload}}
+  @onModalClosed={{fn (mut this.fileToDownload) undefined}}
+  @onDownloadSuccesful={{this.onFileDownloadedSuccessful}}
+  @fileModel={{this.fileToDownload}}
+/>

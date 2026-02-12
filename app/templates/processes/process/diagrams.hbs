@@ -15,7 +15,7 @@
     </AuButton>
   </:action>
 </PageHeader>
-<SidebarContainer class="diagrams">
+<SidebarContainer class="diagrams au-u-flex--row-reverse">
   <:sidebar>
     <div class="au-c-sidebar background-white thin-scrollbar">
       <div>
@@ -67,18 +67,21 @@
           {{date-format this.selectedDiagramList.modified true}}</AuPill>
       </Group>
     </AuToolbar>
-    <div class="au-o-box">
-      {{#if this.selectedDiagramFile}}
-        <File::Viewer @file={{this.selectedDiagramFile}} />
-        <File::MetadataCard @file={{this.selectedDiagramFile}} />
-      {{/if}}
-      <p class="au-u-h4 au-u-medium au-u-margin-top">Diagrammen</p>
+    <div class="au-o-box au-u-padding-top-none">
+      <p class="au-u-h4 au-u-medium au-u-margin-bottom">Diagrammen</p>
       <DiagramList::Table
         @diagramList={{this.selectedDiagramList}}
         @onDiagramFileSelected={{this.openDiagramFile}}
         @canEdit={{this.canEditFilesInTable}}
         @canDeleteLastItem={{false}}
+        @process={{@model.process}}
       />
+    </div>
+    <div class="au-o-box">
+      {{#if this.selectedDiagramFile}}
+        <File::Viewer @file={{this.selectedDiagramFile}} />
+        <File::MetadataCard @file={{this.selectedDiagramFile}} />
+      {{/if}}
     </div>
   </:content>
 </SidebarContainer>
