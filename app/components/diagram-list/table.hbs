@@ -21,7 +21,13 @@
       </TableMessage>
     {{else}}
       <c.body as |diagram|>
-        <td>
+        <td
+          class="{{if
+              (eq diagram.diagramFile.id @selectedDiagramFile.id)
+              'border-left-selected'
+              ''
+            }}"
+        >
           <AuButton
             @skin="link"
             {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
