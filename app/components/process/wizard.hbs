@@ -46,11 +46,18 @@
           @options={{this.files}}
           @selected={{this.mainProcessFile}}
           @onChange={{this.setMainProcessFile}}
+          @disabled={{this.isSelectMainDiagramDisabled}}
           @allowClear={{false}}
           as |file|
         >
           {{file.name}}
         </PowerSelect>
+        {{#if this.isSelectMainDiagramDisabled}}
+          <AuHelpText @warning={{true}}>
+            Deze hebben we voor jou al reeds geselecteerd omdat er maar 1
+            diagram is
+          </AuHelpText>
+        {{/if}}
       {{/if}}
     {{/if}}
   </:body>

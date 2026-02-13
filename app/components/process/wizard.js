@@ -26,6 +26,7 @@ export default class ProcessWizard extends Component {
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
   @tracked showSuccessMessage = false;
+  @tracked isSelectMainDiagramDisabled = false;
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -184,6 +185,10 @@ export default class ProcessWizard extends Component {
     }
     this.loadingMessage = 'Bestanden werden succesvol opgeladen';
     this.showSuccessMessage = true;
+    if (this.files.length === 1) {
+      this.mainProcessFile = this.files[0];
+      this.isSelectMainDiagramDisabled = true;
+    }
     this.areFilesCreated = true;
   }
 
