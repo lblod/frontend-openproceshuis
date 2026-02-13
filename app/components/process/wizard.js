@@ -20,6 +20,7 @@ export default class ProcessWizard extends Component {
   @tracked process = null;
   @tracked files = [];
   @tracked mainProcessFile = null;
+  @tracked diagramList = null;
 
   @tracked fileWrappers = [];
   @tracked areFilesCreated = false;
@@ -74,19 +75,33 @@ export default class ProcessWizard extends Component {
         isStepShown: true,
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
-        nextStepButtonLabel: 'Process aanmaken',
+        nextStepButtonLabel: 'Proces aanmaken',
       },
       {
         title: 'Proces aanmaken',
-        isStepShown: true,
+        isStepShown: !this.args.process,
         action: async () => await this.createProcess(this.files),
         canGoToNextStep: this.process,
         nextStepButtonLabel: 'Ga naar proces',
       },
       {
-        title: 'Naar het process',
-        isStepShown: true,
+        title: 'Naar het proces',
+        isStepShown: !this.args.process,
         action: async () => await this.goToProcess(this.process),
+        canGoToNextStep: false,
+        nextStepButtonLabel: null,
+      },
+      {
+        title: 'Nieuwe versie aanmaken',
+        isStepShown: this.args.process,
+        action: async () => await this.createNewDiagramVersion(this.files),
+        canGoToNextStep: this.diagramList,
+        nextStepButtonLabel: 'Ga naar diagrammen',
+      },
+      {
+        title: 'Naar proces diagrammen',
+        isStepShown: this.args.process,
+        action: async () => await this.goToDiagrams(),
         canGoToNextStep: false,
         nextStepButtonLabel: null,
       },
@@ -210,7 +225,36 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     } finally {
-      this.loadingMessage = 'Proces werd succesvol aangemaakt!';
+      this.loadingMessage = 'Proces werd succesvol aangemaakt';
+    }
+  }
+
+  async createNewDiagramVersion(files) {
+    this.showSuccessMessage = false;
+    this.loadingMessage = 'Nieuwe diagrammen toevoegen aan het proces';
+    try {
+      const fileIds = files.map((file) => file.id);
+      const sortedFileIds = this.putIdFirstInArray(
+        fileIds,
+        this.mainProcessFile.id,
+      );
+      const currentLists = await this.args.process.diagramLists;
+      const diagramList = await this.diagram.createDiagramListForFiles(
+        sortedFileIds,
+        currentLists,
+      );
+      this.args.process.diagramLists = [...currentLists, diagramList];
+      await this.args.process.save();
+      this.diagramList = diagramList;
+      this.showSuccessMessage = true;
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het aanpassen van het proces',
+        null,
+        { timeOut: 2500 },
+      );
+    } finally {
+      this.loadingMessage = 'Proces werd succesvol aangepast';
     }
   }
 
@@ -229,5 +273,13 @@ export default class ProcessWizard extends Component {
     this.loadingMessage = 'We brengen je naar het process';
     await timeout(150);
     this.router.transitionTo('processes.process', process.id);
+  }
+
+  async goToDiagrams() {
+    this.showSuccessMessage = false;
+    this.loadingMessage = 'We brengen je naar de proces diagrammen';
+    await timeout(150);
+    this.router.refresh();
+    this.args.onCloseModal();
   }
 }
