@@ -2,13 +2,18 @@ import Component from '@glimmer/component';
 
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { task } from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
+
+import removeFileNameExtension from '../../utils/file-extension-remover';
 
 export default class ProcessWizard extends Component {
   @service toaster;
   @service store;
   @service api;
+  @service currentSession;
+  @service diagram;
+  @service router;
 
   @tracked activeStepIndex = 0;
 
@@ -19,7 +24,9 @@ export default class ProcessWizard extends Component {
   @tracked mainProcessFile = null;
   @tracked isUploadingFile = false;
   @tracked isExtractingBpmnElements = false;
+  @tracked isCreatingFiles = false;
   @tracked areFilesCreated = false;
+  @tracked isRoutingToProcess = false;
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -56,17 +63,6 @@ export default class ProcessWizard extends Component {
     await this.activeStep.action();
   });
 
-  @action
-  previousStep() {
-    const previousStepIndex = this.activeStepIndex - 1;
-    this.activeStepIndex = previousStepIndex;
-    if (this.steps[previousStepIndex]?.isStepShown) {
-      return this.steps[previousStepIndex];
-    } else {
-      this.previousStep();
-    }
-  }
-
   get steps() {
     return [
       {
@@ -74,8 +70,6 @@ export default class ProcessWizard extends Component {
         isStepShown: true,
         canGoToNextStep: this.fileWrappers.length >= 1,
         nextStepButtonLabel: 'Uploaden',
-        canGoToPreviousStep: false,
-        isFirstStep: true,
       },
       {
         title: 'Selecteer het hoofdproces',
@@ -83,15 +77,20 @@ export default class ProcessWizard extends Component {
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
         nextStepButtonLabel: 'Process aanmaken',
-        canGoToPreviousStep: false,
       },
       {
         title: 'Proces aanmaken',
         isStepShown: true,
-        action: async () => alert('create the process + diagram list!'),
+        action: async () => await this.createProcess(this.files),
         canGoToNextStep: this.process,
         nextStepButtonLabel: 'Ga naar proces',
-        canGoToPreviousStep: false,
+      },
+      {
+        title: 'Naar het process',
+        isStepShown: true,
+        action: async () => await this.goToProcess(this.process),
+        canGoToNextStep: false,
+        nextStepButtonLabel: null,
       },
     ];
   }
@@ -151,10 +150,16 @@ export default class ProcessWizard extends Component {
       return 'Processtappen extraheren';
     }
     if (this.isUploadingFile) {
-      return `Bestand worden opgeladen (${this.files.length}/${this.fileWrappers.length})`;
+      return `Bestand worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
     }
     if (this.isCreatingFiles) {
       return `Bezig met het opladen van ${this.fileWrappers.length} bestanden`;
+    }
+    if (this.isCreatingProcess) {
+      return `Bezig met het aanmaken van het proces`;
+    }
+    if (this.isRoutingToProcess) {
+      return `We brengen je naar je proces`;
     }
 
     return null;
@@ -163,10 +168,12 @@ export default class ProcessWizard extends Component {
   async uploadFiles(fileWrappers) {
     this.isCreatingFiles = true;
     for (const fileWrapper of fileWrappers) {
+      await timeout(250);
       const fileId = await this.saveFileInDatabase(fileWrapper);
       if (fileId) {
         const file = await this.store.findRecord('file', fileId);
         if (file.isBpmnFile) {
+          await timeout(250);
           await this.extractBpmnElementsFromFile(fileId);
         }
         this.files.push(file);
@@ -186,5 +193,62 @@ export default class ProcessWizard extends Component {
     }
     this.isCreatingFiles = false;
     this.areFilesCreated = true;
+  }
+
+  async createProcess(files) {
+    this.isCreatingProcess = true;
+    try {
+      await timeout(250);
+      const defaultRelevantUnit =
+        await this.currentSession.group.classification;
+      const created = new Date();
+      const fileIds = files.map((file) => file.id);
+      const sortedFileIds = this.putIdFirstInArray(
+        fileIds,
+        this.mainProcessFile.id,
+      );
+      const diagramList = await this.diagram.createDiagramListForFiles(
+        sortedFileIds,
+        null,
+      );
+      const process = this.store.createRecord('process', {
+        title: removeFileNameExtension(
+          this.mainProcessFile.name,
+          this.mainProcessFile.extension,
+        ),
+        created: created,
+        modified: created,
+        publisher: this.currentSession.group,
+        diagramLists: [diagramList],
+        relevantAdministrativeUnits: [defaultRelevantUnit],
+      });
+      await process.save();
+      this.process = process;
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het aanmaken van het proces',
+        null,
+        { timeOut: 2500 },
+      );
+    } finally {
+      this.isCreatingProcess = false;
+    }
+  }
+
+  putIdFirstInArray(ids, firstId) {
+    const index = ids.indexOf(firstId);
+    if (index > -1) {
+      ids.splice(index, 1);
+      ids.unshift(firstId);
+    }
+
+    return ids;
+  }
+
+  async goToProcess(process) {
+    this.isRoutingToProcess = true;
+    await timeout(250);
+    this.router.transitionTo('processes.process', process.id);
+    this.isRoutingToProcess = false;
   }
 }

@@ -3,6 +3,9 @@
     {{this.activeStep.title}}
   </:title>
   <:body>
+    {{#if this.uploadFileMessage}}
+      <AuLoader @centered={{true}}>{{this.uploadFileMessage}}</AuLoader>
+    {{/if}}
     {{#if (eq this.activeStepIndex 0)}}
       <File::Dropzone
         @multiple={{true}}
@@ -13,9 +16,6 @@
       />
     {{/if}}
     {{#if (eq this.activeStepIndex 1)}}
-      {{#if this.isCreatingFiles}}
-        <p class="au-u-muted">{{this.uploadFileMessage}}</p>
-      {{/if}}
       {{#if this.areFilesCreated}}
         <AuLabel
           @required={{true}}
@@ -39,20 +39,7 @@
   </:body>
   <:footer>
     <AuToolbar as |Group|>
-      <Group class="flex-grow">
-        {{#if
-          (not
-            (or
-              this.activeStep.isFirstStep
-              (not this.activeStep.canGoToPreviousStep)
-            )
-          )
-        }}
-          <AuButton {{on "click" this.previousStep}} @skin="secondary">
-            Vorige
-          </AuButton>
-        {{/if}}
-      </Group>
+      <Group />
       <Group>
         <AuButton
           {{on "click" this.nextStep}}
