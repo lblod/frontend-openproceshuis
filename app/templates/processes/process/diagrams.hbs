@@ -78,5 +78,8 @@
 </SidebarContainer>
 
 {{#if this.isCreateModalOpen}}
-  <Process::Wizard @onCloseModal={{this.closeCreateModal}} />
+  <Process::Wizard
+    @onCloseModal={{this.closeCreateModal}}
+    @process={{@model.process}}
+  />
 {{/if}}
