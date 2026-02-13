@@ -76,7 +76,9 @@ export default class ProcessWizard extends Component {
         isStepShown: true,
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
-        nextStepButtonLabel: 'Proces aanmaken',
+        nextStepButtonLabel: this.args.process
+          ? 'Nieuwe diagrammen toevoegen'
+          : 'Proces aanmaken',
       },
       {
         title: 'Proces aanmaken',
@@ -183,7 +185,7 @@ export default class ProcessWizard extends Component {
         (file) => file.id !== fileWrapper.id,
       );
     }
-    this.loadingMessage = 'Bestanden werden succesvol opgeladen';
+    this.loadingMessage = `${this.files.length === 1 ? 'Het bestand' : 'De bestanden'} werden succesvol opgeladen`;
     this.showSuccessMessage = true;
     if (this.files.length === 1) {
       this.mainProcessFile = this.files[0];
