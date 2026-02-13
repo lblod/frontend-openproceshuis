@@ -4,7 +4,9 @@
   </:title>
   <:body>
     {{#if this.loadingMessage}}
-      <AuLoader @centered={{true}}>{{this.loadingMessage}}</AuLoader>
+      <div class="au-u-flex au-u-flex--center au-u-flex--vertical-center">
+        <Shared::Loader @message={{this.loadingMessage}} />
+      </div>
     {{/if}}
     {{#if (eq this.activeStepIndex 0)}}
       <File::Dropzone
