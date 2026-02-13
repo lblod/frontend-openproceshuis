@@ -22,11 +22,8 @@ export default class ProcessWizard extends Component {
   @tracked fileWrappers = [];
   @tracked files = [];
   @tracked mainProcessFile = null;
-  @tracked isUploadingFile = false;
-  @tracked isExtractingBpmnElements = false;
-  @tracked isCreatingFiles = false;
   @tracked areFilesCreated = false;
-  @tracked isRoutingToProcess = false;
+  @tracked loadingMessage = null;
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -106,7 +103,6 @@ export default class ProcessWizard extends Component {
   }
 
   async saveFileInDatabase(uploadedFile) {
-    this.isUploadingFile = true;
     try {
       const response = await uploadedFile.upload('/files', {
         'Content-Type': 'multipart/form-data',
@@ -120,14 +116,13 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
       return;
-    } finally {
-      this.isUploadingFile = false;
     }
   }
 
   async extractBpmnElementsFromFile(fileId) {
-    this.isExtractingBpmnElements = true;
+    this.loadingMessage = 'Processtappen extraheren';
     try {
+      await timeout(250);
       await this.api.fetch(`/bpmn?id=${fileId}`, {
         method: 'POST',
         headers: {
@@ -141,43 +136,23 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     } finally {
-      this.isExtractingBpmnElements = false;
+      this.loadingMessage = null;
     }
-  }
-
-  get uploadFileMessage() {
-    if (this.isExtractingBpmnElements) {
-      return 'Processtappen extraheren';
-    }
-    if (this.isUploadingFile) {
-      return `Bestand worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
-    }
-    if (this.isCreatingFiles) {
-      return `Bezig met het opladen van ${this.fileWrappers.length} bestanden`;
-    }
-    if (this.isCreatingProcess) {
-      return `Bezig met het aanmaken van het proces`;
-    }
-    if (this.isRoutingToProcess) {
-      return `We brengen je naar je proces`;
-    }
-
-    return null;
   }
 
   async uploadFiles(fileWrappers) {
-    this.isCreatingFiles = true;
     for (const fileWrapper of fileWrappers) {
+      this.loadingMessage = `Bestand worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
       await timeout(250);
       const fileId = await this.saveFileInDatabase(fileWrapper);
       if (fileId) {
         const file = await this.store.findRecord('file', fileId);
         if (file.isBpmnFile) {
-          await timeout(250);
           await this.extractBpmnElementsFromFile(fileId);
         }
         this.files.push(file);
       } else {
+        this.loadingMessage = 'Oeps, hier liep iets mis';
         this.fileWrappers = this.fileWrappers.filter(
           (file) => file.id !== fileWrapper.id,
         );
@@ -191,12 +166,12 @@ export default class ProcessWizard extends Component {
         (file) => file.id !== fileWrapper.id,
       );
     }
-    this.isCreatingFiles = false;
+    this.loadingMessage = null;
     this.areFilesCreated = true;
   }
 
   async createProcess(files) {
-    this.isCreatingProcess = true;
+    this.loadingMessage = 'Bezig met het aanmaken van het proces';
     try {
       await timeout(250);
       const defaultRelevantUnit =
@@ -231,7 +206,7 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     } finally {
-      this.isCreatingProcess = false;
+      this.loadingMessage = 'Proces werd succesvol aangemaakt!';
     }
   }
 
@@ -246,9 +221,9 @@ export default class ProcessWizard extends Component {
   }
 
   async goToProcess(process) {
-    this.isRoutingToProcess = true;
+    this.loadingMessage = 'We brengen je naar het process';
     await timeout(250);
     this.router.transitionTo('processes.process', process.id);
-    this.isRoutingToProcess = false;
+    this.loadingMessage = null;
   }
 }
