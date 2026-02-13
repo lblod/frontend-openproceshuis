@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
-import removeFileNameExtension from '../../utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class SharedProcessesIndexController extends Controller {
@@ -11,10 +10,6 @@ export default class SharedProcessesIndexController extends Controller {
 
   @service router;
   @service toaster;
-  @service store;
-  @service currentSession;
-  @service api;
-  @service diagram;
 
   @tracked page = 0;
   size = 20;
@@ -106,41 +101,5 @@ export default class SharedProcessesIndexController extends Controller {
   closeUploadModal() {
     this.uploadModalOpened = false;
     this.fileHasSensitiveInformation = false;
-  }
-
-  createProcess = task({ drop: true }, async (fileIds) => {
-    const defaultRelevantUnit = await this.currentSession.group.classification;
-    const created = new Date();
-    const diagramList = await this.diagram.createDiagramListForFiles(fileIds);
-    const firstDiagram = diagramList.diagrams[0]?.diagramFile;
-    const process = this.store.createRecord('process', {
-      title: removeFileNameExtension(firstDiagram.name, firstDiagram.extension),
-      created,
-      modified: created,
-      publisher: this.currentSession.group,
-      diagramLists: [diagramList],
-      relevantAdministrativeUnits: [defaultRelevantUnit],
-    });
-    await process.save();
-    this.newProcessId = process.id;
-  });
-
-  @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmnElements(bpmnFileId) {
-    yield this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
-  }
-
-  @action
-  diagramUploaded() {
-    this.closeUploadModal();
-    this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
-      timeOut: 5000,
-    });
-    this.router.transitionTo('processes.process', this.newProcessId);
   }
 }

@@ -64,13 +64,13 @@ export default class ProcessWizard extends Component {
   get steps() {
     return [
       {
-        title: 'Upload bestanden',
+        title: 'Bestanden selecteren',
         isStepShown: true,
         canGoToNextStep: this.fileWrappers.length >= 1,
         nextStepButtonLabel: 'Uploaden',
       },
       {
-        title: 'Selecteer het hoofdproces',
+        title: 'Hoofdproces kiezen',
         isStepShown: true,
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
