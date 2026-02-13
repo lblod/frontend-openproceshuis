@@ -1,4 +1,4 @@
-<AuModal class="process-wizard-modal" @modalOpen={{true}} @closable={{true}}>
+<AuModal class="process-wizard-modal" @modalOpen={{true}} @closable={{true}} @closeModal={{@onCloseModal}}>
   <:title>
     {{this.activeStep.title}}
   </:title>
@@ -32,7 +32,7 @@
         <AuLabel
           @required={{true}}
           class="au-u-margin-top"
-        >Hoofddiagram</AuLabel>
+        >Selecteer het hoofddiagram</AuLabel>
         <PowerSelect
           @searchEnabled={{true}}
           @searchField="name"
