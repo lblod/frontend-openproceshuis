@@ -1,0 +1,80 @@
+<AuModal
+  class="process-wizard-modal"
+  @modalOpen={{true}}
+  @closable={{true}}
+  @closeModal={{@onCloseModal}}
+>
+  <:title>
+    {{this.activeStep.title}}
+  </:title>
+  <:body>
+    {{#if this.loadingMessage}}
+      <div
+        class="au-u-flex au-u-flex--center au-u-flex--vertical-center au-u-flex--column"
+      >
+        {{#if this.showSuccessMessage}}
+          <span class="wizard-success-icon">
+            <AuIcon @icon="circle-check" @size="large" />
+          </span>
+          <p class="au-u-margin-top-small">{{this.loadingMessage}}</p>
+        {{else}}
+          <Shared::Loader @message={{this.loadingMessage}} />
+        {{/if}}
+      </div>
+    {{/if}}
+
+    {{#if (eq this.activeStepIndex 0)}}
+      <div class="au-u-flex au-u-flex--between au-u-height-full">
+        <File::Dropzone
+          @multiple={{true}}
+          @accept=".bpmn,.vsdx"
+          @onFileUploaded={{this.addFileToUploadedList}}
+          @isQueueListShown={{true}}
+          @canEditFileQueue={{true}}
+        />
+      </div>
+    {{/if}}
+    {{#if (eq this.activeStepIndex 1)}}
+      {{#if this.areFilesCreated}}
+        <AuLabel @required={{true}} class="au-u-margin-top">Selecteer het
+          hoofddiagram</AuLabel>
+        <PowerSelect
+          @searchEnabled={{true}}
+          @searchField="name"
+          @loadingMessage="Aan het laden..."
+          @noMatchesMessage="Geen bestanden gevonden"
+          @options={{this.files}}
+          @selected={{this.mainProcessFile}}
+          @onChange={{this.setMainProcessFile}}
+          @disabled={{this.isSelectMainDiagramDisabled}}
+          @allowClear={{false}}
+          as |file|
+        >
+          {{file.name}}
+        </PowerSelect>
+        {{#if this.isSelectMainDiagramDisabled}}
+          <AuHelpText @warning={{true}}>
+            Deze hebben we voor jou al reeds geselecteerd omdat er maar 1
+            diagram is
+          </AuHelpText>
+        {{/if}}
+      {{/if}}
+    {{/if}}
+  </:body>
+  <:footer>
+    <AuToolbar as |Group|>
+      <Group />
+      <Group>
+        {{#if this.activeStep.nextStepButtonLabel}}
+          <AuButton
+            class="border-radius"
+            {{on "click" this.nextStep}}
+            @disabled={{not this.activeStep.canGoToNextStep}}
+          >
+            {{this.activeStep.nextStepButtonLabel}}
+          </AuButton>
+        {{/if}}
+      </Group>
+    </AuToolbar>
+  </:footer>
+</AuModal>

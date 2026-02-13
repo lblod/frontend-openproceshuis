@@ -119,19 +119,9 @@
   </:content>
 </SidebarContainer>
 
-<FileUploadModal
-  @header="Voeg proces toe"
-  @title="BPMN- of Visiobestand selecteren"
-  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-  @multiple={{true}}
-  @accept=".bpmn,.vsdx"
-  @isSensitiveDataDetectInUploadFlow={{false}}
-  @createModel={{this.createProcess}}
-  @extractBpmnElements={{this.extractBpmnElements}}
-  @onFinishUpload={{this.diagramUploaded}}
-  @modalOpen={{this.uploadModalOpened}}
-  @closeModal={{this.closeUploadModal}}
-/>
+{{#if this.uploadModalOpened}}
+  <Process::Wizard @onCloseModal={{this.closeUploadModal}} />
+{{/if}}
 
 <AuModal
   @modalOpen={{this.deleteModalOpened}}

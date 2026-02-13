@@ -60,4 +60,9 @@ export default class SharedProcessesIndexRoute extends Route {
 
     return yield this.store.query('process', query);
   }
+
+  setupController(controller) {
+    super.setupController(...arguments);
+    controller.uploadModalOpened = false;
+  }
 }

@@ -7,6 +7,7 @@
   <:title>Versies</:title>
   <:action>
     <AuButton
+      class="border-radius"
       @skin="primary"
       @iconAlignment="right"
       {{on "click" this.openCreateModal}}
@@ -76,16 +77,9 @@
   </:content>
 </SidebarContainer>
 
-<FileUploadModal
-  @header="Maak een nieuwe versie aan"
-  @title="BPMN- of Visiobestand selecteren"
-  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
-  @multiple={{true}}
-  @accept=".bpmn,.vsdx"
-  @isSensitiveDataDetectInUploadFlow={{false}}
-  @updateModel={{this.addFileToProcess}}
-  @extractBpmnElements={{this.extractBpmnElements}}
-  @onFinishUpload={{this.diagramUploaded}}
-  @modalOpen={{this.isCreateModalOpen}}
-  @closeModal={{this.closeCreateModal}}
-/>
+{{#if this.isCreateModalOpen}}
+  <Process::Wizard
+    @onCloseModal={{this.closeCreateModal}}
+    @process={{@model.process}}
+  />
+{{/if}}
