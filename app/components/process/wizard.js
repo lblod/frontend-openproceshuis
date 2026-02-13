@@ -18,12 +18,13 @@ export default class ProcessWizard extends Component {
   @tracked activeStepIndex = 0;
 
   @tracked process = null;
-
-  @tracked fileWrappers = [];
   @tracked files = [];
   @tracked mainProcessFile = null;
+
+  @tracked fileWrappers = [];
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
+  @tracked showSuccessMessage = false;
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -166,11 +167,13 @@ export default class ProcessWizard extends Component {
         (file) => file.id !== fileWrapper.id,
       );
     }
-    this.loadingMessage = null;
+    this.loadingMessage = 'Bestanden werden succesvol opgeladen';
+    this.showSuccessMessage = true;
     this.areFilesCreated = true;
   }
 
   async createProcess(files) {
+    this.showSuccessMessage = false;
     this.loadingMessage = 'Bezig met het aanmaken van het proces';
     try {
       await timeout(250);
@@ -199,6 +202,7 @@ export default class ProcessWizard extends Component {
       });
       await process.save();
       this.process = process;
+      this.showSuccessMessage = true;
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het aanmaken van het proces',
@@ -221,9 +225,9 @@ export default class ProcessWizard extends Component {
   }
 
   async goToProcess(process) {
+    this.showSuccessMessage = false;
     this.loadingMessage = 'We brengen je naar het process';
     await timeout(250);
     this.router.transitionTo('processes.process', process.id);
-    this.loadingMessage = null;
   }
 }
