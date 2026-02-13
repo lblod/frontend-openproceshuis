@@ -1,4 +1,4 @@
-<div class="icr-score">
+<div class="icr-score" id="{{@id}}">
   {{#each this.allowedScores as |score|}}
     {{#if (and @onScoreChange (not @readonly))}}
       {{! template-lint-disable no-invalid-interactive }}

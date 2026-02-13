@@ -117,7 +117,9 @@ export default class InformationAssetIndexController extends Controller {
         containsSensitivePersonalData: oldAsset.containsSensitivePersonalData,
         creator: this.currentSession.group,
         previousVersion: oldAsset,
-        processes: oldAsset.processes.slice(),
+        processes: oldAsset.processes?.slice(),
+        attachments: oldAsset.attachments?.slice(),
+        links: oldAsset.links?.slice(),
         created: new Date(),
         modified: new Date(),
       });

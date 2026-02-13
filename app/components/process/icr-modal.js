@@ -60,7 +60,7 @@ export default class IcrModalComponent extends Component {
 
   @action
   setDescription(event) {
-    if (!this.args.process) return;
+    if (!this.args.selected) return;
     this.args.selected.description = event.target.value;
     this.validateForm();
   }
