@@ -5,18 +5,22 @@
   <FileDropzone
     @queue={{queue}}
     @filter={{this.filter}}
-    class="au-c-file-upload"
+    class="au-c-file-upload au-u-flex au-u-flex--center"
     ...attributes
     as |dropzone|
   >
     {{#if dropzone.active}}
-      <p class="au-c-file-upload-message">
+      <p
+        class="au-c-file-upload-message au-u-height-full au-u-flex au-u-flex--column"
+      >
         <AuIcon @icon="attachment" @alignment="left" />
         <AuHelpText @skin="secondary">Sleep de bestanden naar hier om toe te
           voegen</AuHelpText>
       </p>
     {{else if this.isBusy}}
-      <p class="au-c-file-upload-message">
+      <p
+        class="au-c-file-upload-message au-u-height-full au-u-flex au-u-flex--column"
+      >
         <small class="au-c-small-text">{{this.uploadingMsg}}
           +
           {{this.onFileToRemove.name}}</small>
@@ -30,7 +34,9 @@
           hidden=""
           {{queue.selectFile filter=this.filter}}
         />
-        <span class="au-c-file-upload-label">
+        <span
+          class="au-c-file-upload-label au-u-height-full au-u-flex au-u-flex--center"
+        >
           <span class="au-c-file-upload-label__title">
             <AuIcon @icon="attachment" @alignment="left" />
             Bestanden toevoegen
@@ -43,19 +49,34 @@
       </label>
     {{/if}}
   </FileDropzone>
-  {{#if (and @isQueueListShown this.queue.files)}}
-    <div class="au-u-flex au-u-flex--column">
-      <p class="au-u-h4 au-u-margin-top">Opgeladen bestanden</p>
+  {{#if @isQueueListShown}}
+    {{! template-lint-disable no-inline-styles }}
+    <div
+      class="au-u-flex au-u-flex--column au-u-margin-left au-u-3-4"
+      style="max-height: 100%"
+    >
+      <div class="au-u-flex au-u-flex--between">
+        <p class="au-u-h4">Geselecteerde bestanden</p>
+        {{#unless (eq this.queue.files.length 0)}}
+          <p class="au-u-h4 au-u-muted">{{this.queue.files.length}}</p>
+        {{/unless}}
+      </div>
       <AuHr />
       {{#if (eq this.queue.files.length 0)}}
-        <p class="au-u-muted">Er werden nog geen bestanden opgeladen</p>
+        <p class="au-u-muted">Er werden nog geen bestanden geselecteerd</p>
       {{/if}}
-      <div>
+      {{! template-lint-disable no-inline-styles }}
+      <div style="overflow-y: auto;">
         {{#each this.queue.files as |fileWrapper|}}
           <div
             class="au-u-flex au-u-flex--between au-u-flex--vertical-center au-u-background-gray-100 border-line-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
           >
-            <p>{{fileWrapper.name}}</p>
+            <AuIcon @icon="file" @size="large" class="au-u-margin-left" />
+            <p>{{fileWrapper.ext}}</p>
+            <div>
+              <p>{{fileWrapper.name}}</p>
+              <p class="au-u-muted">{{file-size-format fileWrapper.size}}</p>
+            </div>
             {{#if @canEditFileQueue}}
               <AuButton
                 @skin="naked"

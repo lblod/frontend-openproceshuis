@@ -214,6 +214,11 @@ tr:hover .inventory-row-button-group .au-c-button {
   }
 }
 
+.process-wizard-modal.au-c-modal {
+  height: 50vh !important;
+  border-radius: 5px !important;
+}
+
 .wizard-success-icon {
   .au-c-icon--large {
     width: 50px !important;
