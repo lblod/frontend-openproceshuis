@@ -4,10 +4,20 @@
   </:title>
   <:body>
     {{#if this.loadingMessage}}
-      <div class="au-u-flex au-u-flex--center au-u-flex--vertical-center">
-        <Shared::Loader @message={{this.loadingMessage}} />
+      <div
+        class="au-u-flex au-u-flex--center au-u-flex--vertical-center au-u-flex--column"
+      >
+        {{#if this.showSuccessMessage}}
+          <span class="wizard-success-icon">
+            <AuIcon @icon="circle-check" @size="large" />
+          </span>
+          <p class="au-u-margin-top-small">{{this.loadingMessage}}</p>
+        {{else}}
+          <Shared::Loader @message={{this.loadingMessage}} />
+        {{/if}}
       </div>
     {{/if}}
+
     {{#if (eq this.activeStepIndex 0)}}
       <File::Dropzone
         @multiple={{true}}
