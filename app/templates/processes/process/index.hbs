@@ -41,11 +41,26 @@
     @process={{this.process}}
   />
 
-  <Process::Diagram::Visual
-    @canEdit={{this.canEdit}}
-    @process={{this.process}}
-    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
-  />
+  <span>
+    <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+      <AuHeading @level="2" @skin="3">Diagrammen</AuHeading>
+      <AuButtonGroup>
+        <AuLink
+          @route="processes.process.diagrams"
+          @model={{this.process.id}}
+          @skin="button-naked"
+          @icon="pencil"
+        >
+          Wijzig
+        </AuLink>
+      </AuButtonGroup>
+    </div>
+    <DiagramList::DiagramsInTabs
+      @canEdit={{this.canEdit}}
+      @diagramList={{@model.diagramList}}
+      @processId={{this.process.id}}
+    />
+  </span>
 
   {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
     <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
@@ -55,12 +70,6 @@
       @process={{this.process}}
     />
   {{/if}}
-
-  <Process::Diagram::Version
-    @canEdit={{this.canEdit}}
-    @process={{this.process}}
-    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
-  />
 
   <Process::Attachments
     @canEdit={{this.canEdit}}

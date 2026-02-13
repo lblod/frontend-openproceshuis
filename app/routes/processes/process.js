@@ -2,8 +2,6 @@ import Route from '@ember/routing/route';
 
 import { service } from '@ember/service';
 
-import ENV from 'frontend-openproceshuis/config/environment';
-
 export default class ProcessesProcessRoute extends Route {
   @service store;
   @service router;
@@ -18,10 +16,8 @@ export default class ProcessesProcessRoute extends Route {
   async model(params) {
     try {
       const process = await this.store.findRecord('process', params.id, {
-        'filter[files][:not:status]': ENV.resourceStates.archived,
         include: [
           'process-statistics',
-          'files',
           'publisher',
           'publisher.primary-site',
           'publisher.primary-site.contacts',

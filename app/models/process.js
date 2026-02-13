@@ -24,8 +24,10 @@ export default class ProcessModel extends Model {
     async: false,
   })
   linkedConcept;
-  @hasMany('file', { inverse: 'processes', async: false })
-  files;
+  @hasMany('diagram-list', { inverse: null, async: false })
+  diagramLists;
+  @hasMany('file', { inverse: null, async: false })
+  attachments;
   @hasMany('ipdc-product', {
     inverse: 'processes',
     async: false,
@@ -75,20 +77,6 @@ export default class ProcessModel extends Model {
     this.status = ENV.resourceStates.archived;
   }
 
-  get diagram() {
-    const diagrams = this.files.filter(
-      (file) =>
-        (file.isBpmnFile || file.isVisioFile) &&
-        file.status !== ENV.resourceStates.archived,
-    );
-    if (diagrams.length === 0) return undefined;
-
-    const diagramsSorted = diagrams.sort(
-      (fileA, fileB) => fileB.created - fileA.created,
-    );
-    return diagramsSorted[0];
-  }
-
   get isPublishedByAbbOrDv() {
     const ovoCodes = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
     return ovoCodes.includes(this.publisher?.identifier);
@@ -96,5 +84,10 @@ export default class ProcessModel extends Model {
 
   get href() {
     return `${window.location.origin}/processen/${this.id}`;
+  }
+
+  async save() {
+    this.modified = new Date();
+    await super.save(...arguments);
   }
 }

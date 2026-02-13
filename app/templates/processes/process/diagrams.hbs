@@ -1,0 +1,91 @@
+{{page-title "Diagrammen"}}
+{{breadcrumb "Diagrammen" route="processes.process.diagrams" model=@model.id}}
+
+{{! template-lint-disable no-invalid-interactive }}
+{{! template-lint-disable no-inline-styles }}
+<PageHeader>
+  <:title>Versies</:title>
+  <:action>
+    <AuButton
+      @skin="primary"
+      @iconAlignment="right"
+      {{on "click" this.openCreateModal}}
+    >
+      Maak een nieuwe versie aan
+    </AuButton>
+  </:action>
+</PageHeader>
+<SidebarContainer class="diagrams au-u-flex--row-reverse">
+  <:sidebar>
+    <div class="au-c-sidebar background-white thin-scrollbar">
+      <div>
+        {{#each @model.lists as |diagramList|}}
+          <div
+            {{on "click" (fn this.openDiagramList diagramList)}}
+            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom pointer
+              {{if
+                (eq this.selectedDiagramList.id diagramList.id)
+                'background-gray border-left-selected'
+                'background-white border-left-transparent'
+              }}"
+            style="border:1.5px solid var(--au-gray-200); "
+          >
+            <div class="au-u-flex au-u-flex--column au-u-flex--between">
+              <p class="au-u-h5">{{date-format diagramList.created true}}</p>
+              <p class="au-u-muted">{{diagramList.displayVersion}}</p>
+            </div>
+            {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
+              <div class="au-u-flex au-u-flex--end">
+                <AuIcon
+                  @icon="lock-closed"
+                  @size={{this.size}}
+                  @alignment={{this.alignment}}
+                  @ariaHidden={{this.ariaHidden}}
+                />
+              </div>
+            {{/unless}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    {{#unless (eq this.selectedDiagramList.id @model.activeDiagramList.id)}}
+      <AuAlert
+        @skin="warning"
+        @icon="info-circle"
+        @size="tiny"
+        @closable={{false}}
+      >
+        <p>Je bent een oudere versie van de diagrammen aan het bekijken</p>
+      </AuAlert>
+    {{/unless}}
+    <div style="min-height:30vh">
+      <DiagramList::Table
+        @diagramList={{this.selectedDiagramList}}
+        @selectedDiagramFile={{this.selectedDiagramFile}}
+        @onDiagramFileSelected={{this.openDiagramFile}}
+        @canEdit={{this.canEditFilesInTable}}
+        @canDeleteLastItem={{false}}
+        @process={{@model.process}}
+      />
+    </div>
+    <div class="au-o-box">
+      <File::Viewer @file={{this.selectedDiagramFile}} />
+    </div>
+  </:content>
+</SidebarContainer>
+
+<FileUploadModal
+  @header="Maak een nieuwe versie aan"
+  @title="BPMN- of Visiobestand selecteren"
+  @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+  @multiple={{true}}
+  @accept=".bpmn,.vsdx"
+  @isSensitiveDataDetectInUploadFlow={{false}}
+  @updateModel={{this.addFileToProcess}}
+  @extractBpmnElements={{this.extractBpmnElements}}
+  @onFinishUpload={{this.diagramUploaded}}
+  @modalOpen={{this.isCreateModalOpen}}
+  @closeModal={{this.closeCreateModal}}
+/>

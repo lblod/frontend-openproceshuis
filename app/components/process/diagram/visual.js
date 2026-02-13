@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
-import { dropTask, enqueueTask } from 'ember-concurrency';
+import { dropTask, task } from 'ember-concurrency';
 import FileSaver from 'file-saver';
 import removeFileNameExtension from 'frontend-openproceshuis/utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
@@ -78,14 +78,16 @@ export default class ProcessDiagramVisual extends Component {
     this.fileHasSensitiveInformation = false;
   }
 
-  @enqueueTask
-  *addFileToProcess(newFileId) {
-    const newFile = yield this.store.findRecord('file', newFileId);
-    this.process.files.push(newFile);
-    this.process.modified = newFile.created;
-
-    yield this.process.save();
-  }
+  addFileToProcess = task({ enqueue: true }, async (newFileIds) => {
+    const currentLists = await this.process.diagramLists;
+    const diagramList = await this.diagram.createDiagramListForFiles(
+      newFileIds,
+      currentLists,
+    );
+    this.process.diagramLists = [...currentLists, diagramList];
+    await this.process.save();
+    this.diagram.fetchLatest.perform(this.process.id);
+  });
 
   @dropTask
   *extractBpmnElements(bpmnFileId) {
@@ -98,10 +100,9 @@ export default class ProcessDiagramVisual extends Component {
   }
 
   @action
-  diagramUploaded(uploadedFileId) {
+  diagramUploaded() {
     this.replaceModalOpened = false;
-    this.diagram.fetchLatestById.perform(uploadedFileId);
-    this.diagram.refreshVersions(this.process.id);
+    this.diagram.fetchLatest.perform(this.process.id);
   }
 
   @dropTask

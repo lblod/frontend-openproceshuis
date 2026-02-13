@@ -1,0 +1,70 @@
+<AuDataTable
+  @content={{this.activeDiagrams}}
+  @fields="name created size"
+  @noDataMessage="Geen diagrammen gevonden"
+  as |row|
+>
+  <row.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <th>Bestandsnaam</th>
+      <th>Toegevoegd</th>
+      <th>Grootte</th>
+      <th>Positie</th>
+      <th></th>
+      <th></th>
+    </c.header>
+    {{#if this.diagramsHaveErrored}}
+      <TableMessage::Error />
+    {{else if this.diagramsHaveNoResults}}
+      <TableMessage>
+        <p>Er werden geen zoekresultaten gevonden.</p>
+      </TableMessage>
+    {{else}}
+      <c.body as |diagram|>
+        {{! template-lint-disable no-invalid-interactive }}
+        <td
+          class="{{if
+              (eq diagram.diagramFile.id @selectedDiagramFile.id)
+              'border-left-selected'
+              'border-left-transparent'
+            }}"
+          {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+        >
+          <AuButton
+            @skin="link"
+            {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+          >
+            {{diagram.diagramFile.name}}
+          </AuButton>
+        </td>
+        <td>{{date-format diagram.diagramFile.created true}}</td>
+        <td>{{file-size-format diagram.diagramFile.size}}</td>
+        <td>{{diagram.position}}</td>
+        <td>
+          <AuButton
+            @skin="naked"
+            {{on "click" (fn (mut this.fileToDownload) diagram.diagramFile)}}
+          >Download
+          </AuButton>
+        </td>
+        <td>
+          <AuLink
+            @route="diagrams.diagram.index"
+            @skin="button-naked"
+            @model={{diagram.id}}
+          >
+            Detail
+          </AuLink>
+        </td>
+      </c.body>
+    {{/if}}
+  </row.content>
+</AuDataTable>
+
+<File::Download
+  @showAsModal={{true}}
+  @isModalOpen={{this.fileToDownload}}
+  @onModalClosed={{fn (mut this.fileToDownload) undefined}}
+  @onDownloadSuccesful={{this.onFileDownloadedSuccessful}}
+  @fileModel={{this.fileToDownload}}
+/>

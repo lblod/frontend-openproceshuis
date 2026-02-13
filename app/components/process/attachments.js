@@ -26,8 +26,8 @@ export default class ProcessAttachments extends Component {
     return this.args.process;
   }
 
-  @tracked pageAttachments = 0;
-  @tracked sortAttachments = 'name';
+  pageAttachments = 0;
+  sortAttachments = '-name';
   sizeAttachments = 10;
 
   @tracked attachments = undefined;
@@ -70,17 +70,17 @@ export default class ProcessAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  addFileToProcess = task({ enqueue: true }, async (newFileId) => {
-    const newFile = await this.store.findRecord('file', newFileId);
-    this.process.files.push(newFile);
-    this.process.modified = newFile.created;
-
+  addFilesToProcess = task({ enqueue: true }, async (newFileIds) => {
+    const newFiles = await this.store.query('file', {
+      'filter[id]': newFileIds.join(','),
+    });
+    const currentAttachments = await this.process.attachments;
+    this.process.attachments = [...currentAttachments, ...newFiles];
     await this.process.save();
   });
 
   @action
-  attachmentsUploaded(_, queueInfo) {
-    if (!queueInfo.isQueueEmpty) return;
+  attachmentsUploaded() {
     this.addModalOpened = false;
     this.fetchAttachments.perform();
   }
@@ -91,64 +91,47 @@ export default class ProcessAttachments extends Component {
       this.attachmentsAreLoading = true;
       this.attachmentsHaveErrored = false;
 
-      const baseQuery = {
-        reload: true,
-        page: {
-          number: this.pageAttachments,
-          size: this.sizeAttachments,
-        },
-        'filter[:not:status]': ENV.resourceStates.archived,
-      };
-
-      if (this.sortAttachments) {
-        const isDescending = this.sortAttachments.startsWith('-');
-
-        let sortValue = isDescending
-          ? this.sortAttachments.substring(1)
-          : this.sortAttachments;
-
-        if (sortValue === 'name' || sortValue === 'extension')
-          sortValue = `:no-case:${sortValue}`;
-        if (isDescending) sortValue = `-${sortValue}`;
-
-        baseQuery.sort = sortValue;
-      }
-
       try {
-        const processFiles = await this.store.query('file', {
-          ...baseQuery,
-          'filter[:not:extension]': ['bpmn', 'vsdx'],
-          'filter[processes][id]': this.process.id,
+        const processes = await this.store.query('process', {
+          'filter[id]': this.process.id,
+          include: 'attachments',
+          page: { size: 1 },
         });
+        const process = processes[0];
+        const processFileIds = process?.attachments.map((file) => file.id);
+
         const infoAssetIds = this.process.informationAssets.map(
           (asset) => asset.id,
         );
-        let infoAssetFiles = [];
-        if (infoAssetIds.length > 0) {
-          infoAssetFiles = await this.store.query('file', {
-            ...baseQuery,
-            'filter[information-asset][id]': infoAssetIds.join(','),
-            include: 'information-asset',
+        const infoAssetFiles = await this.store.query('file', {
+          reload: true,
+          'filter[information-asset][id]': infoAssetIds.join(','),
+          'filter[:not:status]': ENV.resourceStates.archived,
+
+          include: 'information-asset',
+          sort: this.sortAttachments,
+        });
+        const infoAssetFileIds = infoAssetFiles.map((file) => file.id);
+
+        let files = [];
+        if (processFileIds.length >= 1 || infoAssetFiles.length >= 1) {
+          files = await this.store.query('file', {
+            page: {
+              number: this.pageAttachments,
+              size: this.sizeAttachments,
+            },
+            'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
+            'filter[:not:status]': ENV.resourceStates.archived,
+            sort: this.sortAttachments,
           });
         }
-        const allFiles = [
-          ...processFiles.map((file) => {
-            file._source = 'Proces';
-            return file;
-          }),
-          ...infoAssetFiles.map((file) => {
-            file._source = 'Informatie asset';
-            return file;
-          }),
-        ];
-        allFiles.sort((a, b) => {
-          return a.created - b.created;
-        });
-        this.attachments = allFiles;
+        this.attachments = files;
       } catch {
+        this.attachments = [];
         this.attachmentsHaveErrored = true;
+      } finally {
+        this.attachmentsAreLoading = false;
       }
-      this.attachmentsAreLoading = false;
     },
   );
 
