@@ -76,6 +76,7 @@ export default class ProcessAttachments extends Component {
   @action
   attachmentsUploaded() {
     this.addModalOpened = false;
+    this.args.reloadTableData?.();
   }
 
   downloadAttachments = task({ drop: true }, async () => {
@@ -98,6 +99,7 @@ export default class ProcessAttachments extends Component {
       this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
         timeOut: 5000,
       });
+      this.args.reloadTableData?.();
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.fileDeletionError');

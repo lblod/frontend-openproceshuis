@@ -123,4 +123,9 @@ export default class ProcessesProcessIndexController extends Controller {
       );
     }
   }
+
+  @action
+  fetchAttachments() {
+    this.attachmentsPage = 0;
+  }
 }
