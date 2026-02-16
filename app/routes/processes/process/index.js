@@ -7,6 +7,25 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service store;
   @service diagram;
 
+  queryParams = [
+    {
+      attachmentsPage: {
+        replace: true,
+        refreshModel: true,
+      },
+    },
+    {
+      attachmentsSize: {
+        replace: true,
+      },
+    },
+    {
+      attachmentsSort: {
+        replace: true,
+      },
+    },
+  ];
+
   async model() {
     const process = this.modelFor('processes.process');
     let stats = process.processStatistics;

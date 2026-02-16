@@ -5,14 +5,10 @@ import { enqueueTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 export default class ProcessesProcessIndexController extends Controller {
-  queryParams = [
-    { pageVersions: 'versions-page' },
-    { sizeVersions: 'versions-size' },
-    { sortVersions: 'versions-sort' },
-    { pageAttachments: 'attachments-page' },
-    { sizeAttachments: 'attachments-size' },
-    { sortAttachments: 'attachments-sort' },
-  ];
+  queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
+  @tracked attachmentsPage = 0;
+  @tracked attachmentsSize = 10;
+  @tracked attachmentsSort = 'name';
 
   @service store;
   @service router;
