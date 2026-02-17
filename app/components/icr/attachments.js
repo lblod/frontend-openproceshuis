@@ -23,9 +23,7 @@ export default class IcrAttachments extends Component {
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
 
-  @tracked pageAttachments = 0;
   @tracked sortAttachments = 'name';
-  sizeAttachments = 10;
 
   @tracked attachments = undefined;
   @tracked attachmentsAreLoading = true;
@@ -94,44 +92,38 @@ export default class IcrAttachments extends Component {
     this.fetchAttachments.perform();
   }
 
-  fetchAttachments = task(
-    { keepLatest: true, observes: ['pageAttachments', 'sortAttachments'] },
-    async () => {
-      this.attachmentsAreLoading = true;
-      this.attachmentsHaveErrored = false;
+  fetchAttachments = task({ keepLatest: true }, async () => {
+    this.attachmentsAreLoading = true;
+    this.attachmentsHaveErrored = false;
 
-      const query = {
-        reload: true,
-        page: {
-          number: this.pageAttachments,
-          size: this.sizeAttachments,
-        },
-        'filter[information-asset][:id:]': this.args.informationAsset.id,
-        'filter[:not:status]': ENV.resourceStates.archived,
-      };
+    const query = {
+      page: { size: 999 },
+      reload: true,
+      'filter[information-asset][:id:]': this.args.informationAsset.id,
+      'filter[:not:status]': ENV.resourceStates.archived,
+    };
 
-      if (this.sortAttachments) {
-        const isDescending = this.sortAttachments.startsWith('-');
+    if (this.sortAttachments) {
+      const isDescending = this.sortAttachments.startsWith('-');
 
-        let sortValue = isDescending
-          ? this.sortAttachments.substring(1)
-          : this.sortAttachments;
+      let sortValue = isDescending
+        ? this.sortAttachments.substring(1)
+        : this.sortAttachments;
 
-        if (sortValue === 'name' || sortValue === 'extension')
-          sortValue = `:no-case:${sortValue}`;
-        if (isDescending) sortValue = `-${sortValue}`;
+      if (sortValue === 'name' || sortValue === 'extension')
+        sortValue = `:no-case:${sortValue}`;
+      if (isDescending) sortValue = `-${sortValue}`;
 
-        query.sort = sortValue;
-      }
+      query.sort = sortValue;
+    }
 
-      try {
-        this.attachments = await this.store.query('file', query);
-      } catch {
-        this.attachmentsHaveErrored = true;
-      }
-      this.attachmentsAreLoading = false;
-    },
-  );
+    try {
+      this.attachments = await this.store.query('file', query);
+    } catch {
+      this.attachmentsHaveErrored = true;
+    }
+    this.attachmentsAreLoading = false;
+  });
 
   downloadAttachments = task({ drop: true }, async () => {
     if (!this.attachments) return;
