@@ -45,6 +45,9 @@ Router.map(function () {
     { path: 'mijn-lokaal-bestuur' },
     function () {
       this.route('index', { path: '' });
+      this.route('process', { path: '/:id/' }, function () {
+        this.route('index', { path: '' });
+      });
     },
   );
 
