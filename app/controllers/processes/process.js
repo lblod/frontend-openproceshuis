@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { enqueueTask } from 'ember-concurrency';
 import { service } from '@ember/service';
 
-export default class ProcessesProcessIndexController extends Controller {
+export default class ProcessesProcessController extends Controller {
   queryParams = [
     { pageVersions: 'versions-page' },
     { sizeVersions: 'versions-size' },
