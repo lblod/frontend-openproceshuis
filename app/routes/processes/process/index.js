@@ -5,8 +5,15 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service plausible;
   @service store;
 
-  async model() {
-    const process = this.modelFor('processes.process');
+  async model(params, transition) {
+    const toRouteName = transition?.to?.name;
+    let modelFor = 'processes.process';
+    if (toRouteName && toRouteName.includes('shared')) {
+      modelFor = 'shared-processes.process';
+    }
+
+    const { id } = this.modelFor(modelFor);
+    const process = await this.store.findRecord('process', id);
     let stats = process.processStatistics;
 
     if (!stats) {
