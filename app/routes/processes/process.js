@@ -15,7 +15,22 @@ export default class ProcessesProcessRoute extends Route {
   }
 
   async model({ id }) {
-    const process = await this.store.findRecord('process', id);
+    const process = await this.store.findRecord('process', id, {
+      include: [
+        'process-statistics',
+        'files',
+        'publisher',
+        'publisher.primary-site',
+        'publisher.primary-site.contacts',
+        'publisher.classification',
+        'ipdc-products',
+        'information-assets',
+        'linked-concept',
+        'linked-concept.process-groups.process-domains',
+        'linked-concept.process-groups.process-domains.process-categories',
+        'relevant-administrative-units',
+      ].join(','),
+    });
     let stats = process.processStatistics;
 
     if (!stats) {
