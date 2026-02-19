@@ -70,11 +70,14 @@
       @process={{this.process}}
     />
   {{/if}}
-
   <Process::Attachments
     @canEdit={{this.canEdit}}
     @process={{this.process}}
     @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
+    @page={{this.attachmentsPage}}
+    @size={{this.attachmentsSize}}
+    @sort={{this.attachmentsSort}}
+    @reloadTableData={{this.fetchAttachments}}
   />
 
   <Process::Usage

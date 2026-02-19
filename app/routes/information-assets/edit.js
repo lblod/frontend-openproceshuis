@@ -4,7 +4,6 @@ import { service } from '@ember/service';
 export default class InformationAssetIndexRoute extends Route {
   @service session;
   @service store;
-  @service processApi;
 
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
