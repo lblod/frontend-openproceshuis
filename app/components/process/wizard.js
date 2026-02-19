@@ -185,7 +185,7 @@ export default class ProcessWizard extends Component {
         (file) => file.id !== fileWrapper.id,
       );
     }
-    this.loadingMessage = `${this.files.length === 1 ? 'Het bestand' : 'De bestanden'} werden succesvol opgeladen`;
+    this.loadingMessage = `${this.files.length === 1 ? 'Het bestand werd' : 'De bestanden werden'} succesvol opgeladen`;
     this.showSuccessMessage = true;
     if (this.files.length === 1) {
       this.mainProcessFile = this.files[0];
