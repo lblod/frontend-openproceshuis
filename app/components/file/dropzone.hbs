@@ -14,8 +14,7 @@
         class="au-c-file-upload-message au-u-height-full au-u-flex au-u-flex--column"
       >
         <AuIcon @icon="attachment" @alignment="left" />
-        <AuHelpText @skin="secondary">Sleep de bestanden naar hier om toe te
-          voegen</AuHelpText>
+        <AuHelpText @skin="secondary">{{this.helpTextDragDrop}}</AuHelpText>
       </p>
     {{else if this.isBusy}}
       <p
@@ -39,11 +38,10 @@
         >
           <span class="au-c-file-upload-label__title">
             <AuIcon @icon="attachment" @alignment="left" />
-            Bestanden toevoegen
+            {{this.title}}
           </span>
           {{#if dropzone.supported}}
-            <AuHelpText @skin="secondary">Sleep de bestanden naar hier om toe te
-              voegen</AuHelpText>
+            <AuHelpText @skin="secondary">{{this.helpTextDragDrop}}</AuHelpText>
           {{/if}}
         </span>
       </label>
@@ -56,7 +54,7 @@
       style="max-height: 100%"
     >
       <div class="au-u-flex au-u-flex--between">
-        <p class="au-u-h4">Geselecteerde bestanden</p>
+        <p class="au-u-h4">Bestanden</p>
         {{#unless (eq this.queue.files.length 0)}}
           <p class="au-u-h4 au-u-muted">{{this.queue.files.length}}</p>
         {{/unless}}
