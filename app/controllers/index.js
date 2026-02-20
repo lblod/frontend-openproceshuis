@@ -5,6 +5,6 @@ export default class IndexController extends Controller {
   @service currentSession;
 
   get isProcessenMijnBestuurShown() {
-    return this.currentSession.isMedewerker || this.currentSession.canEdit;
+    return this.currentSession.canRead || this.currentSession.canEdit;
   }
 }
