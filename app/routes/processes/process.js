@@ -7,6 +7,26 @@ export default class ProcessesProcessRoute extends Route {
   @service store;
   @service router;
   @service session;
+  @service diagram;
+
+  queryParams = [
+    {
+      attachmentsPage: {
+        replace: true,
+        refreshModel: true,
+      },
+    },
+    {
+      attachmentsSize: {
+        replace: true,
+      },
+    },
+    {
+      attachmentsSort: {
+        replace: true,
+      },
+    },
+  ];
 
   beforeModel(transition) {
     if (!this.session.isAuthenticated) {
@@ -18,7 +38,6 @@ export default class ProcessesProcessRoute extends Route {
     const process = await this.store.findRecord('process', id, {
       include: [
         'process-statistics',
-        'files',
         'publisher',
         'publisher.primary-site',
         'publisher.primary-site.contacts',
@@ -52,6 +71,7 @@ export default class ProcessesProcessRoute extends Route {
     return {
       process,
       breadcrumRouteName: this.router.currentRouteName?.replace('.index'),
+      diagramList: await this.diagram.getLatestDiagramList(process.id),
     };
   }
 
