@@ -26,6 +26,8 @@
     {{#if (eq this.activeStepIndex 0)}}
       <div class="au-u-flex au-u-flex--between au-u-height-full">
         <File::Dropzone
+          @title="Een of meer BPMN/Visio bestanden selecteren"
+          @helpTextDragDrop="Bestanden wordt toegevoegd aan bibliotheek na selectie"
           @multiple={{true}}
           @accept=".bpmn,.vsdx"
           @onFileUploaded={{this.addFileToUploadedList}}
