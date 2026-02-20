@@ -95,7 +95,7 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: null,
       },
       {
-        title: 'Nieuwe versie aanmaken',
+        title: 'Nieuwe diagram versie aanmaken',
         isStepShown: this.args.process,
         action: async () => await this.createNewDiagramVersion(this.files),
         canGoToNextStep: this.diagramList,
@@ -285,7 +285,6 @@ export default class ProcessWizard extends Component {
   async goToDiagrams() {
     this.showSuccessMessage = false;
     this.loadingMessage = 'We brengen je naar de proces diagrammen';
-    await timeout(150);
     this.router.refresh();
     this.args.onCloseModal();
   }

@@ -84,6 +84,17 @@ export default class FileDropzone extends Component {
     return this.fileQueue.findOrCreate(this.queueName);
   }
 
+  get title() {
+    return this.args.title || 'Bestanden toevoegen';
+  }
+
+  get helpTextDragDrop() {
+    return (
+      this.args.helpTextDragDrop ||
+      'Sleep de bestanden naar hier om toe te voegen'
+    );
+  }
+
   removeFileFromQueue = (fileWrapper) => {
     if (!fileWrapper) {
       return;
