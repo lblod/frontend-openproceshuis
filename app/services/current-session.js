@@ -2,11 +2,13 @@ import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import ENV from 'frontend-openproceshuis/config/environment';
 
+const READER_ROLES = ['Medewerker-fixed', 'OpenProcesHuis-Lezer'];
 const EDITOR_ROLES = [
+  // TODO: drop support for LoketLB-OpenProcesHuisGebruiker and LoketLB-OpenProcesHuisAfnemer when ready
+  'OpenProcesHuis-Procesbeheerder',
   'LoketLB-OpenProcesHuisGebruiker',
   'LoketLB-OpenProcesHuisAfnemer',
 ];
-const MEDEWERKER_ROLE = 'Medewerker-fixed';
 const ADMIN_ROLE = 'LoketLB-admin';
 const ABB_DV_IDENTIFIERS = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
 
@@ -51,12 +53,20 @@ export default class CurrentSessionService extends Service {
     return this.session.isAuthenticated;
   }
 
+  get hasReaderRole() {
+    return this.roles.some((role) => READER_ROLES.includes(role));
+  }
+
   get hasEditorRole() {
     return this.roles.some((role) => EDITOR_ROLES.includes(role));
   }
 
   get isAbbOrDv() {
     return ABB_DV_IDENTIFIERS.includes(this.group?.identifier);
+  }
+
+  get canRead() {
+    return this.isAuthenticated && this.hasReaderRole;
   }
 
   get canEdit() {
@@ -72,9 +82,5 @@ export default class CurrentSessionService extends Service {
     if (this.impersonation.isImpersonating)
       roles = this.impersonation.originalRoles || [];
     return roles?.includes(ADMIN_ROLE);
-  }
-
-  get isMedewerker() {
-    return this.roles?.includes(MEDEWERKER_ROLE);
   }
 }

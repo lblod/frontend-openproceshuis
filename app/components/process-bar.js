@@ -10,6 +10,6 @@ export default class ProcessBar extends Component {
   }
 
   get isProcessenMijnBestuurShown() {
-    return this.currentSession.isMedewerker || this.currentSession.canEdit;
+    return this.currentSession.canRead || this.currentSession.canEdit;
   }
 }
