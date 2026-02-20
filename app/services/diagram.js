@@ -130,21 +130,21 @@ export default class DiagramService extends Service {
   }
 
   async createDiagramListForFiles(fileIds, currentList = null) {
-    const files = await this.store.query('file', {
-      'filter[id]': fileIds.join(','),
-    });
     const now = new Date();
-    const diagramListItems = files.map((file, index) => {
-      return this.store.createRecord('diagram-list-item', {
+    const diagramListItems = [];
+    for (let index = 0; index < fileIds.length; index++) {
+      const fileId = fileIds[index];
+      const file = await this.store.findRecord('file', fileId);
+      const diagramListItem = this.store.createRecord('diagram-list-item', {
         position: index + 1,
         created: now,
         modified: now,
         diagramFile: file,
         subItems: [],
       });
-    });
-
-    await Promise.all(diagramListItems.map(async (item) => await item.save()));
+      await diagramListItem.save();
+      diagramListItems.push(diagramListItem);
+    }
     const diagramList = this.store.createRecord('diagram-list', {
       created: now,
       modified: now,

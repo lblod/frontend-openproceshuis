@@ -9,35 +9,29 @@ import {
   downloadFilesAsZip,
 } from 'frontend-openproceshuis/utils/file-downloader';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
+import { trackedFunction } from 'reactiveweb/function';
+import { use } from 'ember-resources';
 
 export default class ProcessAttachments extends Component {
-  constructor() {
-    super(...arguments);
-    this.fetchAttachments.perform();
-  }
   @service api;
+  @service router;
   @service store;
   @service toaster;
   @tracked addModalOpened = false;
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
 
+  @use(getAttachments) getAttachments;
+  @tracked filesMeta = {};
+
   get process() {
     return this.args.process;
   }
 
-  pageAttachments = 0;
-  sortAttachments = '-name';
-  sizeAttachments = 10;
-
-  @tracked attachments = undefined;
-  @tracked attachmentsAreLoading = true;
-  @tracked attachmentsHaveErrored = false;
-
   get attachmentsHaveNoResults() {
     return (
-      !this.attachmentsAreLoading &&
-      !this.attachmentsHaveErrored &&
+      !this.getAttachments.isLoading &&
+      !this.getAttachments.isError &&
       this.attachments?.length === 0
     );
   }
@@ -82,58 +76,8 @@ export default class ProcessAttachments extends Component {
   @action
   attachmentsUploaded() {
     this.addModalOpened = false;
-    this.fetchAttachments.perform();
+    this.args.reloadTableData?.();
   }
-
-  fetchAttachments = task(
-    { keepLatest: true, observes: ['pageAttachments', 'sortAttachments'] },
-    async () => {
-      this.attachmentsAreLoading = true;
-      this.attachmentsHaveErrored = false;
-
-      try {
-        const processes = await this.store.query('process', {
-          'filter[id]': this.process.id,
-          include: 'attachments',
-          page: { size: 1 },
-        });
-        const process = processes[0];
-        const processFileIds = process?.attachments.map((file) => file.id);
-
-        const infoAssetIds = this.process.informationAssets.map(
-          (asset) => asset.id,
-        );
-        const infoAssetFiles = await this.store.query('file', {
-          reload: true,
-          'filter[information-asset][id]': infoAssetIds.join(','),
-          'filter[:not:status]': ENV.resourceStates.archived,
-
-          include: 'information-asset',
-          sort: this.sortAttachments,
-        });
-        const infoAssetFileIds = infoAssetFiles.map((file) => file.id);
-
-        let files = [];
-        if (processFileIds.length >= 1 || infoAssetFiles.length >= 1) {
-          files = await this.store.query('file', {
-            page: {
-              number: this.pageAttachments,
-              size: this.sizeAttachments,
-            },
-            'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
-            'filter[:not:status]': ENV.resourceStates.archived,
-            sort: this.sortAttachments,
-          });
-        }
-        this.attachments = files;
-      } catch {
-        this.attachments = [];
-        this.attachmentsHaveErrored = true;
-      } finally {
-        this.attachmentsAreLoading = false;
-      }
-    },
-  );
 
   downloadAttachments = task({ drop: true }, async () => {
     if (!this.attachments) return;
@@ -155,6 +99,7 @@ export default class ProcessAttachments extends Component {
       this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
         timeOut: 5000,
       });
+      this.args.reloadTableData?.();
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.fileDeletionError');
@@ -162,8 +107,65 @@ export default class ProcessAttachments extends Component {
       this.fileToDelete.rollbackAttributes();
     }
 
-    this.fetchAttachments.perform();
-
     this.closeDeleteModal();
+  });
+
+  fetchAttachments = task(
+    { restartable: true },
+    async ({ page = 0, size = 10, sort = 'name' }) => {
+      try {
+        const processes = await this.store.query('process', {
+          'filter[id]': this.process.id,
+          include: 'attachments',
+          page: { size: 1 },
+        });
+        const process = processes[0];
+        const processFileIds = process?.attachments.map((file) => file.id);
+
+        const infoAssetIds = this.process.informationAssets.map(
+          (asset) => asset.id,
+        );
+        const infoAssetFiles = await this.store.query('file', {
+          reload: true,
+          'filter[information-asset][id]': infoAssetIds.join(','),
+          'filter[:not:status]': ENV.resourceStates.archived,
+
+          include: 'information-asset',
+          sort: sort,
+        });
+        const infoAssetFileIds = infoAssetFiles.map((file) => file.id);
+
+        let files = [];
+        if (processFileIds.length >= 1 || infoAssetFiles.length >= 1) {
+          files = await this.store.query('file', {
+            page: {
+              number: page,
+              size: size,
+            },
+            'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
+            'filter[:not:status]': ENV.resourceStates.archived,
+            sort: sort,
+          });
+        }
+        this.filesMeta = files.meta;
+        return files;
+      } catch {
+        return [];
+      }
+    },
+  );
+
+  get attachments() {
+    return this.getAttachments?.value;
+  }
+}
+
+function getAttachments() {
+  return trackedFunction(async () => {
+    return this.fetchAttachments.perform({
+      page: this.args.page,
+      size: this.args.size,
+      sort: this.args.sort,
+    });
   });
 }
