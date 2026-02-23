@@ -1,5 +1,9 @@
 {{page-title "Diagrammen"}}
-{{breadcrumb "Diagrammen" route="processes.process.diagrams" model=@model.id}}
+{{breadcrumb
+  this.model.process.title
+  route=this.model.breadcrumRouteName
+  models=this.model.process.id
+}}
 
 {{! template-lint-disable no-invalid-interactive }}
 {{! template-lint-disable no-inline-styles }}

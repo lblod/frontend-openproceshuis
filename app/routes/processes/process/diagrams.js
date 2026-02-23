@@ -12,8 +12,9 @@ export default class ProcessesProcessDiagramsRoute extends Route {
       this.session.requireAuthentication(transition, 'auth.login');
     }
   }
-  async model() {
-    const process = this.modelFor('processes.process');
+  async model(_params, transition) {
+    const parentRouteName = transition.to?.name?.replace('.index', '');
+    const { process } = this.modelFor('processes.process');
     const lists = await this.diagram.getDiagramListsWithFilesForProcess(
       process.id,
     );
@@ -25,6 +26,7 @@ export default class ProcessesProcessDiagramsRoute extends Route {
       process: process,
       lists: sortedOnCreatedLists,
       activeDiagramList: sortedOnCreatedLists[0],
+      breadcrumRouteName: parentRouteName,
     };
   }
 

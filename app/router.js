@@ -42,14 +42,20 @@ Router.map(function () {
   });
 
   this.route('shared-processes', { path: 'gedeelde-processen' }, function () {
-    this.route('process', { path: '/:id/' }, function () {});
+    this.route('process', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+      this.route('diagrams', { path: 'diagrammen' });
+    });
   });
 
   this.route(
     'my-local-government',
     { path: 'mijn-lokaal-bestuur' },
     function () {
-      this.route('process', { path: '/:id/' }, function () {});
+      this.route('process', { path: '/:id/' }, function () {
+        this.route('index', { path: '' });
+        this.route('diagrams', { path: 'diagrammen' });
+      });
     },
   );
 

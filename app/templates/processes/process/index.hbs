@@ -1,0 +1,96 @@
+{{page-title this.model.process.title}}
+{{breadcrumb
+  this.model.process.title
+  route=this.model.breadcrumRouteName
+  models=this.model.process.id
+}}
+
+{{#if this.isEditingDetails}}
+  <PageHeader>
+    <:title>
+      Wijzig proces
+    </:title>
+    <:action>
+      <AuPill @icon="clock-rewind" @draft="true">Laatst aangepast op
+        {{date-format this.process.modified true}}</AuPill>
+    </:action>
+  </PageHeader>
+{{else}}
+  <PageHeader>
+    <:title>
+      <div class="au-u-flex au-u-flex--vertical-center">
+        {{this.process.title}}
+        <AuButton
+          class="au-u-padding-left-small"
+          @icon="link"
+          @skin="link"
+          @hideText={{true}}
+          {{on "click" this.copyUrl}}
+        /></div>
+    </:title>
+    <:action>
+      <AuPill @icon="clock-rewind">Laatst aangepast op
+        {{date-format this.process.modified true}}</AuPill>
+    </:action>
+  </PageHeader>
+{{/if}}
+
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+
+  <Process::DetailsCard
+    @canEdit={{this.canEdit}}
+    @process={{this.process}}
+    @setIsEditing={{this.setIsEditingDetails}}
+  />
+
+  <Process::InventoryProcessCard
+    @canEdit={{this.canEdit}}
+    @process={{this.process}}
+  />
+
+  <span>
+    <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
+      <AuHeading @level="2" @skin="3">Diagrammen</AuHeading>
+      <AuButtonGroup>
+        <AuLink
+          @route="processes.process.diagrams"
+          @model={{this.process.id}}
+          @skin="button-naked"
+          @icon="pencil"
+        >
+          Wijzig
+        </AuLink>
+      </AuButtonGroup>
+    </div>
+    <DiagramList::DiagramsInTabs
+      @canEdit={{this.canEdit}}
+      @diagramList={{@model.diagramList}}
+      @processId={{this.process.id}}
+    />
+  </span>
+
+  {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
+    <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
+  {{else}}
+    <Process::BlueprintCard
+      @canEdit={{this.canEdit}}
+      @process={{this.process}}
+    />
+  {{/if}}
+
+  <Process::Attachments
+    @canEdit={{this.canEdit}}
+    @process={{this.process}}
+    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
+    @page={{this.attachmentsPage}}
+    @size={{this.attachmentsSize}}
+    @sort={{this.attachmentsSort}}
+    @reloadTableData={{this.fetchAttachments}}
+  />
+
+  <Process::Usage
+    @process={{this.process}}
+    @refreshDataTrigger={{this.isEditingDetails}}
+  />
+
+</AuBodyContainer>
