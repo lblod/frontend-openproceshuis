@@ -53,7 +53,7 @@
       <AuHeading @level="2" @skin="3">Diagrammen</AuHeading>
       <AuButtonGroup>
         <AuLink
-          @route="processes.process.diagrams"
+          @route={{this.diagramsRouteNameFromParent}}
           @model={{this.process.id}}
           @skin="button-naked"
           @icon="pencil"

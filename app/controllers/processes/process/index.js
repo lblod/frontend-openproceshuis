@@ -128,4 +128,11 @@ export default class ProcessesProcessIndexController extends Controller {
   fetchAttachments() {
     this.attachmentsPage = 0;
   }
+
+  get diagramsRouteNameFromParent() {
+    if (!this.model.breadcrumRouteName) {
+      return 'processes.process.diagrams';
+    }
+    return this.model.breadcrumRouteName + '.diagrams';
+  }
 }
