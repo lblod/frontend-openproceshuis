@@ -13,8 +13,8 @@ export default class ProcessesProcessDiagramsRoute extends Route {
     }
   }
   async model(_params, transition) {
-    const parentRouteName = transition.to?.name?.replace('.index', '');
-    const { process } = this.modelFor('processes.process');
+    const parentRouteName = transition.to?.name?.replace('.diagrams', '');
+    const { process } = this.modelFor(parentRouteName);
     const lists = await this.diagram.getDiagramListsWithFilesForProcess(
       process.id,
     );

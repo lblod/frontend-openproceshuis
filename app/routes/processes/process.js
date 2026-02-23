@@ -30,7 +30,7 @@ export default class ProcessesProcessRoute extends Route {
         'relevant-administrative-units',
       ].join(','),
     });
-    console.log('bread', parentRouteName);
+
     return {
       process,
       breadcrumRouteName: parentRouteName,
