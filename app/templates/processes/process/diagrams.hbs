@@ -8,7 +8,22 @@
 {{! template-lint-disable no-invalid-interactive }}
 {{! template-lint-disable no-inline-styles }}
 <PageHeader>
-  <:title>Versies</:title>
+  <:title>
+    <div class="au-u-flex au-u-flex--vertical-center">
+      <AuButton
+        @skin="naked"
+        @icon="arrow-left"
+        @iconAlignment="left"
+        @size="large"
+        @hideText={{true}}
+        class="au-u-margin-right-small animate-left"
+        {{on "click" this.goToProcessDetailPage}}
+      >
+        Previous
+      </AuButton>
+      Versies
+    </div>
+  </:title>
   <:action>
     <AuButton
       class="border-radius"

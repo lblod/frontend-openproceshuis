@@ -99,4 +99,12 @@ export default class ProcessesProcessDiagramsController extends Controller {
   closeCreateModal() {
     this.isCreateModalOpen = false;
   }
+
+  @action
+  goToProcessDetailPage() {
+    this.router.transitionTo(
+      this.model.breadcrumRouteName,
+      this.model.process.id,
+    );
+  }
 }
