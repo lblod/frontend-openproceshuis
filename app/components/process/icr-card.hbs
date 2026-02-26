@@ -37,7 +37,7 @@
               <:content>
                 <AuTextarea
                   value={{@process.additionalInformation}}
-                  {{on "input" this.setAdditionalInformation}}
+                  {{on "input" (fn this.setProperty "additionalInformation")}}
                   rows="5"
                   @width="block"
                   @error={{this.hasError "additionalInformation"}}
@@ -53,7 +53,7 @@
               <:content>
                 <AuInput
                   value={{@process.hasControlMeasure}}
-                  {{on "input" this.setControlMeasure}}
+                  {{on "input" (fn this.setProperty "hasControlMeasure")}}
                   @width="block"
                   @error={{this.hasError "hasControlMeasure"}}
                 />

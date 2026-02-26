@@ -185,17 +185,9 @@ export default class ProcessIcrCardComponent extends Component {
   }
 
   @action
-  setAdditionalInformation(event) {
+  setProperty(property, event) {
     if (!this.args.process) return;
-    this.args.process.additionalInformation =
-      event.target.value === '' ? undefined : event.target.value;
-    this.validateForm();
-  }
-
-  @action
-  setControlMeasure(event) {
-    if (!this.args.process) return;
-    this.args.process.hasControlMeasure =
+    this.args.process[property] =
       event.target.value === '' ? undefined : event.target.value;
     this.validateForm();
   }
