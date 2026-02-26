@@ -31,6 +31,24 @@
               </:content>
             </Item>
           </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Motivering of bijkomende informatie</:label>
+              <:content>
+                <AuTextarea
+                  value={{@process.additionalInformation}}
+                  {{on "input" this.setAdditionalInformation}}
+                  rows="5"
+                  @width="block"
+                  @error={{this.hasError "additionalInformation"}}
+                />
+                {{#if (this.hasError "additionalInformation")}}
+                  <div class="au-u-error">Mag niet meer dan 3000 karakters
+                    bevatten</div>
+                {{/if}}
+              </:content>
+            </Item>
+          </:right>
         </Card.Columns>
       </:card>
     </DataCard>

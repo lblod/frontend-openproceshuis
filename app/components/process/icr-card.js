@@ -185,6 +185,14 @@ export default class ProcessIcrCardComponent extends Component {
   }
 
   @action
+  setAdditionalInformation(event) {
+    if (!this.args.process) return;
+    this.args.process.additionalInformation =
+      event.target.value === '' ? undefined : event.target.value;
+    this.validateForm();
+  }
+
+  @action
   hasError(attribute) {
     if (!this.args.process) return false;
     const errorsForAttribute = this.args.process
