@@ -187,8 +187,13 @@ export default class ProcessIcrCardComponent extends Component {
   @action
   setProperty(property, event) {
     if (!this.args.process) return;
-    this.args.process[property] =
-      event.target.value === '' ? undefined : event.target.value;
+
+    let propertyValue = event.target?.value;
+    if (propertyValue?.trim() === '') {
+      propertyValue = undefined;
+    }
+
+    this.args.process[property] = propertyValue;
     this.validateForm();
   }
 
