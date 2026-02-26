@@ -26,7 +26,7 @@
               <:content>
                 <AuInput
                   value={{@process.title}}
-                  {{on "input" this.setProcessTitle}}
+                  {{on "input" (fn this.setProperty "title")}}
                   @width="block"
                   @disabled={{not @canEdit}}
                   @error={{this.hasError "title"}}
@@ -41,7 +41,7 @@
               <:content>
                 <AuTextarea
                   value={{@process.description}}
-                  {{on "input" this.setProcessDescription}}
+                  {{on "input" (fn this.setProperty "description")}}
                   rows="4"
                   @width="block"
                   @disabled={{not @canEdit}}
@@ -58,7 +58,7 @@
               <:content>
                 <AuInput
                   value={{@process.email}}
-                  {{on "input" this.setProcessEmail}}
+                  {{on "input" (fn this.setProperty "email")}}
                   @width="block"
                   @disabled={{not @canEdit}}
                   @error={{this.hasError "email"}}
