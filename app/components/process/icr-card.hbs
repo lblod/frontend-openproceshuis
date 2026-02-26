@@ -139,10 +139,6 @@
         </:left>
         <:right as |Item|>
           <Item>
-            <:label>Motivering of bijkomende informatie</:label>
-            <:content>{{or @process.additionalInformation "/"}}</:content>
-          </Item>
-          <Item>
             <:label>Informatieassets</:label>
             <:content>
               {{#if @process.informationAssets.length}}
@@ -163,6 +159,10 @@
                 /
               {{/if}}
             </:content>
+          </Item>
+          <Item>
+            <:label>Motivering of bijkomende informatie</:label>
+            <:content>{{or @process.additionalInformation "/"}}</:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>
