@@ -31,6 +31,38 @@
               </:content>
             </Item>
           </:left>
+          <:right as |Item|>
+            <Item>
+              <:label>Motivering of bijkomende informatie</:label>
+              <:content>
+                <AuTextarea
+                  value={{@process.additionalInformation}}
+                  {{on "input" (fn this.setProperty "additionalInformation")}}
+                  rows="5"
+                  @width="block"
+                  @error={{this.hasError "additionalInformation"}}
+                />
+                {{#if (this.hasError "additionalInformation")}}
+                  <div class="au-u-error">Mag niet meer dan 3000 karakters
+                    bevatten</div>
+                {{/if}}
+              </:content>
+            </Item>
+            <Item>
+              <:label>Link naar maatregelen</:label>
+              <:content>
+                <AuInput
+                  value={{@process.hasControlMeasure}}
+                  {{on "input" (fn this.setProperty "hasControlMeasure")}}
+                  @width="block"
+                  @error={{this.hasError "hasControlMeasure"}}
+                />
+                {{#if (this.hasError "hasControlMeasure")}}
+                  <div class="au-u-error">Moet URL zijn</div>
+                {{/if}}
+              </:content>
+            </Item>
+          </:right>
         </Card.Columns>
       </:card>
     </DataCard>
@@ -155,6 +187,22 @@
                     {{/if}}
                   {{/each}}
                 </div>
+              {{else}}
+                /
+              {{/if}}
+            </:content>
+          </Item>
+          <Item>
+            <:label>Motivering of bijkomende informatie</:label>
+            <:content>{{or @process.additionalInformation "/"}}</:content>
+          </Item>
+          <Item>
+            <:label>Link naar maatregelen</:label>
+            <:content>
+              {{#if @process.hasControlMeasure}}
+                <AuLinkExternal href="{{@process.hasControlMeasure}}">
+                  {{@process.hasControlMeasure}}
+                </AuLinkExternal>
               {{else}}
                 /
               {{/if}}
