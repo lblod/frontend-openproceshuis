@@ -193,6 +193,14 @@ export default class ProcessIcrCardComponent extends Component {
   }
 
   @action
+  setControlMeasure(event) {
+    if (!this.args.process) return;
+    this.args.process.hasControlMeasure =
+      event.target.value === '' ? undefined : event.target.value;
+    this.validateForm();
+  }
+
+  @action
   hasError(attribute) {
     if (!this.args.process) return false;
     const errorsForAttribute = this.args.process

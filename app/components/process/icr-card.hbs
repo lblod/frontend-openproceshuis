@@ -48,6 +48,20 @@
                 {{/if}}
               </:content>
             </Item>
+            <Item>
+              <:label>Link naar maatregelen</:label>
+              <:content>
+                <AuInput
+                  value={{@process.hasControlMeasure}}
+                  {{on "input" this.setControlMeasure}}
+                  @width="block"
+                  @error={{this.hasError "hasControlMeasure"}}
+                />
+                {{#if (this.hasError "hasControlMeasure")}}
+                  <div class="au-u-error">Moet URL zijn</div>
+                {{/if}}
+              </:content>
+            </Item>
           </:right>
         </Card.Columns>
       </:card>
