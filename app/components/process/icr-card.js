@@ -98,8 +98,22 @@ export default class ProcessIcrCardComponent extends Component {
     this.edit = false;
   }
 
+  hasDirtyInformationAssets() {
+    const currentAssets = this.informationAssets ?? [];
+    const persistedAssets = this.args.process?.informationAssets ?? [];
+
+    if (currentAssets.length !== persistedAssets.length) return true;
+
+    const currentIds = currentAssets.map((asset) => asset?.id).sort();
+    const persistedIds = persistedAssets.map((asset) => asset?.id).sort();
+    return currentIds.some((id, index) => id !== persistedIds[index]);
+  }
+
   validateForm() {
-    this.formIsValid = true;
+    this.formIsValid =
+      this.args.process?.validate() &&
+      (this.args.process?.hasDirtyAttributes ||
+        this.hasDirtyInformationAssets());
   }
 
   updateModel = task({ drop: true }, async (event) => {
