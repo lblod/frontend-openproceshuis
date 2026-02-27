@@ -20,6 +20,7 @@ export default class ProcessModel extends Model {
   @attr('string') hasControlMeasure;
 
   @belongsTo('group', { inverse: null, async: false }) publisher;
+  @belongsTo('group', { inverse: null, async: false }) creator;
   @belongsTo('process-statistic', { inverse: 'process', async: false })
   processStatistics;
   @belongsTo('conceptual-process', {
@@ -46,6 +47,8 @@ export default class ProcessModel extends Model {
   linkedBlueprints;
   @hasMany('group', { inverse: null, async: false })
   users;
+  @hasMany('group', { inverse: null, async: false })
+  contributors;
   @hasMany('administrative-unit-classification-code', {
     inverse: 'processes',
     async: false,
