@@ -20,6 +20,7 @@ export default class ProcessesProcessRoute extends Route {
         'process-statistics',
         'files',
         'publisher',
+        'creator',
         'publisher.primary-site',
         'publisher.primary-site.contacts',
         'publisher.classification',
