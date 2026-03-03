@@ -47,9 +47,9 @@ export default class DiagramService extends Service {
       reload: true,
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
-    return diagramLists.filter((list) =>
-      list.diagrams.some((d) => !d.diagramFile.isArchived),
-    );
+    return diagramLists.filter((list) => {
+      return list.diagrams.some((d) => !d.diagramFile?.isArchived);
+    });
   }
 
   async getLatestDiagramList(processId) {
@@ -62,15 +62,18 @@ export default class DiagramService extends Service {
   }
 
   getFirstFileOfList(list) {
+    if (!list) {
+      return null;
+    }
     const sortedDiagrams = Array.from(list.diagrams).sort(
       (a, b) => a.position - b.position,
     );
     const diagrams = sortedDiagrams.filter(
       (diagram) =>
-        (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
-        diagram.diagramFile.status !== ENV.resourceStates.archived,
+        (diagram.diagramFile?.isBpmnFile || diagram.diagramFile?.isVisioFile) &&
+        diagram.diagramFile?.status !== ENV.resourceStates.archived,
     );
-    return diagrams[0].diagramFile;
+    return diagrams[0]?.diagramFile;
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {

@@ -33,9 +33,11 @@ export default class DiagramListDiagramsInTabs extends Component {
   }
 
   get diagrams() {
-    const diagrams = this.args.diagramList.diagrams;
+    const diagrams = this.args.diagramList?.diagrams;
     return diagrams
-      .filter((diagrams) => !diagrams.diagramFile.isArchived)
+      ?.filter(
+        (diagram) => diagram.diagramFile && !diagram.diagramFile.isArchived,
+      )
       .sort((latest, current) => latest.position - current.position);
   }
 }

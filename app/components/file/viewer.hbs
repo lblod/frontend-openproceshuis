@@ -8,4 +8,8 @@
   {{else if @file.isVisioFile}}
     <PdfViewer @diagram={{@file}} />
   {{/if}}
+{{else}}
+  <AuAlert @title="Niet gevonden" @skin="warning" @icon="alert-triangle">
+    Er werd geen bestand gevonden
+  </AuAlert>
 {{/if}}

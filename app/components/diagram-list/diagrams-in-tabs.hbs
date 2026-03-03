@@ -1,25 +1,31 @@
-<div class="au-u-flex au-u-flex--row">
-  <div>
+{{#if (eq this.diagrams.length 0)}}
+  <AuAlert @title="Niet gevonden" @skin="warning" @icon="alert-triangle">
+    Er ging iets mis bij het ophalen van het diagram. Probeer later opnieuw.
+  </AuAlert>
+{{else}}
+  <div class="au-u-flex au-u-flex--row">
     <div>
-      {{#each this.diagrams as |diagram|}}
-        {{! template-lint-disable no-invalid-interactive }}
-        <div
-          {{on "click" (fn this.selectDiagramFile diagram.diagramFile)}}
-          class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small border-top-left-radius border-bottom-left-radius pointer
-            {{if
-              (eq this.selectedDiagramFile.id diagram.diagramFile.id)
-              'background-gray border-left-selected'
-              'background-white border-left-transparent'
-            }}"
-        >
-          {{diagram.diagramFile.name}}
-        </div>
-      {{/each}}
+      <div>
+        {{#each this.diagrams as |diagram|}}
+          {{! template-lint-disable no-invalid-interactive }}
+          <div
+            {{on "click" (fn this.selectDiagramFile diagram.diagramFile)}}
+            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom-small border-top-left-radius border-bottom-left-radius pointer
+              {{if
+                (eq this.selectedDiagramFile.id diagram.diagramFile.id)
+                'background-gray border-left-selected'
+                'background-white border-left-transparent'
+              }}"
+          >
+            {{diagram.diagramFile.name}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+    <div
+      class="au-o-box width-full background-gray border-top-right-radius border-bottom-right-radius border-bottom-left-radius"
+    >
+      <File::Viewer @file={{this.selectedDiagramFile}} />
     </div>
   </div>
-  <div
-    class="au-o-box width-full background-gray border-top-right-radius border-bottom-right-radius border-bottom-left-radius"
-  >
-    <File::Viewer @file={{this.selectedDiagramFile}} />
-  </div>
-</div>
+{{/if}}

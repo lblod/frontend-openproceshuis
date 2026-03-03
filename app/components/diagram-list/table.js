@@ -17,9 +17,11 @@ export default class DiagramListTable extends Component {
   @tracked canDeleteFile = true;
 
   get activeDiagrams() {
-    const diagrams = this.args.diagramList.diagrams;
+    const diagrams = this.args.diagramList?.diagrams;
     return diagrams
-      .filter((diagrams) => !diagrams.diagramFile.isArchived)
+      ?.filter(
+        (diagrams) => diagrams.diagramFile && !diagrams.diagramFile.isArchived,
+      )
       .sort((latest, current) => latest.position - current.position);
   }
 
