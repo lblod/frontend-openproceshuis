@@ -31,6 +31,9 @@ export default class DiagramListDiagramsInTabs extends Component {
       this.selectFirstDiagramFile();
     }
   }
+  get hasList() {
+    return Boolean(this.args.diagramList);
+  }
 
   get diagrams() {
     const diagrams = this.args.diagramList?.diagrams;

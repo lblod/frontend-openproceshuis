@@ -38,35 +38,41 @@
 <SidebarContainer class="diagrams au-u-flex--row-reverse">
   <:sidebar>
     <div class="au-c-sidebar background-white thin-scrollbar">
-      <div>
-        {{#each @model.lists as |diagramList|}}
-          <div
-            {{on "click" (fn this.openDiagramList diagramList)}}
-            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom pointer
-              {{if
-                (eq this.selectedDiagramList.id diagramList.id)
-                'background-gray border-left-selected'
-                'background-white border-left-transparent'
-              }}"
-            style="border:1.5px solid var(--au-gray-200); "
-          >
-            <div class="au-u-flex au-u-flex--column au-u-flex--between">
-              <p class="au-u-h5">{{date-format diagramList.created true}}</p>
-              <p class="au-u-muted">{{diagramList.displayVersion}}</p>
-            </div>
-            {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
-              <div class="au-u-flex au-u-flex--end">
-                <AuIcon
-                  @icon="lock-closed"
-                  @size={{this.size}}
-                  @alignment={{this.alignment}}
-                  @ariaHidden={{this.ariaHidden}}
-                />
+      {{#if @model.lists}}
+        <div>
+          {{#each @model.lists as |diagramList|}}
+            <div
+              {{on "click" (fn this.openDiagramList diagramList)}}
+              class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom pointer
+                {{if
+                  (eq this.selectedDiagramList.id diagramList.id)
+                  'background-gray border-left-selected'
+                  'background-white border-left-transparent'
+                }}"
+              style="border:1.5px solid var(--au-gray-200); "
+            >
+              <div class="au-u-flex au-u-flex--column au-u-flex--between">
+                <p class="au-u-h5">{{date-format diagramList.created true}}</p>
+                <p class="au-u-muted">{{diagramList.displayVersion}}</p>
               </div>
-            {{/unless}}
-          </div>
-        {{/each}}
-      </div>
+              {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
+                <div class="au-u-flex au-u-flex--end">
+                  <AuIcon
+                    @icon="lock-closed"
+                    @size={{this.size}}
+                    @alignment={{this.alignment}}
+                    @ariaHidden={{this.ariaHidden}}
+                  />
+                </div>
+              {{/unless}}
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="au-u-muted au-u-medium au-u-margin-top au-u-text-center">
+          Er werden nog geen versies aangemaakt
+        </p>
+      {{/if}}
     </div>
   </:sidebar>
   <:content>
