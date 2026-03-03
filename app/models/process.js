@@ -20,6 +20,7 @@ export default class ProcessModel extends Model {
   @attr('string') hasControlMeasure;
 
   @belongsTo('group', { inverse: null, async: false }) publisher;
+  @belongsTo('group', { inverse: null, async: false }) creator;
   @belongsTo('process-statistic', { inverse: 'process', async: false })
   processStatistics;
   @belongsTo('conceptual-process', {

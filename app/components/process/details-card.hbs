@@ -231,6 +231,19 @@
               {{date-format @process.created true}}
             </:content>
           </Item>
+          {{#if
+            (and
+              @process.creator
+              (not-eq @process.publisher.id @process.creator.id)
+            )
+          }}
+            <Item>
+              <:label>Via leverancier</:label>
+              <:content>
+                {{@process.creator.name}}
+              </:content>
+            </Item>
+          {{/if}}
           <Item>
             <:label>Wij gebruiken dit proces</:label>
             <:content>
