@@ -14,25 +14,22 @@ export default class InformationAssetModel extends Model {
   @attr('boolean', { defaultValue: false }) containsPersonalData;
   @attr('boolean', { defaultValue: false }) containsProfessionalData;
   @attr('boolean', { defaultValue: false }) containsSensitivePersonalData;
-  @belongsTo('information-asset', { inverse: null, async: false })
-  previousVersion;
 
-  @hasMany('information-asset', { inverse: 'nextVersions', async: true })
-  previousVersions;
+  @belongsTo('group', { inverse: null, async: false })
+  creator;
 
-  @hasMany('information-asset', { inverse: 'previousVersions', async: true })
-  nextVersions;
-
-  @belongsTo('group', { inverse: null, async: false }) creator;
   @hasMany('processes', { inverse: null, async: false })
   processes;
   @hasMany('file', { inverse: 'informationAsset', async: false })
   attachments;
-  @hasMany('link', {
-    inverse: null,
-    async: false,
-  })
+  @hasMany('link', { inverse: null, async: false })
   links;
+  @hasMany('versioned-information-asset', {
+    inverse: 'canonical',
+    async: false,
+    polymorphic: true,
+  })
+  versions;
 
   archive() {
     this.status = ENV.resourceStates.archived;
