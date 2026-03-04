@@ -307,57 +307,49 @@
             Versiegeschiedenis
           </h2>
           <AuHr @size="default" class="au-u-margin-top-small" />
+          {{#if this.informationAsset.versions.length}}
+            <ol class="timeline">
+              {{#each this.informationAsset.versions as |version|}}
+                <li class="timeline__item">
+                  <span class="timeline__dot"></span>
 
-          {{#if this.versionTimeline.isRunning}}
-            <span class="au-u-loading au-u-flex au-u-flex--align-center">
-              <AuLoader @inline={{true}}>Geschiedenis laden</AuLoader>
-            </span>
-          {{else}}
-
-            {{#if this.versionTimeline.value.length}}
-              <ol class="timeline">
-                {{#each this.versionTimeline.value as |item|}}
-                  <li class="timeline__item">
-                    <span class="timeline__dot"></span>
-
-                    <AuPill
-                      class="au-u-margin-top-small"
-                      @skin={{if item.status "default" "success"}}
+                  <AuPill
+                    class="au-u-margin-top-small"
+                    @skin={{if version.status "default" "success"}}
+                  >
+                    <AuLink
+                      @route="information-assets.edit"
+                      @model={{version.id}}
+                      @query={{hash edit=null}}
+                      @icon="link"
+                      @skin={{if
+                        (eq version.id this.informationAsset.id)
+                        "primary"
+                        "secondary"
+                      }}
                     >
-                      <AuLink
-                        @route="information-assets.edit"
-                        @model={{item.id}}
-                        @query={{hash edit=null}}
-                        @icon="link"
-                        @skin={{if
-                          (eq item.id this.informationAsset.id)
-                          "primary"
-                          "secondary"
-                        }}
-                      >
-                        {{item.title}}
+                      {{version.title}}
 
-                        {{#if (not item.status)}}
-                          — aangemaakt:
-                          {{date-format item.created true}}
-                        {{else if item.modified}}
-                          — gewijzigd:
-                          {{date-format item.modified true}}
-                        {{/if}}
-                      </AuLink>
-                    </AuPill>
+                      {{#if (not version.status)}}
+                        — aangemaakt:
+                        {{date-format version.created true}}
+                      {{else if version.modified}}
+                        — gewijzigd:
+                        {{date-format version.modified true}}
+                      {{/if}}
+                    </AuLink>
+                  </AuPill>
 
-                    {{#unless item.status}}
-                      <span class="au-u-muted au-u-margin-left-small">
-                        (gepubliceerde versie)
-                      </span>
-                    {{/unless}}
-                  </li>
-                {{/each}}
-              </ol>
-            {{else}}
-              <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
-            {{/if}}
+                  {{#unless version.status}}
+                    <span class="au-u-muted au-u-margin-left-small">
+                      (gepubliceerde versie)
+                    </span>
+                  {{/unless}}
+                </li>
+              {{/each}}
+            </ol>
+          {{else}}
+            <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
           {{/if}}
         </AuContent>
       </div>

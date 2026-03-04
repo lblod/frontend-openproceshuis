@@ -17,7 +17,6 @@ export default class InformationAssetIndexController extends Controller {
   @tracked formIsValid = this.informationAsset.title?.trim().length > 0;
   @tracked isDeleteModalOpen = false;
   @tracked isSaving = false;
-  @tracked versionTimeline = [];
   @tracked errorMessageTitle;
 
   get canEdit() {
@@ -214,55 +213,6 @@ export default class InformationAssetIndexController extends Controller {
         },
       );
       throw error;
-    }
-  }
-
-  loadFullHistory = task(
-    { keepLatest: true, cancelOn: 'deactivate' },
-    async (asset) => {
-      if (!asset) return [];
-
-      const visited = new Set();
-      const allAssets = [];
-
-      async function traverse(a) {
-        if (!a || visited.has(a.id)) return;
-        visited.add(a.id);
-
-        if (a.previousVersion) await a.previousVersion;
-        const previousVersions = await a.previousVersions;
-        const nextVersions = await a.nextVersions;
-
-        allAssets.push(a);
-
-        if (a.previousVersion) await traverse(a.previousVersion);
-
-        for (let prev of previousVersions) {
-          await traverse(prev);
-        }
-
-        for (let next of nextVersions) {
-          await traverse(next);
-        }
-      }
-
-      await traverse(asset);
-
-      allAssets.sort((a, b) => new Date(a.created) - new Date(b.created));
-
-      return allAssets;
-    },
-  );
-
-  @action
-  loadTimeline() {
-    const assetTask = this.model;
-    if (assetTask?.then) {
-      assetTask.then((asset) => {
-        this.versionTimeline = this.loadFullHistory.perform(asset);
-      });
-    } else if (assetTask) {
-      this.versionTimeline = this.loadFullHistory.perform(assetTask);
     }
   }
 }

@@ -17,14 +17,9 @@ export default class InformationAssetIndexRoute extends Route {
       'information-asset',
       id,
       {
-        include: 'creator,processes,previous-version,links',
+        include: 'creator,processes,versions,links',
       },
     );
     return informationAsset;
-  }
-
-  setupController(controller, model) {
-    super.setupController(controller, model);
-    controller.loadTimeline();
   }
 }
