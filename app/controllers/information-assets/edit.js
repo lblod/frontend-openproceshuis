@@ -34,7 +34,7 @@ export default class InformationAssetIndexController extends Controller {
   }
 
   get isArchived() {
-    return this.informationAsset.isArchived();
+    return this.informationAsset.isArchived;
   }
 
   @action

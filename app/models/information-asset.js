@@ -35,7 +35,7 @@ export default class InformationAssetModel extends Model {
     this.status = ENV.resourceStates.archived;
   }
 
-  isArchived() {
+  get isArchived() {
     return this.status === ENV.resourceStates.archived;
   }
 }
