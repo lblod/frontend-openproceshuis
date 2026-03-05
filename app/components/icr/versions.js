@@ -15,8 +15,8 @@ export default class IcrVersions extends Component {
   }
 
   fetchVersions = restartableTask(async () => {
-    const canonicalAssetId = this.args.canonicalAsset?.id;
-    if (!canonicalAssetId) {
+    const asset = this.args.asset;
+    if (!asset) {
       this.versions = [];
     }
 
@@ -26,8 +26,13 @@ export default class IcrVersions extends Component {
         size: 50,
       },
       sort: '-created',
-      'filter[canonical][:id:]': canonicalAssetId,
     };
+
+    if (asset.isVersionedInformationAsset) {
+      query['filter[canonical][versions][:id:]'] = asset.id;
+    } else {
+      query['filter[canonical][:id:]'] = asset.id;
+    }
 
     this.versions = await this.store.query(
       'versioned-information-asset',
@@ -36,6 +41,6 @@ export default class IcrVersions extends Component {
   });
 
   versionsTask = trackedTask(this, this.fetchVersions, () => [
-    this.args.canonicalAsset?.id,
+    this.args.asset?.id,
   ]);
 }

@@ -10,4 +10,8 @@ export default class VersionedInformationAssetModel extends InformationAssetMode
   canonical;
   @belongsTo('versioned-information-asset', { inverse: null, async: false })
   previousVersion;
+
+  get isVersionedInformationAsset() {
+    return true;
+  }
 }

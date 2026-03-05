@@ -38,4 +38,8 @@ export default class InformationAssetModel extends Model {
   get isArchived() {
     return this.status === ENV.resourceStates.archived;
   }
+
+  get isVersionedInformationAsset() {
+    return false;
+  }
 }
