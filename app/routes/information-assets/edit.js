@@ -17,7 +17,7 @@ export default class InformationAssetIndexRoute extends Route {
       'information-asset',
       id,
       {
-        include: 'creator,processes,versions,links',
+        include: 'creator,processes,links',
       },
     );
     return informationAsset;
