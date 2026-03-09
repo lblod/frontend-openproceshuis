@@ -82,7 +82,6 @@ export default class IcrAttachments extends Component {
   fetchAttachments = task({ keepLatest: true }, async () => {
     this.attachmentsAreLoading = true;
     this.attachmentsHaveErrored = false;
-    console.log(this.args.page, this.args.size, this.args.sort);
     const query = {
       reload: true,
       page: {
