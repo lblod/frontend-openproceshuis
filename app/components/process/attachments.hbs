@@ -55,31 +55,33 @@
     />
     <AuDataTable
       @content={{this.attachments}}
-      @isLoading={{this.attachmentsAreLoading}}
-      @page={{this.pageAttachments}}
-      @size={{this.sizeAttachments}}
+      @isLoading={{this.getAttachments.isLoading}}
+      @hidePagination={{true}}
+      @page={{@page}}
+      @size={{@size}}
+      @sort={{@sort}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable
             @field="name"
-            @currentSorting={{this.sortAttachments}}
+            @currentSorting={{@sort}}
             @label="Bestandsnaam"
           />
           <AuDataTableThSortable
             @field="size"
-            @currentSorting={{this.sortAttachments}}
+            @currentSorting={{@sort}}
             @label="Grootte"
           />
           <AuDataTableThSortable
             @field="extension"
-            @currentSorting={{this.sortAttachments}}
+            @currentSorting={{@sort}}
             @label="Extensie"
           />
           <AuDataTableThSortable
             @field="created"
-            @currentSorting={{this.sortAttachments}}
+            @currentSorting={{@sort}}
             @label="Toegevoegd op"
           />
           <th>Gekoppeld aan</th>
@@ -87,7 +89,7 @@
           {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
 
-        {{#if this.attachmentsHaveErrored}}
+        {{#if this.getAttachments.isError}}
           <TableMessage::Error />
         {{else if this.attachmentsHaveNoResults}}
           <TableMessage>
@@ -105,11 +107,11 @@
                   @route="information-assets.edit"
                   @model={{attachment.informationAsset.id}}
                 >
-                  ({{attachment.informationAsset.title}})
+                  {{attachment.informationAsset.title}}
                 </AuLink>
               {{else}}
                 <AuLink @route="processes.process" @model={{@process.id}}>
-                  ({{@process.title}})
+                  {{@process.title}}
                 </AuLink>
               {{/if}}
             </td>
@@ -139,6 +141,10 @@
         {{/if}}
       </t.content>
     </AuDataTable>
+    <Shared::TablePagination
+      @metadata={{this.filesMeta}}
+      @pageQueryParamName="attachmentsPage"
+    />
   </:card>
 </DataCard>
 
@@ -148,7 +154,7 @@
   @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
   @forbidden=".bpmn,.vsdx"
   @multiple="true"
-  @updateModel={{this.addFileToProcess}}
+  @updateModel={{this.addFilesToProcess}}
   @onFinishUpload={{this.attachmentsUploaded}}
   @modalOpen={{this.addModalOpened}}
   @closeModal={{this.closeAddModal}}

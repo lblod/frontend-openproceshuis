@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
-import removeFileNameExtension from '../../utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class SharedProcessesIndexController extends Controller {
@@ -11,9 +10,6 @@ export default class SharedProcessesIndexController extends Controller {
 
   @service router;
   @service toaster;
-  @service store;
-  @service currentSession;
-  @service api;
 
   @tracked page = 0;
   size = 20;
@@ -105,41 +101,5 @@ export default class SharedProcessesIndexController extends Controller {
   closeUploadModal() {
     this.uploadModalOpened = false;
     this.fileHasSensitiveInformation = false;
-  }
-
-  @task
-  *createProcess(diagramId) {
-    const diagram = yield this.store.findRecord('file', diagramId);
-    const defaultRelevantUnit = yield this.currentSession.group.classification;
-    const created = new Date();
-    const process = this.store.createRecord('process', {
-      title: removeFileNameExtension(diagram.name, diagram.extension),
-      created,
-      modified: created,
-      publisher: this.currentSession.group,
-      files: [diagram],
-      relevantAdministrativeUnits: [defaultRelevantUnit],
-    });
-    yield process.save();
-    this.newProcessId = process.id;
-  }
-
-  @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmnElements(bpmnFileId) {
-    yield this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
-  }
-
-  @action
-  diagramUploaded() {
-    this.closeUploadModal();
-    this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
-      timeOut: 5000,
-    });
-    this.router.transitionTo('processes.process', this.newProcessId);
   }
 }

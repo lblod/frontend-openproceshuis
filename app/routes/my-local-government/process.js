@@ -1,3 +1,3 @@
 import ProcessesProcessRoute from '../processes/process';
 
-export default class MyLocalGovernmentProcessRoute extends ProcessesProcessRoute {}
+export default class MyLocalGovernmentProcessesProcessRoute extends ProcessesProcessRoute {}

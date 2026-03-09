@@ -28,18 +28,34 @@ Router.map(function () {
   this.route('index', { path: '' });
 
   this.route('processes', { path: 'processen' }, function () {
-    this.route('process', { path: '/:id/' }, function () {});
+    this.route('process', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+      this.route('diagrams', { path: 'diagrammen' });
+    });
+  });
+
+  // diagram-list-items route
+  this.route('diagrams', function () {
+    this.route('diagram', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+    });
   });
 
   this.route('shared-processes', { path: 'gedeelde-processen' }, function () {
-    this.route('process', { path: '/:id/' }, function () {});
+    this.route('process', { path: '/:id/' }, function () {
+      this.route('index', { path: '' });
+      this.route('diagrams', { path: 'diagrammen' });
+    });
   });
 
   this.route(
     'my-local-government',
     { path: 'mijn-lokaal-bestuur' },
     function () {
-      this.route('process', { path: '/:id/' }, function () {});
+      this.route('process', { path: '/:id/' }, function () {
+        this.route('index', { path: '' });
+        this.route('diagrams', { path: 'diagrammen' });
+      });
     },
   );
 

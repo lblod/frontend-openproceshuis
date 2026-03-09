@@ -45,6 +45,10 @@ module.exports = function (environment) {
       processCategories:
         'http://lblod.data.gift/concept-schemes/21fba7d7-d0f5-4133-a108-626d0eb62298',
     },
+    diagramList: {
+      ordered: 'http://schema.org/ItemListOrdered',
+      unordered: 'http://schema.org/ItemListUnordered',
+    },
 
     resourceStates: {
       archived: 'http://lblod.data.gift/concepts/concept-status/gearchiveerd',
