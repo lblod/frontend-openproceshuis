@@ -35,8 +35,15 @@ export default class ProcessesIndexRoute extends Route {
         number: params.page,
         size: params.size,
       },
-      include:
-        'publisher,users,publisher.primary-site,publisher.primary-site.contacts,publisher.classification,relevant-administrative-units,ipdc-products',
+      include: [
+        'publisher',
+        'users',
+        'publisher.primary-site',
+        'publisher.primary-site.contacts',
+        'publisher.classification',
+        'relevant-administrative-units',
+        'ipdc-products',
+      ].join(','),
     };
 
     if (params.sort) {
