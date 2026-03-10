@@ -6,6 +6,12 @@ export default class InformationAssetIndexRoute extends Route {
   @service store;
   @service processApi;
 
+  queryParams = [
+    { pageAttachments: 'page-attachments' },
+    { sizeAttachments: 'size-attachments' },
+    { sortAttachments: 'sort-attachments' },
+  ];
+
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
   }

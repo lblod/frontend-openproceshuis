@@ -20,7 +20,7 @@ export default class InformationAssetModel extends Model {
 
   @hasMany('processes', { inverse: null, async: false })
   processes;
-  @hasMany('file', { inverse: 'informationAsset', async: false })
+  @hasMany('file', { inverse: 'informationAssets', async: false })
   attachments;
   @hasMany('link', { inverse: null, async: false })
   links;

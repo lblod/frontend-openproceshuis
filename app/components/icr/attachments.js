@@ -11,21 +11,12 @@ import {
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class IcrAttachments extends Component {
-  constructor() {
-    super(...arguments);
-    this.fetchAttachments.perform();
-  }
-
   @service api;
   @service store;
   @service toaster;
   @tracked addModalOpened = false;
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
-
-  @tracked pageAttachments = 0;
-  @tracked sortAttachments = 'name';
-  sizeAttachments = 10;
 
   @tracked attachments = undefined;
   @tracked attachmentsAreLoading = true;
@@ -37,12 +28,6 @@ export default class IcrAttachments extends Component {
       !this.attachmentsHaveErrored &&
       this.attachments?.length === 0
     );
-  }
-
-  @action
-  updateSort(newSort) {
-    this.sortAttachments = newSort;
-    this.fetchAttachments.perform();
   }
 
   @action
@@ -89,44 +74,32 @@ export default class IcrAttachments extends Component {
     this.fetchAttachments.perform();
   }
 
-  fetchAttachments = task(
-    { keepLatest: true, observes: ['pageAttachments', 'sortAttachments'] },
-    async () => {
-      this.attachmentsAreLoading = true;
-      this.attachmentsHaveErrored = false;
+  @action
+  reloadAttachments() {
+    this.fetchAttachments.perform();
+  }
 
-      const query = {
-        reload: true,
-        page: {
-          number: this.pageAttachments,
-          size: this.sizeAttachments,
-        },
-        'filter[information-asset][:id:]': this.args.informationAsset.id,
-        'filter[:not:status]': ENV.resourceStates.archived,
-      };
+  fetchAttachments = task({ keepLatest: true }, async () => {
+    this.attachmentsAreLoading = true;
+    this.attachmentsHaveErrored = false;
+    const query = {
+      reload: true,
+      page: {
+        number: this.args.page,
+        size: this.args.size,
+      },
+      'filter[information-assets][:id:]': this.args.informationAsset.id,
+      'filter[:not:status]': ENV.resourceStates.archived,
+      sort: this.args.sort,
+    };
 
-      if (this.sortAttachments) {
-        const isDescending = this.sortAttachments.startsWith('-');
-
-        let sortValue = isDescending
-          ? this.sortAttachments.substring(1)
-          : this.sortAttachments;
-
-        if (sortValue === 'name' || sortValue === 'extension')
-          sortValue = `:no-case:${sortValue}`;
-        if (isDescending) sortValue = `-${sortValue}`;
-
-        query.sort = sortValue;
-      }
-
-      try {
-        this.attachments = await this.store.query('file', query);
-      } catch {
-        this.attachmentsHaveErrored = true;
-      }
-      this.attachmentsAreLoading = false;
-    },
-  );
+    try {
+      this.attachments = await this.store.query('file', query);
+    } catch {
+      this.attachmentsHaveErrored = true;
+    }
+    this.attachmentsAreLoading = false;
+  });
 
   downloadAttachments = task({ drop: true }, async () => {
     if (!this.attachments) return;
