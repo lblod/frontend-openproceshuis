@@ -1,4 +1,4 @@
-import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import Model, { attr, hasMany } from '@ember-data/model';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class FileModel extends Model {
@@ -11,8 +11,8 @@ export default class FileModel extends Model {
   @attr('string') status;
 
   @hasMany('process', { inverse: 'files', async: false }) processes;
-  @belongsTo('information-asset', { inverse: 'attachments', async: false })
-  informationAsset;
+  @hasMany('information-asset', { inverse: 'attachments', async: false })
+  informationAssets;
 
   get process() {
     if (!this.processes || this.processes.length === 0) return null;
