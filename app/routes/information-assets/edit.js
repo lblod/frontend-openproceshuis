@@ -7,9 +7,9 @@ export default class InformationAssetIndexRoute extends Route {
   @service processApi;
 
   queryParams = [
-    { pageAttachments: 'page-attachments' },
-    { sizeAttachments: 'size-attachments' },
-    { sortAttachments: 'sort-attachments' },
+    { pageAttachments: { replace: true } },
+    { sizeAttachments: { replace: true } },
+    { sortAttachments: { replace: true } },
   ];
 
   beforeModel(transition) {

@@ -8,9 +8,9 @@ export default class InformationAssetIndexController extends Controller {
   queryParams = [
     'edit',
     'process',
-    'pageAttachments',
-    'sizeAttachments',
-    'sortAttachments',
+    { pageAttachments: 'page-attachments' },
+    { sizeAttachments: 'size-attachments' },
+    { sortAttachments: 'sort-attachments' },
   ];
 
   @service('store') store;
