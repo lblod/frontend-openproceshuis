@@ -86,6 +86,7 @@
         <AuButtonGroup class="au-u-flex--end">
           <AuButton
             @disabled={{not this.selectedDiagramList}}
+            @loading={{this.downloadDiagrams.isRunning}}
             {{on "click" (perform this.downloadDiagrams)}}
           >
             Download alle

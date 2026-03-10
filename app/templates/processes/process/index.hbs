@@ -54,6 +54,7 @@
       <AuButtonGroup>
         <AuButton
           @disabled={{not @model.diagramList}}
+          @loading={{this.downloadDiagrams.isRunning}}
           {{on "click" (perform this.downloadDiagrams)}}
         >
           Download
