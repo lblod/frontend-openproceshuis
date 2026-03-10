@@ -26,7 +26,7 @@ export default class InformationAssetModel extends Model {
   @belongsTo('group', { inverse: null, async: false }) creator;
   @hasMany('processes', { inverse: null, async: false })
   processes;
-  @hasMany('file', { inverse: 'informationAsset', async: false })
+  @hasMany('file', { inverse: 'informationAssets', async: false })
   attachments;
   @hasMany('link', {
     inverse: null,

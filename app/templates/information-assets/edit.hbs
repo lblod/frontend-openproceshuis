@@ -126,7 +126,7 @@
                 </:content>
               </Item>
               <Item>
-                <:label>Korte beschrijving</:label>
+                <:label>Beschrijving</:label>
                 <:content>
                   {{#if this.edit}}
                     <AuTextarea
@@ -280,6 +280,9 @@
       <Icr::Attachments
         @canEdit={{this.canEdit}}
         @informationAsset={{@model}}
+        @page={{this.pageAttachments}}
+        @size={{this.sizeAttachments}}
+        @sort={{this.sortAttachments}}
       />
     </div>
     <aside class="au-o-grid__item au-u-2-6@medium">

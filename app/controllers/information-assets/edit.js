@@ -5,7 +5,13 @@ import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
 export default class InformationAssetIndexController extends Controller {
-  queryParams = ['edit', 'process'];
+  queryParams = [
+    'edit',
+    'process',
+    'pageAttachments',
+    'sizeAttachments',
+    'sortAttachments',
+  ];
 
   @service('store') store;
   @service currentSession;
@@ -19,6 +25,10 @@ export default class InformationAssetIndexController extends Controller {
   @tracked isSaving = false;
   @tracked versionTimeline = [];
   @tracked errorMessageTitle;
+
+  @tracked pageAttachments = 0;
+  @tracked sizeAttachments = 10;
+  @tracked sortAttachments = 'name';
 
   get canEdit() {
     return (
