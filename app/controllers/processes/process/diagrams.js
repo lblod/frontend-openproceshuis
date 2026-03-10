@@ -5,6 +5,7 @@ import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 import { task, timeout } from 'ember-concurrency';
+import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
@@ -107,4 +108,32 @@ export default class ProcessesProcessDiagramsController extends Controller {
       this.model.process.id,
     );
   }
+
+  downloadDiagrams = task({ drop: true }, async () => {
+    const diagramFiles = this.selectedDiagramList?.diagrams
+      ?.filter((diagrams) => !diagrams.diagramFile.isArchived)
+      ?.map((diagram) => diagram.diagramFile);
+
+    if (!diagramFiles) {
+      this.toaster.error('Er werden geen diagrammen gevonden', undefined, {
+        timeOut: 5000,
+      });
+      return;
+    }
+
+    const safeProcessTitle = this.model.process.title.replace(
+      /[^a-zA-Z0-9]/g,
+      '',
+    );
+    let listVersion = '';
+    if (this.selectedDiagramList?.version) {
+      listVersion = `-${this.selectedDiagramList?.version}`;
+    }
+    await downloadFilesAsZip(
+      diagramFiles,
+      this.model.process.title
+        ? `diagrammen-${safeProcessTitle}${listVersion}`
+        : 'proces-diagrammen',
+    );
+  });
 }
