@@ -33,7 +33,7 @@ export default class InformationAssetIndexRoute extends Route {
       ? [...versionedAssets].find((asset) => asset.id === versionedAssetId)
       : versionedAssets[0];
 
-    return { canonicalAsset, versionedAssets, versionedAsset };
+    return { canonicalAsset, versionedAsset, versionedAssets };
   }
 
   async fetchCanonicalAsset(canonicalAssetId) {

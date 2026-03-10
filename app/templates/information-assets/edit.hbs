@@ -247,9 +247,7 @@
                     <AuCheckbox
                       id="contains-sensitive-personal-data"
                       @onChange={{fn
-                        (mut
-                          this.canonicalAsset.containsSensitivePersonalData
-                        )
+                        (mut this.canonicalAsset.containsSensitivePersonalData)
                       }}
                       @checked={{this.versionedAsset.containsSensitivePersonalData}}
                       @disabled={{not this.edit}}
@@ -279,7 +277,7 @@
       <br />
       <Icr::Attachments
         @canEdit={{this.canEdit}}
-        @informationAsset={{@model}}
+        @informationAsset={{this.versionedAsset}}
         @page={{this.pageAttachments}}
         @size={{this.sizeAttachments}}
         @sort={{this.sortAttachments}}
@@ -305,7 +303,10 @@
             <p class="au-u-margin-top-small">Geen processen gevonden</p>
           {{/if}}
 
-          <Icr::Versions @asset={{@model}} />
+          <Icr::Versions
+            @versionedAsset={{this.versionedAsset}}
+            @versionedAssets={{this.versionedAssets}}
+          />
         </AuContent>
       </div>
     </aside>

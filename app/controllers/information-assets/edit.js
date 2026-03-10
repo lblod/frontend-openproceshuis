@@ -49,6 +49,10 @@ export default class InformationAssetIndexController extends Controller {
     return this.model.versionedAsset;
   }
 
+  get versionedAssets() {
+    return this.model.versionedAssets;
+  }
+
   @action
   validateForm() {
     this.formIsValid = this.canonicalAsset.title?.trim().length > 0;

@@ -3,54 +3,47 @@
 </h2>
 <AuHr @size="default" class="au-u-margin-top-small" />
 
-{{#if this.versionsAreLoading}}
-  <span class="au-u-loading au-u-flex au-u-flex--align-center">
-    <AuLoader @inline={{true}}>Geschiedenis laden</AuLoader>
-  </span>
+{{#if (eq @versionedAssets.length 0)}}
+  <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
 {{else}}
+  <ol class="timeline">
+    {{#each @versionedAssets as |version|}}
+      <li class="timeline__item">
+        <span class="timeline__dot"></span>
 
-  {{#if (eq this.versions.length 0)}}
-    <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
-  {{else}}
-    <ol class="timeline">
-      {{#each this.versions as |version|}}
-        <li class="timeline__item">
-          <span class="timeline__dot"></span>
-
-          <AuPill
-            class="au-u-margin-top-small"
-            @skin={{if version.status "default" "success"}}
+        <AuPill
+          class="au-u-margin-top-small"
+          @skin={{if version.status "default" "success"}}
+        >
+          <AuLink
+            @route="information-assets.edit"
+            @model={{version.id}}
+            @query={{hash edit=null}}
+            @icon="link"
+            @skin={{if
+              (eq version.id @versionedAsset.id)
+              "bold"
+              "secondary"
+            }}
           >
-            <AuLink
-              @route="information-assets.edit"
-              @model={{version.id}}
-              @query={{hash edit=null}}
-              @icon="link"
-              @skin={{if
-                (eq version.id @canonicalAsset.id)
-                "primary"
-                "secondary"
-              }}
-            >
-              {{version.title}}
+            {{version.title}}
 
-              {{#if (not version.status)}}
-                — aangemaakt:
-                {{date-format version.created true}}
-              {{else if version.modified}}
-                — gewijzigd:
-                {{date-format version.modified true}}
-              {{/if}}
-            </AuLink>
-          </AuPill>
+            {{#if (not version.status)}}
+              — aangemaakt:
+              {{date-format version.created true}}
+            {{else if version.modified}}
+              — gewijzigd:
+              {{date-format version.modified true}}
+            {{/if}}
+          </AuLink>
+        </AuPill>
 
-          {{#unless version.status}}
-            <span class="au-u-muted au-u-margin-left-small">
-              (gepubliceerde versie)
-            </span>
-          {{/unless}}
-        </li>
-      {{/each}}
-    </ol>
-  {{/if}}
+        {{#unless version.status}}
+          <span class="au-u-muted au-u-margin-left-small">
+            (gepubliceerde versie)
+          </span>
+        {{/unless}}
+      </li>
+    {{/each}}
+  </ol>
 {{/if}}
