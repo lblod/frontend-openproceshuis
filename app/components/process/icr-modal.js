@@ -8,9 +8,10 @@ import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class IcrModalComponent extends Component {
-  @service store;
   @service toaster;
   @service currentSession;
+  @service store;
+  @service versionedStore;
 
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
@@ -91,21 +92,22 @@ export default class IcrModalComponent extends Component {
       containsProfessionalData: this.args.selected.containsProfessionalData,
       containsSensitivePersonalData:
         this.args.selected.containsSensitivePersonalData,
-      created: new Date(),
-      modified: new Date(),
       description: this.args.selected.description,
       status: this.args.selected.status,
       creator: this.currentSession.group,
     };
-    const newAsset = this.store.createRecord('information-asset', newAssetData);
+    const { canonicalRecord: canonicalAsset, versionedRecord: versionedAsset } =
+      this.versionedStore.createRecord('information-asset', newAssetData);
 
     try {
-      await newAsset.save();
+      await canonicalAsset.save();
+      await versionedAsset.save();
+
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
       );
       if (this.args.setOptions) {
-        this.args.setOptions([...nonDraftAssets, newAsset]);
+        this.args.setOptions([...nonDraftAssets, canonicalAsset]);
       }
 
       this.toaster.success(
@@ -115,7 +117,7 @@ export default class IcrModalComponent extends Component {
       );
 
       this.resetModal();
-      this.args.closeModal(newAsset);
+      this.args.closeModal(true);
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.icrDataUpdateFailed');

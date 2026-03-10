@@ -96,7 +96,7 @@ export default class InformationAssetsIndexController extends Controller {
 
   @action
   openNewModal() {
-    const informationAsset = {
+    this.informationAsset = {
       title: '',
       description: '',
       confidentialityScore: 0,
@@ -106,21 +106,18 @@ export default class InformationAssetsIndexController extends Controller {
       containsProfessionalData: false,
       containsSensitivePersonalData: false,
       creator: this.currentSession.group,
-      created: new Date(),
       isDraft: true,
     };
-    this.informationAsset = this.store.createRecord('information-asset', {
-      ...informationAsset,
-    });
     this.isCreateModalOpen = true;
   }
+
   @action
-  closeNewModal(newIcr = null) {
+  closeNewModal(refresh = false) {
     this.isCreateModalOpen = false;
-    if (newIcr) {
+    if (refresh) {
       this.send('refreshModel');
-      this.informationAsset = this.informationAsset.rollbackAttributes();
     }
+    this.informationAsset = null;
   }
 
   @action
