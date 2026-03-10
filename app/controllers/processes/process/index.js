@@ -2,8 +2,11 @@ import Controller from '@ember/controller';
 
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
+
+import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
@@ -116,6 +119,28 @@ export default class ProcessesProcessIndexController extends Controller {
 
     return 'proces_diagrammen';
   }
+  downloadDiagrams = task({ drop: true }, async () => {
+    const diagramFiles = this.model.diagramList?.diagrams
+      ?.filter((diagrams) => !diagrams.diagramFile.isArchived)
+      ?.map((diagram) => diagram.diagramFile);
+
+    if (!diagramFiles) {
+      this.toaster.error('Er werden geen diagrammen gevonden', undefined, {
+        timeOut: 5000,
+      });
+      return;
+    }
+    const safeProcessTitle = this.model.process.title.replace(
+      /[^a-zA-Z0-9]/g,
+      '',
+    );
+    await downloadFilesAsZip(
+      diagramFiles,
+      this.model.process.title
+        ? `diagrammen-${safeProcessTitle}`
+        : 'proces-diagrammen',
+    );
+  });
 
   get diagramsRouteNameFromParent() {
     if (!this.model.breadcrumRouteName) {
