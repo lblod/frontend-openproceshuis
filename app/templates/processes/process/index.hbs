@@ -52,6 +52,12 @@
     <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
       <AuHeading @level="2" @skin="3">Diagrammen</AuHeading>
       <AuButtonGroup>
+        <AuButton
+          @disabled={{not @model.diagramList}}
+          {{on "click" (perform this.downloadDiagrams)}}
+        >
+          Download
+        </AuButton>
         <AuLink
           @route={{this.diagramsRouteNameFromParent}}
           @model={{this.process.id}}
