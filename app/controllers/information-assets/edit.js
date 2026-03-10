@@ -8,6 +8,7 @@ export default class InformationAssetIndexController extends Controller {
   queryParams = [
     'edit',
     'process',
+    { versionedAssetId: 'version' },
     { pageAttachments: 'page-attachments' },
     { sizeAttachments: 'size-attachments' },
     { sortAttachments: 'sort-attachments' },
@@ -20,6 +21,7 @@ export default class InformationAssetIndexController extends Controller {
 
   @tracked edit = false;
   @tracked process = null;
+  @tracked versionedAssetId = null;
   @tracked formIsValid = this.informationAsset.title?.trim().length > 0;
   @tracked isDeleteModalOpen = false;
   @tracked isSaving = false;
@@ -40,7 +42,15 @@ export default class InformationAssetIndexController extends Controller {
   }
 
   get informationAsset() {
-    return this.model;
+    let versionedAsset = null;
+
+    if (this.versionedAssetId) {
+      versionedAsset = [...(this.model?.versions ?? [])].find(
+        (asset) => asset.id === this.versionedAssetId,
+      );
+    }
+
+    return versionedAsset ?? this.model;
   }
 
   get isArchived() {

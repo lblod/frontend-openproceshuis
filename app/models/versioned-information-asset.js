@@ -4,7 +4,7 @@ import InformationAssetModel from './information-asset';
 export default class VersionedInformationAssetModel extends InformationAssetModel {
   @belongsTo('information-asset', {
     inverse: 'versions',
-    async: false,
+    async: true,
     polymorphic: true,
   })
   canonical;
