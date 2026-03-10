@@ -14,40 +14,22 @@ export default class IcrModalComponent extends Component {
 
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
-  @tracked selected;
   @tracked errorMessageTitle;
 
   get validForm() {
     return this.formIsValid || this.args.selected.title?.trim().length > 0;
   }
 
-  get header() {
-    if (this.args.selected.isDraft) {
-      return 'Nieuwe informatieclassificatie';
-    } else {
-      return 'Wijzig informatieclassificatie: ' + this.args.selected.title;
-    }
-  }
-
   @action
   closeModal() {
-    if (this.args.selected.isDraft) {
-      const newOptions = this.draftInformationAssets.filter(
-        (asset) => asset.isDraft !== true,
-      );
-      if (this.args.setOptions) {
-        this.args.setOptions(newOptions);
-      }
+    const newOptions = this.draftInformationAssets.filter(
+      (asset) => asset.isDraft !== true,
+    );
+    if (this.args.setOptions) {
+      this.args.setOptions(newOptions);
     }
     this.errorMessageTitle = null;
     this.args.closeModal();
-  }
-
-  @action
-  setAvailabilityScore(value) {
-    if (!this.args.selected) return;
-    this.args.selected.availabilityScore = value;
-    this.validateForm();
   }
 
   @action
@@ -100,7 +82,6 @@ export default class IcrModalComponent extends Component {
       return;
     }
 
-    const oldAsset = this.args.selected;
     const newAssetData = {
       title: this.args.selected.title?.trim(),
       availabilityScore: this.args.selected.availabilityScore,
@@ -119,11 +100,7 @@ export default class IcrModalComponent extends Component {
     const newAsset = this.store.createRecord('information-asset', newAssetData);
 
     try {
-      let isNew = false;
-      if (oldAsset.isDraft) {
-        isNew = true;
-        await newAsset.save();
-      }
+      await newAsset.save();
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
       );
@@ -132,9 +109,7 @@ export default class IcrModalComponent extends Component {
       }
 
       this.toaster.success(
-        isNew
-          ? 'Nieuwe informatie asset succesvol toegevoegd.'
-          : 'Informatie asset succesvol bijgewerkt.',
+        'Nieuwe informatie asset succesvol toegevoegd.',
         'Gelukt!',
         { timeOut: 5000 },
       );
