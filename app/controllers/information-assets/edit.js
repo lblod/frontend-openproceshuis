@@ -22,7 +22,7 @@ export default class InformationAssetIndexController extends Controller {
   @tracked edit = false;
   @tracked process = null;
   @tracked versionedAssetId = null;
-  @tracked formIsValid = this.informationAsset.title?.trim().length > 0;
+  @tracked formIsValid = this.canonicalAsset.title?.trim().length > 0;
   @tracked isDeleteModalOpen = false;
   @tracked isSaving = false;
   @tracked errorMessageTitle;
@@ -37,29 +37,21 @@ export default class InformationAssetIndexController extends Controller {
       this.currentSession.group &&
       this.currentSession.isAbbOrDv &&
       this.currentSession.isAdmin &&
-      !this.isArchived
+      !this.versionedAsset.isArchived
     );
   }
 
-  get informationAsset() {
-    let versionedAsset = null;
-
-    if (this.versionedAssetId) {
-      versionedAsset = [...(this.model?.versions ?? [])].find(
-        (asset) => asset.id === this.versionedAssetId,
-      );
-    }
-
-    return versionedAsset ?? this.model;
+  get canonicalAsset() {
+    return this.model.canonicalAsset;
   }
 
-  get isArchived() {
-    return this.informationAsset.isArchived;
+  get versionedAsset() {
+    return this.model.versionedAsset;
   }
 
   @action
   validateForm() {
-    this.formIsValid = this.informationAsset.title?.trim().length > 0;
+    this.formIsValid = this.canonicalAsset.title?.trim().length > 0;
   }
 
   @action
@@ -70,7 +62,7 @@ export default class InformationAssetIndexController extends Controller {
 
   @action
   cancelEdit() {
-    this.informationAsset.rollbackAttributes();
+    this.canonicalAsset.rollbackAttributes();
     this.edit = false;
     this.errorMessageTitle = null;
   }
@@ -78,18 +70,18 @@ export default class InformationAssetIndexController extends Controller {
   @action
   setTitle(event) {
     this.errorMessageTitle = null;
-    this.informationAsset.title = event.target.value;
+    this.canonicalAsset.title = event.target.value;
     this.validateForm();
   }
 
   @action
   setDescription(event) {
-    this.informationAsset.description = event.target.value;
+    this.canonicalAsset.description = event.target.value;
   }
 
   saveChanges = task({ drop: true }, async () => {
     try {
-      if (!this.informationAsset.hasDirtyAttributes) {
+      if (!this.canonicalAsset.hasDirtyAttributes) {
         this.toaster.success('Geen wijzigingen om op te slaan', undefined, {
           timeOut: 3000,
         });
@@ -100,8 +92,8 @@ export default class InformationAssetIndexController extends Controller {
         return;
       }
 
-      const oldAsset = this.informationAsset;
-      let changes = this.informationAsset.changedAttributes();
+      const oldAsset = this.canonicalAsset;
+      let changes = this.canonicalAsset.changedAttributes();
       let titleChanged = 'title' in changes;
       if (titleChanged) {
         const checkDuplicateTitle = await this.store.query(
@@ -191,16 +183,16 @@ export default class InformationAssetIndexController extends Controller {
     try {
       this.closeDeleteModal();
 
-      if (this.informationAsset.processes) {
-        this.informationAsset.processes.forEach((process) => {
+      if (this.canonicalAsset.processes) {
+        this.canonicalAsset.processes.forEach((process) => {
           process.informationAsset = null;
         });
-        this.informationAsset.processes = [];
+        this.canonicalAsset.processes = [];
       }
 
-      this.informationAsset.archive();
-      this.informationAsset.modified = new Date();
-      this.informationAsset.save();
+      this.canonicalAsset.archive();
+      this.canonicalAsset.modified = new Date();
+      this.canonicalAsset.save();
 
       this.toaster.success('Informatie asset succesvol verwijderd', undefined, {
         timeOut: 5000,

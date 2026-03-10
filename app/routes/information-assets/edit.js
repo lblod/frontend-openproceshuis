@@ -20,20 +20,38 @@ export default class InformationAssetIndexRoute extends Route {
   async model() {
     const params = this.paramsFor('information-assets.edit');
     const id = params.id;
+    const { versionedAssetId } = params;
 
-    const informationAsset = await this.store.findRecord(
-      'information-asset',
-      id,
-      {
-        include: 'creator,processes,links,versions',
-      },
-    );
+    const canonicalAsset = await this.fetchCanonicalAsset(id);
 
-    if (informationAsset.isVersionedInformationAsset) {
+    if (canonicalAsset.isVersionedInformationAsset) {
       await this.redirectToCanonical(id, params);
     }
 
-    return informationAsset;
+    const versionedAssets = await this.fetchVersionedAssets(id);
+    const versionedAsset = versionedAssetId
+      ? [...versionedAssets].find((asset) => asset.id === versionedAssetId)
+      : versionedAssets[0];
+
+    return { canonicalAsset, versionedAssets, versionedAsset };
+  }
+
+  async fetchCanonicalAsset(canonicalAssetId) {
+    return await this.store.findRecord('information-asset', canonicalAssetId, {
+      include: 'creator,processes,links',
+    });
+  }
+
+  async fetchVersionedAssets(canonicalAssetId) {
+    return await this.store.query('versioned-information-asset', {
+      reload: true,
+      'filter[canonical][:id:]': canonicalAssetId,
+      include: 'creator',
+      page: {
+        size: 50,
+      },
+      sort: '-created',
+    });
   }
 
   async redirectToCanonical(versionedAssetId, params) {
@@ -47,7 +65,7 @@ export default class InformationAssetIndexRoute extends Route {
     this.router.replaceWith('information-assets.edit', canonical.id, {
       queryParams: {
         ...params,
-        versionedAssetId: versionedAssetId,
+        versionedAssetId,
       },
     });
   }

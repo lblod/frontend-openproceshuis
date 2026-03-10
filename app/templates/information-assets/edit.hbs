@@ -1,8 +1,8 @@
 {{breadcrumb
-  (if this.isArchived "Archief " "Bewerk ")
-  this.informationAsset.title
+  (if this.versionedAsset.isArchived "Archief " "Bewerk ")
+  this.versionedAsset.title
   route="information-assets.edit"
-  model=this.informationAsset.id
+  model=this.versionedAsset.id
 }}
 
 <PageHeader>
@@ -18,7 +18,7 @@
         class="au-u-margin-right-small animate-left"
         title="Terug naar informatie assets overzicht"
       >Previous</AuLink>
-      {{this.informationAsset.title}}
+      {{this.versionedAsset.title}}
       <AuButton
         class="au-u-padding-left-small"
         @icon="link"
@@ -28,12 +28,12 @@
       /></div>
   </:title>
   <:action>
-    {{#if this.isArchived}}
+    {{#if this.versionedAsset.isArchived}}
       <AuPill @icon="clock-rewind">Gearchiveerd op
-        {{date-format this.informationAsset.modified true}}</AuPill>
+        {{date-format this.versionedAsset.modified true}}</AuPill>
     {{else}}
       <AuPill @icon="clock-rewind" @skin="success">Aangemaakt op
-        {{date-format this.informationAsset.created true}}</AuPill>
+        {{date-format this.versionedAsset.created true}}</AuPill>
     {{/if}}
   </:action>
 </PageHeader>
@@ -43,7 +43,7 @@
     <div class="au-o-grid__item au-u-4-6@medium">
       <DataCard
         class={{if
-          (or this.isArchived this.edit)
+          (or this.versionedAsset.isArchived this.edit)
           "u-color-top-border-gray"
           "u-color-top-border-yellow"
         }}
@@ -52,7 +52,7 @@
           Informatieclassificatie
         </:title>
         <:header>
-          {{#if this.isArchived}}
+          {{#if this.versionedAsset.isArchived}}
             <AuPill @icon="clock-rewind">Gearchiveerd </AuPill>
           {{else}}
             {{#if this.canEdit}}
@@ -106,7 +106,7 @@
                   {{#if this.edit}}
                     <AuInput
                       id="edit-information-asset"
-                      value={{this.informationAsset.title}}
+                      value={{this.versionedAsset.title}}
                       {{on "input" this.setTitle}}
                       @width="block"
                       @error={{this.errorMessageTitle}}
@@ -117,8 +117,8 @@
                       </AuHelpText>
                     {{/if}}
                   {{else}}
-                    {{#if this.informationAsset.title}}
-                      {{this.informationAsset.title}}
+                    {{#if this.versionedAsset.title}}
+                      {{this.versionedAsset.title}}
                     {{else}}
                       <span>Geen titel</span>
                     {{/if}}
@@ -131,12 +131,12 @@
                   {{#if this.edit}}
                     <AuTextarea
                       @width="block"
-                      value={{this.informationAsset.description}}
+                      value={{this.versionedAsset.description}}
                       {{on "input" this.setDescription}}
                     />
                   {{else}}
-                    {{#if this.informationAsset.description}}
-                      {{this.informationAsset.description}}
+                    {{#if this.versionedAsset.description}}
+                      {{this.versionedAsset.description}}
                     {{else}}
                       <span>Geen beschrijving</span>
                     {{/if}}
@@ -146,8 +146,8 @@
               <Item>
                 <:label>Aangemaakt door</:label>
                 <:content>
-                  {{#if this.informationAsset.creator.name}}
-                    {{this.informationAsset.creator.name}}
+                  {{#if this.versionedAsset.creator.name}}
+                    {{this.versionedAsset.creator.name}}
                   {{else}}
                     <span>Geen eigenaar</span>
                   {{/if}}
@@ -163,9 +163,9 @@
                   <Process::IcrCard::Score
                     @readonly={{not this.edit}}
                     @onScoreChange={{fn
-                      (mut this.informationAsset.availabilityScore)
+                      (mut this.canonicalAsset.availabilityScore)
                     }}
-                    @selectedScore={{this.informationAsset.availabilityScore}}
+                    @selectedScore={{this.versionedAsset.availabilityScore}}
                   />
                 </:content>
               </Item>
@@ -175,9 +175,9 @@
                   <Process::IcrCard::Score
                     @readonly={{not this.edit}}
                     @onScoreChange={{fn
-                      (mut this.informationAsset.integrityScore)
+                      (mut this.canonicalAsset.integrityScore)
                     }}
-                    @selectedScore={{this.informationAsset.integrityScore}}
+                    @selectedScore={{this.versionedAsset.integrityScore}}
                   />
                 </:content>
               </Item>
@@ -187,9 +187,9 @@
                   <Process::IcrCard::Score
                     @readonly={{not this.edit}}
                     @onScoreChange={{fn
-                      (mut this.informationAsset.confidentialityScore)
+                      (mut this.canonicalAsset.confidentialityScore)
                     }}
-                    @selectedScore={{this.informationAsset.confidentialityScore}}
+                    @selectedScore={{this.versionedAsset.confidentialityScore}}
                   />
                 </:content>
               </Item>
@@ -202,9 +202,9 @@
                     <AuCheckbox
                       id="contains-personal-data"
                       @onChange={{fn
-                        (mut this.informationAsset.containsProfessionalData)
+                        (mut this.canonicalAsset.containsProfessionalData)
                       }}
-                      @checked={{this.informationAsset.containsProfessionalData}}
+                      @checked={{this.versionedAsset.containsProfessionalData}}
                       @disabled={{not this.edit}}
                     >
                       <label for="contains-personal-data">Professionele gegevens</label>
@@ -224,9 +224,9 @@
                     <AuCheckbox
                       id="contains-professional-data"
                       @onChange={{fn
-                        (mut this.informationAsset.containsPersonalData)
+                        (mut this.canonicalAsset.containsPersonalData)
                       }}
-                      @checked={{this.informationAsset.containsPersonalData}}
+                      @checked={{this.versionedAsset.containsPersonalData}}
                       @disabled={{not this.edit}}
                     >
                       <label
@@ -248,10 +248,10 @@
                       id="contains-sensitive-personal-data"
                       @onChange={{fn
                         (mut
-                          this.informationAsset.containsSensitivePersonalData
+                          this.canonicalAsset.containsSensitivePersonalData
                         )
                       }}
-                      @checked={{this.informationAsset.containsSensitivePersonalData}}
+                      @checked={{this.versionedAsset.containsSensitivePersonalData}}
                       @disabled={{not this.edit}}
                     >
                       <label for="contains-sensitive-personal-data">Bijzondere
@@ -288,26 +288,24 @@
     <aside class="au-o-grid__item au-u-2-6@medium">
       <div class="u-top-sticky">
         <AuContent class="au-u-margin-top">
-          {{#unless this.isArchived}}
-            <h2 class="au-u-h4 au-u-medium">
-              Gelinkte
-              <AuLink @route="processes">processen</AuLink>
-            </h2>
-            <AuHr @size="default" class="au-u-margin-top-small" />
-            {{#if this.informationAsset.processes.length}}
-              {{#each this.informationAsset.processes as |process|}}
-                <AuPill class="au-u-margin-top-small">
-                  <AuLink @route="processes.process" @model={{process.id}}>
-                    {{process.title}}
-                  </AuLink>
-                </AuPill>
-              {{/each}}
-            {{else}}
-              <p class="au-u-margin-top-small">Geen processen gevonden</p>
-            {{/if}}
-          {{/unless}}
-          
-          <Icr::Versions @asset={{@model}}/>
+          <h2 class="au-u-h4 au-u-medium">
+            Gelinkte
+            <AuLink @route="processes">processen</AuLink>
+          </h2>
+          <AuHr @size="default" class="au-u-margin-top-small" />
+          {{#if this.canonicalAsset.processes.length}}
+            {{#each this.canonicalAsset.processes as |process|}}
+              <AuPill class="au-u-margin-top-small">
+                <AuLink @route="processes.process" @model={{process.id}}>
+                  {{process.title}}
+                </AuLink>
+              </AuPill>
+            {{/each}}
+          {{else}}
+            <p class="au-u-margin-top-small">Geen processen gevonden</p>
+          {{/if}}
+
+          <Icr::Versions @asset={{@model}} />
         </AuContent>
       </div>
     </aside>
@@ -321,6 +319,6 @@
     @onDelete={{fn (perform this.onDeleteAsset)}}
     @type="informatie asset"
     @isLoading={{this.onDeleteAsset.isRunning}}
-    @title={{this.informationAsset.title}}
+    @title={{this.canonicalAsset.title}}
   />
 {{/if}}
