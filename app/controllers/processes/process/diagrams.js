@@ -80,15 +80,6 @@ export default class ProcessesProcessDiagramsController extends Controller {
     await this.model.process.save();
   });
 
-  extractBpmnElements = task({ drop: true }, async (bpmnFileId) => {
-    await this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
-  });
-
   @action
   diagramUploaded() {
     this.isCreateModalOpen = false;
