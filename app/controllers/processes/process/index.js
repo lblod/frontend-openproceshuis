@@ -129,4 +129,11 @@ export default class ProcessesProcessIndexController extends Controller {
       return;
     }
   });
+
+  get diagramsRouteNameFromParent() {
+    if (!this.model.breadcrumRouteName) {
+      return 'processes.process.diagrams';
+    }
+    return this.model.breadcrumRouteName + '.diagrams';
+  }
 }
