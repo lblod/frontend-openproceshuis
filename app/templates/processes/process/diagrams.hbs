@@ -70,6 +70,14 @@
         <p>Je bent een oudere versie van de diagrammen aan het bekijken</p>
       </AuAlert>
     {{/unless}}
+    {{#unless this.selectedDiagramList}}
+      <div
+        class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom au-u-margin-top"
+      >
+        <p class="au-u-h3 au-u-muted">Er werden geen versies gevonden</p>
+        <p class="au-u-muted">Maak een nieuwe versie aan</p>
+      </div>
+    {{/unless}}
     {{#if this.selectedDiagramList}}
       <AuToolbar @size="medium" as |Group|>
         <Group />
