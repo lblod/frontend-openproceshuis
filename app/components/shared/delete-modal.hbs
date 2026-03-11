@@ -1,6 +1,9 @@
 <AuModal @modalOpen={{@isModalOpen}} @closeModal={{@closeModal}}>
   <:title>Verwijder {{@title}}</:title>
-  <:body>Ben je zeker dat je
+  <:body>
+    {{yield}}
+
+    Ben je zeker dat je
     {{#if @title}}
       "{{@title}}"
     {{/if}}
@@ -10,8 +13,13 @@
     wilt verwijderen?</:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton @skin="secondary" {{on "click" @closeModal}}>Annuleer</AuButton>
       <AuButton
+        @skin="secondary"
+        {{on "click" @closeModal}}
+        class="border-radius"
+      >Annuleer</AuButton>
+      <AuButton
+        class="border-radius"
         @skin="primary"
         @icon="bin"
         @alert="true"
