@@ -16,6 +16,7 @@ export default class ProcessesProcessDiagramsController extends Controller {
   @service eventTracking;
 
   @tracked isCreateModalOpen = false;
+  @tracked isDeleteVersionModalOpen = false;
 
   @tracked selectedDiagramList;
   @tracked selectedDiagramFile;
@@ -108,6 +109,36 @@ export default class ProcessesProcessDiagramsController extends Controller {
       this.model.breadcrumRouteName,
       this.model.process.id,
     );
+  }
+
+  deleteVersion = task({ drop: true }, async () => {
+    try {
+      const listItems = this.selectedDiagramList.diagrams;
+
+      await Promise.all([
+        ...listItems.map((item) => item.destroyRecord()),
+        this.selectedDiagramList.destroyRecord(),
+      ]);
+      this.toaster.success('Diagram versie verwijderd', null, {
+        timeOut: 2500,
+      });
+      this.router.refresh();
+    } catch (error) {
+      this.toaster.error(
+        'Er liep iets mis bij het verwijderen van de diagram versie',
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    } finally {
+      this.isDeleteVersionModalOpen = false;
+    }
+  });
+
+  get deleteVersionModalTitle() {
+    const version = this.selectedDiagramList.version ?? '';
+    return `diagram versie ${version}`;
   }
 
   @action

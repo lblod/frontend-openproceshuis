@@ -74,7 +74,11 @@
       <Group />
       <Group>
         <AuButtonGroup class="au-u-flex--end">
-          <AuButton @alert={{true}} @skin="secondary">
+          <AuButton
+            @alert={{true}}
+            @skin="secondary"
+            {{on "click" (fn (mut this.isDeleteVersionModalOpen) true)}}
+          >
             Verwijder versie
           </AuButton>
           <File::DownloadMultipleAsZip
@@ -108,3 +112,11 @@
     @process={{@model.process}}
   />
 {{/if}}
+
+<Shared::DeleteModal
+  @isModalOpen={{this.isDeleteVersionModalOpen}}
+  @closeModal={{fn (mut this.isDeleteVersionModalOpen) false}}
+  @onDelete={{fn (perform this.deleteVersion)}}
+  @isLoading={{this.deleteVersion.isRunning}}
+  @type={{this.deleteVersionModalTitle}}
+/>
