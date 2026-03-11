@@ -70,6 +70,10 @@ export default class DiagramService extends Service {
   }
 
   getFirstFileOfList(list) {
+    if (!list) {
+      return null;
+    }
+
     const sortedDiagrams = Array.from(list.diagrams).sort(
       (a, b) => a.position - b.position,
     );
