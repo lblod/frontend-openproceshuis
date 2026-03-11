@@ -42,7 +42,7 @@
         {{#each @model.lists as |diagramList|}}
           <div
             {{on "click" (fn this.openDiagramList diagramList)}}
-            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small au-u-padding-bottom pointer
+            class="au-u-flex au-u-flex--column au-u-padding au-u-padding-top-small pointer
               {{if
                 (eq this.selectedDiagramList.id diagramList.id)
                 'background-gray border-left-selected'
@@ -54,16 +54,6 @@
               <p class="au-u-h5">{{date-format diagramList.created true}}</p>
               <p class="au-u-muted">{{diagramList.displayVersion}}</p>
             </div>
-            {{#unless (eq diagramList.id @model.activeDiagramList.id)}}
-              <div class="au-u-flex au-u-flex--end">
-                <AuIcon
-                  @icon="lock-closed"
-                  @size={{this.size}}
-                  @alignment={{this.alignment}}
-                  @ariaHidden={{this.ariaHidden}}
-                />
-              </div>
-            {{/unless}}
           </div>
         {{/each}}
       </div>
@@ -84,6 +74,9 @@
       <Group />
       <Group>
         <AuButtonGroup class="au-u-flex--end">
+          <AuButton @alert={{true}} @skin="secondary">
+            Verwijder versie
+          </AuButton>
           <File::DownloadMultipleAsZip
             @buttonLabel="Download alle"
             @folderName={{this.diagramsDownloadFolderName}}
