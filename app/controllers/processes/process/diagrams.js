@@ -5,7 +5,6 @@ import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 import { task, timeout } from 'ember-concurrency';
-import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
@@ -13,6 +12,7 @@ export default class ProcessesProcessDiagramsController extends Controller {
   @service diagram;
   @service api;
   @service toaster;
+  @service eventTracking;
 
   @tracked isCreateModalOpen = false;
 
@@ -109,19 +109,30 @@ export default class ProcessesProcessDiagramsController extends Controller {
     );
   }
 
-  downloadDiagrams = task({ drop: true }, async () => {
-    const diagramFiles = this.selectedDiagramList?.diagrams
-      ?.filter((diagrams) => !diagrams.diagramFile.isArchived)
-      ?.map((diagram) => diagram.diagramFile);
-
-    if (!diagramFiles) {
-      this.toaster.error('Er werden geen diagrammen gevonden', undefined, {
-        timeOut: 5000,
-      });
-      return;
+  @action
+  onDiagramsDownloadedAsZip() {
+    for (const file of this.diagramFiles) {
+      console.log(file.name);
+      this.eventTracking.trackDownloadFileEvent(
+        file.id,
+        file.name,
+        file.extension,
+        file.extension,
+        this.model.process,
+      );
+      this.eventTracking.incrementFileDownloads.perform(
+        file.extension,
+        this.model.process.id,
+      );
     }
+  }
 
-    const safeProcessTitle = this.model.process.title.replace(
+  get diagramFiles() {
+    return this.diagram.getAvailableFilesFromList(this.selectedDiagramList);
+  }
+
+  get diagramsDownloadFolderName() {
+    const safeProcessTitle = this.model.process?.title?.replace(
       /[^a-zA-Z0-9]/g,
       '',
     );
@@ -129,11 +140,10 @@ export default class ProcessesProcessDiagramsController extends Controller {
     if (this.selectedDiagramList?.version) {
       listVersion = `-${this.selectedDiagramList?.version}`;
     }
-    await downloadFilesAsZip(
-      diagramFiles,
-      this.model.process.title
-        ? `diagrammen-${safeProcessTitle}${listVersion}`
-        : 'proces-diagrammen',
-    );
-  });
+    if (this.model.process.title) {
+      return `diagrammen${listVersion}-${safeProcessTitle}`;
+    }
+
+    return 'proces-diagrammen-versie';
+  }
 }

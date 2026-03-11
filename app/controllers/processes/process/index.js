@@ -1,10 +1,8 @@
 import Controller from '@ember/controller';
+
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { enqueueTask, task } from 'ember-concurrency';
 import { service } from '@ember/service';
-
-import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
@@ -16,8 +14,9 @@ export default class ProcessesProcessIndexController extends Controller {
   @service router;
   @service currentSession;
   @service toaster;
-  @service plausible;
   @service api;
+  @service diagram;
+  @service eventTracking;
 
   @tracked isEditingDetails = false;
 
@@ -42,55 +41,17 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   trackDownloadFileEvent(fileId, fileName, fileExtension, targetExtension) {
-    this.plausible.trackEvent('Download bestand', {
-      'Bestand-ID': fileId,
-      Bestandsnaam: fileName,
-      Bestandstype: fileExtension,
-      Downloadtype: targetExtension ?? fileExtension,
-      'Proces-ID': this.process?.id,
-      Procesnaam: this.process?.title,
-      'Bestuur-ID': this.process?.publisher?.id,
-      Bestuursnaam: this.process?.publisher?.name,
-    });
-    try {
-      this.incrementFileDownloads.perform(targetExtension);
-    } catch (error) {
-      console.error(
-        `Something went wrong while trying to fetch the download quantity of ${targetExtension} `,
-        error,
-      );
-    }
-  }
-
-  @enqueueTask
-  *incrementFileDownloads(targetExtension) {
-    try {
-      const process = yield this.store.findRecord('process', this.process.id);
-      const stats = process.processStatistics;
-      switch (targetExtension) {
-        case 'bpmn':
-          stats.bpmnDownloads += 1;
-          break;
-        case 'pdf':
-          stats.pdfDownloads += 1;
-          break;
-        case 'png':
-          stats.pngDownloads += 1;
-          break;
-        case 'svg':
-          stats.svgDownloads += 1;
-          break;
-        default:
-          console.error('fileExtension', targetExtension, 'not recognized');
-          return;
-      }
-      yield stats.save();
-    } catch (error) {
-      console.error(
-        `Something went wrong while loading the file downloads:`,
-        error,
-      );
-    }
+    this.eventTracking.trackDownloadFileEvent(
+      fileId,
+      fileName,
+      fileExtension,
+      targetExtension,
+      this.model.process,
+    );
+    this.eventTracking.incrementFileDownloads.perform(
+      targetExtension,
+      this.model.process.id,
+    );
   }
 
   reset() {
@@ -131,28 +92,33 @@ export default class ProcessesProcessIndexController extends Controller {
     this.attachmentsPage = 0;
   }
 
-  downloadDiagrams = task({ drop: true }, async () => {
-    const diagramFiles = this.model.diagramList?.diagrams
-      ?.filter((diagrams) => !diagrams.diagramFile.isArchived)
-      ?.map((diagram) => diagram.diagramFile);
-
-    if (!diagramFiles) {
-      this.toaster.error('Er werden geen diagrammen gevonden', undefined, {
-        timeOut: 5000,
-      });
-      return;
+  @action
+  onDiagramsDownloadedAsZip() {
+    for (const file of this.diagramFiles) {
+      this.trackDownloadFileEvent(
+        file.id,
+        file.name,
+        file.extension,
+        file.extension,
+      );
     }
-    const safeProcessTitle = this.model.process.title.replace(
+  }
+
+  get diagramFiles() {
+    return this.diagram.getAvailableFilesFromList(this.model.diagramList);
+  }
+
+  get diagramsDownloadFolderName() {
+    const safeProcessTitle = this.model.process?.title?.replace(
       /[^a-zA-Z0-9]/g,
       '',
     );
-    await downloadFilesAsZip(
-      diagramFiles,
-      this.model.process.title
-        ? `diagrammen-${safeProcessTitle}`
-        : 'proces-diagrammen',
-    );
-  });
+    if (this.model.process.title) {
+      return `diagrammen-${safeProcessTitle}`;
+    }
+
+    return 'proces-diagrammen';
+  }
 
   get diagramsRouteNameFromParent() {
     if (!this.model.breadcrumRouteName) {

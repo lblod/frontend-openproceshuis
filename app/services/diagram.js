@@ -52,6 +52,14 @@ export default class DiagramService extends Service {
     );
   }
 
+  getAvailableFilesFromList(listWithFiles) {
+    return (
+      listWithFiles?.diagrams
+        ?.filter((diagrams) => !diagrams?.diagramFile?.isArchived)
+        ?.map((diagram) => diagram?.diagramFile) ?? []
+    );
+  }
+
   async getLatestDiagramList(processId) {
     const allDiagramLists =
       await this.getDiagramListsWithFilesForProcess(processId);
