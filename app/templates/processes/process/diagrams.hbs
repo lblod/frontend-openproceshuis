@@ -130,4 +130,10 @@
   @onDelete={{fn (perform this.deleteVersion)}}
   @isLoading={{this.deleteVersion.isRunning}}
   @type={{this.deleteVersionModalTitle}}
-/>
+>
+  {{#if (eq @model.lists.length 1)}}
+    <AuAlert @size="small" @skin="warning" @icon="alert-triangle">
+      <p>Dit is de laatste versie van diagrammen voor dit proces!</p>
+    </AuAlert>
+  {{/if}}
+</Shared::DeleteModal>
