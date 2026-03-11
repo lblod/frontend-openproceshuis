@@ -5,6 +5,7 @@ import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 import { task, timeout } from 'ember-concurrency';
+import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
@@ -12,6 +13,7 @@ export default class ProcessesProcessDiagramsController extends Controller {
   @service diagram;
   @service api;
   @service toaster;
+  @service eventTracking;
 
   @tracked isCreateModalOpen = false;
 
@@ -106,5 +108,38 @@ export default class ProcessesProcessDiagramsController extends Controller {
       this.model.breadcrumRouteName,
       this.model.process.id,
     );
+  }
+
+  @action
+  onDiagramsDownloadedAsZip() {
+    for (const file of this.diagramFiles) {
+      this.eventTracking.trackDownloadFileEvent(
+        file.id,
+        file.name,
+        file.extension,
+        file.extension,
+        this.model.process,
+      );
+      this.eventTracking.incrementFileDownloads.perform(
+        file.extension,
+        this.model.process.id,
+      );
+    }
+  }
+
+  get diagramFiles() {
+    return this.diagram.getAvailableFilesFromList(this.selectedDiagramList);
+  }
+
+  get diagramsDownloadFolderName() {
+    let listVersion = '';
+    if (this.selectedDiagramList?.version) {
+      listVersion = `${this.selectedDiagramList?.version}_`;
+    }
+    if (this.model.process.title) {
+      return `${listVersion}${toSafeString(this.model.process?.title)}`;
+    }
+
+    return 'proces_diagrammen_versie';
   }
 }
