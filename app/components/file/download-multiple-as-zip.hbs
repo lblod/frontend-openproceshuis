@@ -1,4 +1,6 @@
 <AuButton
+  ...attributes
+  class="border-radius"
   @disabled={{not this.hasFiles}}
   @loading={{this.downloadFiles.isRunning}}
   {{on "click" (perform this.downloadFiles)}}
