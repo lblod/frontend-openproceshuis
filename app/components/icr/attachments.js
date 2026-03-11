@@ -60,7 +60,6 @@ export default class IcrAttachments extends Component {
 
   addFileToIcr = task({ enqueue: true }, async (newFileId) => {
     const newFile = await this.store.findRecord('file', newFileId);
-    newFile.informationAsset = this.args.informationAsset;
     this.args.informationAsset.attachments.push(newFile);
     this.args.informationAsset.modified = newFile.created;
     await newFile.save();

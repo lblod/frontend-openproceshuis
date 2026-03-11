@@ -14,7 +14,7 @@ export default class InformationAssetIndexController extends Controller {
     { sortAttachments: 'sort-attachments' },
   ];
 
-  @service('store') store;
+  @service store;
   @service currentSession;
   @service toaster;
   @service router;
@@ -36,8 +36,7 @@ export default class InformationAssetIndexController extends Controller {
       this.currentSession.canEdit &&
       this.currentSession.group &&
       this.currentSession.isAbbOrDv &&
-      this.currentSession.isAdmin &&
-      !this.versionedAsset.isArchived
+      this.currentSession.isAdmin
     );
   }
 

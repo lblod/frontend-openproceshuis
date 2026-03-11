@@ -38,7 +38,7 @@ export default class InformationAssetIndexRoute extends Route {
 
   async fetchCanonicalAsset(canonicalAssetId) {
     return await this.store.findRecord('information-asset', canonicalAssetId, {
-      include: 'creator,processes',
+      include: 'creator,processes,links',
     });
   }
 
