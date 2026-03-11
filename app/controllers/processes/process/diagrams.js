@@ -5,6 +5,7 @@ import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 import { task, timeout } from 'ember-concurrency';
+import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
@@ -112,7 +113,6 @@ export default class ProcessesProcessDiagramsController extends Controller {
   @action
   onDiagramsDownloadedAsZip() {
     for (const file of this.diagramFiles) {
-      console.log(file.name);
       this.eventTracking.trackDownloadFileEvent(
         file.id,
         file.name,
@@ -132,18 +132,14 @@ export default class ProcessesProcessDiagramsController extends Controller {
   }
 
   get diagramsDownloadFolderName() {
-    const safeProcessTitle = this.model.process?.title?.replace(
-      /[^a-zA-Z0-9]/g,
-      '',
-    );
     let listVersion = '';
     if (this.selectedDiagramList?.version) {
-      listVersion = `-${this.selectedDiagramList?.version}`;
+      listVersion = `${this.selectedDiagramList?.version}_`;
     }
     if (this.model.process.title) {
-      return `diagrammen${listVersion}-${safeProcessTitle}`;
+      return `${listVersion}${toSafeString(this.model.process?.title)}`;
     }
 
-    return 'proces-diagrammen-versie';
+    return 'proces_diagrammen_versie';
   }
 }

@@ -22,7 +22,7 @@ export default class FileDownloadMultipleAsZip extends Component {
 
   get folderName() {
     if (this.args.folderName) {
-      return `${this.args.folderName.replace(/[^a-zA-Z0-9]/g, '')}`;
+      return this.args.folderName;
     }
     return 'bestanden';
   }

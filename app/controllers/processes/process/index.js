@@ -3,6 +3,7 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
+import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
@@ -109,15 +110,11 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   get diagramsDownloadFolderName() {
-    const safeProcessTitle = this.model.process?.title?.replace(
-      /[^a-zA-Z0-9]/g,
-      '',
-    );
     if (this.model.process.title) {
-      return `diagrammen-${safeProcessTitle}`;
+      return `${toSafeString(this.model.process?.title)}`;
     }
 
-    return 'proces-diagrammen';
+    return 'proces_diagrammen';
   }
 
   get diagramsRouteNameFromParent() {
