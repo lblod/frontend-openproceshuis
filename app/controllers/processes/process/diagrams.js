@@ -6,7 +6,6 @@ import { service } from '@ember/service';
 
 import { task, timeout } from 'ember-concurrency';
 import { toSafeString } from '../../../utils/string-manipulation';
-import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
 
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
@@ -154,20 +153,5 @@ export default class ProcessesProcessDiagramsController extends Controller {
       });
       return;
     }
-
-    const safeProcessTitle = this.model.process.title.replace(
-      /[^a-zA-Z0-9]/g,
-      '',
-    );
-    let listVersion = '';
-    if (this.selectedDiagramList?.version) {
-      listVersion = `-${this.selectedDiagramList?.version}`;
-    }
-    await downloadFilesAsZip(
-      diagramFiles,
-      this.model.process.title
-        ? `diagrammen-${safeProcessTitle}${listVersion}`
-        : 'proces-diagrammen',
-    );
   });
 }

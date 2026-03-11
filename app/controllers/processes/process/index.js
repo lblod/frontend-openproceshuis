@@ -6,8 +6,6 @@ import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
-import { downloadFilesAsZip } from 'frontend-openproceshuis/utils/file-downloader';
-
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
   @tracked attachmentsPage = 0;
@@ -130,22 +128,5 @@ export default class ProcessesProcessIndexController extends Controller {
       });
       return;
     }
-    const safeProcessTitle = this.model.process.title.replace(
-      /[^a-zA-Z0-9]/g,
-      '',
-    );
-    await downloadFilesAsZip(
-      diagramFiles,
-      this.model.process.title
-        ? `diagrammen-${safeProcessTitle}`
-        : 'proces-diagrammen',
-    );
   });
-
-  get diagramsRouteNameFromParent() {
-    if (!this.model.breadcrumRouteName) {
-      return 'processes.process.diagrams';
-    }
-    return this.model.breadcrumRouteName + '.diagrams';
-  }
 }
