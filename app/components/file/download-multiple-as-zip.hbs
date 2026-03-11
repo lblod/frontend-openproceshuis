@@ -1,0 +1,7 @@
+<AuButton
+  @disabled={{not this.hasFiles}}
+  @loading={{this.downloadFiles.isRunning}}
+  {{on "click" (perform this.downloadFiles)}}
+>
+  {{this.buttonLabel}}
+</AuButton>
