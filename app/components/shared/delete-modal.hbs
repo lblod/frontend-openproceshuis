@@ -13,8 +13,13 @@
     wilt verwijderen?</:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
-      <AuButton @skin="secondary" {{on "click" @closeModal}}>Annuleer</AuButton>
       <AuButton
+        @skin="secondary"
+        {{on "click" @closeModal}}
+        class="border-radius"
+      >Annuleer</AuButton>
+      <AuButton
+        class="border-radius"
         @skin="primary"
         @icon="bin"
         @alert="true"
