@@ -69,6 +69,7 @@ export default class IcrModalComponent extends Component {
     const checkDuplicateTitle = await this.store.query('information-asset', {
       filter: {
         ':exact:title': this.args.selected.title?.trim(),
+        ':has:versions': true,
         ':not:status': ENV.resourceStates.archived,
       },
       page: { size: 1 },

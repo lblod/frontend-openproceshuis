@@ -137,12 +137,6 @@ export default class InformationAssetsIndexController extends Controller {
     try {
       if (!this.informationAssetToDelete) return;
 
-      if (this.informationAssetToDelete.processes) {
-        this.informationAssetToDelete.processes.forEach((process) => {
-          process.informationAsset = null;
-        });
-        this.informationAssetToDelete.processes = [];
-      }
       this.informationAssetToDelete.archive();
       this.informationAssetToDelete.modified = new Date();
       await this.informationAssetToDelete.save();

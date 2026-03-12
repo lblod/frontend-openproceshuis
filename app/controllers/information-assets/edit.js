@@ -104,6 +104,7 @@ export default class InformationAssetIndexController extends Controller {
           {
             filter: {
               ':exact:title': this.canonicalAsset.title?.trim(),
+              ':has:versions': true,
               ':not:status': ENV.resourceStates.archived,
             },
             page: { size: 1 },
@@ -179,13 +180,6 @@ export default class InformationAssetIndexController extends Controller {
   onDeleteAsset = task({ drop: true }, async () => {
     try {
       this.closeDeleteModal();
-
-      if (this.canonicalAsset.processes) {
-        this.canonicalAsset.processes.forEach((process) => {
-          process.informationAsset = null;
-        });
-        this.canonicalAsset.processes = [];
-      }
 
       this.canonicalAsset.archive();
       this.canonicalAsset.modified = new Date();
