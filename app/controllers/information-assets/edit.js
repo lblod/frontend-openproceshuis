@@ -135,7 +135,17 @@ export default class InformationAssetIndexController extends Controller {
       if (this.process) {
         this.router.transitionTo('processes.process', this.process);
       } else {
-        this.router.transitionTo('information-assets.edit', canonicalRecord.id);
+        await this.router.transitionTo(
+          'information-assets.edit',
+          canonicalRecord.id,
+          {
+            queryParams: {
+              version: newVersionedRecord.id,
+              edit: false,
+            },
+          },
+        );
+        this.router.refresh('information-assets.edit');
       }
 
       this.edit = false;
