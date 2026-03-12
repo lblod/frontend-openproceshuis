@@ -41,34 +41,198 @@
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   <div class="au-o-grid au-o-grid--small">
     <div class="au-o-grid__item au-u-4-6@medium">
-      <DataCard
-        class={{if
-          (or this.versionedAsset.isArchived this.edit)
-          "u-color-top-border-gray"
-          "u-color-top-border-yellow"
-        }}
-      >
-        <:title>
-          Informatieclassificatie
-        </:title>
-        <:header>
-          {{#if this.versionedAsset.isArchived}}
-            <AuPill @icon="clock-rewind">Gearchiveerd </AuPill>
-          {{else}}
-            {{#if this.canEdit}}
-              {{#if this.edit}}
-                <AuButton
-                  @skin="naked"
-                  {{on "click" this.cancelEdit}}
-                >Annuleer</AuButton>
-                <AuButton
-                  @skin="primary"
-                  @icon="check"
-                  @loading={{this.saveChanges.isRunning}}
-                  {{on "click" (perform this.saveChanges)}}
-                  @disabled={{not this.formIsValid}}
-                >Opslaan</AuButton>
-              {{else}}
+
+      {{#if this.edit}}
+        <DataCard class="u-color-top-border-gray">
+          <:title>Informatieclassificatie</:title>
+          <:header>
+            <AuButton
+              @skin="naked"
+              {{on "click" this.cancelEdit}}
+            >Annuleer</AuButton>
+            <AuButton
+              @skin="primary"
+              @icon="check"
+              @loading={{this.saveChanges.isRunning}}
+              {{on "click" (perform this.saveChanges)}}
+              @disabled={{not this.formIsValid}}
+            >Opslaan</AuButton>
+          </:header>
+          <:card as |Card|>
+            <Card.Columns
+              class="au-u-flex au-u-flex--spaced-small au-u-flex--wrap"
+            >
+              <:left as |Item|>
+                <Item>
+                  <:label>
+                    <AuLabel
+                      @error={{this.errorMessage}}
+                      @required={{true}}
+                      for="edit-information-asset"
+                    >Titel</AuLabel>
+                  </:label>
+                  <:content>
+                    <AuInput
+                      id="edit-information-asset"
+                      value={{this.canonicalAsset.title}}
+                      {{on "input" this.setTitle}}
+                      @width="block"
+                      @error={{this.errorMessageTitle}}
+                    />
+                    {{#if this.errorMessageTitle}}
+                      <AuHelpText @error="true">
+                        {{this.errorMessageTitle}}
+                      </AuHelpText>
+                    {{/if}}
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Beschrijving</:label>
+                  <:content>
+                    <AuTextarea
+                      @width="block"
+                      value={{this.canonicalAsset.description}}
+                      {{on "input" this.setDescription}}
+                    />
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Aangemaakt door</:label>
+                  <:content>
+                    {{or this.canonicalAsset.creator.name "/"}}
+                  </:content>
+                </Item>
+              </:left>
+              <:right as |Item|>
+                <Item>
+                  <:label>Beschikbaarheid</:label>
+                  <:content>
+                    <Process::IcrCard::Score
+                      @onScoreChange={{fn
+                        (mut this.canonicalAsset.availabilityScore)
+                      }}
+                      @selectedScore={{this.canonicalAsset.availabilityScore}}
+                    />
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Integriteit</:label>
+                  <:content>
+                    <Process::IcrCard::Score
+                      @onScoreChange={{fn
+                        (mut this.canonicalAsset.integrityScore)
+                      }}
+                      @selectedScore={{this.canonicalAsset.integrityScore}}
+                    />
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Vertrouwelijkheid</:label>
+                  <:content>
+                    <Process::IcrCard::Score
+                      @onScoreChange={{fn
+                        (mut this.canonicalAsset.confidentialityScore)
+                      }}
+                      @selectedScore={{this.canonicalAsset.confidentialityScore}}
+                    />
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Persoonsgegevens</:label>
+                  <:content>
+                    <div
+                      class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
+                    >
+                      <AuCheckbox
+                        id="contains-personal-data"
+                        @onChange={{fn
+                          (mut this.canonicalAsset.containsProfessionalData)
+                        }}
+                        @checked={{this.canonicalAsset.containsProfessionalData}}
+                      >
+                        <label for="contains-personal-data">Professionele
+                          gegevens</label>
+                        <Shared::Tooltip
+                          @show={{true}}
+                          @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
+                          @placement="top"
+                        >
+                          <AuIcon
+                            class="color--info"
+                            @icon="circle-question"
+                            @size="large"
+                            @alignment="right"
+                          />
+                        </Shared::Tooltip>
+                      </AuCheckbox>
+                      <AuCheckbox
+                        id="contains-professional-data"
+                        @onChange={{fn
+                          (mut this.canonicalAsset.containsPersonalData)
+                        }}
+                        @checked={{this.canonicalAsset.containsPersonalData}}
+                      >
+                        <label
+                          for="contains-professional-data"
+                        >Persoonsgegevens</label>
+                        <Shared::Tooltip
+                          @show={{true}}
+                          @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                        >
+                          <AuIcon
+                            class="color--info"
+                            @icon="circle-question"
+                            @size="large"
+                            @alignment="right"
+                          />
+                        </Shared::Tooltip>
+                      </AuCheckbox>
+                      <AuCheckbox
+                        id="contains-sensitive-personal-data"
+                        @onChange={{fn
+                          (mut
+                            this.canonicalAsset.containsSensitivePersonalData
+                          )
+                        }}
+                        @checked={{this.canonicalAsset.containsSensitivePersonalData}}
+                      >
+                        <label for="contains-sensitive-personal-data">Bijzondere
+                          persoonsgegevens</label>
+                        <Shared::Tooltip
+                          @show={{true}}
+                          @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                        >
+                          <AuIcon
+                            class="color--info"
+                            @icon="circle-question"
+                            @size="large"
+                            @alignment="right"
+                          />
+                        </Shared::Tooltip>
+                      </AuCheckbox>
+                    </div>
+                  </:content>
+                </Item>
+              </:right>
+            </Card.Columns>
+          </:card>
+        </DataCard>
+      {{else}}
+        <DataCard
+          class={{if
+            this.versionedAsset.isArchived
+            "u-color-top-border-gray"
+            "u-color-top-border-yellow"
+          }}
+        >
+          <:title>
+            Informatieclassificatie
+          </:title>
+          <:header>
+            {{#if this.versionedAsset.isArchived}}
+              <AuPill @icon="clock-rewind">Gearchiveerd </AuPill>
+            {{else}}
+              {{#if this.canEdit}}
                 <AuButton
                   @skin="naked"
                   @icon="pencil"
@@ -82,198 +246,130 @@
                 >Verwijder</AuButton>
               {{/if}}
             {{/if}}
-          {{/if}}
-        </:header>
+          </:header>
+          <:card as |Card|>
+            <Card.Columns
+              class="au-u-flex au-u-flex--spaced-small au-u-flex--wrap"
+            >
+              <:left as |Item|>
+                <Item>
+                  <:label>Titel</:label>
+                  <:content>
+                    {{or this.versionedAsset.title "/"}}
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Beschrijving</:label>
+                  <:content>
+                    {{or this.versionedAsset.description "/"}}
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Aangemaakt door</:label>
+                  <:content>{{or this.versionedAsset.creator.name "/"}}
+                  </:content>
+                </Item>
 
-        <:card as |Card|>
-          <Card.Columns
-            class="au-u-flex au-u-flex--spaced-small au-u-flex--wrap"
-          >
-            <:left as |Item|>
-              <Item>
-                <:label>
-                  {{#if this.edit}}
-                    <AuLabel
-                      @error={{this.errorMessage}}
-                      @required={{true}}
-                      for="edit-information-asset"
-                    >Titel</AuLabel>
-                  {{else}}
-                    Titel
-                  {{/if}}
-                </:label>
-                <:content>
-                  {{#if this.edit}}
-                    <AuInput
-                      id="edit-information-asset"
-                      value={{this.versionedAsset.title}}
-                      {{on "input" this.setTitle}}
-                      @width="block"
-                      @error={{this.errorMessageTitle}}
+              </:left>
+              <:right as |Item|>
+                <Item>
+                  <:label>Beschikbaarheid</:label>
+                  <:content>
+                    <Process::IcrCard::Score
+                      @selectedScore={{this.versionedAsset.availabilityScore}}
                     />
-                    {{#if this.errorMessageTitle}}
-                      <AuHelpText @error="true">
-                        {{this.errorMessageTitle}}
-                      </AuHelpText>
-                    {{/if}}
-                  {{else}}
-                    {{#if this.versionedAsset.title}}
-                      {{this.versionedAsset.title}}
-                    {{else}}
-                      <span>Geen titel</span>
-                    {{/if}}
-                  {{/if}}
-                </:content>
-              </Item>
-              <Item>
-                <:label>Beschrijving</:label>
-                <:content>
-                  {{#if this.edit}}
-                    <AuTextarea
-                      @width="block"
-                      value={{this.versionedAsset.description}}
-                      {{on "input" this.setDescription}}
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Integriteit</:label>
+                  <:content>
+                    <Process::IcrCard::Score
+                      @selectedScore={{this.versionedAsset.integrityScore}}
                     />
-                  {{else}}
-                    {{#if this.versionedAsset.description}}
-                      {{this.versionedAsset.description}}
-                    {{else}}
-                      <span>Geen beschrijving</span>
-                    {{/if}}
-                  {{/if}}
-                </:content>
-              </Item>
-              <Item>
-                <:label>Aangemaakt door</:label>
-                <:content>
-                  {{#if this.versionedAsset.creator.name}}
-                    {{this.versionedAsset.creator.name}}
-                  {{else}}
-                    <span>Geen eigenaar</span>
-                  {{/if}}
-                </:content>
-              </Item>
-
-            </:left>
-            <:right as |Item|>
-
-              <Item>
-                <:label>Beschikbaarheid</:label>
-                <:content>
-                  <Process::IcrCard::Score
-                    @readonly={{not this.edit}}
-                    @onScoreChange={{fn
-                      (mut this.canonicalAsset.availabilityScore)
-                    }}
-                    @selectedScore={{this.versionedAsset.availabilityScore}}
-                  />
-                </:content>
-              </Item>
-              <Item>
-                <:label>Integriteit</:label>
-                <:content>
-                  <Process::IcrCard::Score
-                    @readonly={{not this.edit}}
-                    @onScoreChange={{fn
-                      (mut this.canonicalAsset.integrityScore)
-                    }}
-                    @selectedScore={{this.versionedAsset.integrityScore}}
-                  />
-                </:content>
-              </Item>
-              <Item>
-                <:label>Vertrouwelijkheid</:label>
-                <:content>
-                  <Process::IcrCard::Score
-                    @readonly={{not this.edit}}
-                    @onScoreChange={{fn
-                      (mut this.canonicalAsset.confidentialityScore)
-                    }}
-                    @selectedScore={{this.versionedAsset.confidentialityScore}}
-                  />
-                </:content>
-              </Item>
-              <Item>
-                <:label>Persoonsgegevens</:label>
-                <:content>
-                  <div
-                    class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
-                  >
-                    <AuCheckbox
-                      id="contains-personal-data"
-                      @onChange={{fn
-                        (mut this.canonicalAsset.containsProfessionalData)
-                      }}
-                      @checked={{this.versionedAsset.containsProfessionalData}}
-                      @disabled={{not this.edit}}
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Vertrouwelijkheid</:label>
+                  <:content>
+                    <Process::IcrCard::Score
+                      @selectedScore={{this.versionedAsset.confidentialityScore}}
+                    />
+                  </:content>
+                </Item>
+                <Item>
+                  <:label>Persoonsgegevens</:label>
+                  <:content>
+                    <div
+                      class="au-u-flex au-u-flex--column au-u-flex--spaced-small"
                     >
-                      <label for="contains-personal-data">Professionele gegevens</label>
-                      <Shared::Tooltip
-                        @show={{true}}
-                        @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
-                        @placement="top"
+                      <AuCheckbox
+                        id="contains-personal-data"
+                        @checked={{this.versionedAsset.containsProfessionalData}}
+                        @disabled={{true}}
                       >
-                        <AuIcon
-                          class="color--info"
-                          @icon="circle-question"
-                          @size="large"
-                          @alignment="right"
-                        />
-                      </Shared::Tooltip>
-                    </AuCheckbox>
-                    <AuCheckbox
-                      id="contains-professional-data"
-                      @onChange={{fn
-                        (mut this.canonicalAsset.containsPersonalData)
-                      }}
-                      @checked={{this.versionedAsset.containsPersonalData}}
-                      @disabled={{not this.edit}}
-                    >
-                      <label
-                        for="contains-professional-data"
-                      >Persoonsgegevens</label>
-                      <Shared::Tooltip
-                        @show={{true}}
-                        @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                        <label for="contains-personal-data">Professionele
+                          gegevens</label>
+                        <Shared::Tooltip
+                          @show={{true}}
+                          @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
+                          @placement="top"
+                        >
+                          <AuIcon
+                            class="color--info"
+                            @icon="circle-question"
+                            @size="large"
+                            @alignment="right"
+                          />
+                        </Shared::Tooltip>
+                      </AuCheckbox>
+                      <AuCheckbox
+                        id="contains-professional-data"
+                        @checked={{this.versionedAsset.containsPersonalData}}
+                        @disabled={{true}}
                       >
-                        <AuIcon
-                          class="color--info"
-                          @icon="circle-question"
-                          @size="large"
-                          @alignment="right"
-                        />
-                      </Shared::Tooltip>
-                    </AuCheckbox>
-                    <AuCheckbox
-                      id="contains-sensitive-personal-data"
-                      @onChange={{fn
-                        (mut this.canonicalAsset.containsSensitivePersonalData)
-                      }}
-                      @checked={{this.versionedAsset.containsSensitivePersonalData}}
-                      @disabled={{not this.edit}}
-                    >
-                      <label for="contains-sensitive-personal-data">Bijzondere
-                        persoonsgegevens</label>
-                      <Shared::Tooltip
-                        @show={{true}}
-                        @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                        <label
+                          for="contains-professional-data"
+                        >Persoonsgegevens</label>
+                        <Shared::Tooltip
+                          @show={{true}}
+                          @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                        >
+                          <AuIcon
+                            class="color--info"
+                            @icon="circle-question"
+                            @size="large"
+                            @alignment="right"
+                          />
+                        </Shared::Tooltip>
+                      </AuCheckbox>
+                      <AuCheckbox
+                        id="contains-sensitive-personal-data"
+                        @checked={{this.versionedAsset.containsSensitivePersonalData}}
+                        @disabled={{true}}
                       >
-                        <AuIcon
-                          class="color--info"
-                          @icon="circle-question"
-                          @size="large"
-                          @alignment="right"
-                        />
-                      </Shared::Tooltip>
-                    </AuCheckbox>
-                  </div>
-                </:content>
-              </Item>
-            </:right>
-          </Card.Columns>
-        </:card>
+                        <label for="contains-sensitive-personal-data">Bijzondere
+                          persoonsgegevens</label>
+                        <Shared::Tooltip
+                          @show={{true}}
+                          @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                        >
+                          <AuIcon
+                            class="color--info"
+                            @icon="circle-question"
+                            @size="large"
+                            @alignment="right"
+                          />
+                        </Shared::Tooltip>
+                      </AuCheckbox>
+                    </div>
+                  </:content>
+                </Item>
+              </:right>
+            </Card.Columns>
+          </:card>
+        </DataCard>
+      {{/if}}
 
-      </DataCard>
       <br />
       <Icr::Attachments
         @canEdit={{this.canEdit}}

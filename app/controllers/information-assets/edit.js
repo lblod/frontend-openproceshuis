@@ -18,6 +18,7 @@ export default class InformationAssetIndexController extends Controller {
   @service currentSession;
   @service toaster;
   @service router;
+  @service versionedStore;
 
   @tracked edit = false;
   @tracked process = null;
@@ -95,7 +96,6 @@ export default class InformationAssetIndexController extends Controller {
         return;
       }
 
-      const oldAsset = this.canonicalAsset;
       let changes = this.canonicalAsset.changedAttributes();
       let titleChanged = 'title' in changes;
       if (titleChanged) {
@@ -103,7 +103,7 @@ export default class InformationAssetIndexController extends Controller {
           'information-asset',
           {
             filter: {
-              ':exact:title': oldAsset.title?.trim(),
+              ':exact:title': this.canonicalAsset.title?.trim(),
               ':not:status': ENV.resourceStates.archived,
             },
             page: { size: 1 },
@@ -120,38 +120,22 @@ export default class InformationAssetIndexController extends Controller {
         }
       }
 
-      const newAsset = this.store.createRecord('information-asset', {
-        title: oldAsset.title?.trim(),
-        description: oldAsset.description,
-        confidentialityScore: oldAsset.confidentialityScore,
-        integrityScore: oldAsset.integrityScore,
-        availabilityScore: oldAsset.availabilityScore,
-        containsPersonalData: oldAsset.containsPersonalData,
-        containsProfessionalData: oldAsset.containsProfessionalData,
-        containsSensitivePersonalData: oldAsset.containsSensitivePersonalData,
-        creator: this.currentSession.group,
-        previousVersion: oldAsset,
-        processes: oldAsset.processes?.slice(),
-        attachments: oldAsset.attachments?.slice(),
-        links: oldAsset.links?.slice(),
-        created: new Date(),
-        modified: new Date(),
-      });
+      const { canonicalRecord, oldVersionedRecord, newVersionedRecord } =
+        await this.versionedStore.updateRecord(
+          'information-asset',
+          this.versionedAsset,
+        );
 
-      await newAsset.save();
-      const existingNext = await oldAsset.nextVersions;
-      const nextVersions = [...existingNext, newAsset];
+      if (!newVersionedRecord) return;
 
-      oldAsset.rollbackAttributes();
-      oldAsset.archive();
-      oldAsset.processes = [];
-      oldAsset.nextVersions = nextVersions;
-      oldAsset.modified = new Date();
-      await oldAsset.save();
+      await canonicalRecord.save();
+      await newVersionedRecord.save();
+      await oldVersionedRecord.save();
+
       if (this.process) {
         this.router.transitionTo('processes.process', this.process);
       } else {
-        this.router.transitionTo('information-assets.edit', newAsset.id);
+        this.router.transitionTo('information-assets.edit', canonicalRecord.id);
       }
 
       this.edit = false;
