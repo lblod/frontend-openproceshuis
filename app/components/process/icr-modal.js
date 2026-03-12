@@ -96,18 +96,18 @@ export default class IcrModalComponent extends Component {
       status: this.args.selected.status,
       creator: this.currentSession.group,
     };
-    const { canonicalRecord: canonicalAsset, versionedRecord: versionedAsset } =
+    const { canonicalRecord, versionedRecord } =
       this.versionedStore.createRecord('information-asset', newAssetData);
 
     try {
-      await canonicalAsset.save();
-      await versionedAsset.save();
+      await canonicalRecord.save();
+      await versionedRecord.save();
 
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
       );
       if (this.args.setOptions) {
-        this.args.setOptions([...nonDraftAssets, canonicalAsset]);
+        this.args.setOptions([...nonDraftAssets, canonicalRecord]);
       }
 
       this.toaster.success(
