@@ -117,23 +117,15 @@ export default class ProcessDetailsCardComponent extends Component {
   }
 
   @action
-  setProcessTitle(event) {
+  setProperty(property, event) {
     if (!this.args.process) return;
-    this.args.process.title = event.target.value;
-    this.validateForm();
-  }
 
-  @action
-  setProcessDescription(event) {
-    if (!this.args.process) return;
-    this.args.process.description = event.target.value;
-    this.validateForm();
-  }
+    let propertyValue = event.target?.value;
+    if (propertyValue?.trim() === '') {
+      propertyValue = undefined;
+    }
 
-  @action
-  setProcessEmail(event) {
-    if (!this.args.process) return;
-    this.args.process.email = event.target.value;
+    this.args.process[property] = propertyValue;
     this.validateForm();
   }
 
