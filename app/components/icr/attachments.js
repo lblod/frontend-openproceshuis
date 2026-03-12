@@ -62,7 +62,7 @@ export default class IcrAttachments extends Component {
     const newFile = await this.store.findRecord('file', newFileId);
     this.args.informationAsset.attachments.push(newFile);
     this.args.informationAsset.modified = newFile.created;
-    await newFile.save();
+
     await this.args.informationAsset.save();
   });
 
