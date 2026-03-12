@@ -85,6 +85,7 @@ export default class IcrModalComponent extends Component {
 
     const newAssetData = {
       title: this.args.selected.title?.trim(),
+      description: this.args.selected.description,
       availabilityScore: this.args.selected.availabilityScore,
       confidentialityScore: this.args.selected.confidentialityScore,
       integrityScore: this.args.selected.integrityScore,
@@ -92,9 +93,6 @@ export default class IcrModalComponent extends Component {
       containsProfessionalData: this.args.selected.containsProfessionalData,
       containsSensitivePersonalData:
         this.args.selected.containsSensitivePersonalData,
-      description: this.args.selected.description,
-      status: this.args.selected.status,
-      creator: this.currentSession.group,
     };
     const { canonicalRecord, versionedRecord } =
       this.versionedStore.createRecord('information-asset', newAssetData);

@@ -47,4 +47,17 @@ export default class InformationAssetModel extends Model {
   get isVersionedInformationAsset() {
     return false;
   }
+
+  get versionData() {
+    return {
+      title: this.title,
+      description: this.description,
+      confidentialityScore: this.confidentialityScore,
+      integrityScore: this.integrityScore,
+      availabilityScore: this.availabilityScore,
+      containsPersonalData: this.containsPersonalData,
+      containsProfessionalData: this.containsProfessionalData,
+      containsSensitivePersonalData: this.containsSensitivePersonalData,
+    };
+  }
 }

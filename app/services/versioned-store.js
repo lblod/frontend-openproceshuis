@@ -3,6 +3,7 @@ import { service } from '@ember/service';
 
 export default class VersionedStoreService extends Service {
   @service store;
+  @service currentSession;
 
   createRecord(modelName, data) {
     if (modelName !== 'information-asset') {
@@ -14,6 +15,7 @@ export default class VersionedStoreService extends Service {
       ...data,
       created: createdAt,
       modified: createdAt,
+      creator: this.currentSession.group,
     };
 
     const canonicalRecord = this.store.createRecord(modelName, fullData);
@@ -37,8 +39,7 @@ export default class VersionedStoreService extends Service {
     }
 
     const createdAt = new Date();
-
-    const versionData = this.buildVersionData(canonicalRecord);
+    const versionData = canonicalRecord.versionData;
 
     const newVersionedRecord = this.store.createRecord(
       `versioned-${modelName}`,
@@ -46,6 +47,7 @@ export default class VersionedStoreService extends Service {
         ...versionData,
         created: createdAt,
         modified: createdAt,
+        creator: this.currentSession.group,
         canonical: canonicalRecord,
         previousVersion: oldVersionedRecord,
       },
@@ -59,29 +61,5 @@ export default class VersionedStoreService extends Service {
       oldVersionedRecord,
       newVersionedRecord,
     };
-  }
-
-  buildVersionData(record) {
-    const data = {};
-    const modelClass = record.constructor;
-
-    modelClass.eachAttribute((name) => {
-      data[name] = record[name];
-    });
-
-    modelClass.eachRelationship((name, descriptor) => {
-      if (name === 'versions') {
-        return;
-      }
-
-      if (descriptor.kind === 'belongsTo') {
-        data[name] = record[name];
-        return;
-      }
-
-      data[name] = record[name]?.slice() ?? [];
-    });
-
-    return data;
   }
 }
