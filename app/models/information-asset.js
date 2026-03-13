@@ -14,31 +14,50 @@ export default class InformationAssetModel extends Model {
   @attr('boolean', { defaultValue: false }) containsPersonalData;
   @attr('boolean', { defaultValue: false }) containsProfessionalData;
   @attr('boolean', { defaultValue: false }) containsSensitivePersonalData;
-  @belongsTo('information-asset', { inverse: null, async: false })
-  previousVersion;
 
-  @hasMany('information-asset', { inverse: 'nextVersions', async: true })
-  previousVersions;
+  @belongsTo('group', { inverse: null, async: false })
+  creator;
 
-  @hasMany('information-asset', { inverse: 'previousVersions', async: true })
-  nextVersions;
-
-  @belongsTo('group', { inverse: null, async: false }) creator;
-  @hasMany('processes', { inverse: null, async: false })
+  @hasMany('process', {
+    inverse: 'informationAssets',
+    async: false,
+    polymorphic: true,
+    as: 'information-asset',
+  })
   processes;
   @hasMany('file', { inverse: 'informationAssets', async: false })
   attachments;
-  @hasMany('link', {
-    inverse: null,
-    async: false,
-  })
+  @hasMany('link', { inverse: null, async: false })
   links;
+  @hasMany('versioned-information-asset', {
+    inverse: 'canonical',
+    async: false,
+    polymorphic: true,
+  })
+  versions;
 
   archive() {
     this.status = ENV.resourceStates.archived;
   }
 
-  isArchived() {
+  get isArchived() {
     return this.status === ENV.resourceStates.archived;
+  }
+
+  get isVersionedInformationAsset() {
+    return false;
+  }
+
+  get versionData() {
+    return {
+      title: this.title,
+      description: this.description,
+      confidentialityScore: this.confidentialityScore,
+      integrityScore: this.integrityScore,
+      availabilityScore: this.availabilityScore,
+      containsPersonalData: this.containsPersonalData,
+      containsProfessionalData: this.containsProfessionalData,
+      containsSensitivePersonalData: this.containsSensitivePersonalData,
+    };
   }
 }

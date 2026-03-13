@@ -8,46 +8,29 @@ import ENV from 'frontend-openproceshuis/config/environment';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class IcrModalComponent extends Component {
-  @service store;
   @service toaster;
   @service currentSession;
+  @service store;
+  @service versionedStore;
 
   @tracked formIsValid = this.args.selected.title?.trim().length > 0;
   @tracked draftInformationAssets = this.args.options || [];
-  @tracked selected;
   @tracked errorMessageTitle;
 
   get validForm() {
     return this.formIsValid || this.args.selected.title?.trim().length > 0;
   }
 
-  get header() {
-    if (this.args.selected.isDraft) {
-      return 'Nieuwe informatieclassificatie';
-    } else {
-      return 'Wijzig informatieclassificatie: ' + this.args.selected.title;
-    }
-  }
-
   @action
   closeModal() {
-    if (this.args.selected.isDraft) {
-      const newOptions = this.draftInformationAssets.filter(
-        (asset) => asset.isDraft !== true,
-      );
-      if (this.args.setOptions) {
-        this.args.setOptions(newOptions);
-      }
+    const newOptions = this.draftInformationAssets.filter(
+      (asset) => asset.isDraft !== true,
+    );
+    if (this.args.setOptions) {
+      this.args.setOptions(newOptions);
     }
     this.errorMessageTitle = null;
     this.args.closeModal();
-  }
-
-  @action
-  setAvailabilityScore(value) {
-    if (!this.args.selected) return;
-    this.args.selected.availabilityScore = value;
-    this.validateForm();
   }
 
   @action
@@ -86,6 +69,7 @@ export default class IcrModalComponent extends Component {
     const checkDuplicateTitle = await this.store.query('information-asset', {
       filter: {
         ':exact:title': this.args.selected.title?.trim(),
+        ':has:versions': true,
         ':not:status': ENV.resourceStates.archived,
       },
       page: { size: 1 },
@@ -100,9 +84,9 @@ export default class IcrModalComponent extends Component {
       return;
     }
 
-    const oldAsset = this.args.selected;
     const newAssetData = {
       title: this.args.selected.title?.trim(),
+      description: this.args.selected.description,
       availabilityScore: this.args.selected.availabilityScore,
       confidentialityScore: this.args.selected.confidentialityScore,
       integrityScore: this.args.selected.integrityScore,
@@ -110,37 +94,29 @@ export default class IcrModalComponent extends Component {
       containsProfessionalData: this.args.selected.containsProfessionalData,
       containsSensitivePersonalData:
         this.args.selected.containsSensitivePersonalData,
-      created: new Date(),
-      modified: new Date(),
-      description: this.args.selected.description,
-      status: this.args.selected.status,
-      creator: this.currentSession.group,
     };
-    const newAsset = this.store.createRecord('information-asset', newAssetData);
+    const { canonicalRecord, versionedRecord } =
+      this.versionedStore.createRecord('information-asset', newAssetData);
 
     try {
-      let isNew = false;
-      if (oldAsset.isDraft) {
-        isNew = true;
-        await newAsset.save();
-      }
+      await canonicalRecord.save();
+      await versionedRecord.save();
+
       const nonDraftAssets = this.draftInformationAssets.filter(
         (asset) => !asset.isDraft,
       );
       if (this.args.setOptions) {
-        this.args.setOptions([...nonDraftAssets, newAsset]);
+        this.args.setOptions([...nonDraftAssets, canonicalRecord]);
       }
 
       this.toaster.success(
-        isNew
-          ? 'Nieuwe informatie asset succesvol toegevoegd.'
-          : 'Informatie asset succesvol bijgewerkt.',
+        'Nieuwe informatie asset succesvol toegevoegd.',
         'Gelukt!',
         { timeOut: 5000 },
       );
 
       this.resetModal();
-      this.args.closeModal(newAsset);
+      this.args.closeModal(true);
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.icrDataUpdateFailed');
