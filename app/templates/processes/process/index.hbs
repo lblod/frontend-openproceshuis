@@ -52,11 +52,16 @@
     <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
       <AuHeading @level="2" @skin="3">Diagrammen</AuHeading>
       <AuButtonGroup>
+        <File::DownloadMultipleAsZip
+          @buttonLabel="Download"
+          @folderName={{this.diagramsDownloadFolderName}}
+          @files={{this.diagramFiles}}
+          @onDownloadSuccesful={{this.onDiagramsDownloadedAsZip}}
+        />
         <AuLink
           @route={{this.diagramsRouteNameFromParent}}
           @model={{this.process.id}}
           @skin="button-naked"
-          @icon="pencil"
         >
           Wijzig
         </AuLink>
