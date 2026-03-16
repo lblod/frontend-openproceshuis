@@ -67,11 +67,20 @@
         </AuLink>
       </AuButtonGroup>
     </div>
-    <DiagramList::DiagramsInTabs
-      @canEdit={{this.canEdit}}
-      @diagramList={{@model.diagramList}}
-      @processId={{this.process.id}}
-    />
+    {{#if @model.diagramList}}
+      <DiagramList::DiagramsInTabs
+        @canEdit={{this.canEdit}}
+        @diagramList={{@model.diagramList}}
+        @processId={{this.process.id}}
+      />
+    {{else}}
+      <div
+        class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom"
+      >
+        <p class="au-u-h3 au-u-muted">Er werden geen diagrammen gevonden</p>
+        <p class="au-u-muted">Klik de wijzig en maak een nieuwe versie aan</p>
+      </div>
+    {{/if}}
   </span>
 
   {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}

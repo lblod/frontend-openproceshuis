@@ -2,6 +2,7 @@ import Controller from '@ember/controller';
 
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
@@ -116,6 +117,18 @@ export default class ProcessesProcessIndexController extends Controller {
 
     return 'proces_diagrammen';
   }
+  downloadDiagrams = task({ drop: true }, async () => {
+    const diagramFiles = this.model.diagramList?.diagrams
+      ?.filter((diagrams) => !diagrams.diagramFile.isArchived)
+      ?.map((diagram) => diagram.diagramFile);
+
+    if (!diagramFiles) {
+      this.toaster.error('Er werden geen diagrammen gevonden', undefined, {
+        timeOut: 5000,
+      });
+      return;
+    }
+  });
 
   get diagramsRouteNameFromParent() {
     if (!this.model.breadcrumRouteName) {

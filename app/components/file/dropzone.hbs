@@ -69,11 +69,12 @@
           <div
             class="au-u-flex au-u-flex--between au-u-flex--vertical-center au-u-background-gray-100 border-line-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
           >
-            <AuIcon @icon="file" @size="large" class="au-u-margin-left" />
-            <p>{{fileWrapper.ext}}</p>
-            <div>
-              <p>{{fileWrapper.name}}</p>
-              <p class="au-u-muted">{{file-size-format fileWrapper.size}}</p>
+            <div class="au-u-flex au-u-flex--row au-u-flex--vertical-center">
+              <AuIcon @icon="file" @size="large" class="au-u-margin-left" />
+              <div class="au-u-margin-left-small">
+                <p>{{fileWrapper.name}}</p>
+                <p class="au-u-muted">{{file-size-format fileWrapper.size}}</p>
+              </div>
             </div>
             {{#if @canEditFileQueue}}
               <AuButton
