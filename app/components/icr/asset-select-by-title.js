@@ -6,11 +6,10 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class IcrAssetSelectByTitleComponent extends Component {
   @service store;
 
-  @restartableTask
-  *loadAssetsTask(searchParams = '') {
+  loadAssetsTask = restartableTask(async (searchParams = '') => {
     if (!searchParams?.trim()) return;
 
-    yield timeout(200);
+    await timeout(200);
 
     const query = {
       filter: {
@@ -20,10 +19,10 @@ export default class IcrAssetSelectByTitleComponent extends Component {
       },
     };
 
-    const result = yield this.store.query('information-asset', query);
+    const result = await this.store.query('information-asset', query);
 
     if (result) {
       return [...[searchParams], ...new Set(result.map((r) => r.title))];
     }
-  }
+  });
 }
