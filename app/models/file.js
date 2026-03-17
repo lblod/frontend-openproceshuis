@@ -11,7 +11,11 @@ export default class FileModel extends Model {
   @attr('string') status;
 
   @hasMany('process', { inverse: 'files', async: false }) processes;
-  @hasMany('information-asset', { inverse: 'attachments', async: false })
+  @hasMany('information-asset', {
+    inverse: 'attachments',
+    async: false,
+    polymorphic: true,
+  })
   informationAssets;
 
   get process() {

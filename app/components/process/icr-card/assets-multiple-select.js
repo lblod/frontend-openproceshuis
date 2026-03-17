@@ -17,8 +17,9 @@ export default class ProcessIcrCardAssetsMultipleSelectComponent extends Compone
       const query = {
         filter: {
           title: searchTitle,
+          ':has:versions': true,
+          ':not:status': ENV.resourceStates.archived,
         },
-        'filter[:not:status]': ENV.resourceStates.archived,
         sort: ':no-case:title',
       };
 

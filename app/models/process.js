@@ -41,7 +41,11 @@ export default class ProcessModel extends Model {
     async: true,
   })
   links;
-  @hasMany('information-asset', { inverse: null, async: false })
+  @hasMany('information-asset', {
+    inverse: 'processes',
+    async: false,
+    polymorphic: true,
+  })
   informationAssets;
   @hasMany('process', { inverse: 'linkedBlueprints', async: true })
   linkedBlueprints;
