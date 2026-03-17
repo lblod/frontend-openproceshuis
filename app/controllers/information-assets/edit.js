@@ -8,22 +8,24 @@ export default class InformationAssetIndexController extends Controller {
   queryParams = [
     'edit',
     'process',
-    'pageAttachments',
-    'sizeAttachments',
-    'sortAttachments',
+    { versionedAssetId: 'version' },
+    { pageAttachments: 'page-attachments' },
+    { sizeAttachments: 'size-attachments' },
+    { sortAttachments: 'sort-attachments' },
   ];
 
-  @service('store') store;
+  @service store;
   @service currentSession;
   @service toaster;
   @service router;
+  @service versionedStore;
 
   @tracked edit = false;
   @tracked process = null;
-  @tracked formIsValid = this.informationAsset.title?.trim().length > 0;
+  @tracked versionedAssetId = null;
+  @tracked formIsValid = this.canonicalAsset.title?.trim().length > 0;
   @tracked isDeleteModalOpen = false;
   @tracked isSaving = false;
-  @tracked versionTimeline = [];
   @tracked errorMessageTitle;
 
   @tracked pageAttachments = 0;
@@ -35,22 +37,25 @@ export default class InformationAssetIndexController extends Controller {
       this.currentSession.canEdit &&
       this.currentSession.group &&
       this.currentSession.isAbbOrDv &&
-      this.currentSession.isAdmin &&
-      !this.isArchived
+      this.currentSession.isAdmin
     );
   }
 
-  get informationAsset() {
-    return this.model;
+  get canonicalAsset() {
+    return this.model.canonicalAsset;
   }
 
-  get isArchived() {
-    return this.informationAsset.isArchived();
+  get versionedAsset() {
+    return this.model.versionedAsset;
+  }
+
+  get versionedAssets() {
+    return this.model.versionedAssets;
   }
 
   @action
   validateForm() {
-    this.formIsValid = this.informationAsset.title?.trim().length > 0;
+    this.formIsValid = this.canonicalAsset.title?.trim().length > 0;
   }
 
   @action
@@ -61,7 +66,7 @@ export default class InformationAssetIndexController extends Controller {
 
   @action
   cancelEdit() {
-    this.informationAsset.rollbackAttributes();
+    this.canonicalAsset.rollbackAttributes();
     this.edit = false;
     this.errorMessageTitle = null;
   }
@@ -69,18 +74,18 @@ export default class InformationAssetIndexController extends Controller {
   @action
   setTitle(event) {
     this.errorMessageTitle = null;
-    this.informationAsset.title = event.target.value;
+    this.canonicalAsset.title = event.target.value;
     this.validateForm();
   }
 
   @action
   setDescription(event) {
-    this.informationAsset.description = event.target.value;
+    this.canonicalAsset.description = event.target.value;
   }
 
   saveChanges = task({ drop: true }, async () => {
     try {
-      if (!this.informationAsset.hasDirtyAttributes) {
+      if (!this.canonicalAsset.hasDirtyAttributes) {
         this.toaster.success('Geen wijzigingen om op te slaan', undefined, {
           timeOut: 3000,
         });
@@ -91,15 +96,15 @@ export default class InformationAssetIndexController extends Controller {
         return;
       }
 
-      const oldAsset = this.informationAsset;
-      let changes = this.informationAsset.changedAttributes();
+      let changes = this.canonicalAsset.changedAttributes();
       let titleChanged = 'title' in changes;
       if (titleChanged) {
         const checkDuplicateTitle = await this.store.query(
           'information-asset',
           {
             filter: {
-              ':exact:title': oldAsset.title?.trim(),
+              ':exact:title': this.canonicalAsset.title?.trim(),
+              ':has:versions': true,
               ':not:status': ENV.resourceStates.archived,
             },
             page: { size: 1 },
@@ -116,38 +121,32 @@ export default class InformationAssetIndexController extends Controller {
         }
       }
 
-      const newAsset = this.store.createRecord('information-asset', {
-        title: oldAsset.title?.trim(),
-        description: oldAsset.description,
-        confidentialityScore: oldAsset.confidentialityScore,
-        integrityScore: oldAsset.integrityScore,
-        availabilityScore: oldAsset.availabilityScore,
-        containsPersonalData: oldAsset.containsPersonalData,
-        containsProfessionalData: oldAsset.containsProfessionalData,
-        containsSensitivePersonalData: oldAsset.containsSensitivePersonalData,
-        creator: this.currentSession.group,
-        previousVersion: oldAsset,
-        processes: oldAsset.processes?.slice(),
-        attachments: oldAsset.attachments?.slice(),
-        links: oldAsset.links?.slice(),
-        created: new Date(),
-        modified: new Date(),
-      });
+      const { canonicalRecord, oldVersionedRecord, newVersionedRecord } =
+        await this.versionedStore.updateRecord(
+          'information-asset',
+          this.versionedAsset,
+        );
 
-      await newAsset.save();
-      const existingNext = await oldAsset.nextVersions;
-      const nextVersions = [...existingNext, newAsset];
+      if (!newVersionedRecord) return;
 
-      oldAsset.rollbackAttributes();
-      oldAsset.archive();
-      oldAsset.processes = [];
-      oldAsset.nextVersions = nextVersions;
-      oldAsset.modified = new Date();
-      await oldAsset.save();
+      await canonicalRecord.save();
+      await newVersionedRecord.save();
+      await oldVersionedRecord.save();
+
       if (this.process) {
         this.router.transitionTo('processes.process', this.process);
       } else {
-        this.router.transitionTo('information-assets.edit', newAsset.id);
+        await this.router.transitionTo(
+          'information-assets.edit',
+          canonicalRecord.id,
+          {
+            queryParams: {
+              version: newVersionedRecord.id,
+              edit: false,
+            },
+          },
+        );
+        this.router.refresh('information-assets.edit');
       }
 
       this.edit = false;
@@ -182,16 +181,9 @@ export default class InformationAssetIndexController extends Controller {
     try {
       this.closeDeleteModal();
 
-      if (this.informationAsset.processes) {
-        this.informationAsset.processes.forEach((process) => {
-          process.informationAsset = null;
-        });
-        this.informationAsset.processes = [];
-      }
-
-      this.informationAsset.archive();
-      this.informationAsset.modified = new Date();
-      this.informationAsset.save();
+      this.canonicalAsset.archive();
+      this.canonicalAsset.modified = new Date();
+      this.canonicalAsset.save();
 
       this.toaster.success('Informatie asset succesvol verwijderd', undefined, {
         timeOut: 5000,
@@ -224,55 +216,6 @@ export default class InformationAssetIndexController extends Controller {
         },
       );
       throw error;
-    }
-  }
-
-  loadFullHistory = task(
-    { keepLatest: true, cancelOn: 'deactivate' },
-    async (asset) => {
-      if (!asset) return [];
-
-      const visited = new Set();
-      const allAssets = [];
-
-      async function traverse(a) {
-        if (!a || visited.has(a.id)) return;
-        visited.add(a.id);
-
-        if (a.previousVersion) await a.previousVersion;
-        const previousVersions = await a.previousVersions;
-        const nextVersions = await a.nextVersions;
-
-        allAssets.push(a);
-
-        if (a.previousVersion) await traverse(a.previousVersion);
-
-        for (let prev of previousVersions) {
-          await traverse(prev);
-        }
-
-        for (let next of nextVersions) {
-          await traverse(next);
-        }
-      }
-
-      await traverse(asset);
-
-      allAssets.sort((a, b) => new Date(a.created) - new Date(b.created));
-
-      return allAssets;
-    },
-  );
-
-  @action
-  loadTimeline() {
-    const assetTask = this.model;
-    if (assetTask?.then) {
-      assetTask.then((asset) => {
-        this.versionTimeline = this.loadFullHistory.perform(asset);
-      });
-    } else if (assetTask) {
-      this.versionTimeline = this.loadFullHistory.perform(assetTask);
     }
   }
 }

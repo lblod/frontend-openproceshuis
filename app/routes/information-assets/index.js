@@ -73,7 +73,10 @@ export default class InformationAssetsIndexRoute extends Route {
           size: params.size ?? 20,
         },
         include: 'creator',
-        'filter[:not:status]': ENV.resourceStates.archived,
+        filter: {
+          ':has:versions': true,
+          ':not:status': ENV.resourceStates.archived,
+        },
         sort: normalizeSort(params.sort),
       };
 

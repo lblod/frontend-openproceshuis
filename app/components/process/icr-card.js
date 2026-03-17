@@ -38,6 +38,10 @@ export default class ProcessIcrCardComponent extends Component {
     }
   }
 
+  get activeInformationAssets() {
+    return this.informationAssets.filter((asset) => !asset.isArchived);
+  }
+
   get archivedUri() {
     return ENV.resourceStates.archived;
   }

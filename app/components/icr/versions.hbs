@@ -1,0 +1,49 @@
+<h2 class="au-u-h4 au-u-medium">
+  Versiegeschiedenis
+</h2>
+<AuHr @size="default" class="au-u-margin-top-small" />
+
+{{#if (eq @versionedAssets.length 0)}}
+  <p class="au-u-muted">Geen versiegeschiedenis beschikbaar</p>
+{{else}}
+  <ol class="timeline">
+    {{#each @versionedAssets as |version|}}
+      <li class="timeline__item">
+        <span class="timeline__dot"></span>
+
+        <AuPill
+          class="au-u-margin-top-small"
+          @skin={{if version.isArchived "default" "success"}}
+        >
+          <AuLink
+            @route="information-assets.edit"
+            @model={{version.id}}
+            @query={{hash edit=null}}
+            @icon="link"
+            @skin={{if
+              (eq version.id @versionedAsset.id)
+              "bold"
+              "secondary"
+            }}
+          >
+            {{version.title}}
+
+            {{#if (not version.isArchived)}}
+              — aangemaakt:
+              {{date-format version.created true}}
+            {{else if version.modified}}
+              — gewijzigd:
+              {{date-format version.modified true}}
+            {{/if}}
+          </AuLink>
+        </AuPill>
+
+        {{#unless version.isArchived}}
+          <span class="au-u-muted au-u-margin-left-small">
+            (gepubliceerde versie)
+          </span>
+        {{/unless}}
+      </li>
+    {{/each}}
+  </ol>
+{{/if}}
