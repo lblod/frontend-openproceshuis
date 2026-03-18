@@ -1,3 +1,33 @@
+## 1.5.4 (2026-03-18)
+
+#### :rocket: Enhancement
+
+- [#188](https://github.com/lblod/frontend-openproceshuis/pull/188) Update ICR versioning system [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#183](https://github.com/lblod/frontend-openproceshuis/pull/183) OPH-892 | Show creator of the process on the detail page [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#180](https://github.com/lblod/frontend-openproceshuis/pull/180) Introduce new reader roles [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#175](https://github.com/lblod/frontend-openproceshuis/pull/175) feat: add filters for information assets [@Andresdev02](https://github.com/Andresdev02)
+- [#167](https://github.com/lblod/frontend-openproceshuis/pull/167) Feature/add attachments to information asset [@Andresdev02](https://github.com/Andresdev02)
+- [#162](https://github.com/lblod/frontend-openproceshuis/pull/162) Add information assets feature with routing, controller, and templates [@Andresdev02](https://github.com/Andresdev02)
+- [#161](https://github.com/lblod/frontend-openproceshuis/pull/161) Link new/existing information asset to process [@Andresdev02](https://github.com/Andresdev02)
+- [#160](https://github.com/lblod/frontend-openproceshuis/pull/160) Oph-877 | Enable sparql endpoint for everyone [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#159](https://github.com/lblod/frontend-openproceshuis/pull/159) OPH-822, 824 | rework displayed error messages by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+#### :bug: Bug Fixes
+
+- [#185](https://github.com/lblod/frontend-openproceshuis/pull/185) Feature/fix attachments are not loaded in correctly when switching between versions [@Andresdev02](https://github.com/Andresdev02)
+- [#179](https://github.com/lblod/frontend-openproceshuis/pull/179) OPH-921 | Refactor breadcrums to show main route [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#174](https://github.com/lblod/frontend-openproceshuis/pull/174) fix: also fetch the relevant administrative units in the process route [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+#### :wrench: Maintenance
+
+- [#181](https://github.com/lblod/frontend-openproceshuis/pull/181) Reinstate ICR properties on process [@MartijnBogaert](https://github.com/MartijnBogaert)
+
+#### Committers: 3
+
+- Andres Vergauwen ([@Andresdev02](https://github.com/Andresdev02))
+- Jonas Van Hoof ([@JonasVanHoof](https://github.com/JonasVanHoof))
+- Martijn Bogaert ([@MartijnBogaert](https://github.com/MartijnBogaert))
+
 ## 1.5.0 (2025-11-12)
 
 #### :rocket: Enhancement
