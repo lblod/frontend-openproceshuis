@@ -115,28 +115,26 @@ export default class ProcessAttachments extends Component {
     try {
       const processes = await this.store.query('process', {
         'filter[id]': this.process.id,
-        include: 'attachments,information-assets',
+        include:
+          'attachments,information-assets,information-assets.attachments',
         page: { size: 1 },
       });
       const process = processes[0];
       const processFileIds = process?.attachments.map((file) => file.id);
-
       let infoAssetFileIds = [];
-      const infoAssetIds = this.process.informationAssets.map(
-        (asset) => asset.id,
-      );
-      if (infoAssetIds?.length >= 1) {
+      const icrFiles = [];
+      for (const infoAsset of this.process.informationAssets) {
+        icrFiles.push(...infoAsset.attachments);
+      }
+      if (icrFiles?.length >= 1) {
         const infoAssetFiles = await this.store.query('file', {
-          reload: true,
-          'filter[information-asset][id]': infoAssetIds.join(','),
+          'filter[:id:]': icrFiles.map((file) => file.id).join(','),
           'filter[:not:status]': ENV.resourceStates.archived,
 
-          include: 'information-asset',
           sort: sort,
         });
         infoAssetFileIds = infoAssetFiles.map((file) => file.id);
       }
-
       let files = [];
       this.filesMeta = {};
       if (processFileIds.length >= 1 || infoAssetFileIds.length >= 1) {
@@ -148,6 +146,7 @@ export default class ProcessAttachments extends Component {
           'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
           'filter[:not:status]': ENV.resourceStates.archived,
           sort: sort,
+          include: 'information-assets',
         });
       }
       this.filesMeta = files.meta;

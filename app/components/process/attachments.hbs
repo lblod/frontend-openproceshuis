@@ -101,13 +101,13 @@
             <td>{{attachment.extension}}</td>
             <td>{{date-format attachment.created true}}</td>
             <td>{{attachment._source}}
-              {{#if attachment.informationAsset}}
-                <AuLink
-                  @route="information-assets.edit"
-                  @model={{attachment.informationAsset.id}}
-                >
-                  {{attachment.informationAsset.title}}
-                </AuLink>
+              {{#if attachment.informationAssets}}
+                {{#each attachment.informationAssets as |icr|}}
+                  <AuLink @route="information-assets.edit" @model={{icr.id}}>
+                    {{icr.title}}
+                  </AuLink>
+                {{/each}}
+
               {{else}}
                 <AuLink @route="processes.process" @model={{@process.id}}>
                   {{@process.title}}

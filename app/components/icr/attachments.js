@@ -58,7 +58,7 @@ export default class IcrAttachments extends Component {
     this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
   }
 
-  addFileToIcr = task({ enqueue: true }, async (newFileId) => {
+  addFilesToIcr = task({ enqueue: true }, async ([newFileId]) => {
     const newFile = await this.store.findRecord('file', newFileId);
     this.args.informationAsset.attachments.push(newFile);
     this.args.informationAsset.modified = newFile.created;
