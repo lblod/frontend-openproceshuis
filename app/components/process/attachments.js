@@ -9,8 +9,7 @@ import {
   downloadFilesAsZip,
 } from 'frontend-openproceshuis/utils/file-downloader';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
-import { trackedFunction } from 'reactiveweb/function';
-import { use } from 'ember-resources';
+import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
 export default class ProcessAttachments extends Component {
   @service api;
@@ -21,7 +20,6 @@ export default class ProcessAttachments extends Component {
   @tracked deleteModalOpened = false;
   @tracked fileToDelete = undefined;
 
-  @use(getAttachments) getAttachments;
   @tracked filesMeta = {};
 
   get process() {
@@ -30,8 +28,8 @@ export default class ProcessAttachments extends Component {
 
   get attachmentsHaveNoResults() {
     return (
-      !this.getAttachments.isLoading &&
-      !this.getAttachments.isError &&
+      !this.fetchAttachments.isRunning &&
+      !this.fetchAttachments.isError &&
       this.attachments?.length === 0
     );
   }
@@ -110,21 +108,24 @@ export default class ProcessAttachments extends Component {
     this.closeDeleteModal();
   });
 
-  fetchAttachments = task(
-    { restartable: true },
-    async ({ page = 0, size = 10, sort = 'name' }) => {
-      try {
-        const processes = await this.store.query('process', {
-          'filter[id]': this.process.id,
-          include: 'attachments',
-          page: { size: 1 },
-        });
-        const process = processes[0];
-        const processFileIds = process?.attachments.map((file) => file.id);
+  fetchAttachments = task({ restartable: true }, async () => {
+    const page = this.args.page ?? 0;
+    const size = this.args.size ?? 10;
+    const sort = this.args.sort ?? 'name';
+    try {
+      const processes = await this.store.query('process', {
+        'filter[id]': this.process.id,
+        include: 'attachments,information-assets',
+        page: { size: 1 },
+      });
+      const process = processes[0];
+      const processFileIds = process?.attachments.map((file) => file.id);
 
-        const infoAssetIds = this.process.informationAssets.map(
-          (asset) => asset.id,
-        );
+      let infoAssetFileIds = [];
+      const infoAssetIds = this.process.informationAssets.map(
+        (asset) => asset.id,
+      );
+      if (infoAssetIds?.length >= 1) {
         const infoAssetFiles = await this.store.query('file', {
           reload: true,
           'filter[information-asset][id]': infoAssetIds.join(','),
@@ -133,39 +134,30 @@ export default class ProcessAttachments extends Component {
           include: 'information-asset',
           sort: sort,
         });
-        const infoAssetFileIds = infoAssetFiles.map((file) => file.id);
-
-        let files = [];
-        if (processFileIds.length >= 1 || infoAssetFiles.length >= 1) {
-          files = await this.store.query('file', {
-            page: {
-              number: page,
-              size: size,
-            },
-            'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
-            'filter[:not:status]': ENV.resourceStates.archived,
-            sort: sort,
-          });
-        }
-        this.filesMeta = files.meta;
-        return files;
-      } catch {
-        return [];
+        infoAssetFileIds = infoAssetFiles.map((file) => file.id);
       }
-    },
-  );
 
-  get attachments() {
-    return this.getAttachments?.value;
-  }
-}
-
-function getAttachments() {
-  return trackedFunction(async () => {
-    return this.fetchAttachments.perform({
-      page: this.args.page,
-      size: this.args.size,
-      sort: this.args.sort,
-    });
+      let files = [];
+      this.filesMeta = {};
+      if (processFileIds.length >= 1 || infoAssetFileIds.length >= 1) {
+        files = await this.store.query('file', {
+          page: {
+            number: page,
+            size: size,
+          },
+          'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
+          'filter[:not:status]': ENV.resourceStates.archived,
+          sort: sort,
+        });
+      }
+      this.filesMeta = files.meta;
+      return files;
+    } catch {
+      return [];
+    }
   });
+
+  attachments = trackedTask(this, this.fetchAttachments, () => [
+    this.args.process,
+  ]);
 }

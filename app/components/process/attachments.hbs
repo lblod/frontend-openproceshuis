@@ -27,7 +27,7 @@
         </AuDropdown>
       {{/if}}
       <AuButton
-        @disabled={{not this.attachments}}
+        @disabled={{not this.attachments.value}}
         {{on "click" (perform this.downloadAttachments)}}
       >
         Download alle bestanden
@@ -44,7 +44,6 @@
       <span class="au-u-italic">.vsdx</span>.
     </AuHelpText>
   </:subheader>
-
   <:card>
     <Process::RelevantLinks
       @process={{@process}}
@@ -54,8 +53,8 @@
       @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
     />
     <AuDataTable
-      @content={{this.attachments}}
-      @isLoading={{this.getAttachments.isLoading}}
+      @content={{this.attachments.value}}
+      @isLoading={{this.fetchAttachments.isRunning}}
       @hidePagination={{true}}
       @page={{@page}}
       @size={{@size}}
