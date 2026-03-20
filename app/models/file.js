@@ -1,5 +1,4 @@
-import Model, { attr, belongsTo } from '@ember-data/model';
-
+import Model, { attr, hasMany } from '@ember-data/model';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class FileModel extends Model {
@@ -7,13 +6,16 @@ export default class FileModel extends Model {
   @attr('string') format;
   @attr('number') size;
   @attr('string') extension;
-  @attr('string') version;
   @attr('iso-date') created;
   @attr('iso-date') modified;
   @attr('string') status;
 
-  @belongsTo('information-asset', { inverse: 'attachments', async: false })
-  informationAsset;
+  @hasMany('information-asset', {
+    inverse: 'attachments',
+    async: false,
+    polymorphic: true,
+  })
+  informationAssets;
 
   get isArchived() {
     return this.status === ENV.resourceStates.archived;
