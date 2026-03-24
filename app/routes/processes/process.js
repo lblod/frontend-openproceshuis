@@ -5,7 +5,6 @@ import { service } from '@ember/service';
 export default class ProcessesProcessRoute extends Route {
   @service store;
   @service router;
-  @service session;
 
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
