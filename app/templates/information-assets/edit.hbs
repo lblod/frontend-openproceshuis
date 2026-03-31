@@ -42,7 +42,7 @@
   <div class="au-o-grid au-o-grid--small">
     <div class="au-o-grid__item au-u-4-6@medium">
 
-      {{#if this.edit}}
+      {{#if (and this.edit this.canEdit)}}
         <DataCard class="u-color-top-border-gray">
           <:title>Informatieclassificatie</:title>
           <:header>
