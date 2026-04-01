@@ -58,15 +58,17 @@
           @files={{this.diagramFiles}}
           @onDownloadSuccesful={{this.onDiagramsDownloadedAsZip}}
         />
-        {{#if this.canEdit}}
-          <AuLink
-            @route={{this.diagramsRouteNameFromParent}}
-            @model={{this.process.id}}
-            @skin="button-naked"
-          >
+        <AuLink
+          @route={{this.diagramsRouteNameFromParent}}
+          @model={{this.process.id}}
+          @skin="button-naked"
+        >
+          {{#if this.canEdit}}
             Wijzig
-          </AuLink>
-        {{/if}}
+          {{else}}
+            Bekijk versies
+          {{/if}}
+        </AuLink>
       </AuButtonGroup>
     </div>
     {{#if @model.diagramList}}
