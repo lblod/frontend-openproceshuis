@@ -58,13 +58,15 @@
           @files={{this.diagramFiles}}
           @onDownloadSuccesful={{this.onDiagramsDownloadedAsZip}}
         />
-        <AuLink
-          @route={{this.diagramsRouteNameFromParent}}
-          @model={{this.process.id}}
-          @skin="button-naked"
-        >
-          Wijzig
-        </AuLink>
+        {{#if this.canEdit}}
+          <AuLink
+            @route={{this.diagramsRouteNameFromParent}}
+            @model={{this.process.id}}
+            @skin="button-naked"
+          >
+            Wijzig
+          </AuLink>
+        {{/if}}
       </AuButtonGroup>
     </div>
     {{#if @model.diagramList}}
@@ -78,7 +80,9 @@
         class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom"
       >
         <p class="au-u-h3 au-u-muted">Er werden geen diagrammen gevonden</p>
-        <p class="au-u-muted">Klik de wijzig en maak een nieuwe versie aan</p>
+        {{#if this.canEdit}}
+          <p class="au-u-muted">Klik de wijzig en maak een nieuwe versie aan</p>
+        {{/if}}
       </div>
     {{/if}}
   </span>
