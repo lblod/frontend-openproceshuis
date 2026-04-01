@@ -49,12 +49,17 @@ export default class ProcessesProcessDiagramsController extends Controller {
 
   get canEdit() {
     return (
+      this.isPublisherOfProcess ||
+      (this.model.process.isPublishedByAbbOrDv && this.currentSession.isAbbOrDv)
+    );
+  }
+
+  get isPublisherOfProcess() {
+    return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
       this.model.process?.publisher &&
-      (this.model.process.publisher.id === this.currentSession.group.id ||
-        (this.model.process.isPublishedByAbbOrDv &&
-          this.currentSession.isAbbOrDv))
+      this.model.process.publisher.id === this.currentSession.group.id
     );
   }
 

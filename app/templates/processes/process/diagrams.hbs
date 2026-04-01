@@ -25,7 +25,7 @@
     </div>
   </:title>
   <:action>
-    {{#if this.canEdit}}
+    {{#if this.isPublisherOfProcess}}
       <AuButton
         class="border-radius"
         @skin="primary"
@@ -77,7 +77,7 @@
         class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom au-u-margin-top"
       >
         <p class="au-u-h3 au-u-muted">Er werden geen versies gevonden</p>
-        {{#if this.canEdit}}
+        {{#if this.isPublisherOfProcess}}
           <p class="au-u-muted">Maak een nieuwe versie aan</p>
         {{/if}}
       </div>
@@ -87,7 +87,7 @@
         <Group />
         <Group>
           <AuButtonGroup class="au-u-flex--end">
-            {{#if this.canEdit}}
+            {{#if this.isPublisherOfProcess}}
               <AuButton
                 class="border-radius"
                 @alert={{true}}
@@ -111,7 +111,6 @@
           @diagramList={{this.selectedDiagramList}}
           @selectedDiagramFile={{this.selectedDiagramFile}}
           @onDiagramFileSelected={{this.openDiagramFile}}
-          @canDeleteLastItem={{false}}
           @process={{@model.process}}
         />
       </div>
