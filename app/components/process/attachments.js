@@ -133,8 +133,8 @@ export default class ProcessAttachments extends Component {
         if (infoAssetIds.length > 0) {
           infoAssetFiles = await this.store.query('file', {
             ...baseQuery,
-            'filter[information-asset][id]': infoAssetIds.join(','),
-            include: 'information-asset',
+            'filter[information-assets][id]': infoAssetIds.join(','),
+            include: 'information-assets',
           });
         }
         const allFiles = [
