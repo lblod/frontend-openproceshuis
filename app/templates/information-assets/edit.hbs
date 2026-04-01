@@ -1,4 +1,9 @@
 {{breadcrumb
+  this.breadcrumbParentTitle
+  route=this.breadcrumbParentRoute
+  model=this.breadcrumbParentModel
+}}
+{{breadcrumb
   (if this.versionedAsset.isArchived "Archief " "Bewerk ")
   this.versionedAsset.title
   route="information-assets.edit"
@@ -392,6 +397,8 @@
           <Icr::Versions
             @versionedAsset={{this.versionedAsset}}
             @versionedAssets={{this.versionedAssets}}
+            @process={{this.process}}
+            @parentRoute={{this.parentRoute}}
           />
         </AuContent>
       </div>

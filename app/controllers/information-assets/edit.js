@@ -8,6 +8,7 @@ export default class InformationAssetIndexController extends Controller {
   queryParams = [
     'edit',
     'process',
+    'parentRoute',
     { versionedAssetId: 'version' },
     { pageAttachments: 'page-attachments' },
     { sizeAttachments: 'size-attachments' },
@@ -22,6 +23,7 @@ export default class InformationAssetIndexController extends Controller {
 
   @tracked edit = false;
   @tracked process = null;
+  @tracked parentRoute = null;
   @tracked versionedAssetId = null;
   @tracked formIsValid = this.canonicalAsset.title?.trim().length > 0;
   @tracked isDeleteModalOpen = false;
@@ -51,6 +53,30 @@ export default class InformationAssetIndexController extends Controller {
 
   get versionedAssets() {
     return this.model.versionedAssets;
+  }
+
+  get originatingProcess() {
+    if (!this.process) return null;
+
+    return this.canonicalAsset.processes.find(
+      (process) => process.id === this.process,
+    );
+  }
+
+  get breadcrumbParentTitle() {
+    return this.originatingProcess?.title ?? 'Informatie assets';
+  }
+
+  get breadcrumbParentRoute() {
+    return this.originatingProcess && this.parentRoute
+      ? this.parentRoute
+      : 'information-assets.index';
+  }
+
+  get breadcrumbParentModel() {
+    return this.originatingProcess && this.parentRoute
+      ? this.originatingProcess.id
+      : null;
   }
 
   @action
@@ -91,7 +117,10 @@ export default class InformationAssetIndexController extends Controller {
         });
         this.edit = false;
         if (this.process) {
-          return this.router.transitionTo('processes.process', this.process);
+          return this.router.transitionTo(
+            this.parentRoute ?? 'processes.process',
+            this.process,
+          );
         }
         return;
       }
@@ -134,7 +163,10 @@ export default class InformationAssetIndexController extends Controller {
       await oldVersionedRecord.save();
 
       if (this.process) {
-        this.router.transitionTo('processes.process', this.process);
+        this.router.transitionTo(
+          this.parentRoute ?? 'processes.process',
+          this.process,
+        );
       } else {
         await this.router.transitionTo(
           'information-assets.edit',
@@ -143,6 +175,8 @@ export default class InformationAssetIndexController extends Controller {
             queryParams: {
               version: newVersionedRecord.id,
               edit: false,
+              process: this.process,
+              parentRoute: this.parentRoute,
             },
           },
         );

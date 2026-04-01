@@ -104,6 +104,10 @@
                 <AuLink
                   @route="information-assets.edit"
                   @model={{attachment.informationAsset.id}}
+                  @query={{hash
+                    process=@process.id
+                    parentRoute=this.currentProcessRouteName
+                  }}
                 >
                   ({{attachment.informationAsset.title}})
                 </AuLink>

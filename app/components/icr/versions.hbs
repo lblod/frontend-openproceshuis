@@ -18,7 +18,11 @@
           <AuLink
             @route="information-assets.edit"
             @model={{version.id}}
-            @query={{hash edit=null}}
+            @query={{hash
+              edit=null
+              process=@process
+              parentRoute=@parentRoute
+            }}
             @icon="link"
             @skin={{if
               (eq version.id @versionedAsset.id)
