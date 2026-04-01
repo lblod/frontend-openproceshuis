@@ -262,7 +262,10 @@
                 <Item>
                   <:label>Beschrijving</:label>
                   <:content>
-                    {{or this.versionedAsset.description "/"}}
+                    <span class="u-preserve-line-breaks">{{or
+                        this.versionedAsset.description
+                        "/"
+                      }}</span>
                   </:content>
                 </Item>
                 <Item>
