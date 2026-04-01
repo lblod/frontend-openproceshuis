@@ -4,7 +4,8 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import ENV from 'frontend-openproceshuis/config/environment';
-export default class InformationAssetIndexController extends Controller {
+
+export default class InformationAssetsInformationAssetController extends Controller {
   queryParams = [
     'edit',
     'process',
@@ -169,7 +170,7 @@ export default class InformationAssetIndexController extends Controller {
         );
       } else {
         await this.router.transitionTo(
-          'information-assets.edit',
+          'information-assets.information-asset',
           canonicalRecord.id,
           {
             queryParams: {
@@ -180,7 +181,7 @@ export default class InformationAssetIndexController extends Controller {
             },
           },
         );
-        this.router.refresh('information-assets.edit');
+        this.router.refresh('information-assets.information-asset');
       }
 
       this.edit = false;
