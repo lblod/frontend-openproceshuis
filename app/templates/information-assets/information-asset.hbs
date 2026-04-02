@@ -86,6 +86,7 @@
                   <:content>
                     <AuTextarea
                       @width="block"
+                      rows="8"
                       value={{this.canonicalAsset.description}}
                       {{on "input" this.setDescription}}
                     />
@@ -256,7 +257,10 @@
                 <Item>
                   <:label>Beschrijving</:label>
                   <:content>
-                    {{or this.versionedAsset.description "/"}}
+                    <span class="u-preserve-line-breaks">{{or
+                        (trim this.versionedAsset.description)
+                        "/"
+                      }}</span>
                   </:content>
                 </Item>
                 <Item>

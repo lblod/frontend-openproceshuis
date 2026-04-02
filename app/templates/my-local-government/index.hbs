@@ -102,7 +102,12 @@
                 {{process.title}}
               </LinkTo>
             </td>
-            <td>{{or (truncate process.description 150 true) "/"}}</td>
+            <td>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate (trim process.description) 150 true)
+                  "/"
+                }}</span>
+            </td>
             <td>
               <ul>
                 {{#each process.relevantAdministrativeUnits as |adminUnit|}}

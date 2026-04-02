@@ -143,7 +143,12 @@
                 </LinkTo>
               </div>
             </td>
-            <td>{{or (truncate process.description 150 true) "/"}}</td>
+            <td>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate (trim process.description) 150 true)
+                  "/"
+                }}</span>
+            </td>
             <td>{{date-format process.modified}}</td>
             <td>
               {{#if (this.processIsUsedBy process.users)}}
