@@ -4,10 +4,7 @@ import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
-import {
-  downloadFileByUrl,
-  downloadFilesAsZip,
-} from 'frontend-openproceshuis/utils/file-downloader';
+import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
@@ -77,15 +74,9 @@ export default class ProcessAttachments extends Component {
     this.args.reloadTableData?.();
   }
 
-  downloadAttachments = task({ drop: true }, async () => {
-    if (!this.attachments) return;
-
-    if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
-    await downloadFilesAsZip(
-      this.attachments,
-      this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen',
-    );
-  });
+  get attachmentsZipFileName() {
+    return this.process?.title ? `Bijlagen ${this.process.title}` : 'Bijlagen';
+  }
 
   deleteFile = task({ drop: true }, async () => {
     if (!this.fileToDelete) return;

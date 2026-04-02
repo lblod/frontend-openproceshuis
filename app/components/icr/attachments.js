@@ -4,10 +4,7 @@ import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import ENV from 'frontend-openproceshuis/config/environment';
-import {
-  downloadFileByUrl,
-  downloadFilesAsZip,
-} from 'frontend-openproceshuis/utils/file-downloader';
+import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class IcrAttachments extends Component {
@@ -99,17 +96,11 @@ export default class IcrAttachments extends Component {
     this.attachmentsAreLoading = false;
   });
 
-  downloadAttachments = task({ drop: true }, async () => {
-    if (!this.attachments) return;
-
-    if (this.attachments.length === 1) this.downloadFile(this.attachments[0]);
-    await downloadFilesAsZip(
-      this.attachments,
-      this.args.informationAsset?.title
-        ? `Bijlagen ${this.args.informationAsset.title}`
-        : 'Bijlagen',
-    );
-  });
+  get attachmentsZipFileName() {
+    return this.args.informationAsset?.title
+      ? `Bijlagen ${this.args.informationAsset.title}`
+      : 'Bijlagen';
+  }
 
   deleteFile = task({ drop: true }, async () => {
     if (!this.fileToDelete) return;

@@ -26,12 +26,11 @@
           </AuButton>
         </AuDropdown>
       {{/if}}
-      <AuButton
-        @disabled={{not this.attachments.value}}
-        {{on "click" (perform this.downloadAttachments)}}
-      >
-        Download alle bestanden
-      </AuButton>
+      <File::DownloadMultipleAsZip
+        @buttonLabel="Download alle bestanden"
+        @folderName={{this.attachmentsZipFileName}}
+        @files={{this.attachments.value}}
+      />
     </AuButtonGroup>
   </:header>
 
