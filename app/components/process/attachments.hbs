@@ -102,8 +102,12 @@
             <td>{{attachment._source}}
               {{#if attachment.informationAsset}}
                 <AuLink
-                  @route="information-assets.edit"
+                  @route="information-assets.information-asset"
                   @model={{attachment.informationAsset.id}}
+                  @query={{hash
+                    process=@process.id
+                    parentRoute=this.currentProcessRouteName
+                  }}
                 >
                   ({{attachment.informationAsset.title}})
                 </AuLink>

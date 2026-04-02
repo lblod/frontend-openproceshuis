@@ -11,6 +11,8 @@ import {
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessAttachments extends Component {
+  @service router;
+
   constructor() {
     super(...arguments);
     this.fetchAttachments.perform();
@@ -24,6 +26,10 @@ export default class ProcessAttachments extends Component {
 
   get process() {
     return this.args.process;
+  }
+
+  get currentProcessRouteName() {
+    return this.router.currentRouteName?.replace('.index', '');
   }
 
   @tracked pageAttachments = 0;
