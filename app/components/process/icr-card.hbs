@@ -196,7 +196,12 @@
           </Item>
           <Item>
             <:label>Motivering of bijkomende informatie</:label>
-            <:content>{{or @process.additionalInformation "/"}}</:content>
+            <:content>
+              <span class="u-preserve-line-breaks">{{or
+                  @process.additionalInformation
+                  "/"
+                }}</span>
+            </:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>

@@ -173,7 +173,12 @@
                 {{informationAsset.title}}
               </LinkTo>
             </td>
-            <td>{{or (truncate informationAsset.description 150 true) "/"}}</td>
+            <td>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate informationAsset.description 150 true)
+                  "/"
+                }}</span>
+            </td>
             <td>
               {{informationAsset.creator.name}}
             </td>

@@ -99,7 +99,12 @@
                 {{process.title}}
               </LinkTo>
             </td>
-            <td>{{or (truncate process.description 150 true) "/"}}</td>
+            <td>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate process.description 150 true)
+                  "/"
+                }}</span>
+            </td>
             <td>{{date-format process.created}}</td>
             <td>{{date-format process.modified}}</td>
             <td>
