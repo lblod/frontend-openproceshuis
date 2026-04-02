@@ -258,7 +258,7 @@
                   <:label>Beschrijving</:label>
                   <:content>
                     <span class="u-preserve-line-breaks">{{or
-                        this.versionedAsset.description
+                        (trim this.versionedAsset.description)
                         "/"
                       }}</span>
                   </:content>

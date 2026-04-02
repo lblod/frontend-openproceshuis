@@ -198,7 +198,7 @@
             <:label>Motivering of bijkomende informatie</:label>
             <:content>
               <span class="u-preserve-line-breaks">{{or
-                  @process.additionalInformation
+                  (trim @process.additionalInformation)
                   "/"
                 }}</span>
             </:content>

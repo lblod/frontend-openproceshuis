@@ -104,7 +104,7 @@
             </td>
             <td>
               <span class="u-preserve-line-breaks">{{or
-                  (truncate process.description 150 true)
+                  (truncate (trim process.description) 150 true)
                   "/"
                 }}</span>
             </td>
