@@ -28,11 +28,17 @@ export default class ProcessesProcessIndexController extends Controller {
 
   get canEdit() {
     return (
+      this.isPublisherOfProcess ||
+      (this.process.isPublishedByAbbOrDv && this.currentSession.isAbbOrDv)
+    );
+  }
+
+  get isPublisherOfProcess() {
+    return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
-      this.process?.publisher &&
-      (this.process.publisher.id === this.currentSession.group.id ||
-        (this.process.isPublishedByAbbOrDv && this.currentSession.isAbbOrDv))
+      this.model.process?.publisher &&
+      this.model.process.publisher.id === this.currentSession.group.id
     );
   }
 
