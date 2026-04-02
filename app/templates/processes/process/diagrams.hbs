@@ -25,14 +25,16 @@
     </div>
   </:title>
   <:action>
-    <AuButton
-      class="border-radius"
-      @skin="primary"
-      @iconAlignment="right"
-      {{on "click" this.openCreateModal}}
-    >
-      Maak een nieuwe versie aan
-    </AuButton>
+    {{#if this.isPublisherOfProcess}}
+      <AuButton
+        class="border-radius"
+        @skin="primary"
+        @iconAlignment="right"
+        {{on "click" this.openCreateModal}}
+      >
+        Maak een nieuwe versie aan
+      </AuButton>
+    {{/if}}
   </:action>
 </PageHeader>
 <SidebarContainer class="diagrams au-u-flex--row-reverse">
@@ -75,7 +77,9 @@
         class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom au-u-margin-top"
       >
         <p class="au-u-h3 au-u-muted">Er werden geen versies gevonden</p>
-        <p class="au-u-muted">Maak een nieuwe versie aan</p>
+        {{#if this.isPublisherOfProcess}}
+          <p class="au-u-muted">Maak een nieuwe versie aan</p>
+        {{/if}}
       </div>
     {{/unless}}
     {{#if this.selectedDiagramList}}
@@ -83,14 +87,16 @@
         <Group />
         <Group>
           <AuButtonGroup class="au-u-flex--end">
-            <AuButton
-              class="border-radius"
-              @alert={{true}}
-              @skin="secondary"
-              {{on "click" (fn (mut this.isDeleteVersionModalOpen) true)}}
-            >
-              Verwijder versie
-            </AuButton>
+            {{#if this.isPublisherOfProcess}}
+              <AuButton
+                class="border-radius"
+                @alert={{true}}
+                @skin="secondary"
+                {{on "click" (fn (mut this.isDeleteVersionModalOpen) true)}}
+              >
+                Verwijder versie
+              </AuButton>
+            {{/if}}
             <File::DownloadMultipleAsZip
               @buttonLabel="Download alle"
               @folderName={{this.diagramsDownloadFolderName}}
@@ -105,8 +111,6 @@
           @diagramList={{this.selectedDiagramList}}
           @selectedDiagramFile={{this.selectedDiagramFile}}
           @onDiagramFileSelected={{this.openDiagramFile}}
-          @canEdit={{this.canEditFilesInTable}}
-          @canDeleteLastItem={{false}}
           @process={{@model.process}}
         />
       </div>
