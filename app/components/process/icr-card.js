@@ -83,8 +83,12 @@ export default class ProcessIcrCardComponent extends Component {
   }
 
   @action editAsset(asset) {
-    this.router.transitionTo('information-assets.edit', asset.id, {
-      queryParams: { edit: true, process: this.args.process.id },
+    this.router.transitionTo('information-assets.information-asset', asset.id, {
+      queryParams: {
+        edit: true,
+        process: this.args.process.id,
+        parentRoute: this.router.currentRouteName?.replace('.index', ''),
+      },
     });
   }
 

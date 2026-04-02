@@ -1,23 +1,18 @@
 {{breadcrumb
+  this.breadcrumbParentTitle
+  route=this.breadcrumbParentRoute
+  model=this.breadcrumbParentModel
+}}
+{{breadcrumb
   (if this.versionedAsset.isArchived "Archief " "Bewerk ")
   this.versionedAsset.title
-  route="information-assets.edit"
+  route="information-assets.information-asset"
   model=this.versionedAsset.id
 }}
 
 <PageHeader>
   <:title>
     <div class="au-u-flex au-u-flex--vertical-center">
-      <AuLink
-        @skin="button-naked"
-        @icon="arrow-left"
-        @iconAlignment="left"
-        @size="large"
-        @route="information-assets.index"
-        @hideText={{true}}
-        class="au-u-margin-right-small animate-left"
-        title="Terug naar informatie assets overzicht"
-      >Previous</AuLink>
       {{this.versionedAsset.title}}
       <AuButton
         class="au-u-padding-left-small"
@@ -42,7 +37,7 @@
   <div class="au-o-grid au-o-grid--small">
     <div class="au-o-grid__item au-u-4-6@medium">
 
-      {{#if this.edit}}
+      {{#if (and this.edit this.canEdit)}}
         <DataCard class="u-color-top-border-gray">
           <:title>Informatieclassificatie</:title>
           <:header>
@@ -91,6 +86,7 @@
                   <:content>
                     <AuTextarea
                       @width="block"
+                      rows="8"
                       value={{this.canonicalAsset.description}}
                       {{on "input" this.setDescription}}
                     />
@@ -261,7 +257,10 @@
                 <Item>
                   <:label>Beschrijving</:label>
                   <:content>
-                    {{or this.versionedAsset.description "/"}}
+                    <span class="u-preserve-line-breaks">{{or
+                        (trim this.versionedAsset.description)
+                        "/"
+                      }}</span>
                   </:content>
                 </Item>
                 <Item>
@@ -402,6 +401,8 @@
           <Icr::Versions
             @versionedAsset={{this.versionedAsset}}
             @versionedAssets={{this.versionedAssets}}
+            @process={{this.process}}
+            @parentRoute={{this.parentRoute}}
           />
         </AuContent>
       </div>
