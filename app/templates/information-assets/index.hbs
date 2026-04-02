@@ -1,3 +1,5 @@
+{{breadcrumb "Informatie assets" route="information-assets.index"}}
+
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
@@ -165,7 +167,7 @@
               <LinkTo
                 class="au-c-link"
                 @model={{informationAsset.id}}
-                @route="information-assets.edit"
+                @route="information-assets.information-asset"
                 @query={{hash version=null edit=null}}
               >
                 {{informationAsset.title}}
@@ -227,7 +229,7 @@
               <td>
                 <div class="au-u-flex au-u-flex--center">
                   <AuLink
-                    @route="information-assets.edit"
+                    @route="information-assets.information-asset"
                     @model={{informationAsset.id}}
                     @query={{hash edit=true}}
                     @skin="button-naked"

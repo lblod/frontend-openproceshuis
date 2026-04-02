@@ -16,9 +16,13 @@
           @skin={{if version.isArchived "default" "success"}}
         >
           <AuLink
-            @route="information-assets.edit"
+            @route="information-assets.information-asset"
             @model={{version.id}}
-            @query={{hash edit=null}}
+            @query={{hash
+              edit=null
+              process=@process
+              parentRoute=@parentRoute
+            }}
             @icon="link"
             @skin={{if
               (eq version.id @versionedAsset.id)
