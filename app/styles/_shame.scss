@@ -214,6 +214,10 @@ tr:hover .inventory-row-button-group .au-c-button {
   }
 }
 
+.u-preserve-line-breaks {
+  white-space: pre-wrap;
+}
+
 .process-wizard-modal.au-c-modal {
   height: 50vh !important;
   border-radius: 5px !important;

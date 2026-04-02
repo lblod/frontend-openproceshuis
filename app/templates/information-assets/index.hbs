@@ -1,3 +1,5 @@
+{{breadcrumb "Informatie assets" route="information-assets.index"}}
+
 <SidebarContainer>
   <:sidebar>
     <div class="au-c-sidebar">
@@ -165,13 +167,18 @@
               <LinkTo
                 class="au-c-link"
                 @model={{informationAsset.id}}
-                @route="information-assets.edit"
+                @route="information-assets.information-asset"
                 @query={{hash version=null edit=null}}
               >
                 {{informationAsset.title}}
               </LinkTo>
             </td>
-            <td>{{or (truncate informationAsset.description 150 true) "/"}}</td>
+            <td>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate (trim informationAsset.description) 150 true)
+                  "/"
+                }}</span>
+            </td>
             <td>
               {{informationAsset.creator.name}}
             </td>
@@ -227,7 +234,7 @@
               <td>
                 <div class="au-u-flex au-u-flex--center">
                   <AuLink
-                    @route="information-assets.edit"
+                    @route="information-assets.information-asset"
                     @model={{informationAsset.id}}
                     @query={{hash edit=true}}
                     @skin="button-naked"

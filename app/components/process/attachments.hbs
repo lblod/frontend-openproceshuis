@@ -102,7 +102,7 @@
             <td>{{attachment._source}}
               {{#if attachment.informationAssets}}
                 {{#each attachment.informationAssets as |icr|}}
-                  <AuLink @route="information-assets.edit" @model={{icr.id}}>
+                  <AuLink @route="information-assets.information-asset" @model={{icr.id}}>
                     {{icr.title}}
                   </AuLink>
                 {{/each}}

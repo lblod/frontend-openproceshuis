@@ -169,7 +169,10 @@
           <Item>
             <:label>Beschrijving</:label>
             <:content>
-              {{or @process.description "/"}}
+              <span class="u-preserve-line-breaks">{{or
+                  (trim @process.description)
+                  "/"
+                }}</span>
             </:content>
           </Item>
           <Item>

@@ -64,7 +64,7 @@ Router.map(function () {
   });
 
   this.route('information-assets', { path: 'informatie-assets' }, function () {
-    this.route('edit', { path: '/:id' });
+    this.route('information-asset', { path: '/:id/' }, function () {});
   });
 
   this.route('legal', { path: '/legaal' }, function () {

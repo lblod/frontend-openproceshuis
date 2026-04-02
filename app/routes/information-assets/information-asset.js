@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
 
-export default class InformationAssetIndexRoute extends Route {
+export default class InformationAssetsInformationAssetRoute extends Route {
   @service session;
   @service router;
   @service store;
@@ -18,7 +18,7 @@ export default class InformationAssetIndexRoute extends Route {
   }
 
   async model() {
-    const params = this.paramsFor('information-assets.edit');
+    const params = this.paramsFor('information-assets.information-asset');
     const id = params.id;
     const { versionedAssetId } = params;
 
@@ -62,11 +62,15 @@ export default class InformationAssetIndexRoute extends Route {
 
     const canonical = await versionedInformationAsset.canonical;
 
-    this.router.replaceWith('information-assets.edit', canonical.id, {
-      queryParams: {
-        ...params,
-        versionedAssetId,
+    this.router.replaceWith(
+      'information-assets.information-asset',
+      canonical.id,
+      {
+        queryParams: {
+          ...params,
+          versionedAssetId,
+        },
       },
-    });
+    );
   }
 }

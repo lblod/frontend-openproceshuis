@@ -182,7 +182,9 @@
                         {{on "click" (fn this.editAsset asset)}}
                       >
                         {{asset.title}}
-                        <AuIcon @icon="pencil" />
+                        {{#if @canEdit}}
+                          <AuIcon @icon="pencil" />
+                        {{/if}}
                       </AuPill>
                     {{/if}}
                   {{/each}}
@@ -194,7 +196,12 @@
           </Item>
           <Item>
             <:label>Motivering of bijkomende informatie</:label>
-            <:content>{{or @process.additionalInformation "/"}}</:content>
+            <:content>
+              <span class="u-preserve-line-breaks">{{or
+                  (trim @process.additionalInformation)
+                  "/"
+                }}</span>
+            </:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>

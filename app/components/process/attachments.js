@@ -23,6 +23,10 @@ export default class ProcessAttachments extends Component {
     return this.args.process;
   }
 
+  get currentProcessRouteName() {
+    return this.router.currentRouteName?.replace('.index', '');
+  }
+
   get attachmentsHaveNoResults() {
     return (
       !this.fetchAttachments.isRunning &&
