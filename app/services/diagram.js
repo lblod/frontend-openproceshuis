@@ -47,9 +47,11 @@ export default class DiagramService extends Service {
       reload: true,
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
-    return diagramLists.filter((list) =>
-      list.diagrams.some((d) => !d.diagramFile.isArchived),
-    );
+    return diagramLists.filter((list) => {
+      return (
+        !list.isArchived && list.diagrams.some((d) => !d.diagramFile.isArchived)
+      );
+    });
   }
 
   getAvailableFilesFromList(listWithFiles) {
