@@ -12,11 +12,16 @@ export default class DiagramListModel extends Model {
   })
   created;
   @attr('string') modified;
+  @attr('string') status;
 
   @hasMany('diagram-list-item', { inverse: null, async: false })
   diagrams;
 
   get displayVersion() {
     return this.version ?? '/';
+  }
+
+  get isArchived() {
+    return this.status === ENV.resourceStates.archived;
   }
 }
