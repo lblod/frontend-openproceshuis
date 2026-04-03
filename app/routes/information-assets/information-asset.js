@@ -1,4 +1,5 @@
 import Route from '@ember/routing/route';
+
 import { service } from '@ember/service';
 
 export default class InformationAssetsInformationAssetRoute extends Route {
@@ -11,6 +12,7 @@ export default class InformationAssetsInformationAssetRoute extends Route {
     { pageAttachments: { refreshModel: true } },
     { sizeAttachments: { refreshModel: true } },
     { sortAttachments: { refreshModel: true } },
+    { process: { refreshModel: false } },
   ];
 
   beforeModel(transition) {
@@ -72,5 +74,13 @@ export default class InformationAssetsInformationAssetRoute extends Route {
         },
       },
     );
+  }
+
+  resetController(controller, _isExiting, transition) {
+    if (
+      transition.targetName !== 'information-assets.information-asset.index'
+    ) {
+      controller.process = null;
+    }
   }
 }
