@@ -80,7 +80,10 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   copyUrl() {
     try {
-      navigator.clipboard.writeText(window.location.href);
+      const baseUrl = window.location.origin;
+      navigator.clipboard.writeText(
+        `${baseUrl}/processen/${this.model.process.id}`,
+      );
       this.toaster.success('Link naar proces gekopieerd', undefined, {
         timeOut: 5000,
       });
