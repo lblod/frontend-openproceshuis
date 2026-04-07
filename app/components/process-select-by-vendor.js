@@ -17,12 +17,21 @@ export default class ProcessSelectByVendor extends Component {
     const vendorGroups = await this.store.query('group', {
       'filter[classification][id]': VENDOR_CLASSIFICATION_ID,
       'filter[:has:processes]': true,
-      'filter[processes][:not:status]': ARCHIVED_STATUS_URI,
     });
-
     this.vendors.clear();
-    this.vendors.pushObjects([
-      ...new Set(vendorGroups.map((group) => group.name)),
-    ]);
+    for (let index = 0; index < vendorGroups.length; index++) {
+      const vendor = vendorGroups[index];
+      const processesCreatedBy = await this.store.query('process', {
+        'filter[creator][id]': vendor.id,
+        'filter[:not:status]': ARCHIVED_STATUS_URI,
+        page: {
+          number: 0,
+          size: 1,
+        },
+      });
+      if (processesCreatedBy.length >= 1) {
+        this.vendors.pushObject(vendor.name ?? 'NO-LABEL');
+      }
+    }
   });
 }
