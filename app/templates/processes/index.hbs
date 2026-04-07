@@ -44,6 +44,15 @@
             />
           </div>
           <div>
+            <AuLabel for="filter-vendor">Via leverancier</AuLabel>
+            <ProcessSelectByVendor
+              @id="filter-vendor"
+              @selected={{this.creator}}
+              @onChange={{this.setCreator}}
+              class="grow"
+            />
+          </div>
+          <div>
             <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
             <ProcessSelectByIpdc
               @id="filter-ipdc"

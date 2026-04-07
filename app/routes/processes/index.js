@@ -13,6 +13,7 @@ export default class ProcessesIndexRoute extends Route {
     title: { refreshModel: true, replace: true },
     classifications: { refreshModel: true, replace: true },
     group: { refreshModel: true, replace: true },
+    creator: { refreshModel: true, replace: true },
     blueprint: { refreshModel: true },
     ipdcProducts: { refreshModel: true, replace: true },
   };
@@ -37,6 +38,7 @@ export default class ProcessesIndexRoute extends Route {
       },
       include: [
         'publisher',
+        'creator',
         'users',
         'publisher.primary-site',
         'publisher.primary-site.contacts',
@@ -72,6 +74,7 @@ export default class ProcessesIndexRoute extends Route {
     }
 
     if (params.group) query['filter[publisher][:exact:name]'] = params.group;
+    if (params.creator) query['filter[creator][:exact:name]'] = params.creator;
 
     if (params.blueprint) {
       query['filter[is-blueprint]'] = params.blueprint;

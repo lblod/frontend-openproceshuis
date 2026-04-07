@@ -11,6 +11,7 @@ export default class ProcessesIndexController extends Controller {
     'title',
     'classifications',
     'group',
+    'creator',
     'blueprint',
     'ipdcProducts',
   ];
@@ -24,6 +25,7 @@ export default class ProcessesIndexController extends Controller {
   @tracked selectedIpdcProducts = undefined;
   @tracked ipdcProducts = undefined;
   @tracked group = '';
+  @tracked creator = '';
   @tracked blueprint = false;
   @service currentSession;
 
@@ -85,6 +87,12 @@ export default class ProcessesIndexController extends Controller {
   }
 
   @action
+  setCreator(selection) {
+    this.page = null;
+    this.creator = selection;
+  }
+
+  @action
   toggleBlueprintFilter(event) {
     this.page = null;
     this.blueprint = event;
@@ -101,6 +109,7 @@ export default class ProcessesIndexController extends Controller {
     this.classifications = undefined;
     this.selectedClassifications = undefined;
     this.group = '';
+    this.creator = '';
     this.page = 0;
     this.sort = 'title';
     this.blueprint = false;
