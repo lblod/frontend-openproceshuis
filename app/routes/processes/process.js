@@ -5,6 +5,11 @@ import { service } from '@ember/service';
 export default class ProcessesProcessRoute extends Route {
   @service store;
   @service router;
+  @service session;
+
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'auth.login');
+  }
 
   async model({ id }, transition) {
     const parentRouteName = transition.to?.name?.replace('.index', '');

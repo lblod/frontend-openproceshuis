@@ -9,8 +9,8 @@ export default class InventoryAdminRoute extends Route {
   @service currentSession;
   @service store;
 
-  async beforeModel(transition) {
-    this.session.requireAuthentication(transition, 'index');
+  beforeModel(transition) {
+    this.session.requireAuthentication(transition, 'auth.login');
     if (!this.currentSession.isAdmin) this.router.transitionTo('unauthorized');
   }
 
