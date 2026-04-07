@@ -1,1 +1,0 @@
-export const VENDOR_CLASSIFICATION_ID = 'c4483583-f9fe-4d2f-96f4-47ddb3440d71';
