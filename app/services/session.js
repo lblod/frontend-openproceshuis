@@ -35,4 +35,8 @@ export default class OPHSessionService extends SessionService {
   setRouteForAfterLogin() {
     localStorage.setItem('BEFORE_LOGIN_PATH', window.location.pathname);
   }
+
+  clearAfterLoginRoute() {
+    localStorage.removeItem('BEFORE_LOGIN_PATH');
+  }
 }
