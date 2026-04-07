@@ -125,6 +125,11 @@
             @currentSorting={{this.sort}}
             @label="Bestuur"
           />
+          <AuDataTableThSortable
+            @field="creator"
+            @currentSorting={{this.sort}}
+            @label="Via leverancier"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -172,6 +177,7 @@
                 }}<li>{{relevantAdministrativeUnit.label}}</li>
                 {{/each}}</ul></td>
             <td>{{process.publisher.name}}</td>
+            <td>{{or process.creator.name "/"}}</td>
           </c.body>
         {{/if}}
       </t.content>
