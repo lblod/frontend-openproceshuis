@@ -8,6 +8,7 @@ export default class InventoryAdminRoute extends Route {
   @service session;
   @service currentSession;
   @service store;
+  @service router;
 
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
