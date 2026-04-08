@@ -7,6 +7,8 @@ import { service } from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 import { toSafeString } from '../../../utils/string-manipulation';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class ProcessesProcessDiagramsController extends Controller {
   @service currentSession;
   @service router;
@@ -110,10 +112,11 @@ export default class ProcessesProcessDiagramsController extends Controller {
   deleteVersion = task({ drop: true }, async () => {
     try {
       const listItems = this.selectedDiagramList.diagrams;
-
+      listItems.map((item) => (item.status = ENV.resourceStates.archived));
+      this.selectedDiagramList.status = ENV.resourceStates.archived;
       await Promise.all([
-        ...listItems.map((item) => item.destroyRecord()),
-        this.selectedDiagramList.destroyRecord(),
+        ...listItems.map(async (item) => await item.save()),
+        await this.selectedDiagramList.save(),
       ]);
       this.toaster.success('Diagram versie verwijderd', null, {
         timeOut: 2500,

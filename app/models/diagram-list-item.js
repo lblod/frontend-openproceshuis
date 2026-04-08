@@ -1,4 +1,5 @@
 import Model, { belongsTo, hasMany, attr } from '@ember-data/model';
+import ENV from 'frontend-openproceshuis/config/environment';
 
 import { ARCHIVED_STATUS_URI } from '../utils/well-known-uris';
 
