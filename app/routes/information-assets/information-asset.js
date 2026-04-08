@@ -21,39 +21,50 @@ export default class InformationAssetsInformationAssetRoute extends Route {
 
   async model() {
     const params = this.paramsFor('information-assets.information-asset');
-    const id = params.id;
-    const { versionedAssetId } = params;
+    const { id: canonicalAssetId, versionedAssetId } = params;
 
-    const canonicalAsset = await this.fetchCanonicalAsset(id);
+    const canonicalAsset = await this.fetchCanonicalAsset(canonicalAssetId);
 
     if (canonicalAsset.isVersionedInformationAsset) {
-      await this.redirectToCanonical(id, params);
+      await this.redirectToCanonical(canonicalAssetId, params);
     }
 
-    const versionedAssets = await this.fetchVersionedAssets(id);
-    const versionedAsset = versionedAssetId
-      ? [...versionedAssets].find((asset) => asset.id === versionedAssetId)
-      : versionedAssets[0];
+    let versionedAsset;
+    if (versionedAssetId) {
+      versionedAsset = await this.fetchVersionedAsset(versionedAssetId);
+    } else {
+      versionedAsset = await this.fetchNewestVersionedAsset(canonicalAssetId);
+    }
 
-    return { canonicalAsset, versionedAsset, versionedAssets };
+    return { canonicalAsset, versionedAsset };
   }
 
-  async fetchCanonicalAsset(canonicalAssetId) {
-    return await this.store.findRecord('information-asset', canonicalAssetId, {
+  async fetchCanonicalAsset(id) {
+    return await this.store.findRecord('information-asset', id, {
       include: 'creator,processes,attachments,links',
     });
   }
 
-  async fetchVersionedAssets(canonicalAssetId) {
-    return await this.store.query('versioned-information-asset', {
-      reload: true,
-      'filter[canonical][:id:]': canonicalAssetId,
+  async fetchVersionedAsset(id) {
+    return await this.store.findRecord('versioned-information-asset', id, {
       include: 'creator',
-      page: {
-        size: 50,
-      },
-      sort: '-created',
     });
+  }
+
+  async fetchNewestVersionedAsset(canonicalAssetId) {
+    const singleElementArray = await this.store.query(
+      'versioned-information-asset',
+      {
+        reload: true,
+        'filter[canonical][:id:]': canonicalAssetId,
+        include: 'creator',
+        page: {
+          size: 1,
+        },
+        sort: '-created',
+      },
+    );
+    return singleElementArray[0];
   }
 
   async redirectToCanonical(versionedAssetId, params) {
