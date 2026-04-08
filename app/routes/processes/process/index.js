@@ -42,6 +42,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     }
     const process = await this.store.findRecord('process', processId, {
       include: [
+        'links',
         'process-statistics',
         'publisher',
         'publisher.primary-site',
@@ -54,9 +55,9 @@ export default class ProcessesProcessIndexRoute extends Route {
         'linked-concept.process-groups.process-domains.process-categories',
         'relevant-administrative-units',
       ].join(','),
+      reload: true,
     });
     let stats = process.processStatistics;
-
     if (!stats) {
       stats = this.store.createRecord('process-statistic', {
         process,
