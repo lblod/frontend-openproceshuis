@@ -44,6 +44,15 @@
             />
           </div>
           <div>
+            <AuLabel for="filter-vendor">Via leverancier</AuLabel>
+            <ProcessSelectByVendor
+              @id="filter-vendor"
+              @selected={{this.creator}}
+              @onChange={{this.setCreator}}
+              class="grow"
+            />
+          </div>
+          <div>
             <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
             <ProcessSelectByIpdc
               @id="filter-ipdc"
@@ -116,6 +125,11 @@
             @currentSorting={{this.sort}}
             @label="Bestuur"
           />
+          <AuDataTableThSortable
+            @field="creator"
+            @currentSorting={{this.sort}}
+            @label="Via leverancier"
+          />
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -163,6 +177,7 @@
                 }}<li>{{relevantAdministrativeUnit.label}}</li>
                 {{/each}}</ul></td>
             <td>{{process.publisher.name}}</td>
+            <td>{{or process.creator.name "/"}}</td>
           </c.body>
         {{/if}}
       </t.content>
