@@ -52,10 +52,6 @@ export default class InformationAssetsInformationAssetController extends Control
     return this.model.versionedAsset;
   }
 
-  get versionedAssets() {
-    return this.model.versionedAssets;
-  }
-
   get originatingProcess() {
     if (!this.process) return null;
 
