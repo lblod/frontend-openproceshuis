@@ -6,9 +6,12 @@ import {
   isEmptyOrEmail,
   isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
+import { service } from '@ember/service';
 
 @modelValidator
 export default class ProcessModel extends Model {
+  @service currentSession;
+
   @attr('string') title;
   @attr('string') description;
   @attr('string') email;
@@ -96,6 +99,10 @@ export default class ProcessModel extends Model {
   get isPublishedByAbbOrDv() {
     const ovoCodes = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
     return ovoCodes.includes(this.publisher?.identifier);
+  }
+
+  get isUsedByCurrentGroup() {
+    return this.users?.includes(this.currentSession.group);
   }
 
   get href() {

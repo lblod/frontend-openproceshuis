@@ -1,7 +1,6 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { service } from '@ember/service';
 
 export default class ProcessesIndexController extends Controller {
   queryParams = [
@@ -27,7 +26,6 @@ export default class ProcessesIndexController extends Controller {
   @tracked group = '';
   @tracked creator = '';
   @tracked blueprint = false;
-  @service currentSession;
 
   @action
   setTitle(selection) {
@@ -75,11 +73,6 @@ export default class ProcessesIndexController extends Controller {
   toggleBlueprintFilter(event) {
     this.page = null;
     this.blueprint = event;
-  }
-
-  @action
-  processIsUsedBy(usersArray) {
-    return usersArray.includes(this.currentSession.group);
   }
 
   @action

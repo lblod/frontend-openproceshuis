@@ -163,6 +163,9 @@
                 >
                   {{process.title}}
                 </LinkTo>
+                {{#if process.isUsedByCurrentGroup}}
+                  <AuPill @skin="success">In gebruik</AuPill>
+                {{/if}}
               </div>
             </td>
             <td>
