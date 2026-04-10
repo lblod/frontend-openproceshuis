@@ -100,8 +100,8 @@
     </PageHeader>
 
     <AuDataTable
-      @content={{@processes}}
-      @isLoading={{@isLoading}}
+      @content={{this.processes}}
+      @isLoading={{this.isLoading}}
       @page={{@page}}
       @size={{@size}}
       as |t|
@@ -139,9 +139,9 @@
             @label="Via leverancier"
           />
         </c.header>
-        {{#if @hasErrored}}
+        {{#if this.hasErrored}}
           <TableMessage::Error />
-        {{else if @hasNoResults}}
+        {{else if this.hasNoResults}}
           <TableMessage>
             <p>
               Er werden geen zoekresultaten gevonden.

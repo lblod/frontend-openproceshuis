@@ -24,27 +24,6 @@ export default class MyLocalGovernmentIndexController extends Controller {
   @tracked blueprint = false;
   @service currentSession;
 
-  get processes() {
-    return this.model.loadProcessesTaskInstance.isFinished
-      ? this.model.loadProcessesTaskInstance.value
-      : this.model.loadedProcesses;
-  }
-
-  get isLoading() {
-    return this.model.loadProcessesTaskInstance.isRunning;
-  }
-
-  get hasNoResults() {
-    return (
-      this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes?.length === 0
-    );
-  }
-
-  get hasErrored() {
-    return this.model.loadProcessesTaskInstance.isError;
-  }
-
   @action
   setTitle(selection) {
     this.page = null;
