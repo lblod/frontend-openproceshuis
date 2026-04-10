@@ -1,0 +1,189 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <form
+          {{on "reset" @resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+        >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
+          {{#if @toggleBlueprintFilter}}
+            <div
+              class="au-u-flex au-u-flex--between au-u-flex--vertical-center"
+            >
+              <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
+              <AuCheckbox
+                id="filter-blueprint"
+                @checked={{@blueprint}}
+                @onChange={{@toggleBlueprintFilter}}
+              />
+            </div>
+          {{/if}}
+          <div>
+            <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+            <ProcessSelectByTitle
+              @id="filter-title"
+              @selected={{@title}}
+              @onChange={{@setTitle}}
+              @publisher={{@titlePublisher}}
+              class="grow"
+            />
+          </div>
+          {{#if @setClassifications}}
+            <div>
+              <AuLabel for="filter-classification">Relevant voor</AuLabel>
+              <ProcessSelectByClassification
+                @id="filter-classification"
+                @selected={{@selectedClassifications}}
+                @onChange={{@setClassifications}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if @setGroup}}
+            <div>
+              <AuLabel for="filter-group">Naam bestuur</AuLabel>
+              <ProcessSelectByGroup
+                @id="filter-group"
+                @selected={{@group}}
+                @onChange={{@setGroup}}
+                @classifications={{@classifications}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if @setCreator}}
+            <div>
+              <AuLabel for="filter-vendor">Via leverancier</AuLabel>
+              <ProcessSelectByVendor
+                @id="filter-vendor"
+                @selected={{@creator}}
+                @onChange={{@setCreator}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if @setIpdcProducts}}
+            <div>
+              <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
+              <ProcessSelectByIpdc
+                @id="filter-ipdc"
+                @selected={{@selectedIpdcProducts}}
+                @onChange={{@setIpdcProducts}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          <div class="au-u-flex au-u-flex--end">
+            <AuButton
+              @icon="cross"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none au-u-medium"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <PageHeader>
+      <:title>{{@pageTitle}}</:title>
+      <:subtitle>
+        <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
+          Handleiding Open Proces Huis
+        </AuLinkExternal>
+      </:subtitle>
+      <:action></:action>
+    </PageHeader>
+
+    <AuDataTable
+      @content={{@processes}}
+      @isLoading={{@isLoading}}
+      @page={{@page}}
+      @size={{@size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          <AuDataTableThSortable
+            @field="title"
+            @currentSorting={{@sort}}
+            @label="Titel"
+          />
+          <AuDataTableThSortable
+            @field="description"
+            @currentSorting={{@sort}}
+            @label="Beschrijving"
+          />
+          <AuDataTableThSortable
+            @field="modified"
+            @currentSorting={{@sort}}
+            @label="Laatst aangepast op"
+          />
+          <AuDataTableThSortable
+            @field="classification"
+            @currentSorting={{@sort}}
+            @label="Relevant voor"
+          />
+          <AuDataTableThSortable
+            @field="organization"
+            @currentSorting={{@sort}}
+            @label="Bestuur"
+          />
+          <AuDataTableThSortable
+            @field="creator"
+            @currentSorting={{@sort}}
+            @label="Via leverancier"
+          />
+        </c.header>
+        {{#if @hasErrored}}
+          <TableMessage::Error />
+        {{else if @hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |process|>
+            <td>
+              <div
+                class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+              >
+                {{#if process.isBlueprint}}
+                  <CustomIcon @icon="blueprint" @size="large" />
+                {{/if}}
+                <LinkTo
+                  class="au-c-link"
+                  @model={{process.id}}
+                  @route={{@processRoute}}
+                >
+                  {{process.title}}
+                </LinkTo>
+              </div>
+            </td>
+            <td>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate (trim process.description) 150 true)
+                  "/"
+                }}</span>
+            </td>
+            <td>{{date-format process.modified}}</td>
+            <td>
+              <ul>
+                {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+                  <li>{{adminUnit.label}}</li>
+                {{/each}}
+              </ul>
+            </td>
+            <td>{{process.publisher.name}}</td>
+            <td>{{or process.creator.name "/"}}</td>
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

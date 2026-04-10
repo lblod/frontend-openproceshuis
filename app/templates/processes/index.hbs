@@ -1,179 +1,25 @@
-<SidebarContainer>
-  <:sidebar>
-    <div class="au-c-sidebar">
-      <div class="au-c-sidebar__content">
-        <form
-          {{on "reset" this.resetFilters}}
-          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
-        >
-          <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
-            <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
-            <AuCheckbox
-              id="filter-blueprint"
-              @checked={{this.isBlueprint}}
-              @onChange={{this.toggleBlueprintFilter}}
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
-            <ProcessSelectByTitle
-              @id="filter-title"
-              @selected={{this.title}}
-              @onChange={{this.setTitle}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-classification">Relevant voor</AuLabel>
-            <ProcessSelectByClassification
-              @id="filter-classification"
-              @selected={{this.selectedClassifications}}
-              @onChange={{this.setClassifications}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-group">Naam bestuur</AuLabel>
-            <ProcessSelectByGroup
-              @id="filter-group"
-              @selected={{this.group}}
-              @onChange={{this.setGroup}}
-              @classifications={{this.classifications}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-vendor">Via leverancier</AuLabel>
-            <ProcessSelectByVendor
-              @id="filter-vendor"
-              @selected={{this.creator}}
-              @onChange={{this.setCreator}}
-              class="grow"
-            />
-          </div>
-          <div>
-            <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
-            <ProcessSelectByIpdc
-              @id="filter-ipdc"
-              @selected={{this.selectedIpdcProducts}}
-              @onChange={{this.setIpdcProducts}}
-              class="grow"
-            />
-          </div>
-          <div class="au-u-flex au-u-flex--end">
-            <AuButton
-              @icon="cross"
-              @skin="link"
-              type="reset"
-              class="au-u-padding-none au-u-medium"
-            >
-              Herstel alle filters
-            </AuButton>
-          </div>
-        </form>
-      </div>
-    </div>
-  </:sidebar>
-  <:content>
-    <PageHeader>
-      <:title>Processen</:title>
-      <:subtitle>
-        <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
-          Handleiding Open Proces Huis
-        </AuLinkExternal>
-      </:subtitle>
-      <:action></:action>
-    </PageHeader>
-
-    <AuDataTable
-      @content={{this.processes}}
-      @isLoading={{this.isLoading}}
-      @page={{this.page}}
-      @size={{this.size}}
-      as |t|
-    >
-      <t.content class="au-c-data-table__table--small" as |c|>
-        <c.header>
-          <AuDataTableThSortable
-            @field="title"
-            @currentSorting={{this.sort}}
-            @label="Titel"
-          />
-          <AuDataTableThSortable
-            @field="description"
-            @currentSorting={{this.sort}}
-            @label="Beschrijving"
-          />
-          <AuDataTableThSortable
-            @field="modified"
-            @currentSorting={{this.sort}}
-            @label="Laatst aangepast op"
-          />
-          <AuDataTableThSortable
-            @field="classification"
-            @currentSorting={{this.sort}}
-            @label="Relevant voor"
-          />
-          <AuDataTableThSortable
-            @field="organization"
-            @currentSorting={{this.sort}}
-            @label="Bestuur"
-          />
-          <AuDataTableThSortable
-            @field="creator"
-            @currentSorting={{this.sort}}
-            @label="Via leverancier"
-          />
-        </c.header>
-        {{#if this.hasErrored}}
-          <TableMessage::Error />
-        {{else if this.hasNoResults}}
-          <TableMessage>
-            <p>
-              Er werden geen zoekresultaten gevonden.
-            </p>
-          </TableMessage>
-        {{else}}
-          <c.body as |process|>
-            <td>
-              <div
-                class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-              >
-                {{#if process.isBlueprint}}
-                  <CustomIcon @icon="blueprint" @size="large" />
-                {{/if}}
-                <LinkTo
-                  class="au-c-link"
-                  @model={{process.id}}
-                  @route="processes.process"
-                >
-                  {{process.title}}
-                </LinkTo>
-              </div>
-            </td>
-            <td>
-              <span class="u-preserve-line-breaks">{{or
-                  (truncate (trim process.description) 150 true)
-                  "/"
-                }}</span>
-            </td>
-            <td>{{date-format process.modified}}</td>
-            <td>
-              <ul>
-                {{#each
-                  process.relevantAdministrativeUnits
-                  as |relevantAdministrativeUnit|
-                }}
-                  <li>{{relevantAdministrativeUnit.label}}</li>
-                {{/each}}
-              </ul>
-            </td>
-            <td>{{process.publisher.name}}</td>
-            <td>{{or process.creator.name "/"}}</td>
-          </c.body>
-        {{/if}}
-      </t.content>
-    </AuDataTable>
-  </:content>
-</SidebarContainer>
+<ProcessOverview
+  @pageTitle="Processen"
+  @processRoute="processes.process"
+  @processes={{this.processes}}
+  @isLoading={{this.isLoading}}
+  @page={{this.page}}
+  @size={{this.size}}
+  @sort={{this.sort}}
+  @hasErrored={{this.hasErrored}}
+  @hasNoResults={{this.hasNoResults}}
+  @title={{this.title}}
+  @selectedClassifications={{this.selectedClassifications}}
+  @classifications={{this.classifications}}
+  @group={{this.group}}
+  @creator={{this.creator}}
+  @blueprint={{this.blueprint}}
+  @selectedIpdcProducts={{this.selectedIpdcProducts}}
+  @resetFilters={{this.resetFilters}}
+  @setTitle={{this.setTitle}}
+  @setClassifications={{this.setClassifications}}
+  @setGroup={{this.setGroup}}
+  @setCreator={{this.setCreator}}
+  @toggleBlueprintFilter={{this.toggleBlueprintFilter}}
+  @setIpdcProducts={{this.setIpdcProducts}}
+/>
