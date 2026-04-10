@@ -63,6 +63,11 @@
             @label="Beschrijving"
           />
           <AuDataTableThSortable
+            @field="modified"
+            @currentSorting={{this.sort}}
+            @label="Laatst aangepast op"
+          />
+          <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
             @label="Relevant voor"
@@ -71,11 +76,6 @@
             @field="organization"
             @currentSorting={{this.sort}}
             @label="Bestuur"
-          />
-          <AuDataTableThSortable
-            @field="modified"
-            @currentSorting={{this.sort}}
-            @label="Laatst aangepast op"
           />
         </c.header>
         {{#if this.hasErrored}}
@@ -108,6 +108,7 @@
                   "/"
                 }}</span>
             </td>
+            <td>{{date-format process.modified}}</td>
             <td>
               <ul>
                 {{#each process.relevantAdministrativeUnits as |adminUnit|}}
@@ -116,8 +117,6 @@
               </ul>
             </td>
             <td>{{process.publisher.name}}</td>
-            <td>{{date-format process.modified}}</td>
-
           </c.body>
         {{/if}}
       </t.content>
