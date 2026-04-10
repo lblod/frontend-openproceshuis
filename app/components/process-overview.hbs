@@ -3,73 +3,75 @@
     <div class="au-c-sidebar">
       <div class="au-c-sidebar__content">
         <form
-          {{on "reset" @resetFilters}}
+          {{on "reset" this.resetFilters}}
           class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
         >
           <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          {{#if @toggleBlueprintFilter}}
+          {{#if this.showBlueprintFilter}}
             <div
               class="au-u-flex au-u-flex--between au-u-flex--vertical-center"
             >
               <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
               <AuCheckbox
                 id="filter-blueprint"
-                @checked={{@blueprint}}
-                @onChange={{@toggleBlueprintFilter}}
+                @checked={{this.blueprint}}
+                @onChange={{this.toggleBlueprintFilter}}
               />
             </div>
           {{/if}}
-          <div>
-            <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
-            <ProcessSelectByTitle
-              @id="filter-title"
-              @selected={{@title}}
-              @onChange={{@setTitle}}
-              @publisher={{@titlePublisher}}
-              class="grow"
-            />
-          </div>
-          {{#if @setClassifications}}
+          {{#if this.showTitleFilter}}
+            <div>
+              <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+              <ProcessSelectByTitle
+                @id="filter-title"
+                @selected={{this.title}}
+                @onChange={{this.setTitle}}
+                @publisher={{@titlePublisher}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if this.showClassificationFilter}}
             <div>
               <AuLabel for="filter-classification">Relevant voor</AuLabel>
               <ProcessSelectByClassification
                 @id="filter-classification"
-                @selected={{@selectedClassifications}}
-                @onChange={{@setClassifications}}
+                @selected={{this.selectedClassifications}}
+                @onChange={{this.setClassifications}}
                 class="grow"
               />
             </div>
           {{/if}}
-          {{#if @setGroup}}
+          {{#if this.showGroupFilter}}
             <div>
               <AuLabel for="filter-group">Naam bestuur</AuLabel>
               <ProcessSelectByGroup
                 @id="filter-group"
-                @selected={{@group}}
-                @onChange={{@setGroup}}
-                @classifications={{@classifications}}
+                @selected={{this.group}}
+                @onChange={{this.setGroup}}
+                @classifications={{this.classifications}}
                 class="grow"
               />
             </div>
           {{/if}}
-          {{#if @setCreator}}
+          {{#if this.showCreatorFilter}}
             <div>
               <AuLabel for="filter-vendor">Via leverancier</AuLabel>
               <ProcessSelectByVendor
                 @id="filter-vendor"
-                @selected={{@creator}}
-                @onChange={{@setCreator}}
+                @selected={{this.creator}}
+                @onChange={{this.setCreator}}
                 class="grow"
               />
             </div>
           {{/if}}
-          {{#if @setIpdcProducts}}
+          {{#if this.showIpdcFilter}}
             <div>
               <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
               <ProcessSelectByIpdc
                 @id="filter-ipdc"
-                @selected={{@selectedIpdcProducts}}
-                @onChange={{@setIpdcProducts}}
+                @selected={{this.selectedIpdcProducts}}
+                @onChange={{this.setIpdcProducts}}
                 class="grow"
               />
             </div>
@@ -102,42 +104,54 @@
     <AuDataTable
       @content={{this.processes}}
       @isLoading={{this.isLoading}}
-      @page={{@page}}
-      @size={{@size}}
+      @page={{this.page}}
+      @size={{this.size}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <AuDataTableThSortable
-            @field="title"
-            @currentSorting={{@sort}}
-            @label="Titel"
-          />
-          <AuDataTableThSortable
-            @field="description"
-            @currentSorting={{@sort}}
-            @label="Beschrijving"
-          />
-          <AuDataTableThSortable
-            @field="modified"
-            @currentSorting={{@sort}}
-            @label="Laatst aangepast op"
-          />
-          <AuDataTableThSortable
-            @field="classification"
-            @currentSorting={{@sort}}
-            @label="Relevant voor"
-          />
-          <AuDataTableThSortable
-            @field="organization"
-            @currentSorting={{@sort}}
-            @label="Bestuur"
-          />
-          <AuDataTableThSortable
-            @field="creator"
-            @currentSorting={{@sort}}
-            @label="Via leverancier"
-          />
+          {{#if this.showTitleColumn}}
+            <AuDataTableThSortable
+              @field="title"
+              @currentSorting={{this.sort}}
+              @label="Titel"
+            />
+          {{/if}}
+          {{#if this.showDescriptionColumn}}
+            <AuDataTableThSortable
+              @field="description"
+              @currentSorting={{this.sort}}
+              @label="Beschrijving"
+            />
+          {{/if}}
+          {{#if this.showModifiedColumn}}
+            <AuDataTableThSortable
+              @field="modified"
+              @currentSorting={{this.sort}}
+              @label="Laatst aangepast op"
+            />
+          {{/if}}
+          {{#if this.showClassificationColumn}}
+            <AuDataTableThSortable
+              @field="classification"
+              @currentSorting={{this.sort}}
+              @label="Relevant voor"
+            />
+          {{/if}}
+          {{#if this.showOrganizationColumn}}
+            <AuDataTableThSortable
+              @field="organization"
+              @currentSorting={{this.sort}}
+              @label="Bestuur"
+            />
+          {{/if}}
+          {{#if this.showCreatorColumn}}
+            <AuDataTableThSortable
+              @field="creator"
+              @currentSorting={{this.sort}}
+              @label="Via leverancier"
+            />
+          {{/if}}
         </c.header>
         {{#if this.hasErrored}}
           <TableMessage::Error />
@@ -149,41 +163,53 @@
           </TableMessage>
         {{else}}
           <c.body as |process|>
-            <td>
-              <div
-                class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-              >
-                {{#if process.isBlueprint}}
-                  <CustomIcon @icon="blueprint" @size="large" />
-                {{/if}}
-                <LinkTo
-                  class="au-c-link"
-                  @model={{process.id}}
-                  @route={{@processRoute}}
+            {{#if this.showTitleColumn}}
+              <td>
+                <div
+                  class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
                 >
-                  {{process.title}}
-                </LinkTo>
-                {{#if process.isUsedByCurrentGroup}}
-                  <AuPill @skin="success">In gebruik</AuPill>
-                {{/if}}
-              </div>
-            </td>
-            <td>
-              <span class="u-preserve-line-breaks">{{or
-                  (truncate (trim process.description) 150 true)
-                  "/"
-                }}</span>
-            </td>
-            <td>{{date-format process.modified}}</td>
-            <td>
-              <ul>
-                {{#each process.relevantAdministrativeUnits as |adminUnit|}}
-                  <li>{{adminUnit.label}}</li>
-                {{/each}}
-              </ul>
-            </td>
-            <td>{{process.publisher.name}}</td>
-            <td>{{or process.creator.name "/"}}</td>
+                  {{#if process.isBlueprint}}
+                    <CustomIcon @icon="blueprint" @size="large" />
+                  {{/if}}
+                  <LinkTo
+                    class="au-c-link"
+                    @model={{process.id}}
+                    @route={{@processRoute}}
+                  >
+                    {{process.title}}
+                  </LinkTo>
+                  {{#if process.isUsedByCurrentGroup}}
+                    <AuPill @skin="success">In gebruik</AuPill>
+                  {{/if}}
+                </div>
+              </td>
+            {{/if}}
+            {{#if this.showDescriptionColumn}}
+              <td>
+                <span class="u-preserve-line-breaks">{{or
+                    (truncate (trim process.description) 150 true)
+                    "/"
+                  }}</span>
+              </td>
+            {{/if}}
+            {{#if this.showModifiedColumn}}
+              <td>{{date-format process.modified}}</td>
+            {{/if}}
+            {{#if this.showClassificationColumn}}
+              <td>
+                <ul>
+                  {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+                    <li>{{adminUnit.label}}</li>
+                  {{/each}}
+                </ul>
+              </td>
+            {{/if}}
+            {{#if this.showOrganizationColumn}}
+              <td>{{process.publisher.name}}</td>
+            {{/if}}
+            {{#if this.showCreatorColumn}}
+              <td>{{or process.creator.name "/"}}</td>
+            {{/if}}
           </c.body>
         {{/if}}
       </t.content>

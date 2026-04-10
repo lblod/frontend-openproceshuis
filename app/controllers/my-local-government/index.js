@@ -4,62 +4,37 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 export default class MyLocalGovernmentIndexController extends Controller {
-  queryParams = [
-    'page',
-    'size',
-    'sort',
+  filters = ['title'];
+  columns = [
     'title',
+    'description',
+    'modified',
     'classification',
-    'group',
-    'blueprint',
+    'organization',
   ];
 
+  queryParams = ['page', 'size', 'sort', 'title'];
+
   @tracked page = 0;
-  size = 20;
+  @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
-  @tracked classification = '';
-  @tracked selectedClassification = '';
-  @tracked group = '';
-  @tracked blueprint = false;
   @service currentSession;
 
-  @action
-  setTitle(selection) {
-    this.page = null;
-    this.title = selection;
+  get query() {
+    return {
+      page: this.page,
+      size: this.size,
+      sort: this.sort,
+      title: this.title,
+    };
   }
 
   @action
-  setClassification(selection) {
-    this.page = null;
-    this.selectedClassification = selection;
-    this.classification = selection?.label;
-  }
-
-  @action
-  setGroup(selection) {
-    this.page = null;
-    this.group = selection;
-  }
-
-  @action
-  toggleBlueprintFilter(event) {
-    this.page = null;
-    this.blueprint = event;
-  }
-
-  @action
-  resetFilters() {
-    this.title = '';
-    this.classification = '';
-    this.selectedClassification = '';
-    this.group = '';
-    this.page = 0;
-    this.sort = 'title';
-    this.blueprint = false;
-
-    // Triggers a refresh of the model
-    this.page = null;
+  updateQuery(query) {
+    this.page = query.page;
+    this.size = query.size;
+    this.sort = query.sort;
+    this.title = query.title;
   }
 }

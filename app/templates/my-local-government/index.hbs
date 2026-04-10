@@ -3,10 +3,8 @@
   @processRoute="my-local-government.process"
   @titlePublisher={{this.currentSession.group.id}}
   @model={{this.model}}
-  @page={{this.page}}
-  @size={{this.size}}
-  @sort={{this.sort}}
-  @title={{this.title}}
-  @resetFilters={{this.resetFilters}}
-  @setTitle={{this.setTitle}}
+  @filters={{this.filters}}
+  @columns={{this.columns}}
+  @query={{this.query}}
+  @onQueryChange={{this.updateQuery}}
 />
