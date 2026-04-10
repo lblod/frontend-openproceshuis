@@ -111,11 +111,6 @@
             @label="Laatst aangepast op"
           />
           <AuDataTableThSortable
-            @field="users"
-            @currentSorting={{this.sort}}
-            @label="Gebruikt door ons"
-          />
-          <AuDataTableThSortable
             @field="classification"
             @currentSorting={{this.sort}}
             @label="Relevant voor"
@@ -165,17 +160,15 @@
             </td>
             <td>{{date-format process.modified}}</td>
             <td>
-              {{#if (this.processIsUsedBy process.users)}}
-                <AuIcon @icon="check" />
-              {{/if}}
-            </td>
-
-            <td><ul>
+              <ul>
                 {{#each
                   process.relevantAdministrativeUnits
                   as |relevantAdministrativeUnit|
-                }}<li>{{relevantAdministrativeUnit.label}}</li>
-                {{/each}}</ul></td>
+                }}
+                  <li>{{relevantAdministrativeUnit.label}}</li>
+                {{/each}}
+              </ul>
+            </td>
             <td>{{process.publisher.name}}</td>
             <td>{{or process.creator.name "/"}}</td>
           </c.body>
