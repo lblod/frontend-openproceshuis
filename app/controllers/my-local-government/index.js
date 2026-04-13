@@ -13,12 +13,13 @@ export default class MyLocalGovernmentIndexController extends Controller {
     'organization',
   ];
 
-  queryParams = ['page', 'size', 'sort', 'title'];
+  queryParams = ['page', 'size', 'sort', 'title', 'modifiedSince'];
 
   @tracked page = 0;
   @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
+  @tracked modifiedSince = undefined;
   @service currentSession;
 
   get query() {
@@ -27,6 +28,7 @@ export default class MyLocalGovernmentIndexController extends Controller {
       size: this.size,
       sort: this.sort,
       title: this.title,
+      modifiedSince: this.modifiedSince,
     };
   }
 
@@ -36,5 +38,6 @@ export default class MyLocalGovernmentIndexController extends Controller {
     this.size = query.size;
     this.sort = query.sort;
     this.title = query.title;
+    this.modifiedSince = query.modifiedSince;
   }
 }

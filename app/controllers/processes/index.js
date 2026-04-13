@@ -25,6 +25,7 @@ export default class ProcessesIndexController extends Controller {
     'size',
     'sort',
     'title',
+    'modifiedSince',
     'classifications',
     'group',
     'creator',
@@ -36,6 +37,7 @@ export default class ProcessesIndexController extends Controller {
   @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
+  @tracked modifiedSince = undefined;
   @tracked classifications = undefined;
   @tracked selectedClassifications = undefined;
   @tracked selectedIpdcProducts = undefined;
@@ -50,6 +52,7 @@ export default class ProcessesIndexController extends Controller {
       size: this.size,
       sort: this.sort,
       title: this.title,
+      modifiedSince: this.modifiedSince,
       classifications: this.classifications,
       selectedClassifications: this.selectedClassifications,
       group: this.group,
@@ -66,6 +69,7 @@ export default class ProcessesIndexController extends Controller {
     this.size = query.size;
     this.sort = query.sort;
     this.title = query.title;
+    this.modifiedSince = query.modifiedSince;
     this.classifications = query.classifications;
     this.selectedClassifications = query.selectedClassifications;
     this.group = query.group;

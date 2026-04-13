@@ -11,6 +11,7 @@ export default class ProcessesIndexRoute extends Route {
     page: { refreshModel: true },
     sort: { refreshModel: true },
     title: { refreshModel: true, replace: true },
+    modifiedSince: { refreshModel: true, replace: true },
     classifications: { refreshModel: true, replace: true },
     group: { refreshModel: true, replace: true },
     creator: { refreshModel: true, replace: true },
@@ -66,6 +67,10 @@ export default class ProcessesIndexRoute extends Route {
     if (params.title) {
       query['filter[:or:][title]'] = params.title;
       query['filter[:or:][description]'] = params.title;
+    }
+
+    if (params.modifiedSince) {
+      query['filter[:gte:modified]'] = params.modifiedSince;
     }
 
     if (params.classifications) {
