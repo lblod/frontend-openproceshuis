@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 export default class MyLocalGovernmentIndexController extends Controller {
-  filters = ['title'];
+  filters = ['title', 'modifiedSince'];
   columns = [
     'title',
     'description',

@@ -6,6 +6,7 @@ export default class ProcessesIndexController extends Controller {
   filters = [
     'blueprint',
     'title',
+    'modifiedSince',
     'classification',
     'group',
     'creator',

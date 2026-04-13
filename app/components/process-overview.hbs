@@ -31,6 +31,16 @@
               />
             </div>
           {{/if}}
+          {{#if this.showModifiedSinceFilter}}
+            <div>
+              <AuLabel for="filter-modified-since">Laatst aangepast sinds</AuLabel>
+              <AuDateInput
+                @id="filter-modified-since"
+                @value={{this.modifiedSince}}
+                @onChange={{this.setModifiedSince}}
+              />
+            </div>
+          {{/if}}
           {{#if this.showClassificationFilter}}
             <div>
               <AuLabel for="filter-classification">Relevant voor</AuLabel>

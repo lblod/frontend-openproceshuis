@@ -66,6 +66,10 @@ export default class ProcessOverviewComponent extends Component {
     return this.query.title ?? '';
   }
 
+  get modifiedSince() {
+    return this.query.modifiedSince;
+  }
+
   get classifications() {
     return this.query.classifications;
   }
@@ -100,6 +104,10 @@ export default class ProcessOverviewComponent extends Component {
 
   get showTitleFilter() {
     return this.filters.includes('title');
+  }
+
+  get showModifiedSinceFilter() {
+    return this.filters.includes('modifiedSince');
   }
 
   get showClassificationFilter() {
@@ -159,6 +167,14 @@ export default class ProcessOverviewComponent extends Component {
   }
 
   @action
+  setModifiedSince(value) {
+    this.updateQuery({
+      page: null,
+      modifiedSince: value || undefined,
+    });
+  }
+
+  @action
   setClassifications(selection) {
     this.updateQuery({
       page: null,
@@ -213,6 +229,7 @@ export default class ProcessOverviewComponent extends Component {
     };
 
     if (this.showTitleFilter) resetQuery.title = '';
+    if (this.showModifiedSinceFilter) resetQuery.modifiedSince = undefined;
     if (this.showBlueprintFilter) resetQuery.blueprint = false;
     if (this.showClassificationFilter) {
       resetQuery.classifications = undefined;
