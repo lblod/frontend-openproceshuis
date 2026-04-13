@@ -108,7 +108,9 @@
           Handleiding Open Proces Huis
         </AuLinkExternal>
       </:subtitle>
-      <:action></:action>
+      <:action>
+        {{yield to="action"}}
+      </:action>
     </PageHeader>
 
     <AuDataTable
@@ -141,6 +143,13 @@
               @label="Laatst aangepast op"
             />
           {{/if}}
+          {{#if this.showCreatedColumn}}
+            <AuDataTableThSortable
+              @field="created"
+              @currentSorting={{this.sort}}
+              @label="Aangemaakt op"
+            />
+          {{/if}}
           {{#if this.showClassificationColumn}}
             <AuDataTableThSortable
               @field="classification"
@@ -161,6 +170,9 @@
               @currentSorting={{this.sort}}
               @label="Via leverancier"
             />
+          {{/if}}
+          {{#if this.showActionsColumn}}
+            <th></th>
           {{/if}}
         </c.header>
         {{#if this.hasErrored}}
@@ -212,6 +224,9 @@
             {{#if this.showModifiedColumn}}
               <td>{{date-format process.modified}}</td>
             {{/if}}
+            {{#if this.showCreatedColumn}}
+              <td>{{date-format process.created}}</td>
+            {{/if}}
             {{#if this.showClassificationColumn}}
               <td>
                 <ul>
@@ -226,6 +241,9 @@
             {{/if}}
             {{#if this.showCreatorColumn}}
               <td>{{or process.creator.name "/"}}</td>
+            {{/if}}
+            {{#if this.showActionsColumn}}
+              <td>{{yield process to="rowActions"}}</td>
             {{/if}}
           </c.body>
         {{/if}}

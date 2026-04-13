@@ -6,13 +6,16 @@ import { service } from '@ember/service';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class SharedProcessesIndexController extends Controller {
+  filters = ['title'];
+  columns = ['title', 'description', 'created', 'modified', 'actions'];
+
   queryParams = ['page', 'size', 'sort', 'title'];
 
   @service router;
   @service toaster;
 
   @tracked page = 0;
-  size = 20;
+  @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
   @tracked processToDelete = undefined;
@@ -21,41 +24,21 @@ export default class SharedProcessesIndexController extends Controller {
 
   newProcessId = undefined;
 
-  get processes() {
-    return this.model.loadProcessesTaskInstance.isFinished
-      ? this.model.loadProcessesTaskInstance.value
-      : this.model.loadedProcesses;
-  }
-
-  get isLoading() {
-    return this.model.loadProcessesTaskInstance.isRunning;
-  }
-
-  get hasNoResults() {
-    return (
-      this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes?.length === 0
-    );
-  }
-
-  get hasErrored() {
-    return this.model.loadProcessesTaskInstance.isError;
+  get query() {
+    return {
+      page: this.page,
+      size: this.size,
+      sort: this.sort,
+      title: this.title,
+    };
   }
 
   @action
-  setTitle(selection) {
-    this.page = null;
-    this.title = selection;
-  }
-
-  @action
-  resetFilters() {
-    this.title = '';
-    this.page = 0;
-    this.sort = 'title';
-
-    // Triggers a refresh of the model
-    this.page = null;
+  updateQuery(query) {
+    this.page = query.page;
+    this.size = query.size;
+    this.sort = query.sort;
+    this.title = query.title;
   }
 
   @action

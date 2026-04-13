@@ -138,6 +138,10 @@ export default class ProcessOverviewComponent extends Component {
     return this.columns.includes('modified');
   }
 
+  get showCreatedColumn() {
+    return this.columns.includes('created');
+  }
+
   get showClassificationColumn() {
     return this.columns.includes('classification');
   }
@@ -148,6 +152,10 @@ export default class ProcessOverviewComponent extends Component {
 
   get showCreatorColumn() {
     return this.columns.includes('creator');
+  }
+
+  get showActionsColumn() {
+    return this.columns.includes('actions');
   }
 
   @action
