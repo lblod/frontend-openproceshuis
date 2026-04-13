@@ -105,6 +105,26 @@ export default class ProcessModel extends Model {
     return this.users?.includes(this.currentSession.group);
   }
 
+  get isCreatedAndModifiedOnSameDay() {
+    if (!this.created || !this.modified) return false;
+
+    const createdAt = new Date(this.created);
+    const modifiedAt = new Date(this.modified);
+
+    if (
+      Number.isNaN(createdAt.getTime()) ||
+      Number.isNaN(modifiedAt.getTime())
+    ) {
+      return false;
+    }
+
+    return (
+      createdAt.getFullYear() === modifiedAt.getFullYear() &&
+      createdAt.getMonth() === modifiedAt.getMonth() &&
+      createdAt.getDate() === modifiedAt.getDate()
+    );
+  }
+
   get href() {
     return `${window.location.origin}/processen/${this.id}`;
   }

@@ -188,6 +188,13 @@
                   >
                     {{process.title}}
                   </LinkTo>
+                  {{#if
+                    (and
+                      this.modifiedSince process.isCreatedAndModifiedOnSameDay
+                    )
+                  }}
+                    <AuPill @skin="link">Nieuw</AuPill>
+                  {{/if}}
                   {{#if process.isUsedByCurrentGroup}}
                     <AuPill @skin="success">In gebruik</AuPill>
                   {{/if}}
