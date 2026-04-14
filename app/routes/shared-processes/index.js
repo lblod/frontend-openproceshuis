@@ -19,6 +19,7 @@ export default class SharedProcessesIndexRoute extends Route {
     this.session.requireAuthentication(transition, 'auth.login');
 
     if (!this.currentSession.canEdit) {
+      this.session.clearAfterLoginRoute();
       this.router.transitionTo('unauthorized');
     }
   }

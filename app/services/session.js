@@ -12,6 +12,11 @@ export default class OPHSessionService extends SessionService {
       : false;
   }
 
+  requireAuthentication(transition, routeOrCallback) {
+    this.setRouteForAfterLogin();
+    return super.requireAuthentication(transition, routeOrCallback);
+  }
+
   async handleAuthentication(routeAfterAuthentication) {
     await this.currentSession.load();
     const pathName = localStorage.getItem('BEFORE_LOGIN_PATH');
@@ -29,5 +34,9 @@ export default class OPHSessionService extends SessionService {
 
   setRouteForAfterLogin() {
     localStorage.setItem('BEFORE_LOGIN_PATH', window.location.pathname);
+  }
+
+  clearAfterLoginRoute() {
+    localStorage.removeItem('BEFORE_LOGIN_PATH');
   }
 }
