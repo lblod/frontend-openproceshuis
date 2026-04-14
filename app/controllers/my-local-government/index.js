@@ -11,6 +11,7 @@ export default class MyLocalGovernmentIndexController extends Controller {
     'modified',
     'classification',
     'organization',
+    'creator',
   ];
 
   queryParams = ['page', 'size', 'sort', 'title', 'modifiedSince'];
