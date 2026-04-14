@@ -1,14 +1,32 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { service } from '@ember/service';
 
 export default class ProcessesIndexController extends Controller {
+  filters = [
+    'blueprint',
+    'title',
+    'modifiedSince',
+    'classification',
+    'group',
+    'creator',
+    'ipdc',
+  ];
+  columns = [
+    'title',
+    'description',
+    'modified',
+    'classification',
+    'organization',
+    'creator',
+  ];
+
   queryParams = [
     'page',
     'size',
     'sort',
     'title',
+    'modifiedSince',
     'classifications',
     'group',
     'creator',
@@ -17,9 +35,10 @@ export default class ProcessesIndexController extends Controller {
   ];
 
   @tracked page = 0;
-  size = 20;
+  @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
+  @tracked modifiedSince = undefined;
   @tracked classifications = undefined;
   @tracked selectedClassifications = undefined;
   @tracked selectedIpdcProducts = undefined;
@@ -27,96 +46,37 @@ export default class ProcessesIndexController extends Controller {
   @tracked group = '';
   @tracked creator = '';
   @tracked blueprint = false;
-  @service currentSession;
 
-  get processes() {
-    return this.model.loadProcessesTaskInstance.isFinished
-      ? this.model.loadProcessesTaskInstance.value
-      : this.model.loadedProcesses;
-  }
-
-  get isLoading() {
-    return this.model.loadProcessesTaskInstance.isRunning;
-  }
-
-  get hasNoResults() {
-    return (
-      this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes?.length === 0
-    );
-  }
-
-  get hasErrored() {
-    return this.model.loadProcessesTaskInstance.isError;
+  get query() {
+    return {
+      page: this.page,
+      size: this.size,
+      sort: this.sort,
+      title: this.title,
+      modifiedSince: this.modifiedSince,
+      classifications: this.classifications,
+      selectedClassifications: this.selectedClassifications,
+      group: this.group,
+      creator: this.creator,
+      blueprint: this.blueprint,
+      ipdcProducts: this.ipdcProducts,
+      selectedIpdcProducts: this.selectedIpdcProducts,
+    };
   }
 
   @action
-  setTitle(selection) {
-    this.page = null;
-    this.title = selection;
-  }
-
-  @action
-  setClassifications(selection) {
-    this.page = null;
-    this.selectedClassifications = selection;
-    if (selection.length === 0) {
-      this.classifications = undefined;
-    } else {
-      this.classifications = selection
-        .map((classification) => {
-          return classification.id;
-        })
-        .join(',');
-    }
-  }
-
-  @action
-  setIpdcProducts(selection) {
-    this.page = null;
-    this.selectedIpdcProducts = selection;
-    this.ipdcProducts = selection.length
-      ? selection.map((ipdcProduct) => ipdcProduct.id).join(',')
-      : undefined;
-  }
-
-  @action
-  setGroup(selection) {
-    this.page = null;
-    this.group = selection;
-  }
-
-  @action
-  setCreator(selection) {
-    this.page = null;
-    this.creator = selection;
-  }
-
-  @action
-  toggleBlueprintFilter(event) {
-    this.page = null;
-    this.blueprint = event;
-  }
-
-  @action
-  processIsUsedBy(usersArray) {
-    return usersArray.includes(this.currentSession.group);
-  }
-
-  @action
-  resetFilters() {
-    this.title = '';
-    this.classifications = undefined;
-    this.selectedClassifications = undefined;
-    this.group = '';
-    this.creator = '';
-    this.page = 0;
-    this.sort = 'title';
-    this.blueprint = false;
-    this.selectedIpdcProducts = undefined;
-    this.ipdcProducts = undefined;
-
-    // Triggers a refresh of the model
-    this.page = null;
+  updateQuery(query) {
+    this.page = query.page;
+    this.size = query.size;
+    this.sort = query.sort;
+    this.title = query.title;
+    this.modifiedSince = query.modifiedSince;
+    this.classifications = query.classifications;
+    this.selectedClassifications = query.selectedClassifications;
+    this.group = query.group;
+    this.creator = query.creator;
+    this.blueprint = query.blueprint;
+    this.ipdcProducts = query.ipdcProducts;
+    this.selectedIpdcProducts = query.selectedIpdcProducts;
   }
 }

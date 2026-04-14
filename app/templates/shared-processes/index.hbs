@@ -1,128 +1,27 @@
-<SidebarContainer>
-  <:sidebar>
-    <div class="au-c-sidebar">
-      <div class="au-c-sidebar__content">
-        <form
-          {{on "reset" this.resetFilters}}
-          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
-        >
-          <h1 class="au-u-h3 au-u-medium">Filters</h1>
-          <div>
-            <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
-            <ProcessSelectByTitle
-              @id="filter-title"
-              @selected={{this.title}}
-              @onChange={{this.setTitle}}
-              @publisher={{this.currentSession.group.id}}
-              class="grow"
-            />
-          </div>
-          <div class="au-u-flex au-u-flex--end">
-            <AuButton
-              @icon="cross"
-              @skin="link"
-              type="reset"
-              class="au-u-padding-none au-u-medium"
-            >
-              Herstel alle filters
-            </AuButton>
-          </div>
-        </form>
-      </div>
-    </div>
-  </:sidebar>
-  <:content>
-    <PageHeader>
-      <:title>Gedeelde processen</:title>
-      <:subtitle>
-        <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
-          Handleiding Open Proces Huis
-        </AuLinkExternal>
-      </:subtitle>
-      <:action>
-        <AuButton {{on "click" this.openUploadModal}}>Voeg proces toe</AuButton>
-      </:action>
-    </PageHeader>
-
-    <AuDataTable
-      @content={{this.processes}}
-      @isLoading={{this.isLoading}}
-      @page={{this.page}}
-      @size={{this.size}}
-      as |t|
-    >
-      <t.content class="au-c-data-table__table--small" as |c|>
-        <c.header>
-          <AuDataTableThSortable
-            @field="title"
-            @currentSorting={{this.sort}}
-            @label="Titel"
-          />
-          <AuDataTableThSortable
-            @field="description"
-            @currentSorting={{this.sort}}
-            @label="Beschrijving"
-          />
-          <AuDataTableThSortable
-            @field="created"
-            @currentSorting={{this.sort}}
-            @label="Aangemaakt op"
-          />
-          <AuDataTableThSortable
-            @field="modified"
-            @currentSorting={{this.sort}}
-            @label="Laatst aangepast op"
-          />
-          <th></th>
-        </c.header>
-        {{#if this.hasErrored}}
-          <TableMessage::Error />
-        {{else if this.hasNoResults}}
-          <TableMessage>
-            <p>
-              Er werden geen zoekresultaten gevonden.
-            </p>
-          </TableMessage>
-        {{else}}
-          <c.body as |process|>
-            <td
-              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-            >
-              {{#if process.isBlueprint}}
-                <CustomIcon @icon="blueprint" @size="large" />
-              {{/if}}
-              <LinkTo
-                class="au-c-link"
-                @model={{process.id}}
-                @route="shared-processes.process"
-              >
-                {{process.title}}
-              </LinkTo>
-            </td>
-            <td>
-              <span class="u-preserve-line-breaks">{{or
-                  (truncate (trim process.description) 150 true)
-                  "/"
-                }}</span>
-            </td>
-            <td>{{date-format process.created}}</td>
-            <td>{{date-format process.modified}}</td>
-            <td>
-              <AuButton
-                @icon="bin"
-                @skin="naked"
-                @alert="true"
-                @width="block"
-                @hideText="true"
-                {{on "click" (fn this.openDeleteModal process)}}
-              >Verwijder</AuButton>
-            </td>
-          </c.body>
-        {{/if}}
-      </t.content>
-    </AuDataTable>
-  </:content>
-</SidebarContainer>
+<ProcessOverview
+  @pageTitle="Gedeelde processen"
+  @processRoute="shared-processes.process"
+  @titlePublisher={{this.currentSession.group.id}}
+  @model={{this.model}}
+  @filters={{this.filters}}
+  @columns={{this.columns}}
+  @query={{this.query}}
+  @onQueryChange={{this.updateQuery}}
+>
+  <:action>
+    <AuButton {{on "click" this.openUploadModal}}>Voeg proces toe</AuButton>
+  </:action>
+  <:rowActions as |process|>
+    <AuButton
+      @icon="bin"
+      @skin="naked"
+      @alert="true"
+      @width="block"
+      @hideText="true"
+      {{on "click" (fn this.openDeleteModal process)}}
+    >Verwijder</AuButton>
+  </:rowActions>
+</ProcessOverview>
 
 {{#if this.uploadModalOpened}}
   <Process::Wizard @onCloseModal={{this.closeUploadModal}} />

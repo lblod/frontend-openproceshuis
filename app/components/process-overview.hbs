@@ -1,0 +1,253 @@
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <form
+          {{on "reset" this.resetFilters}}
+          class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+        >
+          <h1 class="au-u-h3 au-u-medium">Filters</h1>
+          {{#if this.showBlueprintFilter}}
+            <div
+              class="au-u-flex au-u-flex--between au-u-flex--vertical-center"
+            >
+              <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
+              <AuCheckbox
+                id="filter-blueprint"
+                @checked={{this.blueprint}}
+                @onChange={{this.toggleBlueprintFilter}}
+              />
+            </div>
+          {{/if}}
+          {{#if this.showTitleFilter}}
+            <div>
+              <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+              <ProcessSelectByTitle
+                @id="filter-title"
+                @selected={{this.title}}
+                @onChange={{this.setTitle}}
+                @publisher={{@titlePublisher}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if this.showModifiedSinceFilter}}
+            <div>
+              <AuLabel for="filter-modified-since">Laatst aangepast sinds</AuLabel>
+              <AuDateInput
+                @id="filter-modified-since"
+                @value={{this.modifiedSince}}
+                @onChange={{this.setModifiedSince}}
+              />
+            </div>
+          {{/if}}
+          {{#if this.showClassificationFilter}}
+            <div>
+              <AuLabel for="filter-classification">Relevant voor</AuLabel>
+              <ProcessSelectByClassification
+                @id="filter-classification"
+                @selected={{this.selectedClassifications}}
+                @onChange={{this.setClassifications}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if this.showGroupFilter}}
+            <div>
+              <AuLabel for="filter-group">Naam bestuur</AuLabel>
+              <ProcessSelectByGroup
+                @id="filter-group"
+                @selected={{this.group}}
+                @onChange={{this.setGroup}}
+                @classifications={{this.classifications}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if this.showCreatorFilter}}
+            <div>
+              <AuLabel for="filter-vendor">Via leverancier</AuLabel>
+              <ProcessSelectByVendor
+                @id="filter-vendor"
+                @selected={{this.creator}}
+                @onChange={{this.setCreator}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          {{#if this.showIpdcFilter}}
+            <div>
+              <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
+              <ProcessSelectByIpdc
+                @id="filter-ipdc"
+                @selected={{this.selectedIpdcProducts}}
+                @onChange={{this.setIpdcProducts}}
+                class="grow"
+              />
+            </div>
+          {{/if}}
+          <div class="au-u-flex au-u-flex--end">
+            <AuButton
+              @icon="cross"
+              @skin="link"
+              type="reset"
+              class="au-u-padding-none au-u-medium"
+            >
+              Herstel alle filters
+            </AuButton>
+          </div>
+        </form>
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <PageHeader>
+      <:title>{{@pageTitle}}</:title>
+      <:subtitle>
+        <AuLinkExternal href="https://abb-vlaanderen.gitbook.io/informatie-oph">
+          Handleiding Open Proces Huis
+        </AuLinkExternal>
+      </:subtitle>
+      <:action>
+        {{yield to="action"}}
+      </:action>
+    </PageHeader>
+
+    <AuDataTable
+      @content={{this.processes}}
+      @isLoading={{this.isLoading}}
+      @page={{this.page}}
+      @size={{this.size}}
+      as |t|
+    >
+      <t.content class="au-c-data-table__table--small" as |c|>
+        <c.header>
+          {{#if this.showTitleColumn}}
+            <AuDataTableThSortable
+              @field="title"
+              @currentSorting={{this.sort}}
+              @label="Titel"
+            />
+          {{/if}}
+          {{#if this.showDescriptionColumn}}
+            <AuDataTableThSortable
+              @field="description"
+              @currentSorting={{this.sort}}
+              @label="Beschrijving"
+            />
+          {{/if}}
+          {{#if this.showModifiedColumn}}
+            <AuDataTableThSortable
+              @field="modified"
+              @currentSorting={{this.sort}}
+              @label="Laatst aangepast op"
+            />
+          {{/if}}
+          {{#if this.showCreatedColumn}}
+            <AuDataTableThSortable
+              @field="created"
+              @currentSorting={{this.sort}}
+              @label="Aangemaakt op"
+            />
+          {{/if}}
+          {{#if this.showClassificationColumn}}
+            <AuDataTableThSortable
+              @field="classification"
+              @currentSorting={{this.sort}}
+              @label="Relevant voor"
+            />
+          {{/if}}
+          {{#if this.showOrganizationColumn}}
+            <AuDataTableThSortable
+              @field="organization"
+              @currentSorting={{this.sort}}
+              @label="Bestuur"
+            />
+          {{/if}}
+          {{#if this.showCreatorColumn}}
+            <AuDataTableThSortable
+              @field="creator"
+              @currentSorting={{this.sort}}
+              @label="Via leverancier"
+            />
+          {{/if}}
+          {{#if this.showActionsColumn}}
+            <th></th>
+          {{/if}}
+        </c.header>
+        {{#if this.hasErrored}}
+          <TableMessage::Error />
+        {{else if this.hasNoResults}}
+          <TableMessage>
+            <p>
+              Er werden geen zoekresultaten gevonden.
+            </p>
+          </TableMessage>
+        {{else}}
+          <c.body as |process|>
+            {{#if this.showTitleColumn}}
+              <td>
+                <div
+                  class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+                >
+                  {{#if process.isBlueprint}}
+                    <CustomIcon @icon="blueprint" @size="large" />
+                  {{/if}}
+                  <LinkTo
+                    class="au-c-link"
+                    @model={{process.id}}
+                    @route={{@processRoute}}
+                  >
+                    {{process.title}}
+                  </LinkTo>
+                  {{#if
+                    (and
+                      this.modifiedSince process.isCreatedAndModifiedOnSameDay
+                    )
+                  }}
+                    <AuPill @skin="link">Nieuw</AuPill>
+                  {{/if}}
+                  {{#if process.isUsedByCurrentGroup}}
+                    <AuPill @skin="success">In gebruik</AuPill>
+                  {{/if}}
+                </div>
+              </td>
+            {{/if}}
+            {{#if this.showDescriptionColumn}}
+              <td>
+                <span class="u-preserve-line-breaks">{{or
+                    (truncate (trim process.description) 150 true)
+                    "/"
+                  }}</span>
+              </td>
+            {{/if}}
+            {{#if this.showModifiedColumn}}
+              <td>{{date-format process.modified}}</td>
+            {{/if}}
+            {{#if this.showCreatedColumn}}
+              <td>{{date-format process.created}}</td>
+            {{/if}}
+            {{#if this.showClassificationColumn}}
+              <td>
+                <ul>
+                  {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+                    <li>{{adminUnit.label}}</li>
+                  {{/each}}
+                </ul>
+              </td>
+            {{/if}}
+            {{#if this.showOrganizationColumn}}
+              <td>{{process.publisher.name}}</td>
+            {{/if}}
+            {{#if this.showCreatorColumn}}
+              <td>{{or process.creator.name "/"}}</td>
+            {{/if}}
+            {{#if this.showActionsColumn}}
+              <td>{{yield process to="rowActions"}}</td>
+            {{/if}}
+          </c.body>
+        {{/if}}
+      </t.content>
+    </AuDataTable>
+  </:content>
+</SidebarContainer>

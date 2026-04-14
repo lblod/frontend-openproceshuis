@@ -6,9 +6,12 @@ import {
   isEmptyOrEmail,
   isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
+import { service } from '@ember/service';
 
 @modelValidator
 export default class ProcessModel extends Model {
+  @service currentSession;
+
   @attr('string') title;
   @attr('string') description;
   @attr('string') email;
@@ -96,6 +99,30 @@ export default class ProcessModel extends Model {
   get isPublishedByAbbOrDv() {
     const ovoCodes = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
     return ovoCodes.includes(this.publisher?.identifier);
+  }
+
+  get isUsedByCurrentGroup() {
+    return this.users?.includes(this.currentSession.group);
+  }
+
+  get isCreatedAndModifiedOnSameDay() {
+    if (!this.created || !this.modified) return false;
+
+    const createdAt = new Date(this.created);
+    const modifiedAt = new Date(this.modified);
+
+    if (
+      Number.isNaN(createdAt.getTime()) ||
+      Number.isNaN(modifiedAt.getTime())
+    ) {
+      return false;
+    }
+
+    return (
+      createdAt.getFullYear() === modifiedAt.getFullYear() &&
+      createdAt.getMonth() === modifiedAt.getMonth() &&
+      createdAt.getDate() === modifiedAt.getDate()
+    );
   }
 
   get href() {
