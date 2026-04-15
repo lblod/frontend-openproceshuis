@@ -6,6 +6,12 @@ export default class DiagramsDiagramIndexRoute extends Route {
   @service session;
   @service store;
 
+  queryParams = [
+    { previousRouteTitle: { refreshModel: false } },
+    { previousRouteModelId: { refreshModel: false } },
+    { previousRouteName: { refreshModel: false } },
+  ];
+
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
   }

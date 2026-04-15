@@ -52,6 +52,11 @@
             @route="diagrams.diagram.index"
             @skin="button-naked"
             @model={{diagram.id}}
+            @query={{hash
+              previousRouteTitle=@process.title
+              previousRouteModelId=@process.id
+              previousRouteName="processes.process"
+            }}
           >
             Detail
           </AuLink>
