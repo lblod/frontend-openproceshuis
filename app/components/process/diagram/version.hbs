@@ -18,19 +18,14 @@
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
           <AuDataTableThSortable
+            @field="name"
+            @currentSorting={{this.sortVersions}}
+            @label="Hoofddiagram"
+          />
+          <AuDataTableThSortable
             @field="created"
             @currentSorting={{this.sortVersions}}
             @label="Toegevoegd op"
-          />
-          <AuDataTableThSortable
-            @field="name"
-            @currentSorting={{this.sortVersions}}
-            @label="Bestandsnaam"
-          />
-          <AuDataTableThSortable
-            @field="size"
-            @currentSorting={{this.sortVersions}}
-            @label="Grootte"
           />
           <th></th>
           {{#if @canEdit}}<th></th>{{/if}}
@@ -42,26 +37,26 @@
             <p>Er werden geen zoekresultaten gevonden.</p>
           </TableMessage>
         {{else}}
-          <c.body as |diagram|>
-            <td>{{date-format diagram.created true}}</td>
+          <c.body as |version|>
             <td>
-              {{#if (eq diagram.id this.latestDiagram.id)}}
+              {{#if (eq version.list.id this.latestDiagram.id)}}
                 <strong>
-                  {{diagram.name}}
+                  {{version.mainDiagramFileName}}
                   <AuIcon @icon="circle-check" />
                 </strong>
               {{else}}
-                {{diagram.name}}
+                {{version.mainDiagramFileName}}
               {{/if}}
             </td>
-            <td>{{file-size-format diagram.size}}</td>
+            <td>{{date-format version.list.created true}}</td>
+
             <td>
               <AuButton
                 @icon="download"
                 @skin="link"
                 @width="block"
                 @hideText="true"
-                {{on "click" (fn this.downloadFile diagram)}}
+                {{!-- {{on "click" (fn this.downloadFile v)}} --}}
               >Download</AuButton>
             </td>
             {{#if @canEdit}}
@@ -72,8 +67,8 @@
                   @alert="true"
                   @width="block"
                   @hideText="true"
-                  @disabled={{eq diagram.id this.latestDiagram.id}}
-                  {{on "click" (fn this.openDeleteModal diagram)}}
+                  @disabled={{eq version.list.id this.latestDiagram.id}}
+                  {{on "click" (fn this.openDeleteModal version.list)}}
                 >Verwijder</AuButton>
               </td>
             {{/if}}

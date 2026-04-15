@@ -122,15 +122,27 @@ export default class DiagramService extends Service {
 
   fetchVersions = task(
     {
-      keepLatest: true,
-      observes: ['pageVersions', 'sortVersions'],
+      restartable: true,
     },
     async (processId) => {
       this.diagramsAreLoading = true;
       this.diagramsHaveErrored = false;
 
       try {
-        this.diagrams = await this.getDiagramListsFilesForProcessId(processId);
+        const lists = await this.getDiagramListsWithFilesForProcess(processId);
+        const sortedOnCreatedLists = lists.sort((a, b) => {
+          return new Date(b.created) - new Date(a.created);
+        });
+
+        const mappedListOfVersions = sortedOnCreatedLists.map(async (list) => {
+          const firstFileInList = this.getFirstFileOfList(list);
+          return {
+            list,
+            mainDiagramFileName: firstFileInList?.name ?? list.displayVersion,
+          };
+        });
+
+        this.diagrams = await Promise.all(mappedListOfVersions);
       } catch {
         this.diagramsHaveErrored = true;
       }
