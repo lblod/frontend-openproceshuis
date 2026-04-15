@@ -23,6 +23,8 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked isEditingDetails = false;
   @tracked selectedDiagramFile;
 
+  @tracked isWizardModalOpen;
+
   get process() {
     return this.model.process;
   }

@@ -58,17 +58,15 @@
           @files={{this.diagramFiles}}
           @onDownloadSuccesful={{this.onDiagramsDownloadedAsZip}}
         />
-        <AuLink
-          @route={{this.diagramsRouteNameFromParent}}
-          @model={{this.process.id}}
-          @skin="button-naked"
-        >
-          {{#if this.isPublisherOfProcess}}
+        {{#if this.isPublisherOfProcess}}
+          <AuButton
+            @skin="naked"
+            {{on "click" (fn (mut this.isWizardModalOpen) true)}}
+          >
             Wijzig
-          {{else}}
-            Bekijk versies
-          {{/if}}
-        </AuLink>
+          </AuButton>
+        {{/if}}
+
       </AuButtonGroup>
     </div>
     {{#if @model.diagramList}}
@@ -118,5 +116,12 @@
     @process={{this.process}}
     @refreshDataTrigger={{this.isEditingDetails}}
   />
+
+  {{#if this.isWizardModalOpen}}
+    <Process::Wizard
+      @onCloseModal={{fn (mut this.isWizardModalOpen) false}}
+      @process={{@model.process}}
+    />
+  {{/if}}
 
 </AuBodyContainer>
