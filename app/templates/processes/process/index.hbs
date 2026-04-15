@@ -69,6 +69,11 @@
 
       </AuButtonGroup>
     </div>
+    {{#if (and @model.diagramList @model.diagramList.version)}}
+      <p
+        class="au-u-muted au-u-h6 au-u-text-right"
+      >{{@model.diagramList.version}}</p>
+    {{/if}}
     {{#if @model.diagramList}}
       <div>
         <DiagramList::Table
