@@ -79,6 +79,8 @@ export default class ProcessesProcessIndexController extends Controller {
   reset() {
     this.process?.rollbackAttributes();
 
+    this.isWizardModalOpen = false;
+
     this.downloadModalOpened = false;
     this.replaceModalOpened = false;
     this.addModalOpened = false;
