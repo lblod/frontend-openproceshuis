@@ -72,10 +72,17 @@
       </AuButtonGroup>
     </div>
     {{#if @model.diagramList}}
-      <DiagramList::DiagramsInTabs
-        @diagramList={{@model.diagramList}}
-        @processId={{this.process.id}}
-      />
+      <div>
+        <DiagramList::Table
+          @diagramList={{@model.diagramList}}
+          @selectedDiagramFile={{this.selectedDiagramFile}}
+          @onDiagramFileSelected={{this.openDiagramFile}}
+          @process={{@model.process}}
+        />
+      </div>
+      <div class="au-o-box au-u-background-gray-100">
+        <File::Viewer @file={{this.selectedDiagramFile}} />
+      </div>
     {{else}}
       <div
         class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom"
