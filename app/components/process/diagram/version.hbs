@@ -39,13 +39,11 @@
         {{else}}
           <c.body as |version|>
             <td>
+              {{version.mainDiagramFileName}}
               {{#if (eq version.list.id this.latestDiagram.id)}}
                 <strong>
-                  {{version.mainDiagramFileName}}
                   <AuIcon @icon="circle-check" />
                 </strong>
-              {{else}}
-                {{version.mainDiagramFileName}}
               {{/if}}
             </td>
             <td>{{date-format version.list.created true}}</td>
@@ -81,8 +79,8 @@
   @modalOpen={{this.deleteModalOpened}}
   @closeModal={{this.closeDeleteModal}}
 >
-  <:title>Verwijder {{this.fileToDelete.name}}</:title>
-  <:body>Ben je zeker dat je dit bestand uit de bibliotheek wil verwijderen?</:body>
+  <:title>Verwijder diagrammen versie</:title>
+  <:body>Ben je zeker dat je deze versie uit de bibliotheek wil verwijderen?</:body>
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
@@ -93,7 +91,7 @@
         @skin="primary"
         @icon="bin"
         @alert="true"
-        {{on "click" (perform this.deleteFile)}}
+        {{on "click" (perform this.deleteDiagramList)}}
       >Verwijder</AuButton>
     </AuButtonGroup>
   </:footer>

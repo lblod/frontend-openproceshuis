@@ -105,21 +105,6 @@ export default class DiagramService extends Service {
     }
   });
 
-  fetchLatestById = task({ keepLatest: true }, async (fileId) => {
-    this.latestDiagramIsLoading = true;
-    this.latestDiagramHasErrored = false;
-
-    try {
-      this.latestDiagram = await this.store.findRecord('file', fileId, {
-        reload: true,
-      });
-    } catch {
-      this.latestDiagramHasErrored = true;
-    }
-
-    this.latestDiagramIsLoading = false;
-  });
-
   fetchVersions = task(
     {
       restartable: true,
@@ -129,6 +114,7 @@ export default class DiagramService extends Service {
       this.diagramsHaveErrored = false;
 
       try {
+        this.latestDiagram = await this.getLatestDiagramList(processId);
         const lists = await this.getDiagramListsWithFilesForProcess(processId);
         const sortedOnCreatedLists = lists.sort((a, b) => {
           return new Date(b.created) - new Date(a.created);

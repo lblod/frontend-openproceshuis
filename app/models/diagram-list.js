@@ -24,4 +24,8 @@ export default class DiagramListModel extends Model {
   get isArchived() {
     return this.status === ENV.resourceStates.archived;
   }
+
+  archive() {
+    this.status = ENV.resourceStates.archived;
+  }
 }

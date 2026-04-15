@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
+
 import { service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { dropTask } from 'ember-concurrency';
-import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader';
+import { task } from 'ember-concurrency';
+
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessDiagramVersion extends Component {
@@ -55,43 +56,40 @@ export default class ProcessDiagramVersion extends Component {
   }
 
   @action
-  async downloadFile(file) {
-    await downloadFileByUrl(file.id, file.name);
-    this.args.trackDownloadFileEvent(file.id, file.name, file.extension);
-  }
-
-  @action
   openDeleteModal(fileToDelete) {
-    this.fileToDelete = fileToDelete;
+    this.diagramListToDelete = fileToDelete;
     this.deleteModalOpened = true;
   }
 
   @action
   closeDeleteModal() {
-    this.fileToDelete = undefined;
+    this.diagramListToDelete = undefined;
     this.deleteModalOpened = false;
   }
 
-  @dropTask
-  *deleteFile() {
-    if (!this.fileToDelete) return;
+  deleteDiagramList = task({ drop: true }, async () => {
+    if (!this.diagramListToDelete) return;
 
-    this.fileToDelete.archive();
+    this.diagramListToDelete.archive();
 
     try {
-      yield this.fileToDelete.save();
-      this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
-        timeOut: 5000,
-      });
+      await this.diagramListToDelete.save();
+      this.toaster.success(
+        'Diagrammen versie succesvol verwijderd',
+        'Gelukt!',
+        {
+          timeOut: 5000,
+        },
+      );
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.fileDeletionError');
       this.toaster.error(errorMessage, 'Fout');
-      this.fileToDelete.rollbackAttributes();
+      this.diagramListToDelete.rollbackAttributes();
     }
 
     this.diagram.refreshVersions(this.process.id);
 
     this.closeDeleteModal();
-  }
+  });
 }
