@@ -136,9 +136,12 @@ export default class DiagramService extends Service {
 
         const mappedListOfVersions = sortedOnCreatedLists.map(async (list) => {
           const firstFileInList = this.getFirstFileOfList(list);
+          const mainFileName = firstFileInList?.name;
           return {
             list,
-            mainDiagramFileName: firstFileInList?.name ?? list.displayVersion,
+            mainDiagramFileName: mainFileName ?? list.displayVersion,
+            zipFilename: `${mainFileName}-${list.displayVersion}`,
+            diagramFiles: this.getAvailableFilesFromList(list),
           };
         });
 

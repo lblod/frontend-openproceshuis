@@ -51,13 +51,11 @@
             <td>{{date-format version.list.created true}}</td>
 
             <td>
-              <AuButton
-                @icon="download"
-                @skin="link"
-                @width="block"
-                @hideText="true"
-                {{!-- {{on "click" (fn this.downloadFile v)}} --}}
-              >Download</AuButton>
+              <File::DownloadMultipleAsZip
+                @showAsDownloadIcon={{true}}
+                @folderName={{version.zipFilename}}
+                @files={{version.diagramFiles}}
+              />
             </td>
             {{#if @canEdit}}
               <td>
