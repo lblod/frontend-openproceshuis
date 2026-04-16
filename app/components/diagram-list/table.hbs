@@ -1,6 +1,10 @@
 <AuDataTable
   @content={{this.diagrams.value}}
   @noDataMessage="Geen diagrammen gevonden"
+  @isLoading={{this.fetchDiagrams.isRunning}}
+  @hidePagination={{true}}
+  @page={{@page}}
+  @size={{this.size}}
   @sort={{@sort}}
   as |row|
 >
@@ -81,6 +85,10 @@
     {{/if}}
   </row.content>
 </AuDataTable>
+<Shared::TablePagination
+  @metadata={{this.diagramsTableMeta}}
+  @pageQueryParamName="diagramsPage"
+/>
 
 <File::Download
   @showAsModal={{true}}

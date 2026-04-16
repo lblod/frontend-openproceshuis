@@ -13,6 +13,7 @@ export default class ProcessesProcessIndexController extends Controller {
     'attachmentsSort',
     'diagramVersionsPage',
     'diagramVersionsSort',
+    'diagramsPage',
     'diagramsSort',
   ];
   @tracked attachmentsPage = 0;
@@ -20,6 +21,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked attachmentsSort = 'name';
   @tracked diagramVersionsPage = 0;
   @tracked diagramVersionsSort = '-created';
+  @tracked diagramsPage = 0;
   @tracked diagramsSort = 'position';
 
   @service store;

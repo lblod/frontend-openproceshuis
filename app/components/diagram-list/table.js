@@ -18,6 +18,9 @@ export default class DiagramListTable extends Component {
   @tracked fileToDownload;
   @tracked fileToDelete;
   @tracked canDeleteFile = true;
+  @tracked diagramsTableMeta = {};
+
+  size = 5;
 
   get hasNoResults() {
     return this.fetchDiagrams?.value?.length === 0;
@@ -53,9 +56,14 @@ export default class DiagramListTable extends Component {
 
     const diagrams = await this.store.query('diagram-list-item', {
       sort: this.args.sort,
+      page: {
+        number: this.args.page,
+        size: this.size,
+      },
       'filter[id]': diagramsInList.map((diagram) => diagram.id).join(','),
       'filter[diagram-file][:not:status]': ARCHIVED_STATUS_URI,
     });
+    this.diagramsTableMeta = diagrams.meta;
 
     return diagrams;
   });
