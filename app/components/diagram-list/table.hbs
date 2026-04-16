@@ -1,21 +1,37 @@
 <AuDataTable
-  @content={{this.activeDiagrams}}
-  @fields="name created size"
+  @content={{this.diagrams.value}}
   @noDataMessage="Geen diagrammen gevonden"
+  @sort={{@sort}}
   as |row|
 >
   <row.content class="au-c-data-table__table--small" as |c|>
     <c.header>
-      <th>Bestandsnaam</th>
-      <th>Toegevoegd</th>
-      <th>Grootte</th>
-      <th>Positie</th>
+      <AuDataTableThSortable
+        @field="diagram-file.name"
+        @currentSorting={{@sort}}
+        @label="Bestandsnaam"
+      />
+      <AuDataTableThSortable
+        @field="diagram-file.created"
+        @currentSorting={{@sort}}
+        @label="Toegevoegd"
+      />
+      <AuDataTableThSortable
+        @field="diagram-file.size"
+        @currentSorting={{@sort}}
+        @label="Grootte"
+      />
+      <AuDataTableThSortable
+        @field="position"
+        @currentSorting={{@sort}}
+        @label="Positie"
+      />
       <th></th>
       <th></th>
     </c.header>
-    {{#if this.diagramsHaveErrored}}
+    {{#if this.fetchDiagrams.isError}}
       <TableMessage::Error />
-    {{else if (eq this.activeDiagrams.length 0)}}
+    {{else if this.hasNoResults}}
       <TableMessage>
         <p>Er werden geen zoekresultaten gevonden.</p>
       </TableMessage>

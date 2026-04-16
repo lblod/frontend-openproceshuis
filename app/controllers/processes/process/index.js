@@ -13,12 +13,14 @@ export default class ProcessesProcessIndexController extends Controller {
     'attachmentsSort',
     'diagramVersionsPage',
     'diagramVersionsSort',
+    'diagramsSort',
   ];
   @tracked attachmentsPage = 0;
   @tracked attachmentsSize = 10;
   @tracked attachmentsSort = 'name';
   @tracked diagramVersionsPage = 0;
   @tracked diagramVersionsSort = '-created';
+  @tracked diagramsSort = 'position';
 
   @service store;
   @service router;
