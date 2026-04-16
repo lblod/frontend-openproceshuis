@@ -17,7 +17,7 @@ export default class ProcessesProcessIndexController extends Controller {
     'diagramsSort',
   ];
   @tracked attachmentsPage = 0;
-  @tracked attachmentsSize = 10;
+  @tracked attachmentsSize = 5;
   @tracked attachmentsSort = 'name';
   @tracked diagramVersionsPage = 0;
   @tracked diagramVersionsSort = '-created';
@@ -93,16 +93,9 @@ export default class ProcessesProcessIndexController extends Controller {
 
     this.isWizardModalOpen = false;
 
-    this.downloadModalOpened = false;
-    this.replaceModalOpened = false;
-    this.addModalOpened = false;
-    this.deleteModalOpened = false;
-
-    this.latestDiagramAsBpmn = undefined;
-    this.latestDiagramAsSvg = undefined;
-
-    this.diagrams = undefined;
-    this.latestDiagram = undefined;
+    this.attachmentsPage = 0;
+    this.diagramVersionsPage = 0;
+    this.diagramsPage = 0;
 
     this.selectedDiagramFile = this.diagram.getFirstFileOfList(
       this.model.diagramList,
