@@ -15,7 +15,7 @@
     </c.header>
     {{#if this.diagramsHaveErrored}}
       <TableMessage::Error />
-    {{else if this.diagramsHaveNoResults}}
+    {{else if (eq this.activeDiagrams.length 0)}}
       <TableMessage>
         <p>Er werden geen zoekresultaten gevonden.</p>
       </TableMessage>

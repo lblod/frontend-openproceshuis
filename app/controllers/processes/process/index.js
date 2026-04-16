@@ -7,10 +7,18 @@ import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessIndexController extends Controller {
-  queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
+  queryParams = [
+    'attachmentsPage',
+    'attachmentsSize',
+    'attachmentsSort',
+    'diagramVersionsPage',
+    'diagramVersionsSort',
+  ];
   @tracked attachmentsPage = 0;
   @tracked attachmentsSize = 10;
   @tracked attachmentsSort = 'name';
+  @tracked diagramVersionsPage = 0;
+  @tracked diagramVersionsSort = '-created';
 
   @service store;
   @service router;
@@ -121,6 +129,11 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   fetchAttachments() {
     this.attachmentsPage = 0;
+  }
+
+  @action
+  fetchDiagramVersions() {
+    this.diagramVersionsPage = 0;
   }
 
   @action

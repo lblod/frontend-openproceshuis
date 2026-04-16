@@ -110,7 +110,10 @@
   <Process::Diagram::Version
     @canEdit={{this.canEdit}}
     @process={{this.process}}
+    @page={{this.diagramVersionsPage}}
+    @sort={{this.diagramVersionsSort}}
     @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
+    @reloadTableData={{this.fetchDiagramVersions}}
   />
 
   <Process::Attachments

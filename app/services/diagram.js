@@ -1,6 +1,5 @@
 import Service from '@ember/service';
 
-import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
@@ -8,26 +7,6 @@ import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class DiagramService extends Service {
   @service store;
-
-  @tracked latestDiagram;
-  @tracked latestDiagramIsLoading = true;
-  @tracked latestDiagramHasErrored = false;
-  @tracked pageVersions = 0;
-  @tracked sortVersions = '-created';
-  sizeVersions = 10;
-  @tracked diagrams = undefined;
-  @tracked diagramsAreLoading = true;
-  @tracked diagramsHaveErrored = false;
-
-  currentProcessId = null;
-
-  get diagramsHaveNoResults() {
-    return (
-      !this.diagramsAreLoading &&
-      !this.diagramsHaveErrored &&
-      this.diagrams?.length === 0
-    );
-  }
 
   @action
   openDownloadModal() {
@@ -88,61 +67,14 @@ export default class DiagramService extends Service {
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {
-    this.latestDiagramIsLoading = true;
-    this.latestDiagramHasErrored = false;
-
     try {
       const list = await this.getLatestDiagramList(processId);
-      const latestDiagramFile = this.getFirstFileOfList(list);
 
-      this.latestDiagram = latestDiagramFile;
-      return latestDiagramFile;
+      return this.getFirstFileOfList(list);
     } catch (e) {
-      this.latestDiagramFile = null;
-      this.latestDiagramHasErrored = true;
-    } finally {
-      this.latestDiagramIsLoading = false;
+      console.log(e);
     }
   });
-
-  fetchVersions = task(
-    {
-      restartable: true,
-    },
-    async (processId) => {
-      this.diagramsAreLoading = true;
-      this.diagramsHaveErrored = false;
-
-      try {
-        this.latestDiagram = await this.getLatestDiagramList(processId);
-        const lists = await this.getDiagramListsWithFilesForProcess(processId);
-        const sortedOnCreatedLists = lists.sort((a, b) => {
-          return new Date(b.created) - new Date(a.created);
-        });
-
-        const mappedListOfVersions = sortedOnCreatedLists.map(async (list) => {
-          const firstFileInList = this.getFirstFileOfList(list);
-          const mainFileName = firstFileInList?.name;
-          return {
-            list,
-            mainDiagramFileName: mainFileName ?? list.displayVersion,
-            zipFilename: `${mainFileName}-${list.displayVersion}`,
-            diagramFiles: this.getAvailableFilesFromList(list),
-          };
-        });
-
-        this.diagrams = await Promise.all(mappedListOfVersions);
-      } catch {
-        this.diagramsHaveErrored = true;
-      }
-
-      this.diagramsAreLoading = false;
-    },
-  );
-
-  refreshVersions(processId) {
-    this.fetchVersions.perform(processId);
-  }
 
   async createDiagramListForFiles(fileIds, currentList = null) {
     const now = new Date();

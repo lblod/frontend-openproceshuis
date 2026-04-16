@@ -9,30 +9,28 @@
 
   <:card>
     <AuDataTable
-      @content={{this.diagrams}}
-      @isLoading={{this.diagramsAreLoading}}
-      @page={{this.pageVersions}}
-      @size={{this.sizeVersions}}
+      @content={{this.versions.value}}
+      @isLoading={{this.fetchVersions.isRunning}}
+      @hidePagination={{true}}
+      @page={{@page}}
+      @size={{this.size}}
+      @sort={{@sort}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <AuDataTableThSortable
-            @field="name"
-            @currentSorting={{this.sortVersions}}
-            @label="Hoofddiagram"
-          />
+          <th>Hoofddiagram</th>
           <AuDataTableThSortable
             @field="created"
-            @currentSorting={{this.sortVersions}}
+            @currentSorting={{@sort}}
             @label="Toegevoegd op"
           />
           <th></th>
           {{#if @canEdit}}<th></th>{{/if}}
         </c.header>
-        {{#if this.diagramsHaveErrored}}
+        {{#if this.fetchVersions.isError}}
           <TableMessage::Error />
-        {{else if this.diagramsHaveNoResults}}
+        {{else if this.hasNoResults}}
           <TableMessage>
             <p>Er werden geen zoekresultaten gevonden.</p>
           </TableMessage>
@@ -40,11 +38,11 @@
           <c.body as |version|>
             <td>
               {{version.mainDiagramFileName}}
-              {{#if (eq version.list.id this.latestDiagram.id)}}
+              {{#unless version.canRemove}}
                 <strong>
                   <AuIcon @icon="circle-check" />
                 </strong>
-              {{/if}}
+              {{/unless}}
             </td>
             <td>{{date-format version.list.created true}}</td>
 
@@ -63,7 +61,7 @@
                   @alert="true"
                   @width="block"
                   @hideText="true"
-                  @disabled={{eq version.list.id this.latestDiagram.id}}
+                  @disabled={{not version.canRemove}}
                   {{on "click" (fn this.openDeleteModal version.list)}}
                 >Verwijder</AuButton>
               </td>
@@ -72,6 +70,10 @@
         {{/if}}
       </t.content>
     </AuDataTable>
+    <Shared::TablePagination
+      @metadata={{this.versionsTableMeta}}
+      @pageQueryParamName="diagramVersionsPage"
+    />
   </:card>
 </DataCard>
 
