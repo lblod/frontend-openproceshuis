@@ -25,6 +25,28 @@ export default class ProcessesProcessIndexRoute extends Route {
         replace: true,
       },
     },
+    {
+      diagramVersionsPage: {
+        replace: true,
+        refreshModel: true,
+      },
+    },
+    {
+      diagramVersionsSort: {
+        replace: true,
+      },
+    },
+    {
+      diagramsPage: {
+        replace: true,
+        refreshModel: true,
+      },
+    },
+    {
+      diagramsSort: {
+        replace: true,
+      },
+    },
   ];
 
   beforeModel(transition) {
@@ -90,6 +112,7 @@ export default class ProcessesProcessIndexRoute extends Route {
     super.resetController(...arguments);
     controller.reset();
   }
+
   didTransition() {
     const scrollTo = this.paramsFor('processes.process')?.scrollTo;
     if (scrollTo) {

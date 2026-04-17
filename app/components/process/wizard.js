@@ -88,23 +88,20 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: 'Ga naar proces',
       },
       {
-        title: 'Naar het proces',
-        isStepShown: !this.args.process,
-        action: async () => await this.goToProcess(this.process),
-        canGoToNextStep: false,
-        nextStepButtonLabel: null,
-      },
-      {
         title: 'Nieuwe diagram versie aanmaken',
         isStepShown: this.args.process,
         action: async () => await this.createNewDiagramVersion(this.files),
         canGoToNextStep: this.diagramList,
-        nextStepButtonLabel: 'Ga naar diagrammen',
+        nextStepButtonLabel: 'Bekijk proces',
       },
       {
-        title: 'Naar proces diagrammen',
-        isStepShown: this.args.process,
-        action: async () => await this.goToDiagrams(),
+        title: 'Naar het proces',
+        isStepShown: true,
+        action: async () =>
+          await this.goToProcess(
+            this.process ?? this.args.process,
+            Boolean(this.args.process),
+          ),
         canGoToNextStep: false,
         nextStepButtonLabel: null,
       },
@@ -275,17 +272,14 @@ export default class ProcessWizard extends Component {
     return ids;
   }
 
-  async goToProcess(process) {
+  async goToProcess(process, isUpdateOfProcess) {
     this.showSuccessMessage = false;
     this.loadingMessage = 'We brengen je naar het process';
     await timeout(150);
-    this.router.transitionTo('processes.process', process.id);
-  }
-
-  async goToDiagrams() {
-    this.showSuccessMessage = false;
-    this.loadingMessage = 'We brengen je naar de proces diagrammen';
-    this.router.refresh();
-    this.args.onCloseModal();
+    if (isUpdateOfProcess) {
+      this.router.refresh();
+    } else {
+      this.router.transitionTo('processes.process', process.id);
+    }
   }
 }

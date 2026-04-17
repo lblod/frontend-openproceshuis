@@ -1,9 +1,24 @@
-<AuButton
-  ...attributes
-  class="border-radius"
-  @disabled={{not this.hasFiles}}
-  @loading={{this.downloadFiles.isRunning}}
-  {{on "click" (perform this.downloadFiles)}}
->
-  {{this.buttonLabel}}
-</AuButton>
+{{#if @showAsDownloadIcon}}
+  <AuButton
+    ...attributes
+    @skin="link"
+    @width="block"
+    @icon="download"
+    @hideText={{true}}
+    @disabled={{not this.hasFiles}}
+    @loading={{this.downloadFiles.isRunning}}
+    {{on "click" (perform this.downloadFiles)}}
+  >
+    {{this.buttonLabel}}
+  </AuButton>
+{{else}}
+  <AuButton
+    ...attributes
+    class="border-radius"
+    @disabled={{not this.hasFiles}}
+    @loading={{this.downloadFiles.isRunning}}
+    {{on "click" (perform this.downloadFiles)}}
+  >
+    {{this.buttonLabel}}
+  </AuButton>
+{{/if}}

@@ -2,23 +2,22 @@ import Controller from '@ember/controller';
 
 import { action } from '@ember/object';
 import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 
 export default class DiagramsDiagramIndexController extends Controller {
   @service toaster;
   @service router;
   @service eventTracking;
 
-  @action
-  goToPreviousRoute() {
-    if (this.model.linkedProcesses.length >= 1) {
-      this.router.transitionTo(
-        'processes.process.diagrams',
-        this.model.linkedProcesses[0].id,
-      );
-    } else {
-      this.router.transitionTo('processes');
-    }
-  }
+  queryParams = [
+    'previousRouteTitle',
+    'previousRouteModelId',
+    'previousRouteName',
+  ];
+
+  @tracked previousRouteTitle;
+  @tracked previousRouteModelId;
+  @tracked previousRouteName;
 
   @action
   copyUrl() {
@@ -52,5 +51,25 @@ export default class DiagramsDiagramIndexController extends Controller {
       targetExtension,
       this.model.linkedProcesses?.[0]?.id,
     );
+  }
+
+  get hasPreviousRouteBreadCrumb() {
+    return (
+      this.previousRouteTitle &&
+      this.previousRouteModelId &&
+      this.previousRouteName
+    );
+  }
+
+  get breadcrumbTitle() {
+    return this.previousRouteTitle ?? this.model.file.name;
+  }
+
+  get breadcrumbModel() {
+    return this.previousRouteModelId ?? this.model.diagram.id;
+  }
+
+  get breadcrumbRouteName() {
+    return this.previousRouteName ?? 'diagrams.diagram';
   }
 }

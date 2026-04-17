@@ -1,19 +1,15 @@
+{{#if this.hasPreviousRouteBreadCrumb}}
+  {{breadcrumb
+    this.breadcrumbTitle
+    route=this.breadcrumbRouteName
+    model=this.breadcrumbModel
+  }}
+{{/if}}
 {{breadcrumb @model.file.name route="diagrams.diagram" model=@model.diagram.id}}
 
 <PageHeader>
   <:title>
     <div class="au-u-flex au-u-flex--vertical-center">
-      <AuButton
-        @skin="naked"
-        @icon="arrow-left"
-        @iconAlignment="left"
-        @size="large"
-        @hideText={{true}}
-        class="au-u-margin-right-small animate-left"
-        {{on "click" this.goToPreviousRoute}}
-      >
-        Previous
-      </AuButton>
       {{@model.file.name}}
       <AuButton
         class="au-u-padding-left-small"

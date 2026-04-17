@@ -58,24 +58,36 @@
           @files={{this.diagramFiles}}
           @onDownloadSuccesful={{this.onDiagramsDownloadedAsZip}}
         />
-        <AuLink
-          @route={{this.diagramsRouteNameFromParent}}
-          @model={{this.process.id}}
-          @skin="button-naked"
-        >
-          {{#if this.isPublisherOfProcess}}
+        {{#if this.isPublisherOfProcess}}
+          <AuButton
+            @skin="naked"
+            {{on "click" (fn (mut this.isWizardModalOpen) true)}}
+          >
             Wijzig
-          {{else}}
-            Bekijk versies
-          {{/if}}
-        </AuLink>
+          </AuButton>
+        {{/if}}
+
       </AuButtonGroup>
     </div>
+    {{#if (and @model.diagramList @model.diagramList.version)}}
+      <p
+        class="au-u-muted au-u-h6 au-u-text-right"
+      >{{@model.diagramList.version}}</p>
+    {{/if}}
     {{#if @model.diagramList}}
-      <DiagramList::DiagramsInTabs
-        @diagramList={{@model.diagramList}}
-        @processId={{this.process.id}}
-      />
+      <div>
+        <DiagramList::Table
+          @diagramList={{@model.diagramList}}
+          @selectedDiagramFile={{this.selectedDiagramFile}}
+          @onDiagramFileSelected={{this.openDiagramFile}}
+          @process={{@model.process}}
+          @page={{this.diagramsPage}}
+          @sort={{this.diagramsSort}}
+        />
+      </div>
+      <div class="au-o-box au-u-background-gray-100">
+        <File::Viewer @file={{this.selectedDiagramFile}} />
+      </div>
     {{else}}
       <div
         class="au-u-flex au-u-flex--center au-u-flex--column au-u-text-center au-u-margin-bottom"
@@ -97,6 +109,15 @@
     />
   {{/if}}
 
+  <Process::Diagram::Version
+    @canEdit={{this.canEdit}}
+    @process={{this.process}}
+    @page={{this.diagramVersionsPage}}
+    @sort={{this.diagramVersionsSort}}
+    @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
+    @reloadTableData={{this.fetchDiagramVersions}}
+  />
+
   <Process::Attachments
     @canEdit={{this.canEdit}}
     @process={{this.process}}
@@ -111,5 +132,12 @@
     @process={{this.process}}
     @refreshDataTrigger={{this.isEditingDetails}}
   />
+
+  {{#if this.isWizardModalOpen}}
+    <Process::Wizard
+      @onCloseModal={{fn (mut this.isWizardModalOpen) false}}
+      @process={{@model.process}}
+    />
+  {{/if}}
 
 </AuBodyContainer>

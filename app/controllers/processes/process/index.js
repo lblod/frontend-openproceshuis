@@ -2,15 +2,27 @@ import Controller from '@ember/controller';
 
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task } from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessIndexController extends Controller {
-  queryParams = ['attachmentsPage', 'attachmentsSize', 'attachmentsSort'];
+  queryParams = [
+    'attachmentsPage',
+    'attachmentsSize',
+    'attachmentsSort',
+    'diagramVersionsPage',
+    'diagramVersionsSort',
+    'diagramsPage',
+    'diagramsSort',
+  ];
   @tracked attachmentsPage = 0;
-  @tracked attachmentsSize = 10;
+  @tracked attachmentsSize = 5;
   @tracked attachmentsSort = 'name';
+  @tracked diagramVersionsPage = 0;
+  @tracked diagramVersionsSort = '-created';
+  @tracked diagramsPage = 0;
+  @tracked diagramsSort = 'position';
 
   @service store;
   @service router;
@@ -21,6 +33,9 @@ export default class ProcessesProcessIndexController extends Controller {
   @service eventTracking;
 
   @tracked isEditingDetails = false;
+  @tracked selectedDiagramFile;
+
+  @tracked isWizardModalOpen;
 
   get process() {
     return this.model.process;
@@ -40,6 +55,17 @@ export default class ProcessesProcessIndexController extends Controller {
       this.model.process?.publisher &&
       this.model.process.publisher.id === this.currentSession.group.id
     );
+  }
+
+  @action
+  async openDiagramFile(diagramFile) {
+    if (diagramFile) {
+      this.selectedDiagramFile = null;
+      await timeout(25); // NOTE - so bad
+      this.selectedDiagramFile = diagramFile;
+    } else {
+      await this.openDiagramList(this.selectedDiagramList);
+    }
   }
 
   @action
@@ -65,16 +91,15 @@ export default class ProcessesProcessIndexController extends Controller {
   reset() {
     this.process?.rollbackAttributes();
 
-    this.downloadModalOpened = false;
-    this.replaceModalOpened = false;
-    this.addModalOpened = false;
-    this.deleteModalOpened = false;
+    this.isWizardModalOpen = false;
 
-    this.latestDiagramAsBpmn = undefined;
-    this.latestDiagramAsSvg = undefined;
+    this.attachmentsPage = 0;
+    this.diagramVersionsPage = 0;
+    this.diagramsPage = 0;
 
-    this.diagrams = undefined;
-    this.latestDiagram = undefined;
+    this.selectedDiagramFile = this.diagram.getFirstFileOfList(
+      this.model.diagramList,
+    );
   }
 
   @action
@@ -101,6 +126,11 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   fetchAttachments() {
     this.attachmentsPage = 0;
+  }
+
+  @action
+  fetchDiagramVersions() {
+    this.diagramVersionsPage = 0;
   }
 
   @action

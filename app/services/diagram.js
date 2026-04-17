@@ -1,6 +1,5 @@
 import Service from '@ember/service';
 
-import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
@@ -8,26 +7,6 @@ import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class DiagramService extends Service {
   @service store;
-
-  @tracked latestDiagram;
-  @tracked latestDiagramIsLoading = true;
-  @tracked latestDiagramHasErrored = false;
-  @tracked pageVersions = 0;
-  @tracked sortVersions = '-created';
-  sizeVersions = 10;
-  @tracked diagrams = undefined;
-  @tracked diagramsAreLoading = true;
-  @tracked diagramsHaveErrored = false;
-
-  currentProcessId = null;
-
-  get diagramsHaveNoResults() {
-    return (
-      !this.diagramsAreLoading &&
-      !this.diagramsHaveErrored &&
-      this.diagrams?.length === 0
-    );
-  }
 
   @action
   openDownloadModal() {
@@ -88,60 +67,14 @@ export default class DiagramService extends Service {
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {
-    this.latestDiagramIsLoading = true;
-    this.latestDiagramHasErrored = false;
-
     try {
       const list = await this.getLatestDiagramList(processId);
-      const latestDiagramFile = this.getFirstFileOfList(list);
 
-      this.latestDiagram = latestDiagramFile;
-      return latestDiagramFile;
+      return this.getFirstFileOfList(list);
     } catch (e) {
-      this.latestDiagramFile = null;
-      this.latestDiagramHasErrored = true;
-    } finally {
-      this.latestDiagramIsLoading = false;
+      console.log(e);
     }
   });
-
-  fetchLatestById = task({ keepLatest: true }, async (fileId) => {
-    this.latestDiagramIsLoading = true;
-    this.latestDiagramHasErrored = false;
-
-    try {
-      this.latestDiagram = await this.store.findRecord('file', fileId, {
-        reload: true,
-      });
-    } catch {
-      this.latestDiagramHasErrored = true;
-    }
-
-    this.latestDiagramIsLoading = false;
-  });
-
-  fetchVersions = task(
-    {
-      keepLatest: true,
-      observes: ['pageVersions', 'sortVersions'],
-    },
-    async (processId) => {
-      this.diagramsAreLoading = true;
-      this.diagramsHaveErrored = false;
-
-      try {
-        this.diagrams = await this.getDiagramListsFilesForProcessId(processId);
-      } catch {
-        this.diagramsHaveErrored = true;
-      }
-
-      this.diagramsAreLoading = false;
-    },
-  );
-
-  refreshVersions(processId) {
-    this.fetchVersions.perform(processId);
-  }
 
   async createDiagramListForFiles(fileIds, currentList = null) {
     const now = new Date();

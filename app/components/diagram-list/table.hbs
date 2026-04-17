@@ -1,21 +1,41 @@
 <AuDataTable
-  @content={{this.activeDiagrams}}
-  @fields="name created size"
+  @content={{this.diagrams.value}}
   @noDataMessage="Geen diagrammen gevonden"
+  @isLoading={{this.fetchDiagrams.isRunning}}
+  @hidePagination={{true}}
+  @page={{@page}}
+  @size={{this.size}}
+  @sort={{@sort}}
   as |row|
 >
   <row.content class="au-c-data-table__table--small" as |c|>
     <c.header>
-      <th>Bestandsnaam</th>
-      <th>Toegevoegd</th>
-      <th>Grootte</th>
-      <th>Positie</th>
+      <AuDataTableThSortable
+        @field="diagram-file.name"
+        @currentSorting={{@sort}}
+        @label="Bestandsnaam"
+      />
+      <AuDataTableThSortable
+        @field="diagram-file.created"
+        @currentSorting={{@sort}}
+        @label="Toegevoegd"
+      />
+      <AuDataTableThSortable
+        @field="diagram-file.size"
+        @currentSorting={{@sort}}
+        @label="Grootte"
+      />
+      <AuDataTableThSortable
+        @field="position"
+        @currentSorting={{@sort}}
+        @label="Positie"
+      />
       <th></th>
       <th></th>
     </c.header>
-    {{#if this.diagramsHaveErrored}}
+    {{#if this.fetchDiagrams.isError}}
       <TableMessage::Error />
-    {{else if this.diagramsHaveNoResults}}
+    {{else if this.hasNoResults}}
       <TableMessage>
         <p>Er werden geen zoekresultaten gevonden.</p>
       </TableMessage>
@@ -52,6 +72,11 @@
             @route="diagrams.diagram.index"
             @skin="button-naked"
             @model={{diagram.id}}
+            @query={{hash
+              previousRouteTitle=@process.title
+              previousRouteModelId=@process.id
+              previousRouteName="processes.process"
+            }}
           >
             Detail
           </AuLink>
@@ -60,6 +85,10 @@
     {{/if}}
   </row.content>
 </AuDataTable>
+<Shared::TablePagination
+  @metadata={{this.diagramsTableMeta}}
+  @pageQueryParamName="diagramsPage"
+/>
 
 <File::Download
   @showAsModal={{true}}
