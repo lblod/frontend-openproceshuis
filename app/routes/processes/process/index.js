@@ -36,6 +36,17 @@ export default class ProcessesProcessIndexRoute extends Route {
         replace: true,
       },
     },
+    {
+      diagramsPage: {
+        replace: true,
+        refreshModel: true,
+      },
+    },
+    {
+      diagramsSort: {
+        replace: true,
+      },
+    },
   ];
 
   beforeModel(transition) {
