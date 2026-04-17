@@ -5,6 +5,7 @@ export default class ProcessStatisticModel extends Model {
   @attr('number', { defaultValue: 0 }) pngDownloads;
   @attr('number', { defaultValue: 0 }) svgDownloads;
   @attr('number', { defaultValue: 0 }) bpmnDownloads;
+  @attr('number', { defaultValue: 0 }) visioDownloads;
   @attr('number', { defaultValue: 0 }) processViews;
 
   @belongsTo('process', { inverse: 'processStatistics', async: false }) process;

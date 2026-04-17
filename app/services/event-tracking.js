@@ -51,6 +51,9 @@ export default class EventTrackingService extends Service {
           case 'svg':
             stats.svgDownloads += 1;
             break;
+          case 'vsdx':
+            stats.visioDownloads += 1;
+            break;
           default:
             console.error('fileExtension', targetExtension, 'not recognized');
             return;
