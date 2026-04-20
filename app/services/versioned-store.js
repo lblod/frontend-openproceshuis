@@ -5,8 +5,14 @@ export default class VersionedStoreService extends Service {
   @service store;
   @service currentSession;
 
+  isModelNameSupported(modelName) {
+    const models = ['information-asset', 'process'];
+
+    return models.includes(modelName);
+  }
+
   createRecord(modelName, data) {
-    if (modelName !== 'information-asset') {
+    if (!this.isModelNameSupported(modelName)) {
       throw new Error(`Unsupported versioned model: ${modelName}`);
     }
 
@@ -15,7 +21,7 @@ export default class VersionedStoreService extends Service {
       ...data,
       created: createdAt,
       modified: createdAt,
-      creator: this.currentSession.group,
+      // creator: this.currentSession.group,
     };
 
     const canonicalRecord = this.store.createRecord(modelName, fullData);
@@ -28,7 +34,7 @@ export default class VersionedStoreService extends Service {
   }
 
   async updateRecord(modelName, oldVersionedRecord) {
-    if (modelName !== 'information-asset') {
+    if (!this.isModelNameSupported(modelName)) {
       throw new Error(`Unsupported versioned model: ${modelName}`);
     }
 
@@ -47,7 +53,7 @@ export default class VersionedStoreService extends Service {
         ...versionData,
         created: createdAt,
         modified: createdAt,
-        creator: this.currentSession.group,
+        // creator: this.currentSession.group,
         canonical: canonicalRecord,
         previousVersion: oldVersionedRecord,
       },
