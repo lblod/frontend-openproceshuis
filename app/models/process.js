@@ -61,6 +61,12 @@ export default class ProcessModel extends Model {
     async: false,
   })
   relevantAdministrativeUnits;
+  @hasMany('versioned-process', {
+    inverse: 'canonical',
+    async: false,
+    polymorphic: true,
+  })
+  versions;
 
   validations = {
     title: {
