@@ -33,7 +33,9 @@
           {{/if}}
           {{#if this.showModifiedSinceFilter}}
             <div>
-              <AuLabel for="filter-modified-since">Laatst aangepast sinds</AuLabel>
+              <AuLabel for="filter-modified-since">
+                Laatst aangepast of nieuw sinds
+              </AuLabel>
               <AuDateInput
                 @id="filter-modified-since"
                 @value={{this.modifiedSince}}
