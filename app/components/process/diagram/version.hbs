@@ -11,6 +11,7 @@
     <AuDataTable
       @content={{this.versions.value}}
       @isLoading={{this.fetchVersions.isRunning}}
+      @noDataMessage="Er werden geen versies gevonden"
       @hidePagination={{true}}
       @page={{@page}}
       @size={{this.size}}
