@@ -9,17 +9,21 @@ export default class SharedTablePagination extends Component {
   get page() {
     const multiplierItems = this.currentPage + 1;
     let topItems = multiplierItems * this.itemsPerPage;
-    const bottomItems = topItems - this.itemsPerPage;
+    let bottomItems = topItems - this.itemsPerPage;
 
     if (topItems > this.totalItems) {
       topItems = this.totalItems;
+    }
+
+    if (this.totalItems !== 0) {
+      bottomItems++;
     }
 
     return `${bottomItems} - ${topItems}`;
   }
 
   get totalItems() {
-    return this.args.metadata?.count || null;
+    return this.args.metadata?.count || 0;
   }
 
   get currentPage() {
