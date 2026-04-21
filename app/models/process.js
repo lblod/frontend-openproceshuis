@@ -153,6 +153,7 @@ export default class ProcessModel extends Model {
 
   async save() {
     this.modified = new Date();
+    this.isVersionedResource = false;
     await super.save(...arguments);
     if (this.baseModelName !== 'versioned-process') {
       this.applyVersioning.perform();
