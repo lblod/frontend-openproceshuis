@@ -27,4 +27,8 @@ export default class VersionedProcessModel extends ProcessModel {
     as: 'process',
   })
   ipdcProducts;
+
+  get isVersioned() {
+    return true;
+  }
 }
