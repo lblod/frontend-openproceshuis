@@ -274,6 +274,7 @@ export default class ProcessWizard extends Component {
 
   async goToProcess(process, isUpdateOfProcess) {
     this.showSuccessMessage = false;
+    this.applyVersioning.perform(process);
     this.loadingMessage = 'We brengen je naar het process';
     await timeout(150);
     if (isUpdateOfProcess) {
@@ -282,4 +283,21 @@ export default class ProcessWizard extends Component {
       this.router.transitionTo('processes.process', process.id);
     }
   }
+
+  applyVersioning = task({ drop: true }, async (processModel) => {
+    const currentVersions = await this.store.query('versioned-process', {
+      'filter[canonical][id]': processModel.id,
+      include: 'canonical',
+      sort: 'canonical.created',
+      page: {
+        size: 1,
+        number: 0,
+      },
+    });
+    const versioned = this.store.createRecord('versioned-process', {
+      canonical: processModel,
+      previousVersion: currentVersions?.[0] ?? null,
+    });
+    await versioned.save();
+  });
 }
