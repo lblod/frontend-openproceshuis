@@ -13,6 +13,7 @@ import { task } from 'ember-concurrency';
 export default class ProcessModel extends Model {
   @service currentSession;
 
+  @attr('boolean', { defaultValue: false }) isVersionedResource;
   @attr('string') title;
   @attr('string') description;
   @attr('string') email;
@@ -135,14 +136,11 @@ export default class ProcessModel extends Model {
     return `${window.location.origin}/processen/${this.id}`;
   }
 
-  get isVersioned() {
-    return false;
-  }
-
   async save() {
     this.modified = new Date();
+    this.isVersionedResource = false;
     await super.save(...arguments);
-    if (!this.isVersioned) {
+    if (!this.isVersionedResource) {
       this.applyVersioning.perform();
     }
   }
