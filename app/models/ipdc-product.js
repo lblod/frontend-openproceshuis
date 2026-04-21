@@ -5,8 +5,9 @@ export default class IpdcProductModel extends Model {
   @attr('string') productNumber;
 
   @hasMany('process', {
-    inverse: 'ipdcProducts',
     async: false,
+    inverse: 'ipdcProducts',
+    polymorphic: true,
     as: 'ipdc-product',
   })
   processes;
