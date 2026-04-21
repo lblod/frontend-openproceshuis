@@ -7,6 +7,7 @@ import {
   isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
 import { service } from '@ember/service';
+import { task } from 'ember-concurrency';
 
 @modelValidator
 export default class ProcessModel extends Model {
@@ -134,8 +135,32 @@ export default class ProcessModel extends Model {
     return `${window.location.origin}/processen/${this.id}`;
   }
 
+  get isVersioned() {
+    return false;
+  }
+
   async save() {
     this.modified = new Date();
     await super.save(...arguments);
+    if (!this.isVersioned) {
+      this.applyVersioning.perform();
+    }
   }
+
+  applyVersioning = task({ drop: true }, async () => {
+    const currentVersions = await this.store.query('versioned-process', {
+      'filter[canonical][id]': this.id,
+      include: 'canonical',
+      sort: 'canonical.created',
+      page: {
+        size: 1,
+        number: 0,
+      },
+    });
+    const versioned = this.store.createRecord('versioned-process', {
+      canonical: this,
+      previousVersion: currentVersions?.[0] ?? null,
+    });
+    await versioned.save();
+  });
 }
