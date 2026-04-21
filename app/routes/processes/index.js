@@ -92,6 +92,7 @@ export default class ProcessesIndexRoute extends Route {
       }
 
       query['filter[:not:status]'] = ENV.resourceStates.archived;
+      query['filter[is-versioned-resource]'] = false;
 
       return await this.store.query('process', query);
     },

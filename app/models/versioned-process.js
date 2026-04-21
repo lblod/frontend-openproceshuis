@@ -28,7 +28,8 @@ export default class VersionedProcessModel extends ProcessModel {
   })
   ipdcProducts;
 
-  get isVersioned() {
-    return true;
+  async save() {
+    this.isVersionedResource = true;
+    await super.save(...arguments);
   }
 }
