@@ -143,7 +143,6 @@ export default class ProcessModel extends Model {
 
   async save() {
     this.modified = new Date();
-    this.isVersionedResource = false;
     await super.save(...arguments);
     if (this.baseModelName !== 'versioned-process') {
       this.applyVersioning.perform();
@@ -160,10 +159,42 @@ export default class ProcessModel extends Model {
         number: 0,
       },
     });
+
+    const processVersionData = await this.getProcessDataForVersioning();
     const versioned = this.store.createRecord('versioned-process', {
+      ...processVersionData,
       canonical: this,
       previousVersion: currentVersions?.[0] ?? null,
     });
     await versioned.save();
   });
+
+  async getProcessDataForVersioning() {
+    const now = new Date();
+    const data = {
+      created: now,
+      modified: now,
+      title: this.title,
+      description: this.description,
+      email: this.email,
+      status: this.status,
+      isBlueprint: this.isBlueprint,
+      additionalInformation: this.additionalInformation,
+      hasControlMeasure: this.hasControlMeasure,
+      // Relations
+      publisher: await this.publisher,
+      creator: await this.creator,
+      linkedConcept: await this.linkedConcept,
+      diagramLists: await this.diagramLists,
+      attachments: await this.attachments,
+      ipdcProducts: await this.ipdcProducts,
+      links: await this.links,
+      informationAssets: await this.informationAssets,
+      linkedBlueprints: await this.linkedBlueprints,
+      users: await this.users,
+      relevantAdministrativeUnits: await this.relevantAdministrativeUnits,
+    };
+
+    return data;
+  }
 }
