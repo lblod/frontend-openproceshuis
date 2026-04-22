@@ -6,6 +6,7 @@ export default class VersionedProcessModel extends ProcessModel {
   @belongsTo('process', {
     inverse: 'versions',
     async: true,
+    as: 'process',
     polymorphic: true,
   })
   canonical;
