@@ -71,9 +71,10 @@ export default class ProcessDetailsCardComponent extends Component {
     event.preventDefault();
     if (!this.args.process) return;
 
-    if (this.formIsValid) {
-      this.args.process.modified = new Date();
+    this.args.process.cleanupAttributes();
+    this.validateForm();
 
+    if (this.formIsValid) {
       if (this.args.process.isBlueprint) {
         this.args.process.linkedBlueprints = [];
       }

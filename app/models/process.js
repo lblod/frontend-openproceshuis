@@ -135,6 +135,12 @@ export default class ProcessModel extends Model {
     return this.___recordState.identifier.type;
   }
 
+  cleanupAttributes() {
+    this.title = this.title?.trim();
+    this.description = this.description?.trim();
+    this.email = this.email?.trim();
+  }
+
   async save() {
     this.modified = new Date();
     await super.save(...arguments);
