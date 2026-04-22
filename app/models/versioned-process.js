@@ -4,10 +4,8 @@ import { belongsTo, hasMany } from '@ember-data/model';
 
 export default class VersionedProcessModel extends ProcessModel {
   @belongsTo('process', {
-    inverse: 'versions',
-    async: true,
-    as: 'process',
-    polymorphic: true,
+    inverse: null,
+    async: false,
   })
   canonical;
   @belongsTo('versioned-process', { inverse: null, async: false })
