@@ -78,7 +78,7 @@ export default class MyLocalGovernmentIndexRoute extends Route {
     query['filter[:or:][users][id]'] = this.currentSession.group.id;
     query['filter[:or:][publisher][id]'] = this.currentSession.group.id;
     query['filter[:not:status]'] = ENV.resourceStates.archived;
-    query['filter[is-versioned-resource]'] = false;
+    query['filter[:not:is-versioned-resource]'] = true;
 
     return yield this.store.query('process', query);
   }

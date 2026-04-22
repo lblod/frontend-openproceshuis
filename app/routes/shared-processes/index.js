@@ -58,7 +58,7 @@ export default class SharedProcessesIndexRoute extends Route {
     }
     query['filter[publisher][id]'] = this.currentSession.group.id;
     query['filter[:not:status]'] = ENV.resourceStates.archived;
-    query['filter[is-versioned-resource]'] = false;
+    query['filter[:not:is-versioned-resource]'] = true;
 
     return yield this.store.query('process', query);
   }
