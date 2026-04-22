@@ -66,6 +66,7 @@ export default class ProcessModel extends Model {
   @hasMany('versioned-process', {
     inverse: 'canonical',
     async: false,
+    as: 'process',
   })
   versions;
 
@@ -136,11 +137,15 @@ export default class ProcessModel extends Model {
     return `${window.location.origin}/processen/${this.id}`;
   }
 
+  get baseModelName() {
+    return this.___recordState.identifier.type;
+  }
+
   async save() {
     this.modified = new Date();
     this.isVersionedResource = false;
     await super.save(...arguments);
-    if (!this.isVersionedResource) {
+    if (this.baseModelName !== 'versioned-process') {
       this.applyVersioning.perform();
     }
   }
