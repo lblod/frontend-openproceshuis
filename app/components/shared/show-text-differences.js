@@ -1,25 +1,12 @@
 import Component from '@glimmer/component';
 
-import * as jsdiff from 'diff';
-
+import * as hdiff from '@benedicte/html-diff';
+import { htmlSafe } from '@ember/template';
 export default class SharedShowTextDifferences extends Component {
-  get diffParts() {
+  get diffAsHtml() {
     const { oldText, newText } = this.args;
 
     if (!oldText || !newText) return [];
-
-    const diff = jsdiff.diffWordsWithSpace(oldText, newText);
-
-    diff.forEach((part) => {
-      if (part.added) {
-        part.classStyle = 'added-text';
-      }
-      if (part.removed) {
-        part.classStyle = 'deleted-text';
-      }
-      return part;
-    });
-
-    return diff;
+    return htmlSafe(hdiff.htmlDiff(oldText, newText));
   }
 }
