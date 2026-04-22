@@ -274,7 +274,6 @@ export default class ProcessWizard extends Component {
 
   async goToProcess(process, isUpdateOfProcess) {
     this.showSuccessMessage = false;
-    this.applyVersioning.perform(process);
     this.loadingMessage = 'We brengen je naar het process';
     await timeout(150);
     if (isUpdateOfProcess) {
