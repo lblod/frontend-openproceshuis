@@ -18,6 +18,7 @@ export default class ProcessIcrCardBlueprintMultipleSelectComponent extends Comp
       filter: {
         'is-blueprint': true,
         ':not:status': ENV.resourceStates.archived,
+        ':not:is-versioned-resource': true,
       },
       sort: 'title',
     };
