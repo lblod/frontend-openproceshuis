@@ -71,6 +71,7 @@ export default class ProcessModel extends Model {
   @hasMany('versioned-process', {
     inverse: 'canonical',
     async: false,
+    as: 'process',
   })
   versions;
 
