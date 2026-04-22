@@ -29,6 +29,22 @@ export default class VersionedProcessModel extends ProcessModel {
   })
   ipdcProducts;
 
+  @hasMany('information-asset', {
+    async: false,
+    inverse: 'processes',
+    polymorphic: true,
+    as: 'process',
+  })
+  informationAssets;
+
+  @hasMany('administrative-unit-classification-code', {
+    async: false,
+    inverse: 'processes',
+    polymorphic: true,
+    as: 'process',
+  })
+  relevantAdministrativeUnits;
+
   async save() {
     this.isVersionedResource = true;
     await super.save(...arguments);
