@@ -54,6 +54,7 @@
     <AuDataTable
       @content={{this.attachments.value}}
       @isLoading={{this.fetchAttachments.isRunning}}
+      @noDataMessage="Er werden geen bijlagen gevonden"
       @hidePagination={{true}}
       @page={{@page}}
       @size={{@size}}
