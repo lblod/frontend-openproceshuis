@@ -122,6 +122,7 @@
     "npm": "8.3.1"
   },
   "dependencies": {
+    "@benedicte/html-diff": "^0.1.0",
     "bpmn-js": "^16.3.2",
     "client-zip": "^2.4.5",
     "file-saver": "^2.0.5",
