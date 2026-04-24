@@ -1,0 +1,19 @@
+<div class={{if @error "ember-power-select--error"}} ...attributes>
+  <PowerSelect
+    @searchEnabled={{true}}
+    @searchField="created"
+    @loadingMessage="Aan het laden..."
+    @noMatchesMessage="Geen resultaten"
+    @options={{this.versions}}
+    @selected={{this.selected}}
+    @onChange={{this.onVersionChanged}}
+    @triggerId={{@id}}
+    as |process|
+  >
+    {{#if (eq @process.id process.id)}}
+      Huidige versie
+    {{else}}
+      {{date-format process.created true}}
+    {{/if}}
+  </PowerSelect>
+</div>
