@@ -10,6 +10,12 @@ export default class ProcessesProcessIndexRoute extends Route {
 
   queryParams = [
     {
+      processVersion: {
+        replace: true,
+        refreshModel: true,
+      },
+    },
+    {
       attachmentsPage: {
         replace: true,
         refreshModel: true,

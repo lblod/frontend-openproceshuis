@@ -29,8 +29,15 @@
         /></div>
     </:title>
     <:action>
-      <AuPill @icon="clock-rewind">Laatst aangepast op
-        {{date-format this.process.modified true}}</AuPill>
+      <div class="au-u-flex au-u-flex--column au-o-flow">
+        <AuPill @icon="clock-rewind">Laatst aangepast op
+          {{date-format this.process.modified true}}</AuPill>
+        <Process::VersionSelector
+          @process={{@model.process}}
+          @selected={{this.processVersion}}
+          @onSelected={{this.onProcessVersionSelected}}
+        />
+      </div>
     </:action>
   </PageHeader>
 {{/if}}

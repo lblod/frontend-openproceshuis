@@ -8,6 +8,7 @@ import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
+    'processVersion',
     'attachmentsPage',
     'attachmentsSize',
     'attachmentsSort',
@@ -16,6 +17,7 @@ export default class ProcessesProcessIndexController extends Controller {
     'diagramsPage',
     'diagramsSort',
   ];
+  @tracked processVersion = null;
   @tracked attachmentsPage = 0;
   @tracked attachmentsSize = 5;
   @tracked attachmentsSort = 'name';
@@ -58,6 +60,15 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
+  onProcessVersionSelected(processOrVersioned) {
+    if (processOrVersioned && processOrVersioned.isVersionedResource) {
+      this.processVersion = processOrVersioned.id;
+    } else {
+      this.processVersion = null;
+    }
+  }
+
+  @action
   async openDiagramFile(diagramFile) {
     if (diagramFile) {
       this.selectedDiagramFile = null;
@@ -92,6 +103,8 @@ export default class ProcessesProcessIndexController extends Controller {
     this.process?.rollbackAttributes();
 
     this.isWizardModalOpen = false;
+
+    this.processVersion = null;
 
     this.attachmentsPage = 0;
     this.diagramVersionsPage = 0;

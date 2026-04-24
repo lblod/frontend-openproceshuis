@@ -13,7 +13,7 @@
     {{#if (eq @process.id process.id)}}
       Huidige versie
     {{else}}
-      {{date-format process.created true}}
+      {{or (date-format process.created true) process.id}}
     {{/if}}
   </PowerSelect>
 </div>
