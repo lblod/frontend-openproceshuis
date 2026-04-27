@@ -32,18 +32,20 @@
       <div class="au-u-flex au-u-flex--column au-o-flow">
         <AuPill @icon="clock-rewind">Laatst aangepast op
           {{date-format this.process.modified true}}</AuPill>
-        <Process::VersionSelector
-          @process={{@model.process}}
-          @selectedId={{this.processVersion}}
-          @onSelected={{this.onProcessVersionSelected}}
-        />
+        <div class="au-u-flex au-u-flex--row">
+          <AuLabel class="au-u-margin-right-small">Toon verschillen met</AuLabel>
+          <Process::VersionSelector
+            @process={{@model.process}}
+            @selectedId={{this.processVersion}}
+            @onSelected={{this.onProcessVersionSelected}}
+          />
+        </div>
       </div>
     </:action>
   </PageHeader>
 {{/if}}
 
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
-
   <Process::DetailsCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
