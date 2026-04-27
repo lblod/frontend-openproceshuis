@@ -12,13 +12,11 @@ export default class ProcessesProcessIndexRoute extends Route {
     {
       processVersion: {
         replace: true,
-        refreshModel: true,
       },
     },
     {
       attachmentsPage: {
         replace: true,
-        refreshModel: true,
       },
     },
     {
@@ -34,7 +32,6 @@ export default class ProcessesProcessIndexRoute extends Route {
     {
       diagramVersionsPage: {
         replace: true,
-        refreshModel: true,
       },
     },
     {
@@ -45,7 +42,6 @@ export default class ProcessesProcessIndexRoute extends Route {
     {
       diagramsPage: {
         replace: true,
-        refreshModel: true,
       },
     },
     {
