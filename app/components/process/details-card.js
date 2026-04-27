@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask } from 'ember-concurrency';
+import { dropTask, task } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
+import { trackedTask } from 'reactiveweb/ember-concurrency';
 
 export default class ProcessDetailsCardComponent extends Component {
   @service store;
@@ -188,4 +189,19 @@ export default class ProcessDetailsCardComponent extends Component {
       .filter((error) => error.attribute === attribute);
     return errorsForAttribute.length;
   }
+
+  fetchVersionedProcess = task({ restartable: true }, async () => {
+    if (!this.args.versionedProcessId) {
+      return null;
+    }
+
+    return this.store.findRecord(
+      'versioned-process',
+      this.args.versionedProcessId,
+    );
+  });
+
+  versionedProcess = trackedTask(this, this.fetchVersionedProcess, () => [
+    this.args.versionedProcessId,
+  ]);
 }

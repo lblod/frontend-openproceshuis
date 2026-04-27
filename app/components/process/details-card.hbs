@@ -163,8 +163,13 @@
           <Item>
             <:label>Titel</:label>
             <:content>
-              <Shared::ShowTextDifferences @oldText="maak een signalisatie - generiek aan" @newText="Maak een nieuwe signalisatie - Generiek"/>
-              {{@process.title}}
+              <Shared::ShowTextDifferences
+                @oldText={{this.versionedProcess.value.title}}
+                @newText={{@process.title}}
+              >
+                {{@process.title}}
+              </Shared::ShowTextDifferences>
+
             </:content>
           </Item>
           <Item>
