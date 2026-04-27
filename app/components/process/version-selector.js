@@ -18,6 +18,10 @@ export default class ProcessVersionSelector extends Component {
     this.fetchProcessVersions.perform();
   }
 
+  get versionOptions() {
+    return [this.args.process, ...this.versions];
+  }
+
   fetchProcessVersions = task({ restartable: true }, async () => {
     this.versions.clear();
     if (!this.args.process) {
@@ -34,7 +38,7 @@ export default class ProcessVersionSelector extends Component {
         },
       });
       this.versions.pushObjects([...versions]);
-      this.versions[0].isFirst = true;
+      this.versions.shift();
     } catch (error) {
       this.toaster.error('Fout tijdens het ophalen van proces versies', 'Fout');
     }
@@ -43,7 +47,7 @@ export default class ProcessVersionSelector extends Component {
   get selected() {
     return this.args.selectedId
       ? this.versions?.find((v) => v.id == this.args.selectedId)
-      : this.versions?.[0];
+      : this.args.process;
   }
 
   @action

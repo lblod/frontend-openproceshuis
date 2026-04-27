@@ -4,14 +4,14 @@
     @searchField="created"
     @loadingMessage="Aan het laden..."
     @noMatchesMessage="Geen resultaten"
-    @options={{this.versions}}
+    @options={{this.versionOptions}}
     @selected={{this.selected}}
     @onChange={{this.onVersionChanged}}
     @onOpen={{perform this.fetchProcessVersions}}
     @triggerId={{@id}}
     as |process|
   >
-    {{#if process.isFirst}}
+    {{#if (eq process.id @process.id)}}
       Huidige versie
     {{else}}
       {{or (date-format process.created true) process.id}}
