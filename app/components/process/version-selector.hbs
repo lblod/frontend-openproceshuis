@@ -7,6 +7,7 @@
     @options={{this.versions}}
     @selected={{this.selected}}
     @onChange={{this.onVersionChanged}}
+    @onOpen={{perform this.fetchProcessVersions}}
     @triggerId={{@id}}
     as |process|
   >
