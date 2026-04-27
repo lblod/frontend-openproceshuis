@@ -11,7 +11,7 @@
     @triggerId={{@id}}
     as |process|
   >
-    {{#if (eq @process.id process.id)}}
+    {{#if process.isFirst}}
       Huidige versie
     {{else}}
       {{or (date-format process.created true) process.id}}
