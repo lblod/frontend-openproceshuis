@@ -8,48 +8,39 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service session;
   @service diagram;
 
-  queryParams = [
-    {
-      processVersion: {
-        replace: true,
-      },
+  queryParams = {
+    processVersion: {
+      replace: true,
     },
-    {
-      attachmentsPage: {
-        replace: true,
-      },
+
+    attachmentsPage: {
+      replace: true,
     },
-    {
-      attachmentsSize: {
-        replace: true,
-      },
+
+    attachmentsSize: {
+      replace: true,
     },
-    {
-      attachmentsSort: {
-        replace: true,
-      },
+
+    attachmentsSort: {
+      replace: true,
     },
-    {
-      diagramVersionsPage: {
-        replace: true,
-      },
+
+    diagramVersionsPage: {
+      replace: true,
     },
-    {
-      diagramVersionsSort: {
-        replace: true,
-      },
+
+    diagramVersionsSort: {
+      replace: true,
     },
-    {
-      diagramsPage: {
-        replace: true,
-      },
+
+    diagramsPage: {
+      replace: true,
     },
-    {
-      diagramsSort: {
-        replace: true,
-      },
+
+    diagramsSort: {
+      replace: true,
     },
-  ];
+  };
 
   beforeModel(transition) {
     if (!this.session.isAuthenticated) {
