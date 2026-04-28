@@ -1,0 +1,18 @@
+<div class={{if @error "ember-power-select--error"}} ...attributes>
+  <PowerSelect
+    @searchEnabled={{false}}
+    @allowClear={{not-eq this.selected.id @process.id}}
+    @options={{this.versionOptions}}
+    @selected={{this.selected}}
+    @onChange={{this.onVersionChanged}}
+    @onOpen={{perform this.fetchProcessVersions}}
+    @triggerId={{@id}}
+    as |process|
+  >
+    {{#if (eq process.id @process.id)}}
+      Huidige versie
+    {{else}}
+      {{or (date-format process.created true) process.id}}
+    {{/if}}
+  </PowerSelect>
+</div>
