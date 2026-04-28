@@ -1,14 +1,13 @@
 import Controller from '@ember/controller';
-
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, timeout } from 'ember-concurrency';
+import { restartableTask, task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
-    'processVersion',
+    { versionedProcessId: { as: 'versionedProcess' } },
     'attachmentsPage',
     'attachmentsSize',
     'attachmentsSort',
@@ -17,7 +16,7 @@ export default class ProcessesProcessIndexController extends Controller {
     'diagramsPage',
     'diagramsSort',
   ];
-  @tracked processVersion = null;
+  @tracked versionedProcessId = null;
   @tracked attachmentsPage = 0;
   @tracked attachmentsSize = 5;
   @tracked attachmentsSort = 'name';
@@ -34,14 +33,20 @@ export default class ProcessesProcessIndexController extends Controller {
   @service diagram;
   @service eventTracking;
 
+  @tracked versionedProcess = null;
   @tracked isEditingDetails = false;
   @tracked selectedDiagramFile;
-
   @tracked isWizardModalOpen;
 
   get process() {
     return this.model.process;
   }
+
+  loadVersionedProcess = restartableTask(async (versionId) => {
+    this.versionedProcess = versionId
+      ? await this.store.findRecord('versioned-process', versionId)
+      : null;
+  });
 
   get canEdit() {
     return (
@@ -61,10 +66,12 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   onProcessVersionSelected(processOrVersioned) {
-    if (processOrVersioned && processOrVersioned.isVersionedResource) {
-      this.processVersion = processOrVersioned.id;
+    if (processOrVersioned?.isVersionedResource) {
+      this.versionedProcessId = processOrVersioned.id;
+      this.loadVersionedProcess.perform(processOrVersioned.id);
     } else {
-      this.processVersion = null;
+      this.versionedProcessId = null;
+      this.loadVersionedProcess.perform(null);
     }
   }
 
@@ -103,8 +110,8 @@ export default class ProcessesProcessIndexController extends Controller {
     this.process?.rollbackAttributes();
 
     this.isWizardModalOpen = false;
-
-    this.processVersion = null;
+    this.loadVersionedProcess.cancelAll();
+    this.versionedProcess = null;
 
     this.attachmentsPage = 0;
     this.diagramVersionsPage = 0;

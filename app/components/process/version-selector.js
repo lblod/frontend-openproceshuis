@@ -45,9 +45,7 @@ export default class ProcessVersionSelector extends Component {
   });
 
   get selected() {
-    return this.args.selectedId
-      ? this.versions?.find((v) => v.id == this.args.selectedId)
-      : this.args.process;
+    return this.args.selectedVersion ?? this.args.process;
   }
 
   @action

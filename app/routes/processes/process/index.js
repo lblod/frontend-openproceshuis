@@ -9,7 +9,7 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service diagram;
 
   queryParams = {
-    processVersion: {
+    versionedProcessId: {
       replace: true,
     },
 
@@ -72,6 +72,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       ].join(','),
       reload: true,
     });
+
     let stats = process.processStatistics;
     if (!stats) {
       stats = this.store.createRecord('process-statistic', {
@@ -99,6 +100,7 @@ export default class ProcessesProcessIndexRoute extends Route {
   setupController(controller) {
     super.setupController(...arguments);
     controller.reset();
+    controller.loadVersionedProcess.perform(controller.versionedProcessId);
   }
 
   resetController(controller) {

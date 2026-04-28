@@ -40,7 +40,7 @@
           <AuLabel class="au-u-margin-right-small">Toon verschillen met</AuLabel>
           <Process::VersionSelector
             @process={{@model.process}}
-            @selectedId={{this.processVersion}}
+            @selectedVersion={{this.versionedProcess}}
             @onSelected={{this.onProcessVersionSelected}}
           />
         </div>
@@ -53,7 +53,7 @@
   <Process::DetailsCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
-    @versionedProcessId={{this.processVersion}}
+    @versionedProcess={{this.versionedProcess}}
     @setIsEditing={{this.setIsEditingDetails}}
   />
 
