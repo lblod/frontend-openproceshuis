@@ -1,6 +1,7 @@
 <div class={{if @error "ember-power-select--error"}} ...attributes>
   <PowerSelect
     @searchEnabled={{false}}
+    @allowClear={{not-eq this.selected.id @process.id}}
     @options={{this.versionOptions}}
     @selected={{this.selected}}
     @onChange={{this.onVersionChanged}}
