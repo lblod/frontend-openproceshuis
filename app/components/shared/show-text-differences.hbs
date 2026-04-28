@@ -1,3 +1,7 @@
-<div ...attributes>
-  {{this.diffAsHtml}}
-</div>
+{{#if @oldText}}
+  <div ...attributes>
+    {{this.diffAsHtml}}
+  </div>
+{{else}}
+  {{yield}}
+{{/if}}
