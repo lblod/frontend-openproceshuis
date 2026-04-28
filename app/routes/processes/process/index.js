@@ -8,46 +8,39 @@ export default class ProcessesProcessIndexRoute extends Route {
   @service session;
   @service diagram;
 
-  queryParams = [
-    {
-      attachmentsPage: {
-        replace: true,
-        refreshModel: true,
-      },
+  queryParams = {
+    versionedProcessId: {
+      replace: true,
     },
-    {
-      attachmentsSize: {
-        replace: true,
-      },
+
+    attachmentsPage: {
+      replace: true,
     },
-    {
-      attachmentsSort: {
-        replace: true,
-      },
+
+    attachmentsSize: {
+      replace: true,
     },
-    {
-      diagramVersionsPage: {
-        replace: true,
-        refreshModel: true,
-      },
+
+    attachmentsSort: {
+      replace: true,
     },
-    {
-      diagramVersionsSort: {
-        replace: true,
-      },
+
+    diagramVersionsPage: {
+      replace: true,
     },
-    {
-      diagramsPage: {
-        replace: true,
-        refreshModel: true,
-      },
+
+    diagramVersionsSort: {
+      replace: true,
     },
-    {
-      diagramsSort: {
-        replace: true,
-      },
+
+    diagramsPage: {
+      replace: true,
     },
-  ];
+
+    diagramsSort: {
+      replace: true,
+    },
+  };
 
   beforeModel(transition) {
     if (!this.session.isAuthenticated) {
@@ -79,6 +72,7 @@ export default class ProcessesProcessIndexRoute extends Route {
       ].join(','),
       reload: true,
     });
+
     let stats = process.processStatistics;
     if (!stats) {
       stats = this.store.createRecord('process-statistic', {
@@ -106,6 +100,7 @@ export default class ProcessesProcessIndexRoute extends Route {
   setupController(controller) {
     super.setupController(...arguments);
     controller.reset();
+    controller.loadVersionedProcess.perform(controller.versionedProcessId);
   }
 
   resetController(controller) {
