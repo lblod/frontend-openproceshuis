@@ -8,6 +8,11 @@ export default class SharedTextCompared extends Component {
     return old != null && old !== current;
   }
 
+  get displayText() {
+    const { current } = this.args;
+    return current?.trim() || '/';
+  }
+
   get characterDiffAsHtml() {
     const { old, current } = this.args;
     if (!old || !current) return [];

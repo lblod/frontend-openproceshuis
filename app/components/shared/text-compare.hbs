@@ -1,7 +1,6 @@
 {{#if @characterBased}}
   {{this.characterDiffAsHtml}}
-{{else if this.isDifferent}}
-  <mark>{{@current}}</mark>
 {{else}}
-  {{@current}}
+  <span class="u-preserve-line-breaks">{{#if this.isDifferent}}<mark
+      >{{this.displayText}}</mark>{{else}}{{this.displayText}}{{/if}}</span>
 {{/if}}

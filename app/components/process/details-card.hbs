@@ -163,23 +163,19 @@
           <Item>
             <:label>Titel</:label>
             <:content>
-              {{#if @versionedProcess}}
-                <Shared::TextCompare
-                  @current={{@process.title}}
-                  @old={{@versionedProcess.title}}
-                />
-              {{else}}
-                {{@process.title}}
-              {{/if}}
+              <Shared::TextCompare
+                @current={{@process.title}}
+                @old={{@versionedProcess.title}}
+              />
             </:content>
           </Item>
           <Item>
             <:label>Beschrijving</:label>
             <:content>
-              <span class="u-preserve-line-breaks">{{or
-                  (trim @process.description)
-                  "/"
-                }}</span>
+              <Shared::TextCompare
+                @current={{@process.description}}
+                @old={{@versionedProcess.description}}
+              />
             </:content>
           </Item>
           <Item>

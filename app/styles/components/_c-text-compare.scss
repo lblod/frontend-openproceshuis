@@ -2,6 +2,8 @@ mark {
   background-color: #ffe615;
   padding: 0 0.5rem;
   margin-left: -0.5rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 ins {
