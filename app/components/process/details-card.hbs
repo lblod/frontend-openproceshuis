@@ -163,13 +163,14 @@
           <Item>
             <:label>Titel</:label>
             <:content>
-              <Shared::ShowTextDifferences
-                @oldText={{@versionedProcess.title}}
-                @newText={{@process.title}}
-              >
+              {{#if @versionedProcess}}
+                <Shared::TextCompare
+                  @current={{@process.title}}
+                  @old={{@versionedProcess.title}}
+                />
+              {{else}}
                 {{@process.title}}
-              </Shared::ShowTextDifferences>
-
+              {{/if}}
             </:content>
           </Item>
           <Item>
