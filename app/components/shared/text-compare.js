@@ -3,9 +3,13 @@ import * as hdiff from '@benedicte/html-diff';
 import { htmlSafe } from '@ember/template';
 
 export default class SharedTextCompared extends Component {
-  get diffAsHtml() {
+  get isDifferent() {
     const { old, current } = this.args;
+    return old != null && old !== current;
+  }
 
+  get characterDiffAsHtml() {
+    const { old, current } = this.args;
     if (!old || !current) return [];
     return htmlSafe(hdiff.htmlDiff(old, current));
   }
