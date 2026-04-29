@@ -5,7 +5,7 @@ import { htmlSafe } from '@ember/template';
 export default class SharedTextCompared extends Component {
   get isDifferent() {
     const { old, current } = this.args;
-    return old != null && old !== current;
+    return old !== current;
   }
 
   get displayText() {

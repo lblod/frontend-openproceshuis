@@ -166,6 +166,7 @@
               <Shared::TextCompare
                 @current={{@process.title}}
                 @old={{@versionedProcess.title}}
+                @enableHighlighting={{if @versionedProcess true}}
               />
             </:content>
           </Item>
@@ -175,6 +176,7 @@
               <Shared::TextCompare
                 @current={{@process.description}}
                 @old={{@versionedProcess.description}}
+                @enableHighlighting={{if @versionedProcess true}}
               />
             </:content>
           </Item>
