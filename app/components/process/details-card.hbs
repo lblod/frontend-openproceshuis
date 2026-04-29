@@ -183,7 +183,11 @@
           <Item>
             <:label>Contact proces</:label>
             <:content>
-              {{or @process.email "/"}}
+              <Shared::TextCompare
+                @current={{@process.email}}
+                @old={{@versionedProcess.email}}
+                @enableHighlighting={{if @versionedProcess true}}
+              />
             </:content>
           </Item>
           <Item>
