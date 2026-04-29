@@ -1,7 +1,7 @@
 {{#if @characterBased}}
   {{this.characterDiffAsHtml}}
 {{else if this.isDifferent}}
-  <mark>{{@old}}</mark>
+  <mark>{{@current}}</mark>
 {{else}}
-  {{@old}}
+  {{@current}}
 {{/if}}
