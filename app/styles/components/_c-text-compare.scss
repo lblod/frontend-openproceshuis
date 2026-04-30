@@ -1,19 +1,17 @@
-// mark contains text
+/* mark contains text */
 mark:not(:has(*)) {
   background-color: #ffe615;
   padding: 0 0.5rem;
   margin-left: -0.5rem;
-  -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
-// mark contains child element(s)
+/* mark contains child element(s) */
 mark > * {
   background-color: #ffe615;
   padding: 0 0.5rem;
   margin-left: -0.5rem;
   width: fit-content;
-  -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
