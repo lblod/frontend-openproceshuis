@@ -195,22 +195,28 @@
                 @old={{@versionedProcess.email}}
                 @enableHighlighting={{if @versionedProcess true}}
               >
-              {{@process.email}}
+                {{@process.email}}
               </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Link naar IPDC/LPDC</:label>
             <:content>
-              {{#if @process.ipdcProducts.length}}
-                {{#each @process.ipdcProducts as |product|}}
-                  <AuLinkExternal href="{{product.url}}" class="au-u-flex">
-                    {{language-string-set-nl product.name}}
-                  </AuLinkExternal>
-                {{/each}}
-              {{else}}
-                /
-              {{/if}}
+              <Shared::TextCompare
+                @current={{@process.ipdcProducts}}
+                @old={{@versionedProcess.ipdcProducts}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if @process.ipdcProducts.length}}
+                  {{#each @process.ipdcProducts as |product|}}
+                    <AuLinkExternal href="{{product.url}}" class="au-u-flex">
+                      {{language-string-set-nl product.name}}
+                    </AuLinkExternal>
+                  {{/each}}
+                {{else}}
+                  /
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
         </:left>
