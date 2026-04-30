@@ -1,7 +1,7 @@
 {{#if @enableCharacterComparison}}
   {{this.characterDiffAsHtml}}
 {{else if (and @enableHighlighting this.isDifferent)}}
-  <span class="u-preserve-line-breaks"><mark>{{this.displayText}}</mark></span>
+  <mark>{{yield}}</mark>
 {{else}}
-  <span class="u-preserve-line-breaks">{{this.displayText}}</span>
+  {{yield}}
 {{/if}}
