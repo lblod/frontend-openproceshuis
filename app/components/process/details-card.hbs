@@ -236,16 +236,22 @@
           <Item>
             <:label>Relevant voor</:label>
             <:content>
-              {{#if @process.relevantAdministrativeUnits.length}}
-                {{#each
-                  @process.relevantAdministrativeUnits
-                  as |relevantAdministrativeUnit|
-                }}
-                  <div>{{relevantAdministrativeUnit.label}}</div>
-                {{/each}}
-              {{else}}
-                /
-              {{/if}}
+              <Shared::TextCompare
+                @current={{@process.relevantAdministrativeUnits}}
+                @old={{@versionedProcess.relevantAdministrativeUnits}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if @process.relevantAdministrativeUnits.length}}
+                  {{#each
+                    @process.relevantAdministrativeUnits
+                    as |relevantAdministrativeUnit|
+                  }}
+                    <div>{{relevantAdministrativeUnit.label}}</div>
+                  {{/each}}
+                {{else}}
+                  /
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
