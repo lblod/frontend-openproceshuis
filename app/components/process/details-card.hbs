@@ -221,14 +221,16 @@
           <Item>
             <:label>Relevant voor</:label>
             <:content>
-              {{#each
-                @process.relevantAdministrativeUnits
-                as |relevantAdministrativeUnit|
-              }}
-                <ul><li>
-                    {{relevantAdministrativeUnit.label}}
-                  </li></ul>
-              {{/each}}
+              {{#if @process.relevantAdministrativeUnits.length}}
+                {{#each
+                  @process.relevantAdministrativeUnits
+                  as |relevantAdministrativeUnit|
+                }}
+                  <div>{{relevantAdministrativeUnit.label}}</div>
+                {{/each}}
+              {{else}}
+                /
+              {{/if}}
             </:content>
           </Item>
           <Item>
