@@ -163,42 +163,60 @@
           <Item>
             <:label>Titel</:label>
             <:content>
-              <Shared::ShowTextDifferences
-                @oldText={{@versionedProcess.title}}
-                @newText={{@process.title}}
+              <Shared::TextCompare
+                @current={{@process.title}}
+                @old={{@versionedProcess.title}}
+                @enableHighlighting={{if @versionedProcess true}}
               >
                 {{@process.title}}
-              </Shared::ShowTextDifferences>
-
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Beschrijving</:label>
             <:content>
-              <span class="u-preserve-line-breaks">{{or
-                  (trim @process.description)
-                  "/"
-                }}</span>
+              <Shared::TextCompare
+                @current={{@process.description}}
+                @old={{@versionedProcess.description}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                <span class="u-preserve-line-breaks">{{or
+                    (trim @process.description)
+                    "/"
+                  }}</span>
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Contact proces</:label>
             <:content>
-              {{or @process.email "/"}}
+              <Shared::TextCompare
+                @current={{@process.email}}
+                @old={{@versionedProcess.email}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{@process.email}}
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Link naar IPDC/LPDC</:label>
             <:content>
-              {{#if @process.ipdcProducts.length}}
-                {{#each @process.ipdcProducts as |product|}}
-                  <AuLinkExternal href="{{product.url}}" class="au-u-flex">
-                    {{language-string-set-nl product.name}}
-                  </AuLinkExternal>
-                {{/each}}
-              {{else}}
-                /
-              {{/if}}
+              <Shared::TextCompare
+                @current={{@process.ipdcProducts}}
+                @old={{@versionedProcess.ipdcProducts}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if @process.ipdcProducts.length}}
+                  {{#each @process.ipdcProducts as |product|}}
+                    <AuLinkExternal href="{{product.url}}" class="au-u-flex">
+                      {{language-string-set-nl product.name}}
+                    </AuLinkExternal>
+                  {{/each}}
+                {{else}}
+                  /
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
         </:left>
@@ -218,14 +236,22 @@
           <Item>
             <:label>Relevant voor</:label>
             <:content>
-              {{#each
-                @process.relevantAdministrativeUnits
-                as |relevantAdministrativeUnit|
-              }}
-                <ul><li>
-                    {{relevantAdministrativeUnit.label}}
-                  </li></ul>
-              {{/each}}
+              <Shared::TextCompare
+                @current={{@process.relevantAdministrativeUnits}}
+                @old={{@versionedProcess.relevantAdministrativeUnits}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if @process.relevantAdministrativeUnits.length}}
+                  {{#each
+                    @process.relevantAdministrativeUnits
+                    as |relevantAdministrativeUnit|
+                  }}
+                    <div>{{relevantAdministrativeUnit.label}}</div>
+                  {{/each}}
+                {{else}}
+                  /
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
