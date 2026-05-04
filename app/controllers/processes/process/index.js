@@ -45,7 +45,12 @@ export default class ProcessesProcessIndexController extends Controller {
   loadVersionedProcess = restartableTask(async (versionId) => {
     this.versionedProcess = versionId
       ? await this.store.findRecord('versioned-process', versionId, {
-          include: ['ipdc-products', 'relevant-administrative-units'].join(','),
+          include: [
+            'ipdc-products',
+            'relevant-administrative-units',
+            'diagram-lists',
+            'diagram-lists.diagrams',
+          ].join(','),
         })
       : null;
   });
