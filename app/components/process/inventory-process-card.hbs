@@ -25,7 +25,13 @@
           <:content>
             {{#if this.edit}}
               {{#if @process.linkedConcept}}
-                {{this.processConceptTitle}}
+                <Shared::TextCompare
+                  @current={{this.processConceptTitle}}
+                  @old={{this.versionedProcessConceptTitle}}
+                  @enableHighlighting={{if @versionedProcess true}}
+                >
+                  {{this.processConceptTitle}}
+                </Shared::TextCompare>
                 <AuButton
                   @skin="naked"
                   {{on "click" this.openConceptModal}}
