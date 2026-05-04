@@ -2,6 +2,8 @@
   <PowerSelect
     @searchEnabled={{false}}
     @allowClear={{not-eq this.selected.id @process.id}}
+    @dropdownClass="c-version-selector-dropdown"
+    @horizontalPosition="right"
     @options={{this.versionOptions}}
     @selected={{this.selected}}
     @onChange={{this.onVersionChanged}}
@@ -12,6 +14,7 @@
     {{#if (eq process.id @process.id)}}
       Huidige versie
     {{else}}
+      Laatst aangepast op
       {{or (date-format process.created true) process.id}}
     {{/if}}
   </PowerSelect>

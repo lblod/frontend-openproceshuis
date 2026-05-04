@@ -1,0 +1,26 @@
+/* mark contains text */
+mark:not(:has(*)) {
+  background-color: #ffe615;
+  padding: 0 0.5rem;
+  margin-left: -0.5rem;
+  box-decoration-break: clone;
+}
+
+/* mark contains child element(s) */
+mark > * {
+  background-color: #ffe615;
+  padding: 0 0.5rem;
+  margin-left: -0.5rem;
+  width: fit-content;
+  box-decoration-break: clone;
+}
+
+ins {
+  background-color: #d1fadf;
+  padding: 0 0.5rem;
+}
+
+del {
+  background-color: #fee4e2;
+  padding: 0 0.5rem;
+}
