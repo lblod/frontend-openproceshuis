@@ -48,6 +48,8 @@ export default class ProcessesProcessIndexController extends Controller {
           include: [
             'ipdc-products',
             'relevant-administrative-units',
+            'diagram-lists',
+            'diagram-lists.diagrams',
             'linked-concept',
             'linked-concept.process-groups.process-domains',
             'linked-concept.process-groups.process-domains.process-categories',
