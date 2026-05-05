@@ -129,7 +129,11 @@
   </span>
 
   {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
-    <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
+    <Process::IcrCard
+      @canEdit={{this.canEdit}}
+      @process={{this.process}}
+      @versionedProcess={{this.versionedProcess}}
+    />
   {{else}}
     <Process::BlueprintCard
       @canEdit={{this.canEdit}}
