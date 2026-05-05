@@ -50,6 +50,9 @@ export default class ProcessesProcessIndexController extends Controller {
             'relevant-administrative-units',
             'diagram-lists',
             'diagram-lists.diagrams',
+            'linked-concept',
+            'linked-concept.process-groups.process-domains',
+            'linked-concept.process-groups.process-domains.process-categories',
           ].join(','),
         })
       : null;

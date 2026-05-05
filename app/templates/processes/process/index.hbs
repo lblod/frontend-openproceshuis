@@ -37,8 +37,9 @@
           {{date-format this.process.modified true}}
         </AuPill>
         <div class="au-u-flex au-u-flex--row">
-          <AuLabel class="au-u-margin-right-small au-u-margin-bottom-none">Toon
-            verschillen met</AuLabel>
+          <AuLabel class="au-u-margin-right-small au-u-margin-bottom-none">
+            Toon verschillen met
+          </AuLabel>
           <Process::VersionSelector
             @process={{@model.process}}
             @selectedVersion={{this.versionedProcess}}
@@ -61,6 +62,7 @@
   <Process::InventoryProcessCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
+    @versionedProcess={{this.versionedProcess}}
   />
 
   <span>
