@@ -56,7 +56,7 @@ export default class ProcessModel extends Model {
   informationAssets;
   @hasMany('process', {
     inverse: 'linkedBlueprints',
-    async: true,
+    async: false,
     polymorphic: true,
     as: 'process',
   })
