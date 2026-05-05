@@ -34,6 +34,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @service eventTracking;
 
   @tracked versionedProcess = null;
+  @tracked versionedDiagrams = [];
   @tracked isEditingDetails = false;
   @tracked selectedDiagramFile;
   @tracked isWizardModalOpen;
@@ -58,6 +59,8 @@ export default class ProcessesProcessIndexController extends Controller {
           ].join(','),
         })
       : null;
+    this.versionedDiagrams =
+      (await this.versionedProcess?.diagramLists?.[0]?.diagrams) ?? [];
   });
 
   get canEdit() {
