@@ -39,8 +39,7 @@ export default class InformationAssetsInformationAssetController extends Control
     return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
-      this.currentSession.isAbbOrDv &&
-      this.currentSession.isAdmin
+      this.currentSession.isAbbOrDv
     );
   }
 
