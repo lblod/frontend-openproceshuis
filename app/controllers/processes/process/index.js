@@ -53,6 +53,7 @@ export default class ProcessesProcessIndexController extends Controller {
             'linked-concept',
             'linked-concept.process-groups.process-domains',
             'linked-concept.process-groups.process-domains.process-categories',
+            'linked-blueprints',
           ].join(','),
         })
       : null;
