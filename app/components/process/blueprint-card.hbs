@@ -59,19 +59,28 @@
           <Item>
             <:label>Gekoppeld aan</:label>
             <:content>
-              {{#if (gt this.linkedBlueprints.length 0)}}
-                <ul>
-                  {{#each this.linkedBlueprints as |blueprint|}}
-                    <li>
-                      <AuLinkExternal @newTab={{true}} href={{blueprint.href}}>
-                        {{blueprint.title}}
-                      </AuLinkExternal>
-                    </li>
-                  {{/each}}
-                </ul>
-              {{else}}
-                <p>/</p>
-              {{/if}}
+              <Shared::TextCompare
+                @current={{this.linkedBlueprints}}
+                @old={{this.versionedLinkedBlueprints}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if (gt this.linkedBlueprints.length 0)}}
+                  <ul>
+                    {{#each this.linkedBlueprints as |blueprint|}}
+                      <li>
+                        <AuLinkExternal
+                          @newTab={{true}}
+                          href={{blueprint.href}}
+                        >
+                          {{blueprint.title}}
+                        </AuLinkExternal>
+                      </li>
+                    {{/each}}
+                  </ul>
+                {{else}}
+                  <p>/</p>
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
         </:left>

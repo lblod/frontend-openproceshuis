@@ -17,6 +17,7 @@ export default class ProcessIcrCardComponent extends Component {
 
   @tracked informationAssets = [];
   @tracked blueprintUsages = A([]);
+  @tracked versionedBlueprintUsages = A([]);
 
   @tracked edit = false;
   @tracked formIsValid = false;
@@ -31,9 +32,19 @@ export default class ProcessIcrCardComponent extends Component {
       this.store
         .query('process', {
           'filter[linked-blueprints][id]': this.args.process.id,
+          'filter[:not:is-versioned-resource]': true,
         })
         .then((processes) => {
           this.blueprintUsages.pushObjects(processes);
+        });
+    }
+    if (this.args.versionedProcess?.isBlueprint) {
+      this.store
+        .query('versioned-process', {
+          'filter[linked-blueprints][id]': this.args.versionedProcess.id,
+        })
+        .then((processes) => {
+          this.versionedBlueprintUsages.pushObjects(processes);
         });
     }
   }
@@ -80,6 +91,34 @@ export default class ProcessIcrCardComponent extends Component {
     return this.args.process.informationAssets.some(
       (asset) => asset.containsSensitivePersonalData,
     );
+  }
+
+  get versionedScores() {
+    if (!this.args.versionedProcess) {
+      return {};
+    }
+
+    const versionedAssets = this.args.versionedProcess.informationAssets || [];
+    return {
+      confidentialityScore: Math.max(
+        ...versionedAssets.map((asset) => asset.confidentialityScore),
+      ),
+      integrityScore: Math.max(
+        ...versionedAssets.map((asset) => asset.integrityScore),
+      ),
+      availabilityScore: Math.max(
+        ...versionedAssets.map((asset) => asset.availabilityScore),
+      ),
+      containsPersonalData: versionedAssets.some(
+        (asset) => asset.containsPersonalData,
+      ),
+      containsProfessionalData: versionedAssets.some(
+        (asset) => asset.containsProfessionalData,
+      ),
+      containsSensitivePersonalData: versionedAssets.some(
+        (asset) => asset.containsSensitivePersonalData,
+      ),
+    };
   }
 
   @action editAsset(asset) {
