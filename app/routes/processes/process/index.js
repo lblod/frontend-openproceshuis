@@ -69,6 +69,7 @@ export default class ProcessesProcessIndexRoute extends Route {
         'linked-concept.process-groups.process-domains',
         'linked-concept.process-groups.process-domains.process-categories',
         'relevant-administrative-units',
+        'linked-blueprints',
       ].join(','),
       reload: true,
     });

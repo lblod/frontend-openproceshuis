@@ -87,84 +87,128 @@
           <Item>
             <:label>Beschikbaarheid</:label>
             <:content>
-              <Process::IcrCard::Score
-                @selectedScore={{this.availabilityScore}}
-              />
+              <Shared::TextCompare
+                @current={{this.availabilityScore}}
+                @old={{this.versionedScores.availabilityScore}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                <Process::IcrCard::Score
+                  @selectedScore={{this.availabilityScore}}
+                />
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Integriteit</:label>
             <:content>
-              <Process::IcrCard::Score @selectedScore={{this.integrityScore}} />
+              <Shared::TextCompare
+                @current={{this.integrityScore}}
+                @old={{this.versionedScores.integrityScore}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                <Process::IcrCard::Score
+                  @selectedScore={{this.integrityScore}}
+                />
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Vertrouwelijkheid</:label>
             <:content>
-              <Process::IcrCard::Score
-                @selectedScore={{this.confidentialityScore}}
-              />
+              <Shared::TextCompare
+                @current={{this.confidentialityScore}}
+                @old={{this.versionedScores.confidentialityScore}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                <Process::IcrCard::Score
+                  @selectedScore={{this.confidentialityScore}}
+                />
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Persoonsgegevens</:label>
             <:content>
               <div class="au-u-flex au-u-flex--column au-u-flex--spaced-small">
-                <AuCheckbox
-                  @checked={{this.containsPersonalData}}
-                  @disabled="true"
-                >
-                  <label for="contains-personal-data">Professionele gegevens</label>
-                  <Shared::Tooltip
-                    @show={{true}}
-                    @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
-                    @placement="top"
+                <div class="width-full">
+                  <Shared::TextCompare
+                    @current={{this.containsPersonalData}}
+                    @old={{this.versionedScores.containsPersonalData}}
+                    @enableHighlighting={{if @versionedProcess true}}
                   >
-                    <AuIcon
-                      class="color--info"
-                      @icon="circle-question"
-                      @size="large"
-                      @alignment="right"
-                    />
-                  </Shared::Tooltip>
-                </AuCheckbox>
-                <AuCheckbox
-                  @checked={{this.containsProfessionalData}}
-                  @disabled="true"
-                >
-                  <label
-                    for="contains-professional-data"
-                  >Persoonsgegevens</label>
-                  <Shared::Tooltip
-                    @show={{true}}
-                    @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                    <AuCheckbox
+                      @checked={{this.containsPersonalData}}
+                      @disabled="true"
+                    >
+                      <label for="contains-personal-data">Professionele gegevens</label>
+                      <Shared::Tooltip
+                        @show={{true}}
+                        @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
+                        @placement="top"
+                      >
+                        <AuIcon
+                          class="color--info"
+                          @icon="circle-question"
+                          @size="large"
+                          @alignment="right"
+                        />
+                      </Shared::Tooltip>
+                    </AuCheckbox>
+                  </Shared::TextCompare>
+                </div>
+                <div class="width-full">
+                  <Shared::TextCompare
+                    @current={{this.containsProfessionalData}}
+                    @old={{this.versionedScores.containsProfessionalData}}
+                    @enableHighlighting={{if @versionedProcess true}}
                   >
-                    <AuIcon
-                      class="color--info"
-                      @icon="circle-question"
-                      @size="large"
-                      @alignment="right"
-                    />
-                  </Shared::Tooltip>
-                </AuCheckbox>
-                <AuCheckbox
-                  @checked={{this.containsSensitivePersonalData}}
-                  @disabled="true"
-                >
-                  <label for="contains-sensitive-personal-data">Bijzondere
-                    persoonsgegevens</label>
-                  <Shared::Tooltip
-                    @show={{true}}
-                    @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                    <AuCheckbox
+                      @checked={{this.containsProfessionalData}}
+                      @disabled="true"
+                    >
+                      <label
+                        for="contains-professional-data"
+                      >Persoonsgegevens</label>
+                      <Shared::Tooltip
+                        @show={{true}}
+                        @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
+                      >
+                        <AuIcon
+                          class="color--info"
+                          @icon="circle-question"
+                          @size="large"
+                          @alignment="right"
+                        />
+                      </Shared::Tooltip>
+                    </AuCheckbox>
+                  </Shared::TextCompare>
+                </div>
+                <div class="width-full">
+                  <Shared::TextCompare
+                    @current={{this.containsSensitivePersonalData}}
+                    @old={{this.versionedScores.containsSensitivePersonalData}}
+                    @enableHighlighting={{if @versionedProcess true}}
                   >
-                    <AuIcon
-                      class="color--info"
-                      @icon="circle-question"
-                      @size="large"
-                      @alignment="right"
-                    />
-                  </Shared::Tooltip>
-                </AuCheckbox>
+                    <AuCheckbox
+                      @checked={{this.containsSensitivePersonalData}}
+                      @disabled="true"
+                    >
+                      <label for="contains-sensitive-personal-data">Bijzondere
+                        persoonsgegevens</label>
+                      <Shared::Tooltip
+                        @show={{true}}
+                        @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
+                      >
+                        <AuIcon
+                          class="color--info"
+                          @icon="circle-question"
+                          @size="large"
+                          @alignment="right"
+                        />
+                      </Shared::Tooltip>
+                    </AuCheckbox>
+                  </Shared::TextCompare>
+                </div>
               </div>
             </:content>
           </Item>
@@ -173,64 +217,88 @@
           <Item>
             <:label>Informatieassets</:label>
             <:content>
-              {{#if @process.informationAssets.length}}
-                <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
-                  {{#each @process.informationAssets as |asset|}}
-                    {{#if (not-eq asset.status this.archivedUri)}}
-                      <AuPill
-                        class="pointer information-asset-pill"
-                        {{on "click" (fn this.editAsset asset)}}
-                      >
-                        {{asset.title}}
-                        {{#if @canEdit}}
-                          <AuIcon @icon="pencil" />
-                        {{/if}}
-                      </AuPill>
-                    {{/if}}
-                  {{/each}}
-                </div>
-              {{else}}
-                /
-              {{/if}}
+              <Shared::TextCompare
+                @current={{@process.informationAssets}}
+                @old={{@versionedProcess.informationAssets}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if @process.informationAssets.length}}
+                  <div class="au-u-flex au-u-flex--wrap au-u-flex--spaced-tiny">
+                    {{#each @process.informationAssets as |asset|}}
+                      {{#if (not-eq asset.status this.archivedUri)}}
+                        <AuPill
+                          class="pointer information-asset-pill"
+                          {{on "click" (fn this.editAsset asset)}}
+                        >
+                          {{asset.title}}
+                          {{#if @canEdit}}
+                            <AuIcon @icon="pencil" />
+                          {{/if}}
+                        </AuPill>
+                      {{/if}}
+                    {{/each}}
+                  </div>
+                {{else}}
+                  /
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Motivering of bijkomende informatie</:label>
             <:content>
-              <span class="u-preserve-line-breaks">{{or
-                  (trim @process.additionalInformation)
-                  "/"
-                }}</span>
+              <Shared::TextCompare
+                @current={{@process.additionalInformation}}
+                @old={{@versionedProcess.additionalInformation}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                <span class="u-preserve-line-breaks">{{or
+                    (trim @process.additionalInformation)
+                    "/"
+                  }}</span>
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Link naar maatregelen</:label>
             <:content>
-              {{#if @process.hasControlMeasure}}
-                <AuLinkExternal href="{{@process.hasControlMeasure}}">
-                  {{@process.hasControlMeasure}}
-                </AuLinkExternal>
-              {{else}}
-                /
-              {{/if}}
+              <Shared::TextCompare
+                @current={{@process.hasControlMeasure}}
+                @old={{@versionedProcess.hasControlMeasure}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if @process.hasControlMeasure}}
+                  <AuLinkExternal href="{{@process.hasControlMeasure}}">
+                    {{@process.hasControlMeasure}}
+                  </AuLinkExternal>
+                {{else}}
+                  /
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
           <Item>
             <:label>Gekoppeld aan</:label>
             <:content>
-              {{#if (gt this.blueprintUsages.length 0)}}
-                <ul>
-                  {{#each this.blueprintUsages as |usage|}}
-                    <li>
-                      <AuLinkExternal @newTab={{true}} href={{usage.href}}>
-                        {{usage.title}}
-                      </AuLinkExternal>
-                    </li>
-                  {{/each}}
-                </ul>
-              {{else}}
-                <p>/</p>
-              {{/if}}
+              <Shared::TextCompare
+                @current={{this.blueprintUsages}}
+                @old={{this.versionedBlueprintUsages}}
+                @enableHighlighting={{if @versionedProcess true}}
+              >
+                {{#if (gt this.blueprintUsages.length 0)}}
+                  <ul>
+                    {{#each this.blueprintUsages as |usage|}}
+                      <li>
+                        <AuLinkExternal @newTab={{true}} href={{usage.href}}>
+                          {{usage.title}}
+                        </AuLinkExternal>
+                      </li>
+                    {{/each}}
+                  </ul>
+                {{else}}
+                  <p>/</p>
+                {{/if}}
+              </Shared::TextCompare>
             </:content>
           </Item>
         </:right>
