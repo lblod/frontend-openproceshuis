@@ -63,6 +63,30 @@ export default class ProcessInventoryProcessCard extends Component {
     );
   }
 
+  get versionedProcessConceptTitle() {
+    return this.args.versionedProcess?.linkedConcept?.title || '/';
+  }
+
+  get versionedProcessGroupLabel() {
+    return (
+      this.args.versionedProcess?.linkedConcept?.processGroup?.label || '/'
+    );
+  }
+
+  get versionedProcessDomainLabel() {
+    return (
+      this.args.versionedProcess?.linkedConcept?.processGroup?.processDomain
+        ?.label || '/'
+    );
+  }
+
+  get versionedProcessCategoryLabel() {
+    return (
+      this.args.versionedProcess?.linkedConcept?.processGroup?.processDomain
+        ?.processCategory?.label || '/'
+    );
+  }
+
   @dropTask
   *updateModel(event) {
     event.preventDefault();

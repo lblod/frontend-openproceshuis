@@ -4,6 +4,7 @@ mark:not(:has(*)) {
   padding: 0 0.5rem;
   margin-left: -0.5rem;
   box-decoration-break: clone;
+  align-self: flex-start;
 }
 
 /* mark contains child element(s) */
