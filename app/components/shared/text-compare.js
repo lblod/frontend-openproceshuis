@@ -8,11 +8,10 @@ export default class SharedTextCompared extends Component {
 
     if (Array.isArray(old) && Array.isArray(current)) {
       if (old.length !== current.length) return true;
-      return old.some((item) =>
-        current.find((currentItem) => {
-          return currentItem.id !== item.id;
-        }),
-      );
+      return old.some((item) => {
+        const index = current.indexOf(item);
+        return index === -1;
+      });
     }
 
     return old !== current;
