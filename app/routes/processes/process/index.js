@@ -104,8 +104,11 @@ export default class ProcessesProcessIndexRoute extends Route {
     controller.loadVersionedProcess.perform(controller.versionedProcessId);
   }
 
-  resetController(controller) {
+  resetController(controller, isExiting) {
     super.resetController(...arguments);
+    if (isExiting) {
+      controller.versionedProcessId = null;
+    }
     controller.reset();
   }
 
