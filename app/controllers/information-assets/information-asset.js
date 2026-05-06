@@ -75,30 +75,6 @@ export default class InformationAssetsInformationAssetController extends Control
       : null;
   }
 
-  get originatingProcess() {
-    if (!this.process) return null;
-
-    return this.canonicalAsset.processes.find(
-      (process) => process.id === this.process,
-    );
-  }
-
-  get breadcrumbParentTitle() {
-    return this.originatingProcess?.title ?? 'Informatie assets';
-  }
-
-  get breadcrumbParentRoute() {
-    return this.originatingProcess && this.parentRoute
-      ? this.parentRoute
-      : 'information-assets.index';
-  }
-
-  get breadcrumbParentModel() {
-    return this.originatingProcess && this.parentRoute
-      ? this.originatingProcess.id
-      : null;
-  }
-
   @action
   validateForm() {
     this.formIsValid = this.canonicalAsset.title?.trim().length > 0;
