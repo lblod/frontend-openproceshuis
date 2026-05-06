@@ -81,7 +81,9 @@ export default class ProcessesProcessIndexRoute extends Route {
     });
 
     if (process.isArchived) {
-      this.router.replaceWith('not-found');
+      throw new Error(
+        'Dit process is verwijderd en kan niet meer bekeken worden.',
+      );
     }
 
     let stats = process.processStatistics;

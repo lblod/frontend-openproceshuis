@@ -5,7 +5,6 @@ import { service } from '@ember/service';
 export default class DiagramsDiagramIndexRoute extends Route {
   @service session;
   @service store;
-  @service router;
 
   queryParams = [
     { previousRouteTitle: { refreshModel: false } },
@@ -25,7 +24,9 @@ export default class DiagramsDiagramIndexRoute extends Route {
     });
 
     if (diagram.isArchived || diagram.diagramFile?.isArchived) {
-      this.router.replaceWith('not-found');
+      throw new Error(
+        'Dit diagram is verwijderd en kan niet meer bekeken worden.',
+      );
     }
 
     const processes = await this.store.query('process', {

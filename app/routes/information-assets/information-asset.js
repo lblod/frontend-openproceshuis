@@ -30,7 +30,9 @@ export default class InformationAssetsInformationAssetRoute extends Route {
     }
 
     if (canonicalAsset.isArchived) {
-      this.router.replaceWith('not-found');
+      throw new Error(
+        'Deze informatie asset is verwijderd en kan niet meer bekeken worden.',
+      );
     }
 
     let versionedAsset;
