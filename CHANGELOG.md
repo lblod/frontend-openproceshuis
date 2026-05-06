@@ -1,3 +1,22 @@
+## 1.6.0 (2026-05-06)
+
+#### :rocket: Enhancement
+
+- [#208](https://github.com/lblod/frontend-openproceshuis/pull/208) Update "Laatst aangepast sinds" filter label by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#207](https://github.com/lblod/frontend-openproceshuis/pull/207) OPH-1016 | add visio downloads property to download tracking by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#205](https://github.com/lblod/frontend-openproceshuis/pull/205) OPH-1019 | Move diagrams to process detail by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#204](https://github.com/lblod/frontend-openproceshuis/pull/204) Update design processes overview by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#199](https://github.com/lblod/frontend-openproceshuis/pull/199) Oph 956 vendor filter and column by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#198](https://github.com/lblod/frontend-openproceshuis/pull/198) OPH-1014 | Add status property to diagrams by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#163](https://github.com/lblod/frontend-openproceshuis/pull/163) oph-860 | frontend support subproces domain by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+#### :bug: Bug Fixes
+
+- [#209](https://github.com/lblod/frontend-openproceshuis/pull/209) OPH-1035 | diagram table pagination is off by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#201](https://github.com/lblod/frontend-openproceshuis/pull/201) Feature/oph 998 fix direct link to not working anymore by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#195](https://github.com/lblod/frontend-openproceshuis/pull/195) OPH-1006 | diagram can only be edited by publisher by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#194](https://github.com/lblod/frontend-openproceshuis/pull/194) OPH-988 | Bugfix unable to download attachments by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
 ## 1.5.4 (2026-03-18)
 
 #### :rocket: Enhancement
