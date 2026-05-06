@@ -79,6 +79,11 @@ export default class ProcessesProcessIndexRoute extends Route {
       ].join(','),
       reload: true,
     });
+
+    if (process.isArchived) {
+      this.router.replaceWith('not-found');
+    }
+
     let stats = process.processStatistics;
     if (!stats) {
       stats = this.store.createRecord('process-statistic', {
