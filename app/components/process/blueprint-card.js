@@ -14,6 +14,10 @@ export default class ProcessBlueprintCardComponent extends Component {
     return this.args.process.linkedBlueprints || [];
   }
 
+  get versionedLinkedBlueprints() {
+    return this.args.versionedProcess?.linkedBlueprints || [];
+  }
+
   @action
   toggleEdit() {
     this.edit = !this.edit;

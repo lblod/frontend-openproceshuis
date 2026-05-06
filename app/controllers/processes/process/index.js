@@ -1,13 +1,13 @@
 import Controller from '@ember/controller';
-
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { task, timeout } from 'ember-concurrency';
+import { restartableTask, task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
+    { versionedProcessId: { as: 'versionedProcess' } },
     'attachmentsPage',
     'attachmentsSize',
     'attachmentsSort',
@@ -16,6 +16,7 @@ export default class ProcessesProcessIndexController extends Controller {
     'diagramsPage',
     'diagramsSort',
   ];
+  @tracked versionedProcessId = null;
   @tracked attachmentsPage = 0;
   @tracked attachmentsSize = 5;
   @tracked attachmentsSort = 'name';
@@ -32,14 +33,36 @@ export default class ProcessesProcessIndexController extends Controller {
   @service diagram;
   @service eventTracking;
 
+  @tracked versionedProcess = null;
+  @tracked versionedDiagrams = [];
   @tracked isEditingDetails = false;
   @tracked selectedDiagramFile;
-
   @tracked isWizardModalOpen;
 
   get process() {
     return this.model.process;
   }
+
+  loadVersionedProcess = restartableTask(async (versionId) => {
+    this.versionedProcess = versionId
+      ? await this.store.findRecord('versioned-process', versionId, {
+          reload: true,
+          include: [
+            'ipdc-products',
+            'relevant-administrative-units',
+            'diagram-lists',
+            'diagram-lists.diagrams',
+            'linked-concept',
+            'linked-concept.process-groups.process-domains',
+            'linked-concept.process-groups.process-domains.process-categories',
+            'linked-blueprints',
+            'information-assets',
+          ].join(','),
+        })
+      : null;
+    this.versionedDiagrams =
+      (await this.versionedProcess?.diagramLists?.[0]?.diagrams) ?? [];
+  });
 
   get canEdit() {
     return (
@@ -55,6 +78,17 @@ export default class ProcessesProcessIndexController extends Controller {
       this.model.process?.publisher &&
       this.model.process.publisher.id === this.currentSession.group.id
     );
+  }
+
+  @action
+  onProcessVersionSelected(processOrVersioned) {
+    if (processOrVersioned?.isVersionedResource) {
+      this.versionedProcessId = processOrVersioned.id;
+      this.loadVersionedProcess.perform(processOrVersioned.id);
+    } else {
+      this.versionedProcessId = null;
+      this.loadVersionedProcess.perform(null);
+    }
   }
 
   @action
@@ -92,6 +126,8 @@ export default class ProcessesProcessIndexController extends Controller {
     this.process?.rollbackAttributes();
 
     this.isWizardModalOpen = false;
+    this.loadVersionedProcess.cancelAll();
+    this.versionedProcess = null;
 
     this.attachmentsPage = 0;
     this.diagramVersionsPage = 0;

@@ -7,11 +7,13 @@ import {
   isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
 import { service } from '@ember/service';
+import { task } from 'ember-concurrency';
 
 @modelValidator
 export default class ProcessModel extends Model {
   @service currentSession;
 
+  @attr('boolean', { defaultValue: false }) isVersionedResource;
   @attr('string') title;
   @attr('string') description;
   @attr('string') email;
@@ -52,7 +54,12 @@ export default class ProcessModel extends Model {
     polymorphic: true,
   })
   informationAssets;
-  @hasMany('process', { inverse: 'linkedBlueprints', async: true })
+  @hasMany('process', {
+    inverse: 'linkedBlueprints',
+    async: false,
+    polymorphic: true,
+    as: 'process',
+  })
   linkedBlueprints;
   @hasMany('group', { inverse: null, async: false })
   users;
@@ -129,8 +136,70 @@ export default class ProcessModel extends Model {
     return `${window.location.origin}/processen/${this.id}`;
   }
 
+  get baseModelName() {
+    return this.___recordState.identifier.type;
+  }
+
+  cleanupAttributes() {
+    this.title = this.title?.trim();
+    this.description = this.description?.trim();
+    this.email = this.email?.trim();
+  }
+
   async save() {
     this.modified = new Date();
     await super.save(...arguments);
+    if (this.baseModelName !== 'versioned-process') {
+      this.applyVersioning.perform();
+    }
+  }
+
+  applyVersioning = task({ drop: true }, async () => {
+    const currentVersions = await this.store.query('versioned-process', {
+      'filter[canonical][id]': this.id,
+      include: 'canonical',
+      sort: 'canonical.created',
+      page: {
+        size: 1,
+        number: 0,
+      },
+    });
+
+    const processVersionData = await this.getProcessDataForVersioning();
+    const versioned = this.store.createRecord('versioned-process', {
+      ...processVersionData,
+      canonical: this,
+      previousVersion: currentVersions?.[0] ?? null,
+    });
+    await versioned.save();
+  });
+
+  async getProcessDataForVersioning() {
+    const now = new Date();
+    const data = {
+      created: now,
+      modified: now,
+      title: this.title,
+      description: this.description,
+      email: this.email,
+      status: this.status,
+      isBlueprint: this.isBlueprint,
+      additionalInformation: this.additionalInformation,
+      hasControlMeasure: this.hasControlMeasure,
+      // Relations
+      publisher: await this.publisher,
+      creator: await this.creator,
+      linkedConcept: await this.linkedConcept,
+      diagramLists: await this.diagramLists,
+      attachments: await this.attachments,
+      ipdcProducts: await this.ipdcProducts,
+      links: await this.links,
+      informationAssets: await this.informationAssets,
+      linkedBlueprints: await this.linkedBlueprints,
+      users: await this.users,
+      relevantAdministrativeUnits: await this.relevantAdministrativeUnits,
+    };
+
+    return data;
   }
 }

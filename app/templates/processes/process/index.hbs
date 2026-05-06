@@ -29,28 +29,51 @@
         /></div>
     </:title>
     <:action>
-      <AuPill @icon="clock-rewind">Laatst aangepast op
-        {{date-format this.process.modified true}}</AuPill>
+      <div
+        class="au-u-flex au-u-flex--column au-u-flex--vertical-end au-o-flow"
+      >
+        <AuPill @icon="clock-rewind">
+          Laatst aangepast op
+          {{date-format this.process.modified true}}
+        </AuPill>
+        <div class="au-u-flex au-u-flex--row">
+          <AuLabel class="au-u-margin-right-small au-u-margin-bottom-none">
+            Toon verschillen met
+          </AuLabel>
+          <Process::VersionSelector
+            @process={{@model.process}}
+            @selectedVersion={{this.versionedProcess}}
+            @onSelected={{this.onProcessVersionSelected}}
+          />
+        </div>
+      </div>
     </:action>
   </PageHeader>
 {{/if}}
 
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
-
   <Process::DetailsCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
+    @versionedProcess={{this.versionedProcess}}
     @setIsEditing={{this.setIsEditingDetails}}
   />
 
   <Process::InventoryProcessCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
+    @versionedProcess={{this.versionedProcess}}
   />
 
   <span>
     <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
-      <AuHeading @level="2" @skin="3">Diagrammen</AuHeading>
+      <AuHeading @level="2" @skin="3">Diagrammen
+        <Process::StatusWithVersioned
+          @isShown={{this.versionedProcess}}
+          @versionedDiagrams={{this.versionedDiagrams}}
+          @currentDiagrams={{@model.diagramList.diagrams}}
+        />
+      </AuHeading>
       <AuButtonGroup>
         <File::DownloadMultipleAsZip
           @buttonLabel="Download alle"
@@ -101,11 +124,16 @@
   </span>
 
   {{#if (and this.process.isBlueprint this.process.isPublishedByAbbOrDv)}}
-    <Process::IcrCard @canEdit={{this.canEdit}} @process={{this.process}} />
+    <Process::IcrCard
+      @canEdit={{this.canEdit}}
+      @process={{this.process}}
+      @versionedProcess={{this.versionedProcess}}
+    />
   {{else}}
     <Process::BlueprintCard
       @canEdit={{this.canEdit}}
       @process={{this.process}}
+      @versionedProcess={{this.versionedProcess}}
     />
   {{/if}}
 

@@ -8,5 +8,10 @@ export default class ProcessStatisticModel extends Model {
   @attr('number', { defaultValue: 0 }) visioDownloads;
   @attr('number', { defaultValue: 0 }) processViews;
 
-  @belongsTo('process', { inverse: 'processStatistics', async: false }) process;
+  @belongsTo('process', {
+    inverse: 'processStatistics',
+    async: false,
+    polymorphic: true,
+  })
+  process;
 }
