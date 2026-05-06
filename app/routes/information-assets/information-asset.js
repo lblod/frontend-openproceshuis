@@ -29,6 +29,10 @@ export default class InformationAssetsInformationAssetRoute extends Route {
       await this.redirectToCanonical(canonicalAssetId, params);
     }
 
+    if (canonicalAsset.isArchived) {
+      this.router.replaceWith('not-found');
+    }
+
     let versionedAsset;
     if (versionedAssetId) {
       versionedAsset = await this.fetchVersionedAsset(versionedAssetId);
