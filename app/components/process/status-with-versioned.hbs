@@ -1,4 +1,4 @@
-{{#if @isShown}}
+{{#if (and @isShown this.isListDiverging)}}
   {{#unless (eq this.countOfCurrent 0)}}
     <AuPill @skin="success">
       {{this.postfixAdded}}
