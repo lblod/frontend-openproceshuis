@@ -68,16 +68,11 @@
   <span>
     <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
       <AuHeading @level="2" @skin="3">Diagrammen
-
         <Process::StatusWithVersioned
           @isShown={{this.versionedProcess}}
-          @countOfVersioned={{get
-            (get this.versionedProcess.diagramLists "0")
-            "diagrams.length"
-          }}
-          @countOfCurrent={{@model.diagramList.diagrams.length}}
+          @versionedDiagrams={{this.versionedDiagrams}}
+          @currentDiagrams={{@model.diagramList.diagrams}}
         />
-
       </AuHeading>
       <AuButtonGroup>
         <File::DownloadMultipleAsZip
