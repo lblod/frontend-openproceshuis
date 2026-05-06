@@ -39,8 +39,7 @@ export default class InformationAssetsInformationAssetController extends Control
     return (
       this.currentSession.canEdit &&
       this.currentSession.group &&
-      this.currentSession.isAbbOrDv &&
-      this.currentSession.isAdmin
+      this.currentSession.isAbbOrDv
     );
   }
 
@@ -50,10 +49,6 @@ export default class InformationAssetsInformationAssetController extends Control
 
   get versionedAsset() {
     return this.model.versionedAsset;
-  }
-
-  get versionedAssets() {
-    return this.model.versionedAssets;
   }
 
   get originatingProcess() {
