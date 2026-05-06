@@ -5,6 +5,7 @@ import { service } from '@ember/service';
 export default class DiagramsDiagramIndexRoute extends Route {
   @service session;
   @service store;
+  @service router;
 
   queryParams = [
     { previousRouteTitle: { refreshModel: false } },
@@ -22,6 +23,11 @@ export default class DiagramsDiagramIndexRoute extends Route {
       include: ['diagram-file', 'sub-items'].join(','),
       reload: true,
     });
+
+    if (diagram.isArchived || diagram.diagramFile?.isArchived) {
+      this.router.replaceWith('not-found');
+    }
+
     const processes = await this.store.query('process', {
       'filter[diagram-lists][diagrams][id]': diagram.id,
       reload: true,
