@@ -146,10 +146,18 @@ export default class ProcessModel extends Model {
     this.email = this.email?.trim();
   }
 
+  get canCreateProcessVersion() {
+    const isNotVersionedModel = this.baseModelName !== 'versioned-process';
+    const isOwnerOfProcess = this.publisher.id === this.currentSession.group.id;
+
+    return isNotVersionedModel && isOwnerOfProcess;
+  }
+
   async save() {
     this.modified = new Date();
+
     await super.save(...arguments);
-    if (this.baseModelName !== 'versioned-process') {
+    if (this.canCreateProcessVersion) {
       this.applyVersioning.perform();
     }
   }
