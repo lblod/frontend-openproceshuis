@@ -154,6 +154,7 @@ export default class InformationAssetsInformationAssetController extends Control
 
       if (!newVersionedRecord) return;
 
+      canonicalRecord.modified = new Date();
       await canonicalRecord.save();
       await newVersionedRecord.save();
       await oldVersionedRecord.save();

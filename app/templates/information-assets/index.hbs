@@ -135,9 +135,9 @@
             <span>Persoonsgegevens</span>
           </th>
           <AuDataTableThSortable
-            @field="created"
+            @field="modified"
             @currentSorting={{this.sort}}
-            @label="Aangemaakt op"
+            @label="Laatst aangepast op"
           />
           {{#if this.canEdit}}
             <th>
@@ -221,7 +221,7 @@
                 {{/if}}
               </div>
             </td>
-            <td>{{date-format informationAsset.created}}</td>
+            <td>{{date-format informationAsset.modified}}</td>
             {{#if this.canEdit}}
               <td>
                 <div class="au-u-flex au-u-flex--center">
