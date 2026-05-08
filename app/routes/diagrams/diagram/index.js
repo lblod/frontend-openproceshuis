@@ -22,6 +22,13 @@ export default class DiagramsDiagramIndexRoute extends Route {
       include: ['diagram-file', 'sub-items'].join(','),
       reload: true,
     });
+
+    if (diagram.isArchived || diagram.diagramFile?.isArchived) {
+      throw new Error(
+        'Dit diagram is verwijderd en kan niet meer bekeken worden.',
+      );
+    }
+
     const processes = await this.store.query('process', {
       'filter[diagram-lists][diagrams][id]': diagram.id,
       reload: true,

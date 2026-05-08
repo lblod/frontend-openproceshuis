@@ -29,6 +29,12 @@ export default class InformationAssetsInformationAssetRoute extends Route {
       await this.redirectToCanonical(canonicalAssetId, params);
     }
 
+    if (canonicalAsset.isArchived) {
+      throw new Error(
+        'Deze informatie asset is verwijderd en kan niet meer bekeken worden.',
+      );
+    }
+
     let versionedAsset;
     if (versionedAssetId) {
       versionedAsset = await this.fetchVersionedAsset(versionedAssetId);
