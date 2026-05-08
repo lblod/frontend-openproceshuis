@@ -27,7 +27,7 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-availability">Integriteit</AuLabel>
+            <AuLabel for="filter-integrity">Integriteit</AuLabel>
             <Process::IcrCard::Score
               @id="filter-integrity"
               @selectedScore={{this.integrityScore}}
@@ -35,7 +35,7 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-availability">Confidentialiteit</AuLabel>
+            <AuLabel for="filter-confidentiality">Vertrouwelijkheid</AuLabel>
             <Process::IcrCard::Score
               @id="filter-confidentiality"
               @selectedScore={{this.confidentialityScore}}
@@ -134,7 +134,7 @@
           <AuDataTableThSortable
             @field="confidentialityScore"
             @currentSorting={{this.sort}}
-            @label="Confidentialiteit"
+            @label="Vertrouwelijkheid"
           />
           <th>
             <span>Persoonsgegevens</span>
