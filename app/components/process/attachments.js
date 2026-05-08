@@ -127,8 +127,6 @@ export default class ProcessAttachments extends Component {
     if (icrFiles?.length >= 1) {
       const infoAssetFiles = await this.store.query('file', {
         'filter[:id:]': icrFiles.map((file) => file.id).join(','),
-        'filter[:not:status]': ENV.resourceStates.archived,
-
         sort: this.sort,
       });
       infoAssetFileIds = infoAssetFiles.map((file) => file.id);
@@ -137,17 +135,22 @@ export default class ProcessAttachments extends Component {
     return infoAssetFileIds;
   }
 
-  async fetchFilesWithIds(fileIds, page, size) {
-    return await this.store.query('file', {
+  async fetchFilesWithIds(fileIds, page, size, includeArchived = false) {
+    const query = {
       page: {
         number: page,
         size: size,
       },
       'filter[id]': fileIds.join(','),
-      'filter[:not:status]': ENV.resourceStates.archived,
       sort: this.sort,
       include: 'information-assets',
-    });
+    };
+
+    if (!includeArchived) {
+      query['filter[:not:status]'] = ENV.resourceStates.archived;
+    }
+
+    return await this.store.query('file', query);
   }
 
   fetchAttachments = task({ restartable: true }, async (process) => {
@@ -187,6 +190,7 @@ export default class ProcessAttachments extends Component {
           [...processFileIds, ...infoAssetFileIds],
           0,
           9999,
+          true,
         );
 
         const versionedProcessFileIds =
@@ -198,6 +202,7 @@ export default class ProcessAttachments extends Component {
           [...versionedProcessFileIds, ...versionedInfoAssetFileIds],
           0,
           9999,
+          true,
         );
         return {
           forCurrent: currentFiles,
