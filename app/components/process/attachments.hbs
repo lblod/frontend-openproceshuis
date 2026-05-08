@@ -1,5 +1,14 @@
 <DataCard>
-  <:title>Bijlagen</:title>
+  <:title>
+    Bijlagen
+    <Process::StatusWithVersioned
+      @isShown={{@versionedProcess}}
+      @versionedItems={{this.versionedFiles.value.forVersion}}
+      @currentItems={{this.versionedFiles.value.forCurrent}}
+      @nameSingular="bestand"
+      @namePlural="bestanden"
+    />
+  </:title>
 
   <:header>
     <AuButtonGroup>

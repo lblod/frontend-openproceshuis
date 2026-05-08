@@ -103,47 +103,68 @@ export default class ProcessAttachments extends Component {
     this.closeDeleteModal();
   });
 
-  fetchAttachments = task({ restartable: true }, async () => {
-    const page = this.args.page ?? 0;
-    const size = this.args.size ?? 10;
-    const sort = this.args.sort ?? 'name';
-    try {
-      const processes = await this.store.query('process', {
-        'filter[id]': this.process.id,
-        include:
-          'attachments,information-assets,information-assets.attachments',
-        page: { size: 1 },
-      });
-      const process = processes[0];
-      const processFileIds = process?.attachments.map((file) => file.id);
-      let infoAssetFileIds = [];
-      const icrFiles = [];
-      for (const infoAsset of this.process.informationAssets) {
-        icrFiles.push(...infoAsset.attachments);
-      }
-      if (icrFiles?.length >= 1) {
-        const infoAssetFiles = await this.store.query('file', {
-          'filter[:id:]': icrFiles.map((file) => file.id).join(','),
-          'filter[:not:status]': ENV.resourceStates.archived,
+  get sort() {
+    return this.args.sort ?? 'name';
+  }
 
-          sort: sort,
-        });
-        infoAssetFileIds = infoAssetFiles.map((file) => file.id);
-      }
-      let files = [];
+  async fetchProcessAttachmentFileIds(processId) {
+    const processes = await this.store.query('process', {
+      'filter[id]': processId,
+      include: 'attachments,information-assets,information-assets.attachments',
+      page: { size: 1 },
+      reload: true,
+    });
+    const process = processes[0];
+    return process?.attachments.map((file) => file.id) ?? [];
+  }
+
+  async fetchProcessIcrFileIds(informationAssets) {
+    let infoAssetFileIds = [];
+    const icrFiles = [];
+    for (const infoAsset of informationAssets) {
+      icrFiles.push(...infoAsset.attachments);
+    }
+    if (icrFiles?.length >= 1) {
+      const infoAssetFiles = await this.store.query('file', {
+        'filter[:id:]': icrFiles.map((file) => file.id).join(','),
+        'filter[:not:status]': ENV.resourceStates.archived,
+
+        sort: this.sort,
+      });
+      infoAssetFileIds = infoAssetFiles.map((file) => file.id);
+    }
+
+    return infoAssetFileIds;
+  }
+
+  async fetchFilesWithIds(fileIds, page, size) {
+    return await this.store.query('file', {
+      page: {
+        number: page,
+        size: size,
+      },
+      'filter[id]': fileIds.join(','),
+      'filter[:not:status]': ENV.resourceStates.archived,
+      sort: this.sort,
+      include: 'information-assets',
+    });
+  }
+
+  fetchAttachments = task({ restartable: true }, async (process) => {
+    try {
+      const processFileIds = await this.fetchProcessAttachmentFileIds(
+        process.id,
+      );
+      const infoAssetFileIds = await this.fetchProcessIcrFileIds(
+        process.informationAssets,
+      );
+
       this.filesMeta = {};
-      if (processFileIds.length >= 1 || infoAssetFileIds.length >= 1) {
-        files = await this.store.query('file', {
-          page: {
-            number: page,
-            size: size,
-          },
-          'filter[id]': [...processFileIds, ...infoAssetFileIds].join(','),
-          'filter[:not:status]': ENV.resourceStates.archived,
-          sort: sort,
-          include: 'information-assets',
-        });
-      }
+      const files = await this.fetchFilesWithIds(
+        [...processFileIds, ...infoAssetFileIds],
+        this.args.page ?? 0,
+        this.args.size ?? 10,
+      );
       this.filesMeta = files.meta;
       return files;
     } catch {
@@ -151,7 +172,51 @@ export default class ProcessAttachments extends Component {
     }
   });
 
+  fetchFilesForComparison = task(
+    { restartable: true },
+    async (versionedProcess) => {
+      try {
+        const processFileIds = await this.fetchProcessAttachmentFileIds(
+          this.args.process.id,
+        );
+        const infoAssetFileIds = await this.fetchProcessIcrFileIds(
+          this.args.process.informationAssets,
+        );
+
+        const currentFiles = await this.fetchFilesWithIds(
+          [...processFileIds, ...infoAssetFileIds],
+          0,
+          9999,
+        );
+
+        const versionedProcessFileIds =
+          await this.fetchProcessAttachmentFileIds(versionedProcess.id);
+        const versionedInfoAssetFileIds = await this.fetchProcessIcrFileIds(
+          versionedProcess.informationAssets,
+        );
+        const versionedFiles = await this.fetchFilesWithIds(
+          [...versionedProcessFileIds, ...versionedInfoAssetFileIds],
+          0,
+          9999,
+        );
+        return {
+          forCurrent: currentFiles,
+          forVersion: versionedFiles,
+        };
+      } catch {
+        return {
+          forCurrent: [],
+          forVersion: [],
+        };
+      }
+    },
+  );
+
   attachments = trackedTask(this, this.fetchAttachments, () => [
     this.args.process,
+  ]);
+
+  versionedFiles = trackedTask(this, this.fetchFilesForComparison, () => [
+    this.args.versionedProcess,
   ]);
 }
