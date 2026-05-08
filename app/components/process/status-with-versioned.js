@@ -9,16 +9,16 @@ export default class ProcessStatusWithVersioned extends Component {
   }
 
   get countOfCurrent() {
-    return this.args.currentDiagrams?.length || 0;
+    return this.args.currentItems?.length || 0;
   }
 
   get countOfVersioned() {
-    return this.args.versionedDiagrams?.length || 0;
+    return this.args.versionedItems?.length || 0;
   }
 
   get isListDiverging() {
-    const versions = this.args.versionedDiagrams || [];
-    const current = this.args.currentDiagrams || [];
+    const versions = this.args.versionedItems || [];
+    const current = this.args.currentItems || [];
 
     return versions.some((item) => {
       const index = current.indexOf(item);
