@@ -140,13 +140,13 @@
       Algemene informatie
     </:title>
     <:header>
-      {{#unless this.currentSession.readOnly}}
+      {{#if @canEdit}}
         <AuButton
           @skin="naked"
           @icon="pencil"
           {{on "click" this.toggleEdit}}
         >Wijzig</AuButton>
-      {{/unless}}
+      {{/if}}
     </:header>
     <:card as |Card|>
       <Card.Columns>
