@@ -1,13 +1,15 @@
-{{#if (and @isShown this.isListDiverging)}}
-  {{#unless (eq this.countOfCurrent 0)}}
+{{#if (and @isShown this.isListDiverging (not this.isListDiverging.isRunning))}}
+  {{#unless (eq this.countAdded 0)}}
     <AuPill @skin="success" class="au-u-margin-left-small">
-      {{this.postfixAdded}}
+      {{this.countAdded}}
+      {{this.currentItemsName}}
       toegevoegd
     </AuPill>
   {{/unless}}
-  {{#unless (eq this.countOfVersioned 0)}}
+  {{#unless (eq this.countRemoved 0)}}
     <AuPill @skin="error" class="au-u-margin-left-small">
-      {{this.postfixRemoved}}
+      {{this.countRemoved}}
+      {{this.versionItemsName}}
       verwijderd
     </AuPill>
   {{/unless}}
