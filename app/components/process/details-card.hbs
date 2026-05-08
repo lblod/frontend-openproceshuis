@@ -122,7 +122,7 @@
               <:content>
                 <AuCheckbox
                   @checked={{this.processUsedByUs}}
-                  @onChange={{this.setProcessUsedByUs}}
+                  @onChange={{this.updateProcessUsedByUs}}
                 />
               </:content>
             </Item>
@@ -283,8 +283,8 @@
             <:label>Wij gebruiken dit proces</:label>
             <:content>
               <AuCheckbox
-                @disabled={{not this.isEditing}}
                 @checked={{this.processUsedByUs}}
+                @onChange={{this.updateProcessUsedByUs}}
               />
             </:content>
           </Item>

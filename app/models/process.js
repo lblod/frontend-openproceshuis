@@ -146,10 +146,11 @@ export default class ProcessModel extends Model {
     this.email = this.email?.trim();
   }
 
-  async save() {
+  async save(options = {}) {
+    const { skipVersioning = false } = options.adapterOptions || {};
     this.modified = new Date();
     await super.save(...arguments);
-    if (this.baseModelName !== 'versioned-process') {
+    if (this.baseModelName !== 'versioned-process' && !skipVersioning) {
       this.applyVersioning.perform();
     }
   }

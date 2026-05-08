@@ -9,12 +9,11 @@ export default class ProcessDetailsCardComponent extends Component {
   @service store;
   @service currentSession;
   @service toaster;
+  @service router;
 
   @tracked _isEditing = false;
   @tracked formIsValid = false;
   @tracked draftIpdcProducts = [];
-  @tracked processUserChanged = undefined;
-  @tracked originalUsers = undefined;
   @tracked relevantAdministrativeUnitsChanged = false;
 
   get processUsedByUs() {
@@ -33,8 +32,6 @@ export default class ProcessDetailsCardComponent extends Component {
   @action
   toggleEdit() {
     this.draftIpdcProducts = this.args.process?.ipdcProducts;
-    if (!this.isEditing)
-      this.originalUsers = this.args.process?.users?.slice() || [];
     this.isEditing = !this.isEditing;
     this.validateForm();
   }
@@ -45,13 +42,6 @@ export default class ProcessDetailsCardComponent extends Component {
     this.draftIpdcProducts = this.args.process?.ipdcProducts ?? [];
     this.relevantAdministrativeUnitsChanged = false;
 
-    if (this.processUserChanged && this.originalUsers) {
-      const users = this.args.process?.users;
-      users.splice(0, users.length);
-      this.originalUsers.forEach((user) => users.push(user));
-      this.processUserChanged = false;
-    }
-
     this.isEditing = false;
   }
 
@@ -59,7 +49,6 @@ export default class ProcessDetailsCardComponent extends Component {
     this.formIsValid =
       this.args.process?.validate() &&
       (this.args.process?.hasDirtyAttributes ||
-        this.processUserChanged ||
         this.relevantAdministrativeUnitsChanged ||
         this.draftIpdcProducts.length <
           this.args.process?.ipdcProducts?.length ||
@@ -158,8 +147,7 @@ export default class ProcessDetailsCardComponent extends Component {
   }
 
   @action
-  async setProcessUsedByUs(isChecked) {
-    this.processUserChanged = true;
+  async updateProcessUsedByUs(isChecked) {
     const currentUser = this.currentSession.group;
     const users = await this.args.process?.users;
     if (isChecked) {
@@ -170,7 +158,18 @@ export default class ProcessDetailsCardComponent extends Component {
         users.splice(index, 1);
       }
     }
-    this.validateForm();
+    await this.args.process.save({
+      adapterOptions: { skipVersioning: true },
+    });
+
+    this.toaster.success(
+      isChecked ? 'Proces in gebruik genomen' : 'Proces niet langer in gebruik',
+      undefined,
+      {
+        timeOut: 2500,
+      },
+    );
+    this.router.refresh();
   }
 
   @action
