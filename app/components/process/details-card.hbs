@@ -117,15 +117,6 @@
                 {{date-format @process.created true}}
               </:content>
             </Item>
-            <Item>
-              <:label>Wij gebruiken dit proces</:label>
-              <:content>
-                <AuCheckbox
-                  @checked={{this.processUsedByUs}}
-                  @onChange={{this.updateProcessUsedByUs}}
-                />
-              </:content>
-            </Item>
             {{#if @process.isPublishedByAbbOrDv}}
               <Item>
                 <:label>Blauwdruk</:label>
