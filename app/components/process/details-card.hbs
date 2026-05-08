@@ -117,15 +117,6 @@
                 {{date-format @process.created true}}
               </:content>
             </Item>
-            <Item>
-              <:label>Wij gebruiken dit proces</:label>
-              <:content>
-                <AuCheckbox
-                  @checked={{this.processUsedByUs}}
-                  @onChange={{this.setProcessUsedByUs}}
-                />
-              </:content>
-            </Item>
             {{#if @process.isPublishedByAbbOrDv}}
               <Item>
                 <:label>Blauwdruk</:label>
@@ -149,13 +140,13 @@
       Algemene informatie
     </:title>
     <:header>
-      {{#unless this.currentSession.readOnly}}
+      {{#if @canEdit}}
         <AuButton
           @skin="naked"
           @icon="pencil"
           {{on "click" this.toggleEdit}}
         >Wijzig</AuButton>
-      {{/unless}}
+      {{/if}}
     </:header>
     <:card as |Card|>
       <Card.Columns>
@@ -283,8 +274,8 @@
             <:label>Wij gebruiken dit proces</:label>
             <:content>
               <AuCheckbox
-                @disabled={{not this.isEditing}}
                 @checked={{this.processUsedByUs}}
+                @onChange={{this.updateProcessUsedByUs}}
               />
             </:content>
           </Item>
