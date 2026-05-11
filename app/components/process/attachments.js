@@ -92,6 +92,7 @@ export default class ProcessAttachments extends Component {
       this.toaster.success('Bestand succesvol verwijderd', 'Gelukt!', {
         timeOut: 5000,
       });
+      this.args.process.applyVersioning.perform();
       this.args.reloadTableData?.();
     } catch (error) {
       console.error(error);

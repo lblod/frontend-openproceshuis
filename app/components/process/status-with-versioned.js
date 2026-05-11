@@ -11,43 +11,38 @@ export default class ProcessStatusWithVersioned extends Component {
 
   get currentItemsName() {
     if (this.countOfCurrent > 1) {
-      return this.args.namePlural ?? 'items';
+      return this.args.namePlural ?? '';
     }
 
-    return this.args.nameSingular ?? 'item';
+    return this.args.nameSingular ?? '';
   }
   get versionItemsName() {
     if (this.countOfVersioned > 1) {
-      return this.args.namePlural ?? 'items';
+      return this.args.namePlural ?? '';
     }
 
-    return this.args.nameSingular ?? 'item';
+    return this.args.nameSingular ?? '';
   }
 
   calculatedCounts = task(
     { restartable: true },
     async (versionedItems, currentItems) => {
+      if (!currentItems) {
+        return false;
+      }
+
       let _added = 0;
-      let _removed = 0;
-      const versions = [...(versionedItems ?? [])];
-      const current = [...(currentItems ?? [])];
+      // Count all new items in current version
+      const newItems = currentItems?.filter((current) => {
+        const found = versionedItems.find(
+          (versioned) => versioned.id === current.id,
+        );
 
-      const versionSet = new Set(versions);
-      const currentSet = new Set(current);
+        return !found && !current.isArchived;
+      });
+      _added += newItems.length;
 
-      for (const item of current) {
-        if (!versionSet.has(item)) {
-          _added++;
-        }
-      }
-
-      for (const item of versions) {
-        if (!currentSet.has(item)) {
-          _removed++;
-        }
-      }
       this.countAdded = _added;
-      this.countRemoved = _removed;
       return this.countAdded >= 1 || this.countRemoved >= 1;
     },
   );
