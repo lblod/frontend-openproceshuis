@@ -1,8 +1,8 @@
 {
   "name": "frontend-openproceshuis",
-  "version": "1.5.4",
+  "version": "1.6.0",
   "private": true,
-  "description": "Frontend for processes",
+  "description": "Processes management for processes of the Flemish government",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lblod/frontend-openproceshuis.git"

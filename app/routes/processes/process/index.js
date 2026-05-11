@@ -74,6 +74,12 @@ export default class ProcessesProcessIndexRoute extends Route {
       reload: true,
     });
 
+    if (process.isArchived) {
+      throw new Error(
+        'Dit process is verwijderd en kan niet meer bekeken worden.',
+      );
+    }
+
     let stats = process.processStatistics;
     if (!stats) {
       stats = this.store.createRecord('process-statistic', {
