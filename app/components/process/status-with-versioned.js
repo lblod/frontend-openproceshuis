@@ -4,6 +4,7 @@ import { tracked } from '@glimmer/tracking';
 
 import { task } from 'ember-concurrency';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
+import { isArrayDiverging } from '../../utils/versioning-comparison';
 
 export default class ProcessStatusWithVersioned extends Component {
   @tracked countAdded = 0;
@@ -31,19 +32,7 @@ export default class ProcessStatusWithVersioned extends Component {
         return false;
       }
 
-      let _added = 0;
-      // Count all new items in current version
-      const newItems = currentItems?.filter((current) => {
-        const found = versionedItems.find(
-          (versioned) => versioned.id === current.id,
-        );
-
-        return !found && !current.isArchived;
-      });
-      _added += newItems.length;
-
-      this.countAdded = _added;
-      return this.countAdded >= 1 || this.countRemoved >= 1;
+      return isArrayDiverging(currentItems, versionedItems);
     },
   );
 
