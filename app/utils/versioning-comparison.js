@@ -12,12 +12,13 @@ export function isArrayDiverging(
   });
 }
 
-export function removedItemsWhenPropertyEquals(
-  _array,
-  property = 'isArchived',
-  value = 'true',
-) {
-  return _array.filter((item) => item[property] === value);
+export function removedItemsWhenPropertyEquals(_array, property, value) {
+  return _array.filter((item) => {
+    if (!(property in item)) {
+      return true;
+    }
+    return item[property] !== value;
+  });
 }
 
 export function getCalculatedDifferences(
@@ -59,6 +60,9 @@ export function getCalculatedDifferences(
     );
     if (!comparedValue) {
       _added++;
+    }
+    if (comparedValue && isDifferent(currentItem, comparedValue)) {
+      _removed++;
     }
   }
 

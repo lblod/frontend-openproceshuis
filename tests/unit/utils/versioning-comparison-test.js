@@ -7,23 +7,24 @@ import { module, test } from 'qunit';
 
 module('Unit | Utility | versioning-comparison', function () {
   test('it can remove items from the array that have property with value', function (assert) {
-    const withArchived = { id: '1', isArchived: true };
-    const withoutArchived = { id: '1', isArchived: false };
-
-    const arrayWitArchivedValues = removedItemsWhenPropertyEquals([
-      withArchived,
-    ]);
+    const arrayWitArchivedValues = removedItemsWhenPropertyEquals(
+      [{ id: '1', isArchived: true }],
+      'isArchived',
+      true,
+    );
     assert.strictEqual(
       arrayWitArchivedValues.length,
       0,
       'item was removed as it had property isArchived: true',
     );
-    const arrayWithoutArchivedValues = removedItemsWhenPropertyEquals([
-      withoutArchived,
-    ]);
+    const arrayWithoutArchivedValues = removedItemsWhenPropertyEquals(
+      [{ id: '1', isArchived: true }],
+      'isArchived',
+      false,
+    );
     assert.strictEqual(
       arrayWithoutArchivedValues.length,
-      0,
+      1,
       'item was kept as it had property isArchived: false',
     );
   });
@@ -84,3 +85,76 @@ module('Unit | Utility | versioning-comparison', function () {
     assert.strictEqual(removedThree, 3, 'current: 0, compared: 3');
   });
 });
+
+module(
+  'Unit | Utility | versioning-comparison | Process versioning',
+  function () {
+    test('it can check if 2 process arrays are diverging', function (assert) {
+      const processOne = { id: 'processOne', isArchived: true };
+      const processTwo = { id: 'processTwos', isArchived: false };
+      assert.true(
+        isArrayDiverging([processOne], []),
+        'current process array as length one and compare length zero',
+      );
+      assert.false(
+        isArrayDiverging([processOne], [processOne]),
+        'models are equal',
+      );
+      assert.true(
+        isArrayDiverging([processOne, processTwo], [processOne]),
+        'current has 2 processes compared to the compared array only one of two in current',
+      );
+    });
+    test('it can calculate the added an removed values for 2 process arrays', function (assert) {
+      const processOne = { id: 'processOne', isArchived: true };
+      const processTwo = { id: 'processTwos', isArchived: false };
+
+      const { added, removed } = getCalculatedDifferences(
+        [processOne, processTwo],
+        [processOne],
+        ['id', 'isArchived'],
+      );
+
+      assert.strictEqual(added, 1, 'current: 2, compared: 1, added 1');
+      assert.strictEqual(removed, 0, 'current: 2, compared: 1, removed 0');
+    });
+    test('it can determine the difference between process versions | OPH-1031', function (assert) {
+      const currentProcesses = [
+        { id: 'processOne', isArchived: false }, // completely new +1
+        { id: 'processTwo', isArchived: true },
+        { id: 'processThree', isArchived: true },
+      ];
+      const versionedProcesses = [
+        { id: 'processTwo', isArchived: true }, // stayed the SAME +0
+        { id: 'processThree', isArchived: false }, // is REMOVED in current -1
+        { id: 'processFour', isArchived: true }, // removed in the past
+        { id: 'processFive', isArchived: true }, // removed in the past
+        { id: 'processSix', isArchived: true }, // removed in the past
+      ];
+
+      const current = removedItemsWhenPropertyEquals(
+        currentProcesses,
+        'isArchived',
+        true,
+      );
+      assert.strictEqual(current.length, 1, 'current processes reduced to 1');
+      const versioned = removedItemsWhenPropertyEquals(
+        versionedProcesses,
+        'isArchived',
+        true,
+      );
+      assert.strictEqual(
+        versioned.length,
+        1,
+        'versioned processes reduced to 1',
+      );
+      const { added, removed } = getCalculatedDifferences(current, versioned, [
+        'id',
+        'isArchived',
+      ]);
+
+      assert.strictEqual(added, 1, 'current: 3, compared: 5, added 1');
+      assert.strictEqual(removed, 1, 'current: 3, compared: 5, removed 1');
+    });
+  },
+);
