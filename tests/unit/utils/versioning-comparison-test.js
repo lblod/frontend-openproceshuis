@@ -118,43 +118,101 @@ module(
       assert.strictEqual(added, 1, 'current: 2, compared: 1, added 1');
       assert.strictEqual(removed, 0, 'current: 2, compared: 1, removed 0');
     });
-    test('it can determine the difference between process versions | OPH-1031', function (assert) {
-      const currentProcesses = [
-        { id: 'processOne', isArchived: false }, // completely new +1
-        { id: 'processTwo', isArchived: true },
-        { id: 'processThree', isArchived: true },
+    test('it can determine the difference between process diagram versions | OPH-1031', function (assert) {
+      const currentDiagrams = [
+        {
+          id: '6A042AB0C99BDC9CF8E5D4B6',
+          isArchived: false,
+        },
+        {
+          id: '6A042AAFC99BDC9CF8E5D4B5',
+          isArchived: false,
+        },
       ];
-      const versionedProcesses = [
-        { id: 'processTwo', isArchived: true }, // stayed the SAME +0
-        { id: 'processThree', isArchived: false }, // is REMOVED in current -1
-        { id: 'processFour', isArchived: true }, // removed in the past
-        { id: 'processFive', isArchived: true }, // removed in the past
-        { id: 'processSix', isArchived: true }, // removed in the past
+      const versionedDiagrams = [
+        {
+          id: '6A042A94C99BDC9CF8E5D4AF',
+          isArchived: false,
+        },
       ];
 
       const current = removedItemsWhenPropertyEquals(
-        currentProcesses,
+        currentDiagrams,
         'isArchived',
         true,
       );
-      assert.strictEqual(current.length, 1, 'current processes reduced to 1');
+      assert.strictEqual(current.length, 2, 'current has 2 diagrams');
       const versioned = removedItemsWhenPropertyEquals(
-        versionedProcesses,
+        versionedDiagrams,
         'isArchived',
         true,
       );
-      assert.strictEqual(
-        versioned.length,
-        1,
-        'versioned processes reduced to 1',
-      );
+      assert.strictEqual(versioned.length, 1, 'versioned had 1 diagrams');
       const { added, removed } = getCalculatedDifferences(current, versioned, [
         'id',
         'isArchived',
       ]);
 
-      assert.strictEqual(added, 1, 'current: 3, compared: 5, added 1');
-      assert.strictEqual(removed, 1, 'current: 3, compared: 5, removed 1');
+      assert.strictEqual(added, 2, 'current: 2, compared: 1, added 2');
+      assert.strictEqual(removed, 1, 'current: 2, compared: 1, removed 1');
+    });
+    test('it can determine the difference between process attachment versions | OPH-1031', function (assert) {
+      const currentAttachments = [
+        {
+          id: '6a042be73dbf6d000c000008',
+          isArchived: true,
+        },
+        {
+          id: '6a042be83dbf6d000c00000a',
+          isArchived: false,
+        },
+        {
+          id: '6a042bc93dbf6d000c000006',
+          isArchived: false,
+        },
+        {
+          id: '6a042be83dbf6d000c00000c',
+          isArchived: false,
+        },
+      ];
+      const versionedAttachments = [
+        {
+          id: '6a042be73dbf6d000c000008',
+          isArchived: true,
+        },
+        {
+          id: '6a042be83dbf6d000c00000a',
+          isArchived: false,
+        },
+        {
+          id: '6a042bc93dbf6d000c000006',
+          isArchived: false,
+        },
+        {
+          id: '6a042be83dbf6d000c00000c',
+          isArchived: false,
+        },
+      ];
+
+      const current = removedItemsWhenPropertyEquals(
+        currentAttachments,
+        'isArchived',
+        true,
+      );
+      assert.strictEqual(current.length, 3, 'current attachments is 3');
+      const versioned = removedItemsWhenPropertyEquals(
+        versionedAttachments,
+        'isArchived',
+        true,
+      );
+      assert.strictEqual(versioned.length, 3, 'versioned attachments is 4');
+      const { added, removed } = getCalculatedDifferences(current, versioned, [
+        'id',
+        'isArchived',
+      ]);
+
+      assert.strictEqual(added, 0, 'current: 3, compared: 4, added 0');
+      assert.strictEqual(removed, 0, 'current: 3, compared: 4, removed 0');
     });
   },
 );

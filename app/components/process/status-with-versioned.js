@@ -4,7 +4,11 @@ import { tracked } from '@glimmer/tracking';
 
 import { task } from 'ember-concurrency';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
-import { isArrayDiverging } from '../../utils/versioning-comparison';
+import {
+  getCalculatedDifferences,
+  isArrayDiverging,
+  removedItemsWhenPropertyEquals,
+} from '../../utils/versioning-comparison';
 
 export default class ProcessStatusWithVersioned extends Component {
   @tracked countAdded = 0;
@@ -32,7 +36,25 @@ export default class ProcessStatusWithVersioned extends Component {
         return false;
       }
 
-      return isArrayDiverging(currentItems, versionedItems);
+      const cleanedCurrentItems = removedItemsWhenPropertyEquals(
+        currentItems,
+        'isArchived',
+        true,
+      );
+      const cleanedVersionedItems = removedItemsWhenPropertyEquals(
+        versionedItems,
+        'isArchived',
+        true,
+      );
+      const { added, removed } = getCalculatedDifferences(
+        cleanedCurrentItems,
+        cleanedVersionedItems,
+      );
+
+      this.countAdded = added;
+      this.countRemoved = removed;
+
+      return isArrayDiverging(cleanedCurrentItems, cleanedVersionedItems);
     },
   );
 
