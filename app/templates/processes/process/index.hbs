@@ -68,12 +68,10 @@
   <span>
     <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
       <AuHeading @level="2" @skin="3">Diagrammen
-        <Process::StatusWithVersioned
+        <Process::ChangedStatusPills::Diagrams
           @isShown={{this.versionedProcess}}
           @versionedItems={{this.versionedDiagrams}}
           @currentItems={{@model.diagramList.diagrams}}
-          @nameSingular="diagram"
-          @namePlural="diagrammen"
         />
       </AuHeading>
       <AuButtonGroup>

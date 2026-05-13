@@ -1,12 +1,10 @@
 <DataCard>
   <:title>
     Bijlagen
-    <Process::StatusWithVersioned
+    <Process::ChangedStatusPills::Attachments
       @isShown={{@versionedProcess}}
       @versionedItems={{this.versionedFiles.value.forVersion}}
       @currentItems={{this.versionedFiles.value.forCurrent}}
-      @nameSingular="bestand"
-      @namePlural="bestanden"
     />
   </:title>
 

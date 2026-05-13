@@ -1,0 +1,16 @@
+{{#if (and @isShown this.isListDiverging (not this.isListDiverging.isRunning))}}
+  {{#unless (eq this.countAdded 0)}}
+    <AuPill @skin="success" class="au-u-margin-left-small">
+      {{this.countAdded}}
+      {{this.currentItemsName}}
+      toegevoegd
+    </AuPill>
+  {{/unless}}
+  {{#unless (eq this.countRemoved 0)}}
+    <AuPill @skin="error" class="au-u-margin-left-small">
+      {{this.countRemoved}}
+      {{this.versionItemsName}}
+      verwijderd
+    </AuPill>
+  {{/unless}}
+{{/if}}
