@@ -38,6 +38,7 @@ export default class ProcessBlueprintCardComponent extends Component {
         yield this.args.process.save();
         this.linkedBlueprintsChanged = false;
         this.edit = false;
+        this.args.onSaved?.();
         this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
           timeOut: 5000,
         });

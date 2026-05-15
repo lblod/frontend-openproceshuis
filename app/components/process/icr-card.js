@@ -175,6 +175,7 @@ export default class ProcessIcrCardComponent extends Component {
         await this.args.process.save();
 
         this.edit = false;
+        this.args.onSaved?.();
 
         this.toaster.success(
           'Informatieclassificatie succesvol bijgewerkt',

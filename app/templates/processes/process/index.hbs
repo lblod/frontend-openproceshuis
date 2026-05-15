@@ -57,12 +57,14 @@
     @process={{this.process}}
     @versionedProcess={{this.versionedProcess}}
     @setIsEditing={{this.setIsEditingDetails}}
+    @onSaved={{this.clearVersionedProcess}}
   />
 
   <Process::InventoryProcessCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
     @versionedProcess={{this.versionedProcess}}
+    @onSaved={{this.clearVersionedProcess}}
   />
 
   <span>
@@ -128,12 +130,14 @@
       @canEdit={{this.canEdit}}
       @process={{this.process}}
       @versionedProcess={{this.versionedProcess}}
+      @onSaved={{this.clearVersionedProcess}}
     />
   {{else}}
     <Process::BlueprintCard
       @canEdit={{this.canEdit}}
       @process={{this.process}}
       @versionedProcess={{this.versionedProcess}}
+      @onSaved={{this.clearVersionedProcess}}
     />
   {{/if}}
 

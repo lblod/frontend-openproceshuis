@@ -108,6 +108,12 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
+  clearVersionedProcess() {
+    this.versionedProcessId = null;
+    this.loadVersionedProcess.perform(null);
+  }
+
+  @action
   trackDownloadFileEvent(fileId, fileName, fileExtension, targetExtension) {
     this.eventTracking.trackDownloadFileEvent(
       fileId,

@@ -102,6 +102,7 @@ export default class ProcessDetailsCardComponent extends Component {
         yield this.args.process.save();
 
         this.isEditing = false;
+        this.args.onSaved?.();
 
         this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
           timeOut: 5000,
