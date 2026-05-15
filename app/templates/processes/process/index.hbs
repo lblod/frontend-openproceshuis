@@ -169,6 +169,7 @@
     <Process::Wizard
       @onCloseModal={{fn (mut this.isWizardModalOpen) false}}
       @process={{@model.process}}
+      @onSaved={{this.clearVersionedProcess}}
     />
   {{/if}}
 
