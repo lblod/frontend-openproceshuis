@@ -177,10 +177,13 @@ export default class ProcessModel extends Model {
 
   async getProcessDataForVersioning() {
     const now = new Date();
-    const attachments = (await this.attachments) ?? [];
-    const onlyActiveAttachments = attachments.filter(
-      (file) => !file.isArchived,
-    );
+    const getItemsWithArchivedRemoved = (_items) => {
+      if (!_items) {
+        return [];
+      }
+
+      return _items.filter((item) => !item.isArchived);
+    };
 
     const data = {
       created: now,
@@ -195,13 +198,17 @@ export default class ProcessModel extends Model {
       // Relations
       publisher: await this.publisher,
       creator: await this.creator,
-      linkedConcept: await this.linkedConcept,
-      diagramLists: await this.diagramLists,
-      attachments: onlyActiveAttachments,
+      linkedConcept: getItemsWithArchivedRemoved(await this.linkedConcept),
+      diagramLists: getItemsWithArchivedRemoved(await this.diagramLists),
+      attachments: getItemsWithArchivedRemoved(await this.attachments),
       ipdcProducts: await this.ipdcProducts,
-      links: await this.links,
-      informationAssets: await this.informationAssets,
-      linkedBlueprints: await this.linkedBlueprints,
+      links: getItemsWithArchivedRemoved(await this.links),
+      informationAssets: getItemsWithArchivedRemoved(
+        await this.informationAssets,
+      ),
+      linkedBlueprints: getItemsWithArchivedRemoved(
+        await this.linkedBlueprints,
+      ),
       users: await this.users,
       relevantAdministrativeUnits: await this.relevantAdministrativeUnits,
     };
