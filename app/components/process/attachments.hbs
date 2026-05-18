@@ -5,6 +5,17 @@
         @isShown={{@versionedProcess}}
         @versioned={{this.versionedFiles.value.forVersion}}
         @current={{this.versionedFiles.value.forCurrent}}
+        @singularLabel="bestand"
+        @pluralLabel="bestanden"
+      />
+    {{/unless}}
+    {{#unless this.versionedLinks.isRunning}}
+      <Process::ChangedStatusPills::Attachments
+        @isShown={{@versionedProcess}}
+        @versioned={{this.versionedLinks.value.forVersion}}
+        @current={{this.versionedLinks.value.forCurrent}}
+        @singularLabel="link"
+        @pluralLabel="links"
       />
     {{/unless}}
   </:title>

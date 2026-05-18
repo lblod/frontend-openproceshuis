@@ -219,6 +219,26 @@ export default class ProcessAttachments extends Component {
     },
   );
 
+  fetchRelevantLinksForComparison = task(
+    { restartable: true },
+    async (versionedProcess) => {
+      try {
+        const current = await this.args.process.links;
+        const version = await versionedProcess.links;
+
+        return {
+          forCurrent: Array.from(current),
+          forVersion: Array.from(version),
+        };
+      } catch (error) {
+        return {
+          forCurrent: [],
+          forVersion: [],
+        };
+      }
+    },
+  );
+
   attachments = trackedTask(this, this.fetchAttachments, () => [
     this.args.process,
     this.args.page,
@@ -228,4 +248,10 @@ export default class ProcessAttachments extends Component {
     this.args.versionedProcess,
     this.args.page,
   ]);
+
+  versionedLinks = trackedTask(
+    this,
+    this.fetchRelevantLinksForComparison,
+    () => [this.args.versionedProcess],
+  );
 }

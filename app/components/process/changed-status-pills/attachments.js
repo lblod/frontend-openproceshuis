@@ -8,10 +8,11 @@ export default class ProcessChangedStatusPillsAttachments extends Component {
   @tracked removedCount = 0;
 
   get postfixAdded() {
-    return `${this.addedCount} bestand${this.addedCount === 1 ? '' : 'en'}`;
+    return `${this.addedCount} ${this.addedCount === 1 ? this.args.singularLabel : this.args.pluralLabel}`;
   }
+
   get postfixRemoved() {
-    return `${this.removedCount} bestand${this.removedCount === 1 ? '' : 'en'}`;
+    return `${this.removedCount} ${this.removedCount === 1 ? this.args.singularLabel : this.args.pluralLabel}`;
   }
 
   calculate = task({ restartable: true }, async (_current, _older) => {
