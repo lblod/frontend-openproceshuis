@@ -1,11 +1,11 @@
-{{#if (and @isShown this.isListDiverging)}}
-  {{#unless (eq this.countOfCurrent 0)}}
+{{#if (and @isShown this.isDiverging)}}
+  {{#unless (eq this.addedCount 0)}}
     <AuPill @skin="success">
       {{this.postfixAdded}}
       toegevoegd
     </AuPill>
   {{/unless}}
-  {{#unless (eq this.countOfVersioned 0)}}
+  {{#unless (eq this.removedCount 0)}}
     <AuPill @skin="error">
       {{this.postfixRemoved}}
       verwijderd

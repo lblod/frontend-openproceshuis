@@ -205,9 +205,10 @@ export default class ProcessAttachments extends Component {
           9999,
           true,
         );
+
         return {
-          forCurrent: currentFiles,
-          forVersion: versionedFiles,
+          forCurrent: Array.from(currentFiles),
+          forVersion: Array.from(versionedFiles),
         };
       } catch {
         return {

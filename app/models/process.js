@@ -177,6 +177,11 @@ export default class ProcessModel extends Model {
 
   async getProcessDataForVersioning() {
     const now = new Date();
+    const attachments = (await this.attachments) ?? [];
+    const onlyActiveAttachments = attachments.filter(
+      (file) => !file.isArchived,
+    );
+
     const data = {
       created: now,
       modified: now,
@@ -192,7 +197,7 @@ export default class ProcessModel extends Model {
       creator: await this.creator,
       linkedConcept: await this.linkedConcept,
       diagramLists: await this.diagramLists,
-      attachments: await this.attachments,
+      attachments: onlyActiveAttachments,
       ipdcProducts: await this.ipdcProducts,
       links: await this.links,
       informationAssets: await this.informationAssets,

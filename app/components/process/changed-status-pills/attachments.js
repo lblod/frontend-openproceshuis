@@ -1,28 +1,55 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { task } from 'ember-concurrency';
+import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
 export default class ProcessChangedStatusPillsAttachments extends Component {
+  @tracked addedCount = 0;
+  @tracked removedCount = 0;
+
   get postfixAdded() {
-    return `${this.countOfCurrent} bestand${this.countOfCurrent === 1 ? '' : 'en'}`;
+    return `${this.addedCount} bestand${this.addedCount === 1 ? '' : 'en'}`;
   }
   get postfixRemoved() {
-    return `${this.countOfVersioned} bestand${this.countOfVersioned === 1 ? '' : 'en'}`;
+    return `${this.removedCount} bestand${this.removedCount === 1 ? '' : 'en'}`;
   }
 
-  get countOfCurrent() {
-    return this.args.current?.length || 0;
-  }
+  calculate = task({ restartable: true }, async (_current, _older) => {
+    if (!_current || !_older) {
+      return { isDiverging: false };
+    }
 
-  get countOfVersioned() {
-    return this.args.versioned?.length || 0;
-  }
+    const currentActiveItems = _current.filter((item) => !item.isArchived);
 
-  get isListDiverging() {
-    const versions = this.args.versioned || [];
-    const current = this.args.current || [];
+    const currentActiveIds = new Set(currentActiveItems.map((item) => item.id));
+    const olderActiveIds = new Set(_older.map((item) => item.id));
 
-    return versions.some((item) => {
-      const index = current.indexOf(item);
-      return index === -1;
-    });
-  }
+    let added = 0;
+    for (const id of currentActiveIds) {
+      if (!olderActiveIds.has(id)) {
+        added++;
+      }
+    }
+
+    let removed = 0;
+    for (const id of olderActiveIds) {
+      if (!currentActiveIds.has(id)) {
+        removed++;
+      }
+    }
+
+    this.addedCount = added ?? 0;
+    this.removedCount = removed ?? 0;
+
+    return {
+      isDiverging: this.addedCount > 0 || this.removedCount > 0,
+      addedCount: this.addedCount,
+      removedCount: this.removedCount,
+    };
+  });
+
+  isDiverging = trackedTask(this, this.calculate, () => [
+    this.args.current,
+    this.args.versioned,
+  ]);
 }

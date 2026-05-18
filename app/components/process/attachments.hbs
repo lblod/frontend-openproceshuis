@@ -1,10 +1,12 @@
 <DataCard>
   <:title>Bijlagen
-    <Process::ChangedStatusPills::Attachments
-      @isShown={{this.versionedProcess}}
-      @versioned={{this.versionedFiles.value.forVersion}}
-      @current={{this.versionedFiles.value.forCurrent}}
-    />
+    {{#unless this.versionedFiles.isRunning}}
+      <Process::ChangedStatusPills::Attachments
+        @isShown={{@versionedProcess}}
+        @versioned={{this.versionedFiles.value.forVersion}}
+        @current={{this.versionedFiles.value.forCurrent}}
+      />
+    {{/unless}}
   </:title>
 
   <:header>
