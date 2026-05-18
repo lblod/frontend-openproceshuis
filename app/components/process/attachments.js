@@ -154,7 +154,7 @@ export default class ProcessAttachments extends Component {
     return await this.store.query('file', query);
   }
 
-  fetchAttachments = task({ restartable: true }, async (process) => {
+  fetchAttachments = task({ restartable: true }, async (process, page = 0) => {
     try {
       const processFileIds = await this.fetchProcessAttachmentFileIds(
         process.id,
@@ -166,7 +166,7 @@ export default class ProcessAttachments extends Component {
       this.filesMeta = {};
       const files = await this.fetchFilesWithIds(
         [...processFileIds, ...infoAssetFileIds],
-        this.args.page ?? 0,
+        page,
         this.args.size ?? 10,
       );
       this.filesMeta = files.meta;
