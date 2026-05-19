@@ -76,6 +76,7 @@ export default class ProcessAttachments extends Component {
   attachmentsUploaded() {
     this.addModalOpened = false;
     this.args.reloadTableData?.();
+    this.args.onSaved?.();
   }
 
   get attachmentsZipFileName() {
@@ -94,6 +95,7 @@ export default class ProcessAttachments extends Component {
       });
       this.args.process.applyVersioning.perform();
       this.args.reloadTableData?.();
+      this.args.onSaved?.();
     } catch (error) {
       console.error(error);
       const errorMessage = getMessageForErrorCode('oph.fileDeletionError');
