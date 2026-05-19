@@ -57,12 +57,14 @@
     @process={{this.process}}
     @versionedProcess={{this.versionedProcess}}
     @setIsEditing={{this.setIsEditingDetails}}
+    @onSaved={{this.clearVersionedProcess}}
   />
 
   <Process::InventoryProcessCard
     @canEdit={{this.canEdit}}
     @process={{this.process}}
     @versionedProcess={{this.versionedProcess}}
+    @onSaved={{this.clearVersionedProcess}}
   />
 
   <span>
@@ -127,12 +129,14 @@
       @canEdit={{this.canEdit}}
       @process={{this.process}}
       @versionedProcess={{this.versionedProcess}}
+      @onSaved={{this.clearVersionedProcess}}
     />
   {{else}}
     <Process::BlueprintCard
       @canEdit={{this.canEdit}}
       @process={{this.process}}
       @versionedProcess={{this.versionedProcess}}
+      @onSaved={{this.clearVersionedProcess}}
     />
   {{/if}}
 
@@ -154,6 +158,7 @@
     @size={{this.attachmentsSize}}
     @sort={{this.attachmentsSort}}
     @reloadTableData={{this.fetchAttachments}}
+    @onSaved={{this.clearVersionedProcess}}
   />
 
   <Process::Usage
@@ -165,6 +170,7 @@
     <Process::Wizard
       @onCloseModal={{fn (mut this.isWizardModalOpen) false}}
       @process={{@model.process}}
+      @onSaved={{this.clearVersionedProcess}}
     />
   {{/if}}
 

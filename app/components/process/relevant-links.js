@@ -139,6 +139,7 @@ export default class ProcessRelevantLinks extends Component {
         timeOut: 5000,
       });
       this.args.onLinkAdded?.();
+      this.args.onSaved?.();
     } catch (error) {
       console.error(error);
       this.closeAddModal();
@@ -166,6 +167,7 @@ export default class ProcessRelevantLinks extends Component {
         timeOut: 5000,
       });
       this.args.process.applyVersioning.perform();
+      this.args.onSaved?.();
     } catch (error) {
       console.error(error);
       this.toaster.error(
@@ -189,6 +191,7 @@ export default class ProcessRelevantLinks extends Component {
       this.toaster.success('De link werd succesvol aangepast', undefined, {
         timeOut: 5000,
       });
+      this.args.onSaved?.();
       this.isEditModalOpen = false;
       this.updateLinkModel = null;
       this.linkValue = null;
