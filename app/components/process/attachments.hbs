@@ -69,6 +69,7 @@
       @isAddModalOpen={{this.isAddLinkModalOpen}}
       @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
       @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
+      @onSaved={{@onSaved}}
     />
     <AuDataTable
       @content={{this.attachments.value}}
