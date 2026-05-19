@@ -152,6 +152,7 @@ export default class ProcessInventoryProcessCardPopup extends Component {
       this.toaster.success('Proces succesvol bijgewerkt', 'Gelukt!', {
         timeOut: 5000,
       });
+      this.args.onSaved?.();
       this.args.closeModal();
     } catch (error) {
       console.error(error);

@@ -237,3 +237,9 @@ tr:hover .inventory-row-button-group .au-c-button {
     fill: var(--au-green-700) !important;
   }
 }
+
+.icr-score {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}

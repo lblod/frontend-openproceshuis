@@ -1,0 +1,14 @@
+{{#if (and @isShown this.isDiverging)}}
+  {{#unless (eq this.addedCount 0)}}
+    <AuPill @skin="success">
+      {{this.postfixAdded}}
+      toegevoegd
+    </AuPill>
+  {{/unless}}
+  {{#unless (eq this.removedCount 0)}}
+    <AuPill @skin="error">
+      {{this.postfixRemoved}}
+      verwijderd
+    </AuPill>
+  {{/unless}}
+{{/if}}
