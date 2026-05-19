@@ -91,7 +91,6 @@
             Wijzig
           </AuButton>
         {{/if}}
-
       </AuButtonGroup>
     </div>
     {{#if (and @model.diagramList @model.diagramList.version)}}
@@ -153,6 +152,7 @@
   <Process::Attachments
     @canEdit={{this.canEdit}}
     @process={{this.process}}
+    @versionedProcess={{this.versionedProcess}}
     @trackDownloadFileEvent={{this.trackDownloadFileEvent}}
     @page={{this.attachmentsPage}}
     @size={{this.attachmentsSize}}

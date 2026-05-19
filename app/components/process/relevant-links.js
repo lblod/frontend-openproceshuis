@@ -130,15 +130,17 @@ export default class ProcessRelevantLinks extends Component {
       this.isExecutingAction = false;
       return;
     }
-    links.push(linkModel);
     try {
       await linkModel.save();
+      links.push(linkModel);
+      this.args.process.links = [...links];
       await this.args.process.save();
       this.toaster.success('Link toegevoegd', undefined, {
         timeOut: 5000,
       });
       this.args.onLinkAdded?.();
     } catch (error) {
+      console.error(error);
       this.closeAddModal();
       this.toaster.error(
         'Er liep iets mis bij het toevoegen van de link',
@@ -163,7 +165,9 @@ export default class ProcessRelevantLinks extends Component {
       this.toaster.success('Link succesvol verwijderd', undefined, {
         timeOut: 5000,
       });
+      this.args.process.applyVersioning.perform();
     } catch (error) {
+      console.error(error);
       this.toaster.error(
         'Er liep iets mis bij het verwijderen van de link',
         undefined,
@@ -189,6 +193,7 @@ export default class ProcessRelevantLinks extends Component {
       this.updateLinkModel = null;
       this.linkValue = null;
     } catch (error) {
+      console.error(error);
       this.toaster.error(
         'Er liep iets mis bij het aanpassen van de link',
         undefined,
