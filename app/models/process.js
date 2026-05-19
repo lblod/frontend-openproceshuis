@@ -182,7 +182,7 @@ export default class ProcessModel extends Model {
         return [];
       }
 
-      return _items.filter((item) => !item.isArchived);
+      return Array.from(_items).filter((item) => !item.isArchived);
     };
 
     const data = {
@@ -198,17 +198,13 @@ export default class ProcessModel extends Model {
       // Relations
       publisher: await this.publisher,
       creator: await this.creator,
-      linkedConcept: getItemsWithArchivedRemoved(await this.linkedConcept),
+      linkedConcept: await this.linkedConcept,
       diagramLists: getItemsWithArchivedRemoved(await this.diagramLists),
       attachments: getItemsWithArchivedRemoved(await this.attachments),
       ipdcProducts: await this.ipdcProducts,
       links: getItemsWithArchivedRemoved(await this.links),
-      informationAssets: getItemsWithArchivedRemoved(
-        await this.informationAssets,
-      ),
-      linkedBlueprints: getItemsWithArchivedRemoved(
-        await this.linkedBlueprints,
-      ),
+      informationAssets: await this.informationAssets,
+      linkedBlueprints: await this.linkedBlueprints,
       users: await this.users,
       relevantAdministrativeUnits: await this.relevantAdministrativeUnits,
     };
