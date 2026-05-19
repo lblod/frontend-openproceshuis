@@ -16,6 +16,7 @@ export default class ProcessSelectByTitleComponent extends Component {
       filter: {
         title: searchParams,
         ':not:status': ENV.resourceStates.archived,
+        ':not:is-versioned-resource': true,
       },
     };
 

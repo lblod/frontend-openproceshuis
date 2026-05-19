@@ -31,6 +31,7 @@ export default class DiagramsDiagramIndexRoute extends Route {
 
     const processes = await this.store.query('process', {
       'filter[diagram-lists][diagrams][id]': diagram.id,
+      'filter[:not:is-versioned-resource]': true,
       reload: true,
     });
 

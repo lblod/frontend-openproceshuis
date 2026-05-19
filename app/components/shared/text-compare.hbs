@@ -1,0 +1,7 @@
+{{#if @enableCharacterComparison}}
+  {{this.characterDiffAsHtml}}
+{{else if (and @enableHighlighting this.isDifferent)}}
+  <mark>{{yield}}</mark>
+{{else}}
+  {{yield}}
+{{/if}}

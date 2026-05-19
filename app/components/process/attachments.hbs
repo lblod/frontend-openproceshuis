@@ -1,5 +1,24 @@
 <DataCard>
-  <:title>Bijlagen</:title>
+  <:title>Bijlagen
+    {{#unless this.versionedFiles.isRunning}}
+      <Process::ChangedStatusPills::Attachments
+        @isShown={{@versionedProcess}}
+        @versioned={{this.versionedFiles.value.forVersion}}
+        @current={{this.versionedFiles.value.forCurrent}}
+        @singularLabel="bestand"
+        @pluralLabel="bestanden"
+      />
+    {{/unless}}
+    {{#unless this.versionedLinks.isRunning}}
+      <Process::ChangedStatusPills::Attachments
+        @isShown={{@versionedProcess}}
+        @versioned={{this.versionedLinks.value.forVersion}}
+        @current={{this.versionedLinks.value.forCurrent}}
+        @singularLabel="link"
+        @pluralLabel="links"
+      />
+    {{/unless}}
+  </:title>
 
   <:header>
     <AuButtonGroup>
@@ -50,6 +69,7 @@
       @isAddModalOpen={{this.isAddLinkModalOpen}}
       @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
       @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
+      @onSaved={{@onSaved}}
     />
     <AuDataTable
       @content={{this.attachments.value}}
