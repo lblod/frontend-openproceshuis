@@ -14,6 +14,7 @@ export default class ProcessSelectByGroupComponent extends Component {
   *loadGroupsTask() {
     const processQuery = {
       'filter[:not:status]': ENV.resourceStates.archived,
+      'filter[:not:is-versioned-resource]': true,
       include: 'publisher,relevant-administrative-units',
       page: { number: 0, size: 1000 }, //TODO: if OPH grows we should keep the size of this query in mind to prevent performance issues
     };

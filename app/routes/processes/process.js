@@ -1,5 +1,4 @@
 import Route from '@ember/routing/route';
-
 import { service } from '@ember/service';
 
 export default class ProcessesProcessRoute extends Route {
@@ -13,12 +12,8 @@ export default class ProcessesProcessRoute extends Route {
 
   async model({ id }, transition) {
     const parentRouteName = transition.to?.name?.replace('.index', '');
-    let processId = id;
-    if (!id) {
-      const inheritedModelId = this.modelFor(parentRouteName);
+    const processId = id ?? this.modelFor(parentRouteName);
 
-      processId = inheritedModelId;
-    }
     const process = await this.store.findRecord('process', processId, {
       include: [
         'process-statistics',

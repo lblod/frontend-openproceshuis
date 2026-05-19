@@ -277,7 +277,8 @@ export default class ProcessWizard extends Component {
     this.loadingMessage = 'We brengen je naar het process';
     await timeout(150);
     if (isUpdateOfProcess) {
-      this.router.refresh();
+      await this.router.refresh();
+      this.args.onSaved?.();
     } else {
       this.router.transitionTo('processes.process', process.id);
     }
