@@ -19,6 +19,7 @@ export default class ProcessSelectByIpdcComponent extends Component {
 
     const activeProcesses = await this.store.query('process', {
       'filter[:not:status]': ENV.resourceStates.archived,
+      'filter[:not:is-versioned-resource]': true,
       include: 'ipdc-products',
       page: { number: 0, size: 1000 }, //TODO: if OPH grows we should keep the size of this page in mind to prevent performance issues
     });

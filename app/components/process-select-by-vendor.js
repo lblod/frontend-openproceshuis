@@ -24,6 +24,7 @@ export default class ProcessSelectByVendor extends Component {
       const processesCreatedBy = await this.store.query('process', {
         'filter[creator][id]': vendor.id,
         'filter[:not:status]': ARCHIVED_STATUS_URI,
+        'filter[:not:is-versioned-resource]': true,
         page: {
           number: 0,
           size: 1,
