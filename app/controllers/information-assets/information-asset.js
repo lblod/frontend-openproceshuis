@@ -75,6 +75,12 @@ export default class InformationAssetsInformationAssetController extends Control
       : null;
   }
 
+  get canonicalAssetProcesses() {
+    return this.canonicalAsset?.processes?.filter(
+      (p) => !p.isVersionedResource,
+    );
+  }
+
   @action
   validateForm() {
     this.formIsValid = this.canonicalAsset.title?.trim().length > 0;
