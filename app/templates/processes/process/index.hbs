@@ -71,7 +71,7 @@
     <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
       <AuHeading @level="2" @skin="3">Diagrammen
         <Process::StatusWithVersioned
-          @isShown={{this.versionedProcess}}
+          @isShown={{and this.versionedProcess (not this.loadVersionedProcess.isRunning)}}
           @versionedDiagrams={{this.versionedDiagrams}}
           @currentDiagrams={{@model.diagramList.diagrams}}
         />
