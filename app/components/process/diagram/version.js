@@ -42,6 +42,14 @@ export default class ProcessDiagramVersion extends Component {
 
     try {
       await this.diagramListToDelete.save();
+      await Promise.all(
+        this.diagramListToDelete.diagrams
+          .filter((item) => !item.isArchived)
+          .map((item) => {
+            item.setArchivedStatus();
+            return item.save();
+          }),
+      );
       this.toaster.success(
         'Diagrammen versie succesvol verwijderd',
         'Gelukt!',

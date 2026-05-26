@@ -1,5 +1,6 @@
 import Model, { belongsTo, hasMany, attr } from '@ember-data/model';
-import ENV from 'frontend-openproceshuis/config/environment';
+
+import { ARCHIVED_STATUS_URI } from '../utils/well-known-uris';
 
 export default class DiagramListItemModel extends Model {
   @attr('number', {
@@ -18,6 +19,10 @@ export default class DiagramListItemModel extends Model {
   subItems;
 
   get isArchived() {
-    return this.status === ENV.resourceStates.archived;
+    return this.status === ARCHIVED_STATUS_URI;
+  }
+
+  setArchivedStatus() {
+    this.status = ARCHIVED_STATUS_URI;
   }
 }
