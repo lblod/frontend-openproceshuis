@@ -3,12 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import ENV from 'frontend-openproceshuis/config/environment';
 
 const READER_ROLES = ['Medewerker-fixed', 'OpenProcesHuis-Lezer'];
-const EDITOR_ROLES = [
-  // TODO: drop support for LoketLB-OpenProcesHuisGebruiker and LoketLB-OpenProcesHuisAfnemer when ready
-  'OpenProcesHuis-Procesbeheerder',
-  'LoketLB-OpenProcesHuisGebruiker',
-  'LoketLB-OpenProcesHuisAfnemer',
-];
+const EDITOR_ROLE = 'OpenProcesHuis-Procesbeheerder';
 const ADMIN_ROLE = 'LoketLB-admin';
 const ABB_DV_IDENTIFIERS = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
 
@@ -58,7 +53,7 @@ export default class CurrentSessionService extends Service {
   }
 
   get hasEditorRole() {
-    return this.roles.some((role) => EDITOR_ROLES.includes(role));
+    return this.roles.includes(EDITOR_ROLE);
   }
 
   get isAbbOrDv() {
