@@ -2,7 +2,7 @@
   <:title>Bijlagen
     {{#unless this.versionedFiles.isRunning}}
       <Process::ChangedStatusPills::Attachments
-        @isShown={{@versionedProcess}}
+        @isShown={{and @versionedProcess (not this.fetchFilesForComparison.isRunning)}}
         @versioned={{this.versionedFiles.value.forVersion}}
         @current={{this.versionedFiles.value.forCurrent}}
         @singularLabel="bestand"
@@ -11,7 +11,7 @@
     {{/unless}}
     {{#unless this.versionedLinks.isRunning}}
       <Process::ChangedStatusPills::Attachments
-        @isShown={{@versionedProcess}}
+        @isShown={{and @versionedProcess (not this.fetchRelevantLinksForComparison.isRunning)}}
         @versioned={{this.versionedLinks.value.forVersion}}
         @current={{this.versionedLinks.value.forCurrent}}
         @singularLabel="link"

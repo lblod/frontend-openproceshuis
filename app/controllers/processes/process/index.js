@@ -61,8 +61,10 @@ export default class ProcessesProcessIndexController extends Controller {
           ].join(','),
         })
       : null;
-    this.versionedDiagrams =
-      (await this.versionedProcess?.diagramLists?.[0]?.diagrams) ?? [];
+    const latestVersionedList = await this.diagram.getLatestDiagramList(
+      this.versionedProcessId,
+    );
+    this.versionedDiagrams = latestVersionedList?.diagrams ?? [];
   });
 
   get canEdit() {

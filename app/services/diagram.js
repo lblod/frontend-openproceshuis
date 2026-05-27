@@ -42,6 +42,10 @@ export default class DiagramService extends Service {
   }
 
   async getLatestDiagramList(processId) {
+    if (!processId) {
+      return null;
+    }
+
     const allDiagramLists =
       await this.getDiagramListsWithFilesForProcess(processId);
     const sortedOnCreatedLists = allDiagramLists.sort(
