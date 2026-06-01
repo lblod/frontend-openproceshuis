@@ -1,3 +1,10 @@
+## 1.6.2 (2026-06-01)
+
+#### :rocket: Enhancement
+
+- [#229](https://github.com/lblod/frontend-openproceshuis/pull/229) fix: al;so archive the diagram list items when archiving the diagram list of a process [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#228](https://github.com/lblod/frontend-openproceshuis/pull/228) oDrop support for openproceshuisgebruiker and openproceshuisafnemer roles @MartijnBogaert](https://github.com/MartijnBogaert)
+
 ## 1.6.0 (2026-05-06)
 
 #### :rocket: Enhancement
