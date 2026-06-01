@@ -30,12 +30,11 @@
           </AuButton>
         </AuDropdown>
       {{/if}}
-      <AuButton
-        @disabled={{not this.attachments}}
-        {{on "click" (perform this.downloadAttachments)}}
-      >
-        Download alle bestanden
-      </AuButton>
+      <File::DownloadMultipleAsZip
+        @buttonLabel="Download alle bestanden"
+        @folderName={{this.attachmentsZipFileName}}
+        @files={{this.attachments}}
+      />
     </AuButtonGroup>
   </:header>
 
@@ -134,7 +133,7 @@
   @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
   @multiple="true"
   @modelName="Informatie asset"
-  @updateModel={{this.addFileToIcr}}
+  @updateModel={{this.addFilesToIcr}}
   @onFinishUpload={{this.attachmentsUploaded}}
   @modalOpen={{this.addModalOpened}}
   @closeModal={{this.closeAddModal}}

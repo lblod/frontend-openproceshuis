@@ -6,9 +6,12 @@ import {
   isEmptyOrEmail,
   isEmptyOrUrl,
 } from 'frontend-openproceshuis/utils/custom-validators';
+import { service } from '@ember/service';
 
 @modelValidator
 export default class ProcessModel extends Model {
+  @service currentSession;
+
   @attr('string') title;
   @attr('string') description;
   @attr('string') email;
@@ -28,8 +31,10 @@ export default class ProcessModel extends Model {
     async: false,
   })
   linkedConcept;
-  @hasMany('file', { inverse: 'processes', async: false })
-  files;
+  @hasMany('diagram-list', { inverse: null, async: false })
+  diagramLists;
+  @hasMany('file', { inverse: null, async: false })
+  attachments;
   @hasMany('ipdc-product', {
     inverse: 'processes',
     async: false,
@@ -38,7 +43,7 @@ export default class ProcessModel extends Model {
   ipdcProducts;
   @hasMany('link', {
     inverse: null,
-    async: true,
+    async: false,
   })
   links;
   @hasMany('information-asset', {
@@ -91,26 +96,41 @@ export default class ProcessModel extends Model {
     this.status = ENV.resourceStates.archived;
   }
 
-  get diagram() {
-    const diagrams = this.files.filter(
-      (file) =>
-        (file.isBpmnFile || file.isVisioFile) &&
-        file.status !== ENV.resourceStates.archived,
-    );
-    if (diagrams.length === 0) return undefined;
-
-    const diagramsSorted = diagrams.sort(
-      (fileA, fileB) => fileB.created - fileA.created,
-    );
-    return diagramsSorted[0];
-  }
-
   get isPublishedByAbbOrDv() {
     const ovoCodes = [ENV.ovoCodes.abb, ENV.ovoCodes.dv];
     return ovoCodes.includes(this.publisher?.identifier);
   }
 
+  get isUsedByCurrentGroup() {
+    return this.users?.includes(this.currentSession.group);
+  }
+
+  get isCreatedAndModifiedOnSameDay() {
+    if (!this.created || !this.modified) return false;
+
+    const createdAt = new Date(this.created);
+    const modifiedAt = new Date(this.modified);
+
+    if (
+      Number.isNaN(createdAt.getTime()) ||
+      Number.isNaN(modifiedAt.getTime())
+    ) {
+      return false;
+    }
+
+    return (
+      createdAt.getFullYear() === modifiedAt.getFullYear() &&
+      createdAt.getMonth() === modifiedAt.getMonth() &&
+      createdAt.getDate() === modifiedAt.getDate()
+    );
+  }
+
   get href() {
     return `${window.location.origin}/processen/${this.id}`;
+  }
+
+  async save() {
+    this.modified = new Date();
+    await super.save(...arguments);
   }
 }

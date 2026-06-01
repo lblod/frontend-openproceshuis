@@ -4,83 +4,41 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 export default class MyLocalGovernmentIndexController extends Controller {
-  queryParams = [
-    'page',
-    'size',
-    'sort',
+  filters = ['title', 'modifiedSince'];
+  columns = [
     'title',
+    'description',
+    'modified',
     'classification',
-    'group',
-    'blueprint',
+    'organization',
+    'creator',
   ];
 
+  queryParams = ['page', 'size', 'sort', 'title', 'modifiedSince'];
+
   @tracked page = 0;
-  size = 20;
+  @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
-  @tracked classification = '';
-  @tracked selectedClassification = '';
-  @tracked group = '';
-  @tracked blueprint = false;
+  @tracked modifiedSince = undefined;
   @service currentSession;
 
-  get processes() {
-    return this.model.loadProcessesTaskInstance.isFinished
-      ? this.model.loadProcessesTaskInstance.value
-      : this.model.loadedProcesses;
-  }
-
-  get isLoading() {
-    return this.model.loadProcessesTaskInstance.isRunning;
-  }
-
-  get hasNoResults() {
-    return (
-      this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes?.length === 0
-    );
-  }
-
-  get hasErrored() {
-    return this.model.loadProcessesTaskInstance.isError;
+  get query() {
+    return {
+      page: this.page,
+      size: this.size,
+      sort: this.sort,
+      title: this.title,
+      modifiedSince: this.modifiedSince,
+    };
   }
 
   @action
-  setTitle(selection) {
-    this.page = null;
-    this.title = selection;
-  }
-
-  @action
-  setClassification(selection) {
-    this.page = null;
-    this.selectedClassification = selection;
-    this.classification = selection?.label;
-  }
-
-  @action
-  setGroup(selection) {
-    this.page = null;
-    this.group = selection;
-  }
-
-  @action
-  toggleBlueprintFilter(event) {
-    this.page = null;
-    this.blueprint = event;
-  }
-
-  @action
-  resetFilters() {
-    this.title = '';
-    this.classification = '';
-    this.selectedClassification = '';
-    this.group = '';
-    this.page = 0;
-    this.sort = 'title';
-    this.blueprint = false;
-
-    // Triggers a refresh of the model
-    this.page = null;
+  updateQuery(query) {
+    this.page = query.page;
+    this.size = query.size;
+    this.sort = query.sort;
+    this.title = query.title;
+    this.modifiedSince = query.modifiedSince;
   }
 }

@@ -19,6 +19,7 @@ export default class SharedProcessesIndexRoute extends Route {
     this.session.requireAuthentication(transition, 'auth.login');
 
     if (!this.currentSession.canEdit) {
+      this.session.clearAfterLoginRoute();
       this.router.transitionTo('unauthorized');
     }
   }
@@ -59,5 +60,10 @@ export default class SharedProcessesIndexRoute extends Route {
     query['filter[:not:status]'] = ENV.resourceStates.archived;
 
     return yield this.store.query('process', query);
+  }
+
+  setupController(controller) {
+    super.setupController(...arguments);
+    controller.uploadModalOpened = false;
   }
 }

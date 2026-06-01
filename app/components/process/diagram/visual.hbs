@@ -1,6 +1,13 @@
 <div class="au-u-flex au-u-flex--between au-u-margin-bottom-small">
   <AuHeading @level="2" @skin="3">Diagram</AuHeading>
   <AuButtonGroup>
+    <AuLink
+      @route="processes.process.diagrams"
+      @model={{@process.id}}
+      @skin="button-secondary"
+    >
+      Bekijk alle diagrammen
+    </AuLink>
     {{#if @canEdit}}
       <AuButton
         @skin="secondary"
@@ -28,15 +35,11 @@
       (or this.latestDiagram.isBpmnFile this.latestDiagram.isVisioFile)
     )
   }}
-    {{#if this.latestDiagram.isBpmnFile}}
-      <BpmnViewer
-        @diagram={{this.latestDiagram}}
-        @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
-        @onSvgLoaded={{this.setLatestDiagramAsSvg}}
-      />
-    {{else if this.latestDiagram.isVisioFile}}
-      <PdfViewer @diagram={{this.latestDiagram}} />
-    {{/if}}
+    <File::Viewer
+      @file={{this.latestDiagram}}
+      @onBpmnLoaded={{this.setLatestDiagramAsBpmn}}
+      @onSvgLoaded={{this.setLatestDiagramAsSvg}}
+    />
     <DataCard class="au-u-margin-top-small">
       <:header></:header>
       <:title>
@@ -92,6 +95,7 @@
   @header="Vervang diagram"
   @title="BPMN- of Visiobestand selecteren"
   @helpTextDragDrop="Bestand wordt meteen verwerkt en toegevoegd aan bibliotheek na selectie"
+  @multiple={{true}}
   @accept=".bpmn,.vsdx"
   @isSensitiveDataDetectInUploadFlow={{false}}
   @updateModel={{this.addFileToProcess}}
