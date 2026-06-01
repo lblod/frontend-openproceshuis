@@ -10,18 +10,12 @@ export default class FileModel extends Model {
   @attr('iso-date') modified;
   @attr('string') status;
 
-  @hasMany('process', { inverse: 'files', async: false }) processes;
   @hasMany('information-asset', {
     inverse: 'attachments',
     async: false,
     polymorphic: true,
   })
   informationAssets;
-
-  get process() {
-    if (!this.processes || this.processes.length === 0) return null;
-    return this.processes[0];
-  }
 
   get isArchived() {
     return this.status === ENV.resourceStates.archived;

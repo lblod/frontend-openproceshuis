@@ -3,20 +3,19 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
-import removeFileNameExtension from '../../utils/file-extension-remover';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class SharedProcessesIndexController extends Controller {
+  filters = ['title'];
+  columns = ['title', 'description', 'created', 'modified', 'actions'];
+
   queryParams = ['page', 'size', 'sort', 'title'];
 
   @service router;
   @service toaster;
-  @service store;
-  @service currentSession;
-  @service api;
 
   @tracked page = 0;
-  size = 20;
+  @tracked size = 20;
   @tracked sort = 'title';
   @tracked title = '';
   @tracked processToDelete = undefined;
@@ -25,41 +24,21 @@ export default class SharedProcessesIndexController extends Controller {
 
   newProcessId = undefined;
 
-  get processes() {
-    return this.model.loadProcessesTaskInstance.isFinished
-      ? this.model.loadProcessesTaskInstance.value
-      : this.model.loadedProcesses;
-  }
-
-  get isLoading() {
-    return this.model.loadProcessesTaskInstance.isRunning;
-  }
-
-  get hasNoResults() {
-    return (
-      this.model.loadProcessesTaskInstance.isFinished &&
-      this.processes?.length === 0
-    );
-  }
-
-  get hasErrored() {
-    return this.model.loadProcessesTaskInstance.isError;
+  get query() {
+    return {
+      page: this.page,
+      size: this.size,
+      sort: this.sort,
+      title: this.title,
+    };
   }
 
   @action
-  setTitle(selection) {
-    this.page = null;
-    this.title = selection;
-  }
-
-  @action
-  resetFilters() {
-    this.title = '';
-    this.page = 0;
-    this.sort = 'title';
-
-    // Triggers a refresh of the model
-    this.page = null;
+  updateQuery(query) {
+    this.page = query.page;
+    this.size = query.size;
+    this.sort = query.sort;
+    this.title = query.title;
   }
 
   @action
@@ -105,41 +84,5 @@ export default class SharedProcessesIndexController extends Controller {
   closeUploadModal() {
     this.uploadModalOpened = false;
     this.fileHasSensitiveInformation = false;
-  }
-
-  @task
-  *createProcess(diagramId) {
-    const diagram = yield this.store.findRecord('file', diagramId);
-    const defaultRelevantUnit = yield this.currentSession.group.classification;
-    const created = new Date();
-    const process = this.store.createRecord('process', {
-      title: removeFileNameExtension(diagram.name, diagram.extension),
-      created,
-      modified: created,
-      publisher: this.currentSession.group,
-      files: [diagram],
-      relevantAdministrativeUnits: [defaultRelevantUnit],
-    });
-    yield process.save();
-    this.newProcessId = process.id;
-  }
-
-  @task({ enqueue: true, maxConcurrency: 3 })
-  *extractBpmnElements(bpmnFileId) {
-    yield this.api.fetch(`/bpmn?id=${bpmnFileId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
-  }
-
-  @action
-  diagramUploaded() {
-    this.closeUploadModal();
-    this.toaster.success('Proces succesvol toegevoegd', 'Gelukt!', {
-      timeOut: 5000,
-    });
-    this.router.transitionTo('processes.process', this.newProcessId);
   }
 }

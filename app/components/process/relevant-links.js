@@ -6,6 +6,8 @@ import { service } from '@ember/service';
 
 import { isEmptyOrUrl } from '../../utils/custom-validators';
 
+import ENV from 'frontend-openproceshuis/config/environment';
+
 export default class ProcessRelevantLinks extends Component {
   @service store;
   @service toaster;
@@ -19,7 +21,7 @@ export default class ProcessRelevantLinks extends Component {
   @tracked linkValue;
 
   get relevantLinks() {
-    return this.args.process?.links ?? [];
+    return this.args.process?.links?.filter((link) => !link.isArchived) ?? [];
   }
 
   get isLinkValid() {
@@ -119,7 +121,7 @@ export default class ProcessRelevantLinks extends Component {
       href: this.cleanLink,
     });
     const links = await this.args.process.links;
-    if (links.find((l) => l.href === linkModel.href)) {
+    if (links.find((l) => !l.isArchived && l.href === linkModel.href)) {
       this.toaster.error('Deze link werd al toegevoegd.', undefined, {
         timeOut: 5000,
       });
@@ -154,7 +156,8 @@ export default class ProcessRelevantLinks extends Component {
   async deleteLink() {
     try {
       this.isExecutingAction = true;
-      await this.updateLinkModel.destroyRecord();
+      this.updateLinkModel.status = ENV.resourceStates.archived;
+      await this.updateLinkModel.save();
       this.isDeleteModalOpen = false;
       this.updateLinkModel = null;
       this.toaster.success('Link succesvol verwijderd', undefined, {

@@ -217,3 +217,23 @@ tr:hover .inventory-row-button-group .au-c-button {
 .u-preserve-line-breaks {
   white-space: pre-wrap;
 }
+
+.process-wizard-modal.au-c-modal {
+  height: 50vh !important;
+  border-radius: 5px !important;
+}
+
+.au-c-file-upload-label__title {
+  flex-direction: column;
+}
+
+.wizard-success-icon {
+  .au-c-icon--large {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .au-c-icon {
+    fill: var(--au-green-700) !important;
+  }
+}

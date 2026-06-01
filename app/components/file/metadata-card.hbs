@@ -1,0 +1,44 @@
+<DataCard class="au-u-margin-top-small" ...attributes>
+  <:header></:header>
+  <:title>
+    Metadata
+  </:title>
+  <:card as |Card|>
+    <Card.Columns>
+      <:left as |Item|>
+        <Item>
+          <:label>Bestandsnaam</:label>
+          <:content>
+            {{@file.name}}
+          </:content>
+        </Item>
+        <Item>
+          <:label>Toegevoegd op</:label>
+          <:content>
+            {{date-format @file.modified true}}
+          </:content>
+        </Item>
+      </:left>
+      <:right as |Item|>
+        <Item>
+          <:label>Grootte</:label>
+          <:content>
+            {{file-size-format @file.size}}
+          </:content>
+        </Item>
+        <Item>
+          <:label>Extensie</:label>
+          <:content>
+            {{@file.extension}}
+          </:content>
+        </Item>
+        <Item>
+          <:label>Formaat</:label>
+          <:content>
+            {{@file.format}}
+          </:content>
+        </Item>
+      </:right>
+    </Card.Columns>
+  </:card>
+</DataCard>

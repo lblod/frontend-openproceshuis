@@ -1,0 +1,99 @@
+<AuDataTable
+  @content={{this.diagrams.value}}
+  @noDataMessage="Er werden geen diagrammen gevonden"
+  @isLoading={{this.fetchDiagrams.isRunning}}
+  @hidePagination={{true}}
+  @page={{@page}}
+  @size={{this.size}}
+  @sort={{@sort}}
+  as |row|
+>
+  <row.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <AuDataTableThSortable
+        @field="diagram-file.name"
+        @currentSorting={{@sort}}
+        @label="Bestandsnaam"
+      />
+      <AuDataTableThSortable
+        @field="diagram-file.created"
+        @currentSorting={{@sort}}
+        @label="Toegevoegd"
+      />
+      <AuDataTableThSortable
+        @field="diagram-file.size"
+        @currentSorting={{@sort}}
+        @label="Grootte"
+      />
+      <AuDataTableThSortable
+        @field="position"
+        @currentSorting={{@sort}}
+        @label="Positie"
+      />
+      <th></th>
+      <th></th>
+    </c.header>
+    {{#if this.fetchDiagrams.isError}}
+      <TableMessage::Error />
+    {{else if this.hasNoResults}}
+      <TableMessage>
+        <p>Er werden geen zoekresultaten gevonden.</p>
+      </TableMessage>
+    {{else}}
+      <c.body as |diagram|>
+        {{! template-lint-disable no-invalid-interactive }}
+        <td
+          class="{{if
+              (eq diagram.diagramFile.id @selectedDiagramFile.id)
+              'border-left-selected'
+              'border-left-transparent'
+            }}"
+          {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+        >
+          <AuButton
+            @skin="link"
+            {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
+          >
+            {{diagram.diagramFile.name}}
+          </AuButton>
+        </td>
+        <td>{{date-format diagram.diagramFile.created true}}</td>
+        <td>{{file-size-format diagram.diagramFile.size}}</td>
+        <td>{{diagram.position}}</td>
+        <td>
+          <AuButton
+            @skin="naked"
+            {{on "click" (fn (mut this.fileToDownload) diagram.diagramFile)}}
+          >Download
+          </AuButton>
+        </td>
+        <td>
+          <AuLink
+            @route="diagrams.diagram.index"
+            @skin="button-naked"
+            @model={{diagram.id}}
+            @query={{hash
+              previousRouteTitle=@process.title
+              previousRouteModelId=@process.id
+              previousRouteName="processes.process"
+            }}
+          >
+            Detail
+          </AuLink>
+        </td>
+      </c.body>
+    {{/if}}
+  </row.content>
+</AuDataTable>
+<Shared::TablePagination
+  @metadata={{this.diagramsTableMeta}}
+  @pageQueryParamName="diagramsPage"
+/>
+
+<File::Download
+  @showAsModal={{true}}
+  @isModalOpen={{this.fileToDownload}}
+  @onModalClosed={{fn (mut this.fileToDownload) undefined}}
+  @onDownloadSuccesful={{this.onFileDownloadedSuccessful}}
+  @fileModel={{this.fileToDownload}}
+/>

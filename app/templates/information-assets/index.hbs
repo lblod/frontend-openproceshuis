@@ -27,7 +27,7 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-availability">Integriteit</AuLabel>
+            <AuLabel for="filter-integrity">Integriteit</AuLabel>
             <Process::IcrCard::Score
               @id="filter-integrity"
               @selectedScore={{this.integrityScore}}
@@ -35,7 +35,7 @@
             />
           </div>
           <div>
-            <AuLabel for="filter-availability">Confidentialiteit</AuLabel>
+            <AuLabel for="filter-confidentiality">Vertrouwelijkheid</AuLabel>
             <Process::IcrCard::Score
               @id="filter-confidentiality"
               @selectedScore={{this.confidentialityScore}}
@@ -117,11 +117,6 @@
             @label="Beschrijving"
           />
           <AuDataTableThSortable
-            @field="creator"
-            @currentSorting={{this.sort}}
-            @label="Auteur"
-          />
-          <AuDataTableThSortable
             @field="availabilityScore"
             @currentSorting={{this.sort}}
             @label="Beschikbaarheid"
@@ -134,15 +129,15 @@
           <AuDataTableThSortable
             @field="confidentialityScore"
             @currentSorting={{this.sort}}
-            @label="Confidentialiteit"
+            @label="Vertrouwelijkheid"
           />
           <th>
             <span>Persoonsgegevens</span>
           </th>
           <AuDataTableThSortable
-            @field="created"
+            @field="modified"
             @currentSorting={{this.sort}}
-            @label="Aangemaakt op"
+            @label="Laatst aangepast op"
           />
           {{#if this.canEdit}}
             <th>
@@ -178,9 +173,6 @@
                   (truncate (trim informationAsset.description) 150 true)
                   "/"
                 }}</span>
-            </td>
-            <td>
-              {{informationAsset.creator.name}}
             </td>
             <td>
               {{if
@@ -229,7 +221,7 @@
                 {{/if}}
               </div>
             </td>
-            <td>{{date-format informationAsset.created}}</td>
+            <td>{{date-format informationAsset.modified}}</td>
             {{#if this.canEdit}}
               <td>
                 <div class="au-u-flex au-u-flex--center">
