@@ -244,6 +244,7 @@ export default class ProcessAttachments extends Component {
   attachments = trackedTask(this, this.fetchAttachments, () => [
     this.args.process,
     this.args.page,
+    this.args.sort,
   ]);
 
   versionedFiles = trackedTask(this, this.fetchFilesForComparison, () => [
