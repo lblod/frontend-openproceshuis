@@ -227,17 +227,6 @@ tr:hover .inventory-row-button-group .au-c-button {
   flex-direction: column;
 }
 
-.wizard-success-icon {
-  .au-c-icon--large {
-    width: 50px !important;
-    height: 50px !important;
-  }
-
-  .au-c-icon {
-    fill: var(--au-green-700) !important;
-  }
-}
-
 .icr-score {
   display: flex;
   flex-direction: row;

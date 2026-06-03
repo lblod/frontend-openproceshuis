@@ -6,6 +6,7 @@ import { task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 import removeFileNameExtension from '../../utils/file-extension-remover';
+import { WizardAction } from '../wizard/actions';
 
 export default class ProcessWizard extends Component {
   @service toaster;
@@ -21,6 +22,7 @@ export default class ProcessWizard extends Component {
   @tracked files = [];
   @tracked mainProcessFile = null;
   @tracked diagramList = null;
+  @tracked currentAction = null;
 
   @tracked fileWrappers = [];
   @tracked areFilesCreated = false;
@@ -60,20 +62,28 @@ export default class ProcessWizard extends Component {
   }
 
   executeCurrentStepActionAsTask = task({ drop: true }, async () => {
-    await this.activeStep.action();
+    if (this.activeStep?.action) {
+      await this.activeStep.action();
+    }
   });
 
   get steps() {
     return [
       {
-        title: 'Bestanden selecteren',
+        title: 'Diagrammen wijzigen',
         isStepShown: true,
+        canGoToNextStep: this.currentAction,
+        nextStepButtonLabel: null,
+      },
+      {
+        title: 'Bestanden selecteren',
+        isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         canGoToNextStep: this.fileWrappers.length >= 1,
         nextStepButtonLabel: 'Uploaden',
       },
       {
         title: 'Hoofdproces kiezen',
-        isStepShown: true,
+        isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
         nextStepButtonLabel: this.args.process
@@ -82,14 +92,18 @@ export default class ProcessWizard extends Component {
       },
       {
         title: 'Proces aanmaken',
-        isStepShown: !this.args.process,
+        isStepShown:
+          !this.args.process &&
+          this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         action: async () => await this.createProcess(this.files),
         canGoToNextStep: this.process,
         nextStepButtonLabel: 'Ga naar proces',
       },
       {
         title: 'Nieuwe diagram versie aanmaken',
-        isStepShown: this.args.process,
+        isStepShown:
+          this.args.process &&
+          this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         action: async () => await this.createNewDiagramVersion(this.files),
         canGoToNextStep: this.diagramList,
         nextStepButtonLabel: 'Bekijk proces',
@@ -106,6 +120,12 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: null,
       },
     ];
+  }
+
+  @action
+  onActionSelected(action) {
+    this.currentAction = action;
+    this.nextStep();
   }
 
   @action
