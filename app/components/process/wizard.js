@@ -42,6 +42,7 @@ export default class ProcessWizard extends Component {
     SELECT_ACTION: 'select_action',
     UPLOAD_FILES: 'upload_files',
     SELECT_MAIN_PROCESS: 'select_main_process',
+    CHANGE_MAIN_PROCESS: 'change_main_process',
     CREATE_PROCESS: 'create_process',
     CREATE_DIAGRAM_VERSION: 'create_diagram_version',
     TO_PROCESS: 'to_process',
@@ -102,12 +103,24 @@ export default class ProcessWizard extends Component {
       {
         step: this.wizardStep.SELECT_MAIN_PROCESS,
         title: 'Hoofdproces kiezen',
-        isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
+        isStepShown: [
+          WizardAction.REPLACE_DIAGRAMS,
+          WizardAction.CHANGE_MAIN_PROCESS,
+        ].includes(this.currentAction),
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
         nextStepButtonLabel: this.args.process
-          ? 'Nieuwe diagrammen toevoegen'
+          ? 'Aanpassen'
           : 'Proces aanmaken',
+      },
+      {
+        step: this.wizardStep.CREATE_PROCESS,
+        title: 'Proces aanpassen',
+        isStepShown: this.currentAction === WizardAction.CHANGE_MAIN_PROCESS,
+        action: async () =>
+          await this.changeMainDiagramOnProcess(this.mainProcessFile),
+        canGoToNextStep: this.process,
+        nextStepButtonLabel: 'Ga naar proces',
       },
       {
         step: this.wizardStep.CREATE_PROCESS,
@@ -145,8 +158,16 @@ export default class ProcessWizard extends Component {
   }
 
   @action
-  onActionSelected(action) {
+  async onActionSelected(action) {
     this.currentAction = action;
+    if (this.currentAction === WizardAction.CHANGE_MAIN_PROCESS) {
+      const diagramList = await this.diagram.getLatestDiagramList(
+        this.args.process.id,
+      );
+      this.diagramList = diagramList;
+      this.files = this.diagram.getAvailableFilesFromList(diagramList);
+      this.mainProcessFile = null;
+    }
     this.nextStep();
   }
 
@@ -231,6 +252,39 @@ export default class ProcessWizard extends Component {
       this.isSelectMainDiagramDisabled = true;
     }
     this.areFilesCreated = true;
+  }
+
+  async changeMainDiagramOnProcess(mainFile) {
+    this.showSuccessMessage = false;
+    this.loadingMessage = 'Hoofddiagram aanpassen';
+    try {
+      await timeout(500);
+      const items = Array.from(this.diagramList.diagrams).sort(
+        (a, b) => a.position - b.position,
+      );
+
+      const sorted = [
+        items.find((item) => item.diagramFile.id === mainFile.id),
+        ...items.filter((item) => item.diagramFile.id !== mainFile.id),
+      ];
+
+      for (let i = 0; i < sorted.length; i++) {
+        sorted[i].position = i + 1;
+        await sorted[i].save();
+      }
+
+      await this.args.process.save();
+      this.process = this.args.process;
+      this.showSuccessMessage = true;
+    } catch {
+      this.toaster.error(
+        'Er liep iets mis bij het aanpassen van het hoofddiagram',
+        null,
+        { timeOut: 2500 },
+      );
+    } finally {
+      this.loadingMessage = 'Hoofddiagram werd succesvol aangepast';
+    }
   }
 
   async createProcess(files) {
