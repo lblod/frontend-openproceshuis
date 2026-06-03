@@ -22,11 +22,10 @@
         {{/if}}
       </div>
     {{/if}}
-
-    {{#if (eq this.activeStepIndex 0)}}
-      <Wizard::Actions @onActionSelected={{this.onActionSelected}} `/>
+    {{#if (eq this.activeStep.step this.wizardStep.SELECT_ACTION)}}
+      <Wizard::Actions @onActionSelected={{this.onActionSelected}} />
     {{/if}}
-    {{#if (eq this.activeStepIndex 1)}}
+    {{#if (eq this.activeStep.step this.wizardStep.UPLOAD_FILES)}}
       <div class="au-u-flex au-u-flex--between au-u-height-full">
         <File::Dropzone
           @title="Een of meer BPMN/Visio bestanden selecteren"
@@ -39,7 +38,7 @@
         />
       </div>
     {{/if}}
-    {{#if (eq this.activeStepIndex 2)}}
+    {{#if (eq this.activeStep.step this.wizardStep.SELECT_MAIN_PROCESS)}}
       {{#if this.areFilesCreated}}
         <AuLabel @required={{true}} class="au-u-margin-top">Selecteer het
           hoofddiagram</AuLabel>

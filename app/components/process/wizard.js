@@ -18,17 +18,34 @@ export default class ProcessWizard extends Component {
 
   @tracked activeStepIndex = 0;
 
+  constructor(owner, args) {
+    super(owner, args);
+    const firstShownIndex = this.steps.findIndex((step) => step.isStepShown);
+    if (firstShownIndex > 0) {
+      this.activeStepIndex = firstShownIndex;
+    }
+  }
+
   @tracked process = null;
   @tracked files = [];
   @tracked mainProcessFile = null;
   @tracked diagramList = null;
-  @tracked currentAction = null;
+  @tracked currentAction = WizardAction.REPLACE_DIAGRAMS;
 
   @tracked fileWrappers = [];
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
   @tracked showSuccessMessage = false;
   @tracked isSelectMainDiagramDisabled = false;
+
+  wizardStep = Object.freeze({
+    SELECT_ACTION: 'select_action',
+    UPLOAD_FILES: 'upload_files',
+    SELECT_MAIN_PROCESS: 'select_main_process',
+    CREATE_PROCESS: 'create_process',
+    CREATE_DIAGRAM_VERSION: 'create_diagram_version',
+    TO_PROCESS: 'to_process',
+  });
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -38,7 +55,6 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     }
-
     return this.steps[this.activeStepIndex];
   }
 
@@ -70,18 +86,21 @@ export default class ProcessWizard extends Component {
   get steps() {
     return [
       {
+        step: this.wizardStep.SELECT_ACTION,
         title: 'Diagrammen wijzigen',
-        isStepShown: true,
+        isStepShown: this.args.process,
         canGoToNextStep: this.currentAction,
         nextStepButtonLabel: null,
       },
       {
+        step: this.wizardStep.UPLOAD_FILES,
         title: 'Bestanden selecteren',
         isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         canGoToNextStep: this.fileWrappers.length >= 1,
         nextStepButtonLabel: 'Uploaden',
       },
       {
+        step: this.wizardStep.SELECT_MAIN_PROCESS,
         title: 'Hoofdproces kiezen',
         isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         action: async () => await this.uploadFiles(this.fileWrappers),
@@ -91,6 +110,7 @@ export default class ProcessWizard extends Component {
           : 'Proces aanmaken',
       },
       {
+        step: this.wizardStep.CREATE_PROCESS,
         title: 'Proces aanmaken',
         isStepShown:
           !this.args.process &&
@@ -100,6 +120,7 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: 'Ga naar proces',
       },
       {
+        step: this.wizardStep.CREATE_DIAGRAM_VERSION,
         title: 'Nieuwe diagram versie aanmaken',
         isStepShown:
           this.args.process &&
@@ -109,6 +130,7 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: 'Bekijk proces',
       },
       {
+        step: this.wizardStep.TO_PROCESS,
         title: 'Naar het proces',
         isStepShown: true,
         action: async () =>
