@@ -48,7 +48,7 @@ export default class ProcessWizard extends Component {
     if (firstShownIndex > 0) {
       this.activeStepIndex = firstShownIndex;
     }
-    this.activeStep?.action?.();
+    this.executeCurrentStepActionAsTask.perform();
   }
 
   get activeStep() {
@@ -255,13 +255,23 @@ export default class ProcessWizard extends Component {
         this.toaster.error(
           `${fileWrapper.name} is verwijderd uit de bestanden lijst. Probeer het later opnieuw.`,
           null,
-          { timeOut: 2500 },
+          { timeOut: 5000 },
         );
       }
       this.fileWrappers = this.fileWrappers.filter(
         (file) => file.id !== fileWrapper.id,
       );
     }
+    if (this.files.length === 0) {
+      this.loadingMessage =
+        'Oeps, hier liep iets mis. We brengen je terug naar de vorige stap';
+      await timeout(1500);
+      this.activeStepIndex = this.activeStepIndex - 1;
+      this.showSuccessMessage = false;
+      this.loadingMessage = null;
+      return;
+    }
+
     this.loadingMessage = `${this.files.length === 1 ? 'Het bestand werd' : 'De bestanden werden'} succesvol opgeladen`;
     this.showSuccessMessage = true;
     if (this.files.length === 1) {

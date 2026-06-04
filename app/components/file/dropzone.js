@@ -32,7 +32,7 @@ export default class FileDropzone extends Component {
     ) {
       this.toaster.error(
         fileWrapper.name,
-        'Visiobestanden kunnen niet worden toegevoegd aan bijlagen.',
+        'Visio bestanden kunnen niet worden toegevoegd aan bijlagen.',
         { timeOut: 2500 },
       );
       this.removeFileFromQueue(fileWrapper);
