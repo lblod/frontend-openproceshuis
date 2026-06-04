@@ -6,6 +6,7 @@ import { task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 import removeFileNameExtension from '../../utils/file-extension-remover';
+import { WizardAction } from '../wizard/actions';
 
 export default class ProcessWizard extends Component {
   @service toaster;
@@ -21,12 +22,34 @@ export default class ProcessWizard extends Component {
   @tracked files = [];
   @tracked mainProcessFile = null;
   @tracked diagramList = null;
+  @tracked currentAction = WizardAction.REPLACE_DIAGRAMS;
+  @tracked disabledActions = [];
 
   @tracked fileWrappers = [];
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
   @tracked showSuccessMessage = false;
   @tracked isSelectMainDiagramDisabled = false;
+
+  wizardStep = Object.freeze({
+    SELECT_ACTION: 'select_action',
+    UPLOAD_FILES: 'upload_files',
+    SELECT_MAIN_PROCESS: 'select_main_process',
+    CHANGE_MAIN_PROCESS: 'change_main_process',
+    CREATE_PROCESS: 'create_process',
+    UPDATE_PROCESS: 'update_process',
+    CREATE_DIAGRAM_VERSION: 'create_diagram_version',
+    TO_PROCESS: 'to_process',
+  });
+
+  constructor(owner, args) {
+    super(owner, args);
+    const firstShownIndex = this.steps.findIndex((step) => step.isStepShown);
+    if (firstShownIndex > 0) {
+      this.activeStepIndex = firstShownIndex;
+    }
+    this.activeStep?.action?.();
+  }
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -36,7 +59,6 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     }
-
     return this.steps[this.activeStepIndex];
   }
 
@@ -60,41 +82,72 @@ export default class ProcessWizard extends Component {
   }
 
   executeCurrentStepActionAsTask = task({ drop: true }, async () => {
-    await this.activeStep.action();
+    if (this.activeStep?.action) {
+      await this.activeStep.action();
+    }
   });
 
   get steps() {
     return [
       {
+        step: this.wizardStep.SELECT_ACTION,
+        title: 'Diagrammen wijzigen',
+        isStepShown: this.args.process,
+        canGoToNextStep: this.currentAction,
+        nextStepButtonLabel: null,
+        action: async () => await this.prepareWizard(),
+      },
+      {
+        step: this.wizardStep.UPLOAD_FILES,
         title: 'Bestanden selecteren',
-        isStepShown: true,
+        isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         canGoToNextStep: this.fileWrappers.length >= 1,
         nextStepButtonLabel: 'Uploaden',
       },
       {
+        step: this.wizardStep.SELECT_MAIN_PROCESS,
         title: 'Hoofdproces kiezen',
-        isStepShown: true,
+        isStepShown: [
+          WizardAction.REPLACE_DIAGRAMS,
+          WizardAction.CHANGE_MAIN_PROCESS,
+        ].includes(this.currentAction),
         action: async () => await this.uploadFiles(this.fileWrappers),
         canGoToNextStep: this.mainProcessFile,
         nextStepButtonLabel: this.args.process
-          ? 'Nieuwe diagrammen toevoegen'
+          ? 'Aanpassen'
           : 'Proces aanmaken',
       },
       {
+        step: this.wizardStep.UPDATE_PROCESS,
+        title: 'Proces aanpassen',
+        isStepShown: this.currentAction === WizardAction.CHANGE_MAIN_PROCESS,
+        action: async () =>
+          await this.changeMainDiagramOnProcess(this.mainProcessFile),
+        canGoToNextStep: this.process,
+        nextStepButtonLabel: 'Ga naar proces',
+      },
+      {
+        step: this.wizardStep.CREATE_PROCESS,
         title: 'Proces aanmaken',
-        isStepShown: !this.args.process,
+        isStepShown:
+          !this.args.process &&
+          this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         action: async () => await this.createProcess(this.files),
         canGoToNextStep: this.process,
         nextStepButtonLabel: 'Ga naar proces',
       },
       {
+        step: this.wizardStep.CREATE_DIAGRAM_VERSION,
         title: 'Nieuwe diagram versie aanmaken',
-        isStepShown: this.args.process,
+        isStepShown:
+          this.args.process &&
+          this.currentAction === WizardAction.REPLACE_DIAGRAMS,
         action: async () => await this.createNewDiagramVersion(this.files),
         canGoToNextStep: this.diagramList,
         nextStepButtonLabel: 'Bekijk proces',
       },
       {
+        step: this.wizardStep.TO_PROCESS,
         title: 'Naar het proces',
         isStepShown: true,
         action: async () =>
@@ -109,6 +162,19 @@ export default class ProcessWizard extends Component {
   }
 
   @action
+  async onActionSelected(action) {
+    this.currentAction = action;
+    if (this.currentAction === WizardAction.CHANGE_MAIN_PROCESS) {
+      this.mainProcessFile = null;
+    }
+    if (this.currentAction === WizardAction.REPLACE_DIAGRAMS) {
+      this.diagramList = null;
+      this.files = [];
+    }
+    this.nextStep();
+  }
+
+  @action
   addFileToUploadedList(fileWrappers) {
     this.fileWrappers = fileWrappers;
   }
@@ -116,6 +182,20 @@ export default class ProcessWizard extends Component {
   @action
   setMainProcessFile(file) {
     this.mainProcessFile = file;
+  }
+
+  async prepareWizard() {
+    this.showSuccessMessage = false;
+    this.loadingMessage = null;
+    if (this.args.process) {
+      this.diagramList = await this.diagram.getLatestDiagramList(
+        this.args.process.id,
+      );
+      this.files = this.diagram.getAvailableFilesFromList(this.diagramList);
+      if (this.files.length === 1) {
+        this.disabledActions = [WizardAction.CHANGE_MAIN_PROCESS];
+      }
+    }
   }
 
   async saveFileInDatabase(uploadedFile) {
@@ -189,6 +269,40 @@ export default class ProcessWizard extends Component {
       this.isSelectMainDiagramDisabled = true;
     }
     this.areFilesCreated = true;
+  }
+
+  async changeMainDiagramOnProcess(mainFile) {
+    this.showSuccessMessage = false;
+    this.loadingMessage = 'Hoofddiagram aanpassen';
+    try {
+      await timeout(500);
+      const items = Array.from(this.diagramList.diagrams).sort(
+        (a, b) => a.position - b.position,
+      );
+
+      const sorted = [
+        items.find((item) => item.diagramFile.id === mainFile.id),
+        ...items.filter((item) => item.diagramFile.id !== mainFile.id),
+      ];
+
+      for (let i = 0; i < sorted.length; i++) {
+        sorted[i].position = i + 1;
+        await sorted[i].save();
+      }
+
+      await this.args.process.save();
+      this.process = this.args.process;
+      this.showSuccessMessage = true;
+    } catch {
+      this.toaster.error(
+        'Er liep iets mis bij het aanpassen van het hoofddiagram',
+        null,
+        { timeOut: 2500 },
+      );
+    } finally {
+      this.loadingMessage = 'Hoofddiagram werd succesvol aangepast';
+      this.showSuccessMessage = true;
+    }
   }
 
   async createProcess(files) {

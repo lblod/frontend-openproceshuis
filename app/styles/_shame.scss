@@ -206,6 +206,14 @@ tr:hover .inventory-row-button-group .au-c-button {
   border-top: solid 0.5rem var(--au-gray-300);
 }
 
+.animate-up {
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-0.25rem);
+  }
+}
+
 .animate-left {
   transition: 0.2s ease-in-out;
 
@@ -225,17 +233,6 @@ tr:hover .inventory-row-button-group .au-c-button {
 
 .au-c-file-upload-label__title {
   flex-direction: column;
-}
-
-.wizard-success-icon {
-  .au-c-icon--large {
-    width: 50px !important;
-    height: 50px !important;
-  }
-
-  .au-c-icon {
-    fill: var(--au-green-700) !important;
-  }
 }
 
 .icr-score {
