@@ -1,8 +1,13 @@
 <div class="wizard-actions" ...attributes>
   {{#each this.actions as |action|}}
-    {{!-- template-lint-disable no-invalid-interactive --}}
-    <div class="width-full border-radius" {{on "click" action.next}}>
-      <AuIcon @icon={{action.icon}} @size="large" @alignment="left" style={{action.iconColorClass}} />
+    {{! template-lint-disable no-invalid-interactive }}
+    <div class="width-full border-radius animate-up" {{on "click" action.next}}>
+      <AuIcon
+        @icon={{action.icon}}
+        @size="large"
+        @alignment="left"
+        style={{action.iconColorClass}}
+      />
       <p class="au-u-h4 au-u-medium">{{action.label}}</p>
       <p>{{action.description}}</p>
     </div>
