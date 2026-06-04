@@ -37,6 +37,7 @@ export default class ProcessWizard extends Component {
     SELECT_MAIN_PROCESS: 'select_main_process',
     CHANGE_MAIN_PROCESS: 'change_main_process',
     CREATE_PROCESS: 'create_process',
+    UPDATE_PROCESS: 'update_process',
     CREATE_DIAGRAM_VERSION: 'create_diagram_version',
     TO_PROCESS: 'to_process',
   });
@@ -117,7 +118,7 @@ export default class ProcessWizard extends Component {
           : 'Proces aanmaken',
       },
       {
-        step: this.wizardStep.CREATE_PROCESS,
+        step: this.wizardStep.UPDATE_PROCESS,
         title: 'Proces aanpassen',
         isStepShown: this.currentAction === WizardAction.CHANGE_MAIN_PROCESS,
         action: async () =>
@@ -184,6 +185,8 @@ export default class ProcessWizard extends Component {
   }
 
   async prepareWizard() {
+    this.showSuccessMessage = false;
+    this.loadingMessage = null;
     if (this.args.process) {
       this.diagramList = await this.diagram.getLatestDiagramList(
         this.args.process.id,
@@ -298,6 +301,7 @@ export default class ProcessWizard extends Component {
       );
     } finally {
       this.loadingMessage = 'Hoofddiagram werd succesvol aangepast';
+      this.showSuccessMessage = true;
     }
   }
 
