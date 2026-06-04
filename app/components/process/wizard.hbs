@@ -22,47 +22,52 @@
         {{/if}}
       </div>
     {{/if}}
-    {{#if (eq this.activeStep.step this.wizardStep.SELECT_ACTION)}}
-      <Wizard::Actions @onActionSelected={{this.onActionSelected}} />
-    {{/if}}
-    {{#if (eq this.activeStep.step this.wizardStep.UPLOAD_FILES)}}
-      <div class="au-u-flex au-u-flex--between au-u-height-full">
-        <File::Dropzone
-          @title="Een of meer BPMN/Visio bestanden selecteren"
-          @helpTextDragDrop="Bestanden wordt toegevoegd aan bibliotheek na selectie"
-          @multiple={{true}}
-          @accept=".bpmn,.vsdx"
-          @onFileUploaded={{this.addFileToUploadedList}}
-          @isQueueListShown={{true}}
-          @canEditFileQueue={{true}}
+    {{#unless this.executeCurrentStepActionAsTask.isRunning}}
+      {{#if (eq this.activeStep.step this.wizardStep.SELECT_ACTION)}}
+        <Wizard::Actions
+          @onActionSelected={{this.onActionSelected}}
+          @disabledActions={{this.disabledActions}}
         />
-      </div>
-    {{/if}}
-    {{#if (eq this.activeStep.step this.wizardStep.SELECT_MAIN_PROCESS)}}
-      {{#if this.areFilesCreated}}
-        <AuLabel @required={{true}} class="au-u-margin-top">Selecteer het
-          hoofddiagram</AuLabel>
-        <PowerSelect
-          @searchEnabled={{true}}
-          @searchField="name"
-          @loadingMessage="Aan het laden..."
-          @noMatchesMessage="Geen bestanden gevonden"
-          @options={{this.files}}
-          @selected={{this.mainProcessFile}}
-          @onChange={{this.setMainProcessFile}}
-          @disabled={{this.isSelectMainDiagramDisabled}}
-          @allowClear={{false}}
-          as |file|
-        >
-          {{file.name}}
-        </PowerSelect>
-        {{#if this.isSelectMainDiagramDisabled}}
-          <AuHelpText @warning={{true}}>
-            Je hebt één diagram geüpload. Dit is automatisch het hoofddiagram.
-          </AuHelpText>
+      {{/if}}
+      {{#if (eq this.activeStep.step this.wizardStep.UPLOAD_FILES)}}
+        <div class="au-u-flex au-u-flex--between au-u-height-full">
+          <File::Dropzone
+            @title="Een of meer BPMN/Visio bestanden selecteren"
+            @helpTextDragDrop="Bestanden wordt toegevoegd aan bibliotheek na selectie"
+            @multiple={{true}}
+            @accept=".bpmn,.vsdx"
+            @onFileUploaded={{this.addFileToUploadedList}}
+            @isQueueListShown={{true}}
+            @canEditFileQueue={{true}}
+          />
+        </div>
+      {{/if}}
+      {{#if (eq this.activeStep.step this.wizardStep.SELECT_MAIN_PROCESS)}}
+        {{#if this.areFilesCreated}}
+          <AuLabel @required={{true}} class="au-u-margin-top">Selecteer het
+            hoofddiagram</AuLabel>
+          <PowerSelect
+            @searchEnabled={{true}}
+            @searchField="name"
+            @loadingMessage="Aan het laden..."
+            @noMatchesMessage="Geen bestanden gevonden"
+            @options={{this.files}}
+            @selected={{this.mainProcessFile}}
+            @onChange={{this.setMainProcessFile}}
+            @disabled={{this.isSelectMainDiagramDisabled}}
+            @allowClear={{false}}
+            as |file|
+          >
+            {{file.name}}
+          </PowerSelect>
+          {{#if this.isSelectMainDiagramDisabled}}
+            <AuHelpText @warning={{true}}>
+              Je hebt één diagram geüpload. Dit is automatisch het hoofddiagram.
+            </AuHelpText>
+          {{/if}}
         {{/if}}
       {{/if}}
-    {{/if}}
+    {{/unless}}
   </:body>
   <:footer>
     <AuToolbar as |Group|>

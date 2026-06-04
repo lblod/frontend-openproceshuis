@@ -18,19 +18,12 @@ export default class ProcessWizard extends Component {
 
   @tracked activeStepIndex = 0;
 
-  constructor(owner, args) {
-    super(owner, args);
-    const firstShownIndex = this.steps.findIndex((step) => step.isStepShown);
-    if (firstShownIndex > 0) {
-      this.activeStepIndex = firstShownIndex;
-    }
-  }
-
   @tracked process = null;
   @tracked files = [];
   @tracked mainProcessFile = null;
   @tracked diagramList = null;
   @tracked currentAction = WizardAction.REPLACE_DIAGRAMS;
+  @tracked disabledActions = [];
 
   @tracked fileWrappers = [];
   @tracked areFilesCreated = false;
@@ -47,6 +40,15 @@ export default class ProcessWizard extends Component {
     CREATE_DIAGRAM_VERSION: 'create_diagram_version',
     TO_PROCESS: 'to_process',
   });
+
+  constructor(owner, args) {
+    super(owner, args);
+    const firstShownIndex = this.steps.findIndex((step) => step.isStepShown);
+    if (firstShownIndex > 0) {
+      this.activeStepIndex = firstShownIndex;
+    }
+    this.activeStep?.action?.();
+  }
 
   get activeStep() {
     if (!this.steps[this.activeStepIndex]) {
@@ -92,6 +94,7 @@ export default class ProcessWizard extends Component {
         isStepShown: this.args.process,
         canGoToNextStep: this.currentAction,
         nextStepButtonLabel: null,
+        action: async () => await this.prepareWizard(),
       },
       {
         step: this.wizardStep.UPLOAD_FILES,
@@ -161,12 +164,11 @@ export default class ProcessWizard extends Component {
   async onActionSelected(action) {
     this.currentAction = action;
     if (this.currentAction === WizardAction.CHANGE_MAIN_PROCESS) {
-      const diagramList = await this.diagram.getLatestDiagramList(
-        this.args.process.id,
-      );
-      this.diagramList = diagramList;
-      this.files = this.diagram.getAvailableFilesFromList(diagramList);
       this.mainProcessFile = null;
+    }
+    if (this.currentAction === WizardAction.REPLACE_DIAGRAMS) {
+      this.diagramList = null;
+      this.files = [];
     }
     this.nextStep();
   }
@@ -179,6 +181,18 @@ export default class ProcessWizard extends Component {
   @action
   setMainProcessFile(file) {
     this.mainProcessFile = file;
+  }
+
+  async prepareWizard() {
+    if (this.args.process) {
+      this.diagramList = await this.diagram.getLatestDiagramList(
+        this.args.process.id,
+      );
+      this.files = this.diagram.getAvailableFilesFromList(this.diagramList);
+      if (this.files.length === 1) {
+        this.disabledActions = [WizardAction.CHANGE_MAIN_PROCESS];
+      }
+    }
   }
 
   async saveFileInDatabase(uploadedFile) {

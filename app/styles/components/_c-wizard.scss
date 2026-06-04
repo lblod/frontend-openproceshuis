@@ -29,3 +29,9 @@
     fill: var(--au-gray-700) !important;
   }
 }
+
+.is-disabled {
+  opacity: 0.5;
+  background-color: var(--au-gray-200) !important;
+  cursor: not-allowed !important;
+}
