@@ -2,7 +2,7 @@
   {{#each this.actions as |action|}}
     {{! template-lint-disable no-invalid-interactive }}
     <div
-      class="{{if action.isDisabled 'is-disabled'}}
+      class="{{if action.isDisabled 'is-disabled-action'}}
         width-full border-radius animate-up"
       {{on "click" action.next}}
     >
