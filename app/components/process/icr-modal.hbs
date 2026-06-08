@@ -79,18 +79,7 @@
           @onChange={{fn (mut @selected.containsProfessionalData)}}
         >
           <label for="contains-personal-data">Professionele gegevens</label>
-          <Shared::Tooltip
-            @show={{true}}
-            @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
-            @placement="top"
-          >
-            <AuIcon
-              class="color--info"
-              @icon="circle-question"
-              @size="large"
-              @alignment="right"
-            />
-          </Shared::Tooltip>
+          <Icr::ContainsProfessionalDataTooltip />
         </AuCheckbox>
         <AuCheckbox
           id="contains-professional-data"
@@ -98,18 +87,7 @@
           @onChange={{fn (mut @selected.containsPersonalData)}}
         >
           <label for="contains-professional-data">Persoonsgegevens</label>
-
-          <Shared::Tooltip
-            @show={{true}}
-            @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
-          >
-            <AuIcon
-              class="color--info"
-              @icon="circle-question"
-              @size="large"
-              @alignment="right"
-            />
-          </Shared::Tooltip>
+          <Icr::ContainsPersonalDataTooltip />
         </AuCheckbox>
         <AuCheckbox
           id="contains-sensitive-personal-data"
@@ -118,17 +96,7 @@
         >
           <label for="contains-sensitive-personal-data">Bijzondere
             persoonsgegevens</label>
-          <Shared::Tooltip
-            @show={{true}}
-            @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
-          >
-            <AuIcon
-              class="color--info"
-              @icon="circle-question"
-              @size="large"
-              @alignment="right"
-            />
-          </Shared::Tooltip>
+          <Icr::ContainsSpecialPersonalDataTooltip />
         </AuCheckbox>
       </div>
     </form>
