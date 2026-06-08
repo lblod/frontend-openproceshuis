@@ -50,22 +50,23 @@
               @onChange={{this.setContainsProfessionalData}}
             >
               <label for="filter-professional-data">Professionele gegevens</label>
+              <Icr::ContainsProfessionalDataTooltip />
             </AuCheckbox>
             <AuCheckbox
               id="filter-personal-data"
               @checked={{this.containsPersonalData}}
               @onChange={{this.setContainsPersonalData}}
             >
-              <label for="filter-personal-data">Persoonsgegevens
-              </label>
+              <label for="filter-personal-data">Persoonsgegevens</label>
+              <Icr::ContainsPersonalDataTooltip />
             </AuCheckbox>
             <AuCheckbox
               id="filter-sensitive-data"
               @checked={{this.containsSensitivePersonalData}}
               @onChange={{this.setContainsSensitivePersonalData}}
             >
-              <label for="filter-sensitive-data">Bijzondere persoonsgegevens
-              </label>
+              <label for="filter-sensitive-data">Bijzondere persoonsgegevens</label>
+              <Icr::ContainsSpecialPersonalDataTooltip />
             </AuCheckbox>
           </div>
           <div class="au-u-flex au-u-flex--end">
