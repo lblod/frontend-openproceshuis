@@ -49,24 +49,24 @@
               @checked={{this.containsProfessionalData}}
               @onChange={{this.setContainsProfessionalData}}
             >
-              <label for="filter-professional-data">Professionele gegevens
-              </label>
+              <label for="filter-professional-data">Professionele gegevens</label>
+              <Icr::ContainsProfessionalDataTooltip @alignment="right" />
             </AuCheckbox>
             <AuCheckbox
               id="filter-personal-data"
               @checked={{this.containsPersonalData}}
               @onChange={{this.setContainsPersonalData}}
             >
-              <label for="filter-personal-data">Persoonsgegevens
-              </label>
+              <label for="filter-personal-data" class="au-u-margin-right-small">Persoonsgegevens</label>
+              <Icr::ContainsPersonalDataTooltip @alignment="right" />
             </AuCheckbox>
             <AuCheckbox
               id="filter-sensitive-data"
               @checked={{this.containsSensitivePersonalData}}
               @onChange={{this.setContainsSensitivePersonalData}}
             >
-              <label for="filter-sensitive-data">Bijzondere persoonsgegevens
-              </label>
+              <label for="filter-sensitive-data">Bijzondere persoonsgegevens</label>
+              <Icr::ContainsSpecialPersonalDataTooltip @alignment="right" />
             </AuCheckbox>
           </div>
           <div class="au-u-flex au-u-flex--end">
