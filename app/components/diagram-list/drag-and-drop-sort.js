@@ -16,9 +16,29 @@ export default class DiagramListDragAndDropSort extends Component {
       (a, b) => a.position - b.position,
     );
 
+    const mapSubItems = (_listItem) => {
+      if (_listItem.subItems?.length === 0) {
+        return [
+          {
+            isPlaceholder: true,
+          },
+        ];
+      }
+
+      return _listItem.subItems.map((subItem) => {
+        return {
+          label: subItem.diagramFile.name,
+          self: subItem,
+          parent: _listItem,
+        };
+      });
+    };
+
     return sortedByPosition.map((listItem) => ({
       label: listItem.diagramFile.name,
-      parent: listItem,
+      self: listItem,
+      parent: this.args.diagramList,
+      subItems: mapSubItems(listItem),
     }));
   }
 
@@ -28,10 +48,10 @@ export default class DiagramListDragAndDropSort extends Component {
 
     const movedItem = sourceList[sourceIndex];
     const replacedWith = targetList[targetIndex];
-    const movedItemOldPosition = movedItem.parent.position;
-    const replacedItemOldPosition = replacedWith.parent.position;
+    const movedItemOldPosition = movedItem.self.position;
+    const replacedItemOldPosition = replacedWith.self.position;
 
-    replacedWith.parent.position = movedItemOldPosition;
-    movedItem.parent.position = replacedItemOldPosition;
+    replacedWith.self.position = movedItemOldPosition;
+    movedItem.self.position = replacedItemOldPosition;
   }
 }
