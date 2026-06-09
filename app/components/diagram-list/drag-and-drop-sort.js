@@ -58,11 +58,13 @@ export default class DiagramListDragAndDropSort extends Component {
 
     const movedItem = sourceList[sourceIndex];
     const replacedWith = targetList[targetIndex];
+    const effectiveTarget = replacedWith ?? targetList[targetList.length - 1];
+
+    if (!effectiveTarget) return;
 
     const movedItemOldPosition = movedItem.self.position;
-    const replacedItemOldPosition = replacedWith.self.position;
 
-    if (movedItem.parent.id !== replacedWith.parent.id) {
+    if (movedItem.parent.id !== effectiveTarget.parent.id) {
       const hasSubItems = Boolean(movedItem.self.subItems?.length);
       if (movedItem.isMainDiagram && hasSubItems) {
         this.toaster.error(
@@ -85,15 +87,22 @@ export default class DiagramListDragAndDropSort extends Component {
           (item) => item.id !== movedItem.self.id,
         );
       }
-      if (replacedWith.isPlaceholder) {
+      if (effectiveTarget.isPlaceholder) {
         movedItem.self.position = 1;
-        replacedWith.parent.subItems = [movedItem.self];
-      } else if (replacedWith.isSubItem) {
-        const targetSubDiagrams = replacedWith.parent.subItems ?? [];
+        effectiveTarget.parent.subItems = [movedItem.self];
+      } else if (effectiveTarget.isSubItem) {
+        const targetSubDiagrams = effectiveTarget.parent.subItems ?? [];
         movedItem.self.position = targetSubDiagrams.length + 1;
-        replacedWith.parent.subItems = [...targetSubDiagrams, movedItem.self];
+        effectiveTarget.parent.subItems = [
+          ...targetSubDiagrams,
+          movedItem.self,
+        ];
       }
     } else {
+      if (!replacedWith) {
+        return;
+      }
+      const replacedItemOldPosition = replacedWith.self.position;
       replacedWith.self.position = movedItemOldPosition;
       movedItem.self.position = replacedItemOldPosition;
     }
