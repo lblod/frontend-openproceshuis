@@ -1,9 +1,13 @@
 import Component from '@glimmer/component';
 
 import { action } from '@ember/object';
+import { service } from '@ember/service';
+
 import { ARCHIVED_STATUS_URI } from '../../utils/well-known-uris';
 
 export default class DiagramListDragAndDropSort extends Component {
+  @service toaster;
+
   get items() {
     if (!this.args.diagramList) {
       return [];
@@ -61,12 +65,23 @@ export default class DiagramListDragAndDropSort extends Component {
     if (movedItem.parent.id !== replacedWith.parent.id) {
       const hasSubItems = Boolean(movedItem.self.subItems?.length);
       if (movedItem.isMainDiagram && hasSubItems) {
-        console.log('cannot move main diagram with sub items');
+        this.toaster.error(
+          'Je kan geen hoofddiagram met sub-diagrammen verplaatsen onder een andere hoofddiagram',
+          undefined,
+          {
+            timeOut: 2500,
+          },
+        );
         return;
       }
       if (movedItem.isMainDiagram && !hasSubItems) {
         const sourceItems = movedItem.parent.diagrams ?? [];
         movedItem.parent.diagrams = sourceItems.filter(
+          (item) => item.id !== movedItem.self.id,
+        );
+      } else if (movedItem.isSubItem) {
+        const sourceItems = movedItem.parent.subItems ?? [];
+        movedItem.parent.subItems = sourceItems.filter(
           (item) => item.id !== movedItem.self.id,
         );
       }
