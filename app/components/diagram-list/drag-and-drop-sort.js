@@ -21,6 +21,10 @@ export default class DiagramListDragAndDropSort extends Component {
         return [
           {
             isPlaceholder: true,
+            self: {
+              position: 1,
+            },
+            parent: _listItem,
           },
         ];
       }
@@ -30,6 +34,7 @@ export default class DiagramListDragAndDropSort extends Component {
           label: subItem.diagramFile.name,
           self: subItem,
           parent: _listItem,
+          isSubItem: true,
         };
       });
     };
@@ -39,6 +44,7 @@ export default class DiagramListDragAndDropSort extends Component {
       self: listItem,
       parent: this.args.diagramList,
       subItems: mapSubItems(listItem),
+      isMainDiagram: true,
     }));
   }
 
@@ -48,10 +54,33 @@ export default class DiagramListDragAndDropSort extends Component {
 
     const movedItem = sourceList[sourceIndex];
     const replacedWith = targetList[targetIndex];
+
     const movedItemOldPosition = movedItem.self.position;
     const replacedItemOldPosition = replacedWith.self.position;
 
-    replacedWith.self.position = movedItemOldPosition;
-    movedItem.self.position = replacedItemOldPosition;
+    if (movedItem.parent.id !== replacedWith.parent.id) {
+      const hasSubItems = Boolean(movedItem.self.subItems?.length);
+      if (movedItem.isMainDiagram && hasSubItems) {
+        console.log('cannot move main diagram with sub items');
+        return;
+      }
+      if (movedItem.isMainDiagram && !hasSubItems) {
+        const sourceItems = movedItem.parent.diagrams ?? [];
+        movedItem.parent.diagrams = sourceItems.filter(
+          (item) => item.id !== movedItem.self.id,
+        );
+      }
+      if (replacedWith.isPlaceholder) {
+        movedItem.self.position = 1;
+        replacedWith.parent.subItems = [movedItem.self];
+      } else if (replacedWith.isSubItem) {
+        const targetSubDiagrams = replacedWith.parent.subItems ?? [];
+        movedItem.self.position = targetSubDiagrams.length + 1;
+        replacedWith.parent.subItems = [...targetSubDiagrams, movedItem.self];
+      }
+    } else {
+      replacedWith.self.position = movedItemOldPosition;
+      movedItem.self.position = replacedItemOldPosition;
+    }
   }
 }

@@ -16,7 +16,6 @@
     <div class="au-u-margin-left">
       <DragSortList
         @items={{item.subItems}}
-        @additionalArgs={{hash mainDiagram=item.self}}
         @dragEndAction={{this.dragEnd}}
         as |subItem|
       >
