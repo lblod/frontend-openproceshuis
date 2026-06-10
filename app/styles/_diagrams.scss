@@ -73,3 +73,22 @@
 .cursor-not-allowed {
   cursor: not-allowed !important;
 }
+
+$indent: 32px;
+$node-gap: 64px;
+.tree-node--sub {
+  position: relative;
+  margin-left: $indent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -#{$indent / 2};
+    top: -#{$node-gap};
+    width: $indent / 2;
+    height: calc(50% + #{$node-gap});
+    border-left: 3px solid var(--au-gray-200);
+    border-bottom: 3px solid var(--au-gray-200);
+    border-bottom-left-radius: 5px;
+  }
+}
