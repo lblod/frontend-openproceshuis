@@ -54,6 +54,8 @@ export default class DiagramListDragAndDropSort extends Component {
 
   @action
   dragEnd({ sourceList, sourceIndex, targetList, targetIndex }) {
+    const maxPosition = (items) =>
+      Math.max(0, ...items.map((item) => item.position ?? 0));
     if (sourceList === targetList && sourceIndex === targetIndex) return;
 
     const movedItem = sourceList[sourceIndex];
@@ -92,19 +94,32 @@ export default class DiagramListDragAndDropSort extends Component {
         effectiveTarget.parent.subItems = [movedItem.self];
       } else if (effectiveTarget.isSubItem) {
         const targetSubDiagrams = effectiveTarget.parent.subItems ?? [];
-        movedItem.self.position = targetSubDiagrams.length + 1;
+        movedItem.self.position = maxPosition(targetSubDiagrams) + 1;
         effectiveTarget.parent.subItems = [
           ...targetSubDiagrams,
           movedItem.self,
         ];
+      } else if (effectiveTarget.isMainDiagram) {
+        const mainDiagrams = effectiveTarget.parent.diagrams ?? [];
+        if (replacedWith) {
+          const insertAt = effectiveTarget.self.position;
+          mainDiagrams.forEach((d) => {
+            if (d.position >= insertAt) d.position += 1;
+          });
+          movedItem.self.position = insertAt;
+        } else {
+          movedItem.self.position = maxPosition(mainDiagrams) + 1;
+        }
+        effectiveTarget.parent.diagrams = [...mainDiagrams, movedItem.self];
       }
     } else {
       if (!replacedWith) {
-        return;
+        movedItem.self.position = effectiveTarget.self.position + 1;
+      } else {
+        const replacedItemOldPosition = replacedWith.self.position;
+        replacedWith.self.position = movedItemOldPosition;
+        movedItem.self.position = replacedItemOldPosition;
       }
-      const replacedItemOldPosition = replacedWith.self.position;
-      replacedWith.self.position = movedItemOldPosition;
-      movedItem.self.position = replacedItemOldPosition;
     }
   }
 }
