@@ -74,19 +74,17 @@
   cursor: not-allowed !important;
 }
 
-$indent: 32px;
-$node-gap: 64px;
 .tree-node--sub {
   position: relative;
-  margin-left: $indent;
+  margin-left: 32px;
 
   &::before {
     content: '';
     position: absolute;
-    left: -#{$indent / 2};
-    top: -#{$node-gap};
-    width: $indent / 2;
-    height: calc(50% + #{$node-gap});
+    left: -16px;
+    top: -64px;
+    width: 16px;
+    height: calc(50% + 64px);
     border-left: 3px solid var(--au-gray-200);
     border-bottom: 3px solid var(--au-gray-200);
     border-bottom-left-radius: 5px;
