@@ -1,9 +1,34 @@
-<AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
-  {{#each this.relevantLinks as |link|}}
-    <Item>
-      <div
-        class="au-u-padding-left show-element-on-hover au-u-flex au-u-flex--between"
-      >
+<AuDataTable
+  @content={{this.relevantLinks}}
+  @noDataMessage="Er werden geen relevante links gevonden"
+  @hidePagination={{true}}
+  @page={{@page}}
+  @size={{@size}}
+  @sort={{@sort}}
+  as |t|
+>
+  <t.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <AuDataTableThSortable
+        @field="href"
+        @currentSorting={{@sort}}
+        @label="Url"
+      />
+      <AuDataTableThSortable
+        @field="created"
+        @currentSorting={{@sort}}
+        @label="Toegevoegd op"
+      />
+      <AuDataTableThSortable
+        @field="modified"
+        @currentSorting={{@sort}}
+        @label="Aangepast op"
+      />
+      <th></th>
+      {{#if @canEdit}}<th></th>{{/if}}
+    </c.header>
+    <c.body as |link|>
+      <td class="au-u-1-2">
         <AuLinkExternal
           href={{link.href}}
           @icon="external-link"
@@ -12,30 +37,33 @@
         >
           {{link.displayLabel}}
         </AuLinkExternal>
-        {{#if @canEdit}}
-          <AuButtonGroup
-            @inline={{true}}
-            class="show-element-on-hover--element"
-          >
-            <AuButton
-              @icon="pencil"
-              @skin="naked"
-              @size="large"
-              {{on "click" (fn this.openEditModal link)}}
-            />
-            <AuButton
-              @icon="bin"
-              @skin="naked"
-              @size="large"
-              @alert={{true}}
-              {{on "click" (fn this.openDeleteModal link)}}
-            />
-          </AuButtonGroup>
-        {{/if}}
-      </div>
-    </Item>
-  {{/each}}
-</AuList>
+      </td>
+      <td>{{or (date-format link.created) "/"}}</td>
+      <td>{{or (date-format link.modified) "/"}}</td>
+      {{#if @canEdit}}
+        <td>
+          <AuButton
+            @skin="naked"
+            @width="block"
+            {{on "click" (fn this.openEditModal link)}}
+          >Wijzig</AuButton>
+        </td>
+        <td>
+          <AuButton
+            @skin="naked"
+            @width="block"
+            @alert="true"
+            {{on "click" (fn this.openDeleteModal link)}}
+          >Verwijder</AuButton>
+        </td>
+      {{/if}}
+    </c.body>
+  </t.content>
+</AuDataTable>
+<Shared::TablePagination
+  @metadata={{this.filesMeta}}
+  @pageQueryParamName="attachmentsPage"
+/>
 
 <AuModal @modalOpen={{@isAddModalOpen}} @closeModal={{this.closeAddModal}}>
   <:title>Voeg link toe</:title>
