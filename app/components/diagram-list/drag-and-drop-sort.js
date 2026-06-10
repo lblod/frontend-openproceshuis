@@ -121,5 +121,35 @@ export default class DiagramListDragAndDropSort extends Component {
         movedItem.self.position = replacedItemOldPosition;
       }
     }
+
+    this.updatePositionsAfterReorder();
+    this.args.onUpdatedStructure?.(this.args.diagramList);
   }
+
+  updatePositionsAfterReorder() {
+    this.updatePositionsAsc(this.args.diagramList.diagrams);
+    this.args.diagramList.diagrams.forEach((m) =>
+      this.updatePositionsAsc(m.subItems ?? []),
+    );
+
+    const finalState = this.args.diagramList.diagrams.map((m) => ({
+      id: m.id,
+      position: m.position,
+      subItems: (m.subItems ?? []).map((s) => ({
+        id: s.id,
+        position: s.position,
+      })),
+    }));
+    console.log('finalState', finalState);
+  }
+
+  updatePositionsAsc = (items) => {
+    return items
+      .slice()
+      .sort((a, b) => a.position - b.position)
+      .map((item, index) => {
+        item.position = index + 1;
+        return item;
+      });
+  };
 }
