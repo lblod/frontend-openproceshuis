@@ -3,6 +3,7 @@ import Component from '@glimmer/component';
 export const WizardAction = Object.freeze({
   REPLACE_DIAGRAMS: 'replace_diagrams',
   CHANGE_MAIN_PROCESS: 'change_main_process',
+  STRUCTURE_DIAGRAMS: 'structure_diagrams',
 });
 
 export default class WizardActions extends Component {
@@ -36,6 +37,20 @@ export default class WizardActions extends Component {
         isDisabled: this.isActionDisabled(WizardAction.CHANGE_MAIN_PROCESS),
         disabledReason:
           'Je hebt één diagram geüpload. Dit is automatisch het hoofddiagram.',
+      },
+      {
+        label: 'Diagrammen structuur wijzigen',
+        icon: 'filter',
+        iconColorClass: 'fill: var(--au-orange-500) !important',
+        description: 'Wijzig het hoofdproces van het proces.',
+        next: () => {
+          if (this.isActionDisabled(WizardAction.STRUCTURE_DIAGRAMS)) {
+            return;
+          }
+          this.args.onActionSelected(WizardAction.STRUCTURE_DIAGRAMS);
+        },
+        isDisabled: this.isActionDisabled(WizardAction.STRUCTURE_DIAGRAMS),
+        disabledReason: 'Deze actie is tijdelijk niet beschikbaar',
       },
     ];
   }
