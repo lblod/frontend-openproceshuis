@@ -3,6 +3,8 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
+import { task } from 'ember-concurrency';
+import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
 import { isEmptyOrUrl } from '../../utils/custom-validators';
 
@@ -20,9 +22,7 @@ export default class ProcessRelevantLinks extends Component {
   @tracked labelValue;
   @tracked linkValue;
 
-  get relevantLinks() {
-    return this.args.process?.links?.filter((link) => !link.isArchived) ?? [];
-  }
+  @tracked filesMeta = {};
 
   get isLinkValid() {
     return isEmptyOrUrl(this.linkValue);
@@ -208,4 +208,24 @@ export default class ProcessRelevantLinks extends Component {
     this.resetLabelAndValueToNull();
     this.isExecutingAction = false;
   }
+
+  fetchLinks = task({ restartable: true }, async (process) => {
+    const allLinks = process?.links?.filter((link) => !link.isArchived) ?? [];
+    const linkIds = allLinks.map((link) => link.id);
+
+    return await this.store.query('link', {
+      'filter[id]': linkIds.join(','),
+      page: {
+        number: this.args.page ?? 0,
+        size: this.args.size ?? 5,
+      },
+      sort: this.args.sort,
+    });
+  });
+
+  links = trackedTask(this, this.fetchLinks, () => [
+    this.args.process,
+    this.args.page,
+    this.args.sort,
+  ]);
 }

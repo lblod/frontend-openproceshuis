@@ -26,6 +26,10 @@ export default class LinkModel extends Model {
   }
 
   async save() {
+    if (!this.created) {
+      this.created = new Date();
+    }
+
     this.modified = new Date();
     await super.save(...arguments);
   }

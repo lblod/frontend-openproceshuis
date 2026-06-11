@@ -2,7 +2,10 @@
   <:title>Bijlagen
     {{#unless this.versionedFiles.isRunning}}
       <Process::ChangedStatusPills::Attachments
-        @isShown={{and @versionedProcess (not this.fetchFilesForComparison.isRunning)}}
+        @isShown={{and
+          @versionedProcess
+          (not this.fetchFilesForComparison.isRunning)
+        }}
         @versioned={{this.versionedFiles.value.forVersion}}
         @current={{this.versionedFiles.value.forCurrent}}
         @singularLabel="bestand"
@@ -11,7 +14,10 @@
     {{/unless}}
     {{#unless this.versionedLinks.isRunning}}
       <Process::ChangedStatusPills::Attachments
-        @isShown={{and @versionedProcess (not this.fetchRelevantLinksForComparison.isRunning)}}
+        @isShown={{and
+          @versionedProcess
+          (not this.fetchRelevantLinksForComparison.isRunning)
+        }}
         @versioned={{this.versionedLinks.value.forVersion}}
         @current={{this.versionedLinks.value.forCurrent}}
         @singularLabel="link"
@@ -63,14 +69,6 @@
     </AuHelpText>
   </:subheader>
   <:card>
-    <Process::RelevantLinks
-      @process={{@process}}
-      @canEdit={{@canEdit}}
-      @isAddModalOpen={{this.isAddLinkModalOpen}}
-      @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
-      @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
-      @onSaved={{@onSaved}}
-    />
     <AuDataTable
       @content={{this.attachments.value}}
       @isLoading={{this.fetchAttachments.isRunning}}
@@ -143,21 +141,17 @@
             </td>
             <td>
               <AuButton
-                @icon="download"
-                @skin="link"
+                @skin="naked"
                 @width="block"
-                @hideText="true"
                 {{on "click" (fn this.downloadFile attachment)}}
               >Download</AuButton>
             </td>
             {{#if @canEdit}}
               <td>
                 <AuButton
-                  @icon="bin"
                   @skin="naked"
                   @alert="true"
                   @width="block"
-                  @hideText="true"
                   @disabled={{attachment.informationAsset}}
                   {{on "click" (fn this.openDeleteModal attachment)}}
                 >Verwijder</AuButton>
@@ -171,11 +165,23 @@
       @metadata={{this.filesMeta}}
       @pageQueryParamName="attachmentsPage"
     />
+    <br />
+    <Process::RelevantLinks
+      @process={{@process}}
+      @canEdit={{@canEdit}}
+      @page={{@linksPage}}
+      @size={{@linksSize}}
+      @sort={{@linksSort}}
+      @isAddModalOpen={{this.isAddLinkModalOpen}}
+      @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
+      @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
+      @onSaved={{@onSaved}}
+    />
   </:card>
 </DataCard>
 
 <FileUploadModal
-  @header="Voeg bijlage toe"
+  @header="Voeg rotoe"
   @title="Bestand selecteren"
   @helpTextDragDrop="Bestand wordt meteen toegevoegd aan bibliotheek na selectie"
   @forbidden=".bpmn,.vsdx"

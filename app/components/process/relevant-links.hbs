@@ -1,7 +1,8 @@
 <AuDataTable
-  @content={{this.relevantLinks}}
+  @content={{this.links.value}}
+  @isLoading={{this.fetchLinks.isRunning}}
   @noDataMessage="Er werden geen relevante links gevonden"
-  @hidePagination={{true}}
+  {{!-- @hidePagination={{true}} --}}
   @page={{@page}}
   @size={{@size}}
   @sort={{@sort}}
@@ -12,7 +13,7 @@
       <AuDataTableThSortable
         @field="href"
         @currentSorting={{@sort}}
-        @label="Url"
+        @label="Link"
       />
       <AuDataTableThSortable
         @field="created"
@@ -38,8 +39,8 @@
           {{link.displayLabel}}
         </AuLinkExternal>
       </td>
-      <td>{{or (date-format link.created) "/"}}</td>
-      <td>{{or (date-format link.modified) "/"}}</td>
+      <td>{{or (date-format link.created true) "/"}}</td>
+      <td>{{or (date-format link.modified true) "/"}}</td>
       {{#if @canEdit}}
         <td>
           <AuButton
@@ -60,10 +61,6 @@
     </c.body>
   </t.content>
 </AuDataTable>
-<Shared::TablePagination
-  @metadata={{this.filesMeta}}
-  @pageQueryParamName="attachmentsPage"
-/>
 
 <AuModal @modalOpen={{@isAddModalOpen}} @closeModal={{this.closeAddModal}}>
   <:title>Voeg link toe</:title>
@@ -104,13 +101,14 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="secondary"
+        class="border-radius"
         {{on "click" this.closeAddModal}}
       >Annuleer</AuButton>
       <AuButton
-        @icon="plus"
         @disabled={{not this.canSaveChanges}}
         @loading={{this.isExecutingAction}}
         @loadingMessage="Link toevoegen"
+        class="border-radius"
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
     </AuButtonGroup>
@@ -152,11 +150,12 @@
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
+        class="border-radius"
         @skin="secondary"
         {{on "click" this.closeEditModal}}
       >Annuleer</AuButton>
       <AuButton
-        @icon="pencil"
+        class="border-radius"
         @disabled={{not this.canUpdateChanges}}
         @loading={{this.isExecutingAction}}
         @loadingMessage="Link aanpassen"
@@ -178,10 +177,12 @@
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
+        class="border-radius"
         @skin="secondary"
         {{on "click" (fn (mut this.isDeleteModalOpen) false)}}
       >Annuleer</AuButton>
       <AuButton
+        class="border-radius"
         @icon="trash"
         @alert={{true}}
         @disabled={{this.isExecutingAction}}
