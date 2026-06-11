@@ -33,7 +33,6 @@
         <AuDropdown @title="Voeg toe" @skin="secondary" @alignment="center">
           <AuButton
             role="menuitem"
-            @icon="link-external"
             @iconAlignment="left"
             @skin="link"
             {{on "click" (fn (mut this.isAddLinkModalOpen) true)}}
@@ -42,7 +41,6 @@
           </AuButton>
           <AuButton
             role="menuitem"
-            @icon="file"
             @iconAlignment="left"
             @skin="link"
             {{on "click" this.openAddModal}}
