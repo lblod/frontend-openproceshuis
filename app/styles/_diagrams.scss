@@ -22,6 +22,11 @@
   border: 0.2rem solid var(--au-gray-200);
 }
 
+.border-line-dashed-200 {
+  border: 0.2rem solid var(--au-gray-200);
+  border-style: dashed;
+}
+
 .border-left-selected {
   border-left: 0.45rem solid var(--au-select-text-color) !important;
   border-style: inset;
@@ -63,4 +68,25 @@
 .thin-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+.tree-node--sub {
+  position: relative;
+  margin-left: 32px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: -64px;
+    width: 16px;
+    height: calc(50% + 64px);
+    border-left: 3px solid var(--au-gray-200);
+    border-bottom: 3px solid var(--au-gray-200);
+    border-bottom-left-radius: 5px;
+  }
 }
