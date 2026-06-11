@@ -68,6 +68,7 @@ export default class ProcessWizard extends Component {
     if (!this.steps[this.activeStepIndex].canGoToNextStep) {
       return null;
     }
+    await this.activeStep.actionAtEndOfStep?.();
     let nextStepIndex = this.activeStepIndex + 1;
     if (this.activeStepIsFinalStep) {
       return null;
@@ -105,6 +106,8 @@ export default class ProcessWizard extends Component {
         canGoToNextStep: true,
         nextStepButtonLabel: 'Aanpassen',
         canCancelStep: true,
+        actionAtEndOfStep: async () =>
+          await this.diagramList.saveDiagramStructure(),
       },
       {
         step: this.wizardStep.UPLOAD_FILES,

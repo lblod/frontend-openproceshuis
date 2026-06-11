@@ -22,7 +22,7 @@
         {{/if}}
       </div>
     {{/if}}
-    {{#unless this.executeCurrentStepActionAsTask.isRunning}}
+    {{#unless this.executeStepActionAsTask.isRunning}}
       {{#if (eq this.activeStep.step this.wizardStep.SELECT_ACTION)}}
         <Wizard::Actions
           @onActionSelected={{this.onActionSelected}}
@@ -89,6 +89,7 @@
         {{#if this.activeStep.nextStepButtonLabel}}
           <AuButton
             class="border-radius"
+            @loading={{this.executeStepActionAsTask.isRunning}}
             {{on "click" this.nextStep}}
             @disabled={{not this.activeStep.canGoToNextStep}}
           >
