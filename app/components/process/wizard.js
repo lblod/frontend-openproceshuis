@@ -104,6 +104,7 @@ export default class ProcessWizard extends Component {
         isStepShown: this.currentAction === WizardAction.STRUCTURE_DIAGRAMS,
         canGoToNextStep: true,
         nextStepButtonLabel: 'Aanpassen',
+        canCancelStep: true,
       },
       {
         step: this.wizardStep.UPLOAD_FILES,
@@ -167,6 +168,12 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: null,
       },
     ];
+  }
+
+  @action
+  async restoreAndCloseWizard() {
+    this.loadingMessage = 'We sluiten de wizard af';
+    await this.router.refresh();
   }
 
   @action

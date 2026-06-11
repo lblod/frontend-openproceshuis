@@ -76,6 +76,16 @@
     <AuToolbar as |Group|>
       <Group />
       <Group>
+        {{#if this.activeStep.canCancelStep}}
+          <AuButton
+            class="border-radius"
+            @skin="secondary"
+            {{on "click" this.restoreAndCloseWizard}}
+            @disabled={{not this.activeStep.canCancelStep}}
+          >
+            Annuleer
+          </AuButton>
+        {{/if}}
         {{#if this.activeStep.nextStepButtonLabel}}
           <AuButton
             class="border-radius"
