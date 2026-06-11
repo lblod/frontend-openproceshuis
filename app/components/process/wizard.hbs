@@ -67,6 +67,9 @@
           {{/if}}
         {{/if}}
       {{/if}}
+      {{#if (eq this.activeStep.step this.wizardStep.STRUCTURE_DIAGRAMS)}}
+        <DiagramList::DragAndDropSort @diagramList={{this.diagramList}} />
+      {{/if}}
     {{/unless}}
   </:body>
   <:footer>
