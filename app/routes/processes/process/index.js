@@ -12,31 +12,33 @@ export default class ProcessesProcessIndexRoute extends Route {
     versionedProcessId: {
       replace: true,
     },
-
     attachmentsPage: {
       replace: true,
     },
-
     attachmentsSize: {
       replace: true,
     },
-
     attachmentsSort: {
       replace: true,
     },
-
+    relevantLinksPage: {
+      replace: true,
+    },
+    relevantLinksSize: {
+      replace: true,
+    },
+    relevantLinksSort: {
+      replace: true,
+    },
     diagramVersionsPage: {
       replace: true,
     },
-
     diagramVersionsSort: {
       replace: true,
     },
-
     diagramsPage: {
       replace: true,
     },
-
     diagramsSort: {
       replace: true,
     },

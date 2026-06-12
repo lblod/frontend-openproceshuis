@@ -11,6 +11,9 @@ export default class ProcessesProcessIndexController extends Controller {
     'attachmentsPage',
     'attachmentsSize',
     'attachmentsSort',
+    'relevantLinksPage',
+    'relevantLinksSize',
+    'relevantLinksSort',
     'diagramVersionsPage',
     'diagramVersionsSort',
     'diagramsPage',
@@ -19,7 +22,10 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked versionedProcessId = null;
   @tracked attachmentsPage = 0;
   @tracked attachmentsSize = 5;
-  @tracked attachmentsSort = 'name';
+  @tracked attachmentsSort = '-created';
+  @tracked relevantLinksPage = 0;
+  @tracked relevantLinksSize = 5;
+  @tracked relevantLinksSort = '-created';
   @tracked diagramVersionsPage = 0;
   @tracked diagramVersionsSort = '-created';
   @tracked diagramsPage = 0;

@@ -1,9 +1,35 @@
-<AuList @divider={{true}} class="au-u-margin-bottom" as |Item|>
-  {{#each this.relevantLinks as |link|}}
-    <Item>
-      <div
-        class="au-u-padding-left show-element-on-hover au-u-flex au-u-flex--between"
-      >
+<AuDataTable
+  @content={{this.links.value}}
+  @isLoading={{this.fetchLinks.isRunning}}
+  @noDataMessage="Er werden geen relevante links gevonden"
+  {{!-- @hidePagination={{true}} --}}
+  @page={{@page}}
+  @size={{@size}}
+  @sort={{@sort}}
+  as |t|
+>
+  <t.content class="au-c-data-table__table--small" as |c|>
+    <c.header>
+      <AuDataTableThSortable
+        @field="href"
+        @currentSorting={{@sort}}
+        @label="Link"
+      />
+      <AuDataTableThSortable
+        @field="created"
+        @currentSorting={{@sort}}
+        @label="Toegevoegd op"
+      />
+      <AuDataTableThSortable
+        @field="modified"
+        @currentSorting={{@sort}}
+        @label="Aangepast op"
+      />
+      <th></th>
+      {{#if @canEdit}}<th></th>{{/if}}
+    </c.header>
+    <c.body as |link|>
+      <td class="au-u-1-2">
         <AuLinkExternal
           href={{link.href}}
           @icon="external-link"
@@ -12,30 +38,29 @@
         >
           {{link.displayLabel}}
         </AuLinkExternal>
-        {{#if @canEdit}}
-          <AuButtonGroup
-            @inline={{true}}
-            class="show-element-on-hover--element"
-          >
-            <AuButton
-              @icon="pencil"
-              @skin="naked"
-              @size="large"
-              {{on "click" (fn this.openEditModal link)}}
-            />
-            <AuButton
-              @icon="bin"
-              @skin="naked"
-              @size="large"
-              @alert={{true}}
-              {{on "click" (fn this.openDeleteModal link)}}
-            />
-          </AuButtonGroup>
-        {{/if}}
-      </div>
-    </Item>
-  {{/each}}
-</AuList>
+      </td>
+      <td>{{or (date-format link.created true) "/"}}</td>
+      <td>{{or (date-format link.modified true) "/"}}</td>
+      {{#if @canEdit}}
+        <td>
+          <AuButton
+            @skin="naked"
+            @width="block"
+            {{on "click" (fn this.openEditModal link)}}
+          >Wijzig</AuButton>
+        </td>
+        <td>
+          <AuButton
+            @skin="naked"
+            @width="block"
+            @alert="true"
+            {{on "click" (fn this.openDeleteModal link)}}
+          >Verwijder</AuButton>
+        </td>
+      {{/if}}
+    </c.body>
+  </t.content>
+</AuDataTable>
 
 <AuModal @modalOpen={{@isAddModalOpen}} @closeModal={{this.closeAddModal}}>
   <:title>Voeg link toe</:title>
@@ -76,13 +101,14 @@
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
         @skin="secondary"
+        class="border-radius"
         {{on "click" this.closeAddModal}}
       >Annuleer</AuButton>
       <AuButton
-        @icon="plus"
         @disabled={{not this.canSaveChanges}}
         @loading={{this.isExecutingAction}}
         @loadingMessage="Link toevoegen"
+        class="border-radius"
         {{on "click" this.addLink}}
       >Voeg toe</AuButton>
     </AuButtonGroup>
@@ -124,11 +150,12 @@
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
+        class="border-radius"
         @skin="secondary"
         {{on "click" this.closeEditModal}}
       >Annuleer</AuButton>
       <AuButton
-        @icon="pencil"
+        class="border-radius"
         @disabled={{not this.canUpdateChanges}}
         @loading={{this.isExecutingAction}}
         @loadingMessage="Link aanpassen"
@@ -150,10 +177,12 @@
   <:footer>
     <AuButtonGroup class="au-u-flex--end">
       <AuButton
+        class="border-radius"
         @skin="secondary"
         {{on "click" (fn (mut this.isDeleteModalOpen) false)}}
       >Annuleer</AuButton>
       <AuButton
+        class="border-radius"
         @icon="trash"
         @alert={{true}}
         @disabled={{this.isExecutingAction}}
