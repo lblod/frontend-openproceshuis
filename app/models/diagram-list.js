@@ -31,8 +31,8 @@ export default class DiagramListModel extends Model {
 
   async saveDiagramStructure() {
     const subItemSavePromises = this.diagrams
-      .map((main) => main.subItems)
-      .flat();
+      .flatMap((main) => main.subItems)
+      .map((subItem) => subItem.save());
     await Promise.all(subItemSavePromises);
     const mainDiagramSavePromises = this.diagrams.map(
       async (main) => await main.save(),
