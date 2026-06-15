@@ -36,6 +36,7 @@ export default class ProcessWizard extends Component {
     UPLOAD_FILES: 'upload_files',
     SELECT_MAIN_PROCESS: 'select_main_process',
     CHANGE_MAIN_PROCESS: 'change_main_process',
+    STRUCTURE_DIAGRAMS: 'structure_diagrams',
     CREATE_PROCESS: 'create_process',
     UPDATE_PROCESS: 'update_process',
     CREATE_DIAGRAM_VERSION: 'create_diagram_version',
@@ -67,6 +68,7 @@ export default class ProcessWizard extends Component {
     if (!this.steps[this.activeStepIndex].canGoToNextStep) {
       return null;
     }
+    await this.activeStep.actionAtEndOfStep?.();
     let nextStepIndex = this.activeStepIndex + 1;
     if (this.activeStepIsFinalStep) {
       return null;
@@ -96,6 +98,16 @@ export default class ProcessWizard extends Component {
         canGoToNextStep: this.currentAction,
         nextStepButtonLabel: null,
         action: async () => await this.prepareWizard(),
+      },
+      {
+        step: this.wizardStep.STRUCTURE_DIAGRAMS,
+        title: 'Diagrammen structuur',
+        isStepShown: this.currentAction === WizardAction.STRUCTURE_DIAGRAMS,
+        canGoToNextStep: true,
+        nextStepButtonLabel: 'Aanpassen',
+        canCancelStep: true,
+        actionAtEndOfStep: async () =>
+          await this.diagramList.saveDiagramStructure(),
       },
       {
         step: this.wizardStep.UPLOAD_FILES,
@@ -159,6 +171,12 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: null,
       },
     ];
+  }
+
+  @action
+  async restoreAndCloseWizard() {
+    this.loadingMessage = 'We sluiten de wizard af';
+    await this.router.refresh();
   }
 
   @action

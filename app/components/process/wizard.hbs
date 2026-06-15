@@ -22,7 +22,7 @@
         {{/if}}
       </div>
     {{/if}}
-    {{#unless this.executeCurrentStepActionAsTask.isRunning}}
+    {{#unless this.executeStepActionAsTask.isRunning}}
       {{#if (eq this.activeStep.step this.wizardStep.SELECT_ACTION)}}
         <Wizard::Actions
           @onActionSelected={{this.onActionSelected}}
@@ -67,15 +67,35 @@
           {{/if}}
         {{/if}}
       {{/if}}
+      {{#if (eq this.activeStep.step this.wizardStep.STRUCTURE_DIAGRAMS)}}
+        <p class="au-u-muted au-u-italic">Hieronder vind je al de diagrammen die
+          opgeladen werden. Door een diagram vast te nemen en te verplaatsen pas
+          je de positie van het diagram aan, waarbij het bovenste diagram je
+          hoofd diagram is.</p>
+        <div class="au-o-box">
+          <DiagramList::DragAndDropSort @diagramList={{this.diagramList}} />
+        </div>
+      {{/if}}
     {{/unless}}
   </:body>
   <:footer>
     <AuToolbar as |Group|>
       <Group />
       <Group>
+        {{#if this.activeStep.canCancelStep}}
+          <AuButton
+            class="border-radius"
+            @skin="secondary"
+            {{on "click" this.restoreAndCloseWizard}}
+            @disabled={{not this.activeStep.canCancelStep}}
+          >
+            Annuleer
+          </AuButton>
+        {{/if}}
         {{#if this.activeStep.nextStepButtonLabel}}
           <AuButton
             class="border-radius"
+            @loading={{this.executeStepActionAsTask.isRunning}}
             {{on "click" this.nextStep}}
             @disabled={{not this.activeStep.canGoToNextStep}}
           >
