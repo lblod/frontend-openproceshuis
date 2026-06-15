@@ -41,52 +41,11 @@
       </TableMessage>
     {{else}}
       <c.body as |diagram|>
-        {{! template-lint-disable no-invalid-interactive }}
-        <td
-          class="{{if
-              (eq diagram.diagramFile.id @selectedDiagramFile.id)
-              'border-left-selected'
-              'border-left-transparent'
-            }}"
-          {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
-        >
-          <AuButton
-            @skin="link"
-            {{on "click" (fn @onDiagramFileSelected diagram.diagramFile)}}
-          >
-            {{diagram.diagramFile.name}}
-          </AuButton>
-        </td>
-        <td>{{date-format diagram.diagramFile.created true}}</td>
-        <td>{{file-size-format diagram.diagramFile.size}}</td>
-        <td>
-          {{#if (eq diagram.position 1)}}
-            <AuPill @skin="success" @size="small">Hoofddiagram</AuPill>
-          {{else}}
-            {{diagram.position}}
-          {{/if}}
-        </td>
-        <td>
-          <AuButton
-            @skin="naked"
-            {{on "click" (fn (mut this.fileToDownload) diagram.diagramFile)}}
-          >Download
-          </AuButton>
-        </td>
-        <td>
-          <AuLink
-            @route="diagrams.diagram.index"
-            @skin="button-naked"
-            @model={{diagram.id}}
-            @query={{hash
-              previousRouteTitle=@process.title
-              previousRouteModelId=@process.id
-              previousRouteName="processes.process"
-            }}
-          >
-            Detail
-          </AuLink>
-        </td>
+        <DiagramList::Table::Row
+          @process={{@process}}
+          @diagram={{diagram}}
+          @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
+        />
       </c.body>
     {{/if}}
   </row.content>
