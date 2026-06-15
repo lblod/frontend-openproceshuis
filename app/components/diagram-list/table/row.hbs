@@ -24,11 +24,7 @@
   {{/if}}
 </td>
 <td>
-  <AuButton
-    @skin="naked"
-    {{on "click" @onFileDownload}}
-  >Download
-  </AuButton>
+  <AuButton @skin="naked" {{on "click" @onFileDownload}}>Download</AuButton>
 </td>
 <td>
   <AuLink
@@ -44,3 +40,4 @@
     Detail
   </AuLink>
 </td>
+{{yield}}

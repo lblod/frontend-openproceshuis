@@ -44,8 +44,26 @@
         <DiagramList::Table::Row
           @process={{@process}}
           @diagram={{diagram}}
+          @onDiagramFileSelected={{@onDiagramFileSelected}}
           @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
-        />
+        >
+          {{#unless (eq diagram.subItems.length 0)}}
+            {{#each diagram.subItems as |subDiagram|}}
+              <tr {{show-in-parent}}>
+                <DiagramList::Table::Row
+                  class="sub-row"
+                  @process={{@process}}
+                  @diagram={{subDiagram}}
+                  @onDiagramFileSelected={{@onDiagramFileSelected}}
+                  @onFileDownload={{fn
+                    (mut this.fileToDownload)
+                    subDiagram.diagramFile
+                  }}
+                />
+              </tr>
+            {{/each}}
+          {{/unless}}
+        </DiagramList::Table::Row>
       </c.body>
     {{/if}}
   </row.content>
