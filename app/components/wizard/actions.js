@@ -42,7 +42,7 @@ export default class WizardActions extends Component {
         label: 'Diagrammen structuur wijzigen',
         icon: 'filter',
         iconColorClass: 'fill: var(--au-orange-500) !important',
-        description: 'Wijzig het hoofdproces van het proces.',
+        description: 'Wijzig de structuur/positie van de diagrammen.',
         next: () => {
           if (this.isActionDisabled(WizardAction.STRUCTURE_DIAGRAMS)) {
             return;

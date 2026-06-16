@@ -68,7 +68,13 @@
         {{/if}}
       {{/if}}
       {{#if (eq this.activeStep.step this.wizardStep.STRUCTURE_DIAGRAMS)}}
-        <DiagramList::DragAndDropSort @diagramList={{this.diagramList}} />
+        <p class="au-u-muted au-u-italic">Hieronder vind je al de diagrammen die
+          opgeladen werden. Door een diagram vast te nemen en te verplaatsen pas
+          je de positie van het diagram aan, waarbij het bovenste diagram je
+          hoofd diagram is.</p>
+        <div class="au-o-box">
+          <DiagramList::DragAndDropSort @diagramList={{this.diagramList}} />
+        </div>
       {{/if}}
     {{/unless}}
   </:body>
