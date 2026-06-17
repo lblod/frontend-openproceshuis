@@ -25,7 +25,7 @@
         @currentSorting={{@sort}}
         @label="Aangepast op"
       />
-      <th>Gekoppeld aan</th>
+      {{#unless this.isIcr}}<th>Gekoppeld aan</th>{{/unless}}
       <th></th>
       {{#if @canEdit}}<th></th>{{/if}}
     </c.header>
@@ -42,31 +42,33 @@
       </td>
       <td>{{or (date-format link.created true) "/"}}</td>
       <td>{{or (date-format link.modified true) "/"}}</td>
-      <td>
-        {{#if link._icrSource}}
-          Asset -
-          <AuLink
-            @route="information-assets.information-asset"
-            @model={{link._icrSource.id}}
-            @query={{hash
-              process=@process.id
-              parentRoute=this.currentProcessRouteName
-              edit=false
-            }}
-          >
-            {{link._icrSource.title}}
-          </AuLink>
-        {{else}}
-          Proces -
-          <AuLink @route="processes.process" @model={{@process.id}}>
-            {{@process.title}}
-          </AuLink>
-        {{/if}}
-      </td>
+      {{#unless this.isIcr}}
+        <td>
+          {{#if link._icrSource}}
+            Asset -
+            <AuLink
+              @route="information-assets.information-asset"
+              @model={{link._icrSource.id}}
+              @query={{hash
+                process=@process.id
+                parentRoute=this.currentProcessRouteName
+                edit=false
+              }}
+            >
+              {{link._icrSource.title}}
+            </AuLink>
+          {{else}}
+            Proces -
+            <AuLink @route="processes.process" @model={{@process.id}}>
+              {{@process.title}}
+            </AuLink>
+          {{/if}}
+        </td>
+      {{/unless}}
       {{#if @canEdit}}
         <td>
           <AuButton
-            @disabled={{link._icrSource}}
+            @disabled={{and link._icrSource (not this.isIcr)}}
             @skin="naked"
             @width="block"
             {{on "click" (fn this.openEditModal link)}}
@@ -74,6 +76,7 @@
         </td>
         <td>
           <AuButton
+            @disabled={{and link._icrSource (not this.isIcr)}}
             @skin="naked"
             @width="block"
             @alert="true"

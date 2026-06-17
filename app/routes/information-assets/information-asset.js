@@ -7,13 +7,22 @@ export default class InformationAssetsInformationAssetRoute extends Route {
   @service router;
   @service store;
 
-  queryParams = [
-    { versionedAssetId: { refreshModel: true } },
-    { pageAttachments: { refreshModel: true } },
-    { sizeAttachments: { refreshModel: true } },
-    { sortAttachments: { refreshModel: true } },
-    { process: { refreshModel: false } },
-  ];
+  queryParams = {
+    versionedAssetId: { refreshModel: true },
+    process: { refreshModel: false },
+    pageAttachments: { replace: true },
+    sizeAttachments: { replace: true },
+    sortAttachments: { replace: true },
+    relevantLinksPage: {
+      replace: true,
+    },
+    relevantLinksSize: {
+      replace: true,
+    },
+    relevantLinksSort: {
+      replace: true,
+    },
+  };
 
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
