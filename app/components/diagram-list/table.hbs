@@ -45,6 +45,7 @@
           <DiagramList::Table::Row
             @process={{@process}}
             @diagram={{diagram}}
+            @selectedDiagramFile={{@selectedDiagramFile}}
             @hasSubItems={{hasSubItems}}
             @onDiagramFileSelected={{@onDiagramFileSelected}}
             @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
@@ -56,6 +57,7 @@
                     @isSubRow={{true}}
                     @process={{@process}}
                     @diagram={{subDiagram}}
+                    @selectedDiagramFile={{@selectedDiagramFile}}
                     @onDiagramFileSelected={{@onDiagramFileSelected}}
                     @onFileDownload={{fn
                       (mut this.fileToDownload)
