@@ -41,29 +41,32 @@
       </TableMessage>
     {{else}}
       <c.body as |diagram|>
-        <DiagramList::Table::Row
-          @process={{@process}}
-          @diagram={{diagram}}
-          @onDiagramFileSelected={{@onDiagramFileSelected}}
-          @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
-        >
-          {{#unless (eq diagram.subItems.length 0)}}
-            {{#each diagram.subItems as |subDiagram|}}
-              <tr class="diagram-sub-row" {{show-in-parent}}>
-                <DiagramList::Table::Row
-                  @isSubRow={{true}}
-                  @process={{@process}}
-                  @diagram={{subDiagram}}
-                  @onDiagramFileSelected={{@onDiagramFileSelected}}
-                  @onFileDownload={{fn
-                    (mut this.fileToDownload)
-                    subDiagram.diagramFile
-                  }}
-                />
-              </tr>
-            {{/each}}
-          {{/unless}}
-        </DiagramList::Table::Row>
+        {{#let (gt diagram.subItems.length 0) as |hasSubItems|}}
+          <DiagramList::Table::Row
+            @process={{@process}}
+            @diagram={{diagram}}
+            @hasSubItems={{hasSubItems}}
+            @onDiagramFileSelected={{@onDiagramFileSelected}}
+            @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
+          >
+            {{#if hasSubItems}}
+              {{#each diagram.subItems as |subDiagram|}}
+                <tr class="diagram-sub-row" {{show-in-parent}}>
+                  <DiagramList::Table::Row
+                    @isSubRow={{true}}
+                    @process={{@process}}
+                    @diagram={{subDiagram}}
+                    @onDiagramFileSelected={{@onDiagramFileSelected}}
+                    @onFileDownload={{fn
+                      (mut this.fileToDownload)
+                      subDiagram.diagramFile
+                    }}
+                  />
+                </tr>
+              {{/each}}
+            {{/if}}
+          </DiagramList::Table::Row>
+        {{/let}}
       </c.body>
     {{/if}}
   </row.content>

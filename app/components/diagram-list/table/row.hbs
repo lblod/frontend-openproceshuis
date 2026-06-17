@@ -5,8 +5,14 @@
       'border-left-selected'
       'border-left-transparent'
     }}"
-  {{on "click" (fn @onDiagramFileSelected @diagram.diagramFile)}}
 >
+  <span class={{this.subRowButtonClass}}>
+    <AuButton
+      @skin="naked"
+      @icon={{this.iconSubRowOpen}}
+      {{on "click" this.openCloseSubRows}}
+    />
+  </span>
   <AuButton
     class={{if @isSubRow "au-u-margin-left-large au-u-helptext" ""}}
     @skin="link"
@@ -43,4 +49,6 @@
     Detail
   </AuLink>
 </td>
-{{yield}}
+{{#if this.isSubRowOpen}}
+  {{yield}}
+{{/if}}
