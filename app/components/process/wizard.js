@@ -209,7 +209,10 @@ export default class ProcessWizard extends Component {
       this.diagramList = await this.diagram.getLatestDiagramList(
         this.args.process.id,
       );
-      this.files = this.diagram.getAvailableFilesFromList(this.diagramList);
+      this.files = this.diagram.getAvailableFilesFromList(
+        this.diagramList,
+        false,
+      );
       if (this.files.length === 1) {
         this.disabledActions = [WizardAction.CHANGE_MAIN_PROCESS];
       }

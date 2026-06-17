@@ -33,12 +33,22 @@ export default class DiagramService extends Service {
     });
   }
 
-  getAvailableFilesFromList(listWithFiles) {
-    return (
+  getAvailableFilesFromList(listWithFiles, includeSubFiles = true) {
+    const mainFiles =
       listWithFiles?.diagrams
         ?.filter((diagrams) => !diagrams?.diagramFile?.isArchived)
-        ?.map((diagram) => diagram?.diagramFile) ?? []
-    );
+        ?.map((diagram) => diagram?.diagramFile) ?? [];
+
+    if (!includeSubFiles) {
+      return mainFiles;
+    }
+
+    const subFiles =
+      listWithFiles.diagrams
+        .flatMap((main) => main.subItems ?? [])
+        ?.map((diagram) => diagram?.diagramFile) ?? [];
+
+    return [...mainFiles, ...subFiles];
   }
 
   async getLatestDiagramList(processId) {
