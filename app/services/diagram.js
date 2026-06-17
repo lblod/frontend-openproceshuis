@@ -22,7 +22,7 @@ export default class DiagramService extends Service {
     const processWithLists = await this.store.query('process', {
       'filter[id]': processId,
       include:
-        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
+        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file,diagram-lists.diagrams.sub-items,diagram-lists.diagrams.sub-items.diagram-file',
       reload: true,
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
