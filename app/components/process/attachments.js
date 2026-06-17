@@ -156,23 +156,51 @@ export default class ProcessAttachments extends Component {
     return await this.store.query('file', query);
   }
 
-  fetchAttachments = task({ restartable: true }, async (process, page = 0) => {
+  fetchAttachments = task({ restartable: true }, async (_process, page = 0) => {
     try {
-      const processFileIds = await this.fetchProcessAttachmentFileIds(
-        process.id,
-      );
-      const infoAssetFileIds = await this.fetchProcessIcrFileIds(
-        process.informationAssets,
-      );
+      const process = await this.store.findRecord('process', _process.id, {
+        include:
+          'attachments,information-assets,information-assets.attachments',
+      });
+
+      const processFiles =
+        process?.attachments?.filter((f) => !f.isArchived) ?? [];
+
+      const icrSourceMap = new Map();
+      for (const icrAsset of process.informationAssets) {
+        const files = icrAsset.attachments.filter((f) => !f.isArchived) ?? [];
+        for (const file of files) {
+          icrSourceMap.set(file.id, {
+            id: icrAsset.id,
+            title: icrAsset.title ?? '/',
+          });
+        }
+      }
+
+      const fileIds = [
+        ...processFiles.map((f) => f.id),
+        ...icrSourceMap.keys(),
+      ];
 
       this.filesMeta = {};
-      const files = await this.fetchFilesWithIds(
-        [...processFileIds, ...infoAssetFileIds],
-        page,
-        this.args.size ?? 10,
-      );
-      this.filesMeta = files.meta;
-      return files;
+      const result = await this.store.query('file', {
+        'filter[id]': fileIds.join(','),
+        page: {
+          number: page,
+          size: this.args.size ?? 10,
+        },
+        sort: this.sort,
+      });
+      this.filesMeta = result.meta;
+
+      for (const file of result) {
+        const source = icrSourceMap.get(file.id);
+        if (source) {
+          file._icrSource = source;
+        }
+      }
+
+      return result;
     } catch {
       return [];
     }
