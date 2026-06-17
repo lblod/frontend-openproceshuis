@@ -13,6 +13,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class ProcessRelevantLinks extends Component {
   @service store;
   @service toaster;
+  @service router;
 
   @tracked isEditModalOpen = false;
   @tracked isDeleteModalOpen = false;
@@ -70,6 +71,10 @@ export default class ProcessRelevantLinks extends Component {
     }
 
     return false;
+  }
+
+  get currentProcessRouteName() {
+    return this.router.currentRouteName?.replace('.index', '');
   }
 
   @action
@@ -209,11 +214,30 @@ export default class ProcessRelevantLinks extends Component {
     this.isExecutingAction = false;
   }
 
-  fetchLinks = task({ restartable: true }, async (process) => {
-    const allLinks = process?.links?.filter((link) => !link.isArchived) ?? [];
-    const linkIds = allLinks.map((link) => link.id);
+  fetchLinks = task({ restartable: true }, async (_process) => {
+    const process = await this.store.findRecord('process', _process.id, {
+      include: 'links,information-assets,information-assets.links',
+    });
+    const processLinks =
+      process?.links?.filter((link) => !link.isArchived) ?? [];
 
-    return await this.store.query('link', {
+    const linkSourceMap = new Map();
+    for (const icrAsset of await process.informationAssets) {
+      const links = icrAsset.links.filter((link) => !link.isArchived) ?? [];
+      for (const link of links) {
+        linkSourceMap.set(link.id, {
+          id: icrAsset.id,
+          title: icrAsset.title ?? '/',
+        });
+      }
+    }
+
+    const linkIds = [
+      ...processLinks.map((link) => link.id),
+      ...linkSourceMap.keys(),
+    ];
+
+    const result = await this.store.query('link', {
       'filter[id]': linkIds.join(','),
       page: {
         number: this.args.page ?? 0,
@@ -221,6 +245,15 @@ export default class ProcessRelevantLinks extends Component {
       },
       sort: this.args.sort,
     });
+
+    for (const link of result) {
+      const source = linkSourceMap.get(link.id);
+      if (source) {
+        link._icrSource = source;
+      }
+    }
+
+    return result;
   });
 
   links = trackedTask(this, this.fetchLinks, () => [

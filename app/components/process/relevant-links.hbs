@@ -25,6 +25,7 @@
         @currentSorting={{@sort}}
         @label="Aangepast op"
       />
+      <th>Gekoppeld aan</th>
       <th></th>
       {{#if @canEdit}}<th></th>{{/if}}
     </c.header>
@@ -41,9 +42,31 @@
       </td>
       <td>{{or (date-format link.created true) "/"}}</td>
       <td>{{or (date-format link.modified true) "/"}}</td>
+      <td>
+        {{#if link._icrSource}}
+          Asset -
+          <AuLink
+            @route="information-assets.information-asset"
+            @model={{link._icrSource.id}}
+            @query={{hash
+              process=@process.id
+              parentRoute=this.currentProcessRouteName
+              edit=false
+            }}
+          >
+            {{link._icrSource.title}}
+          </AuLink>
+        {{else}}
+          Proces -
+          <AuLink @route="processes.process" @model={{@process.id}}>
+            {{@process.title}}
+          </AuLink>
+        {{/if}}
+      </td>
       {{#if @canEdit}}
         <td>
           <AuButton
+            @disabled={{link._icrSource}}
             @skin="naked"
             @width="block"
             {{on "click" (fn this.openEditModal link)}}
