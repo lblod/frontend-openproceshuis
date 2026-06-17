@@ -3,8 +3,8 @@
   <:header></:header>
   <:subheader>
     <AuHelpText @skin="secondary">
-      Ontdek hier vorige diagrammen versies van dit proces, geüpload in het
-      Open Proces Huis. Deze versies zijn beschikbaar om te downloaden.
+      Ontdek hier vorige diagrammen versies van dit proces, geüpload in het Open
+      Proces Huis. Deze versies zijn beschikbaar om te downloaden.
     </AuHelpText></:subheader>
 
   <:card>
@@ -38,7 +38,7 @@
           </TableMessage>
         {{else}}
           <c.body as |version|>
-            <td>
+            <td class="au-u-1-2">
               {{version.mainDiagramFileName}}
               {{#unless version.canRemove}}
                 <strong>
