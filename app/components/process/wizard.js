@@ -107,7 +107,7 @@ export default class ProcessWizard extends Component {
         nextStepButtonLabel: 'Aanpassen',
         canCancelStep: true,
         actionAtEndOfStep: async () =>
-          await this.diagramList.saveDiagramStructure(),
+          await this.saveDiagramStructure(this.diagramList),
       },
       {
         step: this.wizardStep.UPLOAD_FILES,
@@ -214,6 +214,21 @@ export default class ProcessWizard extends Component {
         this.disabledActions = [WizardAction.CHANGE_MAIN_PROCESS];
       }
     }
+  }
+
+  async saveDiagramStructure(diagramList) {
+    for (const main of diagramList.diagrams) {
+      await main.save();
+    }
+
+    const subItems = diagramList.diagrams.flatMap(
+      (main) => main.subItems ?? [],
+    );
+    for (const sub of subItems) {
+      await sub.save();
+    }
+
+    await diagramList.save();
   }
 
   async saveFileInDatabase(uploadedFile) {

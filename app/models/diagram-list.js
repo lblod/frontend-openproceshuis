@@ -29,18 +29,6 @@ export default class DiagramListModel extends Model {
     this.status = ENV.resourceStates.archived;
   }
 
-  async saveDiagramStructure() {
-    const subItemSavePromises = this.diagrams
-      .flatMap((main) => main.subItems ?? [])
-      .map((subItem) => subItem.save());
-    await Promise.all(subItemSavePromises);
-    const mainDiagramSavePromises = this.diagrams.map(
-      async (main) => await main.save(),
-    );
-    await Promise.all(mainDiagramSavePromises);
-    await this.save();
-  }
-
   async save() {
     this.modified = new Date();
     await super.save(...arguments);

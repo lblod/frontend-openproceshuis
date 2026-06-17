@@ -25,4 +25,9 @@ export default class DiagramListItemModel extends Model {
   setArchivedStatus() {
     this.status = ARCHIVED_STATUS_URI;
   }
+
+  async save() {
+    this.modified = new Date();
+    await super.save(...arguments);
+  }
 }
