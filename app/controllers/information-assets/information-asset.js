@@ -33,7 +33,7 @@ export default class InformationAssetsInformationAssetController extends Control
 
   @tracked pageAttachments = 0;
   @tracked sizeAttachments = 10;
-  @tracked sortAttachments = 'name';
+  @tracked sortAttachments = 'modified';
 
   get canEdit() {
     return (

@@ -217,6 +217,7 @@ export default class ProcessRelevantLinks extends Component {
   fetchLinks = task({ restartable: true }, async (_process) => {
     const process = await this.store.findRecord('process', _process.id, {
       include: 'links,information-assets,information-assets.links',
+      reload: true,
     });
     const processLinks =
       process?.links?.filter((link) => !link.isArchived) ?? [];

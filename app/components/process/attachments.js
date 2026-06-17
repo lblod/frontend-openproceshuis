@@ -107,7 +107,7 @@ export default class ProcessAttachments extends Component {
   });
 
   get sort() {
-    return this.args.sort ?? 'name';
+    return this.args.sort ?? 'modified';
   }
 
   async fetchProcessAttachmentFileIds(processId) {
@@ -161,6 +161,7 @@ export default class ProcessAttachments extends Component {
       const process = await this.store.findRecord('process', _process.id, {
         include:
           'attachments,information-assets,information-assets.attachments',
+        reload: true,
       });
 
       const processFiles =
