@@ -8,6 +8,7 @@
   {{on "click" (fn @onDiagramFileSelected @diagram.diagramFile)}}
 >
   <AuButton
+    class={{if @isSubRow "au-u-margin-left-large au-u-helptext" ""}}
     @skin="link"
     {{on "click" (fn @onDiagramFileSelected @diagram.diagramFile)}}
   >
@@ -17,10 +18,12 @@
 <td>{{date-format @diagram.diagramFile.created true}}</td>
 <td>{{file-size-format @diagram.diagramFile.size}}</td>
 <td>
-  {{#if (eq @diagram.position 1)}}
-    <AuPill @skin="success" @size="small">Hoofddiagram</AuPill>
+  {{#if @isSubRow}}
+    <AuPill @skin="info" @size="small">Subdiagram
+      {{@diagram.position}}</AuPill>
   {{else}}
-    {{@diagram.position}}
+    <AuPill @skin="success" @size="small">Hoofddiagram
+      {{@diagram.position}}</AuPill>
   {{/if}}
 </td>
 <td>

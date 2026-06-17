@@ -51,6 +51,7 @@
             {{#each diagram.subItems as |subDiagram|}}
               <tr class="diagram-sub-row" {{show-in-parent}}>
                 <DiagramList::Table::Row
+                  @isSubRow={{true}}
                   @process={{@process}}
                   @diagram={{subDiagram}}
                   @onDiagramFileSelected={{@onDiagramFileSelected}}
