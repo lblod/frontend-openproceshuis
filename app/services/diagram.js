@@ -22,7 +22,7 @@ export default class DiagramService extends Service {
     const processWithLists = await this.store.query('process', {
       'filter[id]': processId,
       include:
-        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file',
+        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file,diagram-lists.diagrams.sub-items,diagram-lists.diagrams.sub-items.diagram-file',
       reload: true,
     });
     const diagramLists = Array.from(processWithLists[0]?.diagramLists);
@@ -33,12 +33,22 @@ export default class DiagramService extends Service {
     });
   }
 
-  getAvailableFilesFromList(listWithFiles) {
-    return (
+  getAvailableFilesFromList(listWithFiles, includeSubFiles = true) {
+    const mainFiles =
       listWithFiles?.diagrams
         ?.filter((diagrams) => !diagrams?.diagramFile?.isArchived)
-        ?.map((diagram) => diagram?.diagramFile) ?? []
-    );
+        ?.map((diagram) => diagram?.diagramFile) ?? [];
+
+    if (!includeSubFiles) {
+      return mainFiles;
+    }
+
+    const subFiles =
+      listWithFiles.diagrams
+        .flatMap((main) => main.subItems ?? [])
+        ?.map((diagram) => diagram?.diagramFile) ?? [];
+
+    return [...mainFiles, ...subFiles];
   }
 
   async getLatestDiagramList(processId) {

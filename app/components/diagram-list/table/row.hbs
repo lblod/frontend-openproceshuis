@@ -1,0 +1,54 @@
+{{! template-lint-disable no-invalid-interactive }}
+<td
+  class="{{if
+      (eq @diagram.diagramFile.id @selectedDiagramFile.id)
+      'border-left-selected'
+      'border-left-transparent'
+    }}"
+>
+  <span class={{this.subRowButtonClass}}>
+    <AuButton
+      @skin="naked"
+      @icon={{this.iconSubRowOpen}}
+      {{on "click" this.openCloseSubRows}}
+    />
+  </span>
+  <AuButton
+    class={{if @isSubRow "au-u-margin-left-large" ""}}
+    @skin="link"
+    {{on "click" (fn @onDiagramFileSelected @diagram.diagramFile)}}
+  >
+    {{@diagram.diagramFile.name}}
+  </AuButton>
+</td>
+<td>{{date-format @diagram.diagramFile.created true}}</td>
+<td>{{file-size-format @diagram.diagramFile.size}}</td>
+<td>
+  {{#if @isSubRow}}
+    <AuPill @skin="info" @size="small">Subdiagram
+      {{@diagram.position}}</AuPill>
+  {{else}}
+    <AuPill @skin="success" @size="small">Hoofddiagram
+      {{@diagram.position}}</AuPill>
+  {{/if}}
+</td>
+<td>
+  <AuButton @skin="naked" {{on "click" @onFileDownload}}>Download</AuButton>
+</td>
+<td>
+  <AuLink
+    @route="diagrams.diagram.index"
+    @skin="button-naked"
+    @model={{@diagram.id}}
+    @query={{hash
+      previousRouteTitle=@process.title
+      previousRouteModelId=@process.id
+      previousRouteName="processes.process"
+    }}
+  >
+    Detail
+  </AuLink>
+</td>
+{{#if this.isSubRowOpen}}
+  {{yield}}
+{{/if}}
