@@ -175,7 +175,7 @@
       @isAddModalOpen={{this.isAddLinkModalOpen}}
       @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
       @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
-      @onSaved={{@onSaved}}
+      @onSaved={{@reloadLinksData}}
     />
   </:card>
 </DataCard>

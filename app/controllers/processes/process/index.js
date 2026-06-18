@@ -175,6 +175,11 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   @action
+  fetchRelevantLinks() {
+    this.relevantLinksPage = 0;
+  }
+
+  @action
   fetchAttachments() {
     this.attachmentsPage = 0;
   }
