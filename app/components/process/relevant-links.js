@@ -23,7 +23,7 @@ export default class ProcessRelevantLinks extends Component {
   @tracked labelValue;
   @tracked linkValue;
 
-  @tracked filesMeta = {};
+  @tracked linksMeta = {};
 
   get isLinkValid() {
     return isEmptyOrUrl(this.linkValue);
@@ -261,7 +261,10 @@ export default class ProcessRelevantLinks extends Component {
       ];
     }
 
-    if (linkIds.length === 0) return [];
+    if (linkIds.length === 0) {
+      this.linksMeta = {};
+      return [];
+    }
 
     const result = await this.store.query('link', {
       'filter[id]': linkIds.join(','),
@@ -271,6 +274,7 @@ export default class ProcessRelevantLinks extends Component {
       },
       sort: this.args.sort,
     });
+    this.linksMeta = result.meta;
 
     for (const link of result) {
       const source = linkSourceMap.get(link.id);

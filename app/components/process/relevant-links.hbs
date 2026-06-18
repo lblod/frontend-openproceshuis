@@ -2,7 +2,7 @@
   @content={{this.links.value}}
   @isLoading={{this.fetchLinks.isRunning}}
   @noDataMessage="Er werden geen relevante links gevonden"
-  {{!-- @hidePagination={{true}} --}}
+  @hidePagination={{true}}
   @page={{@page}}
   @size={{@size}}
   @sort={{@sort}}
@@ -87,6 +87,10 @@
     </c.body>
   </t.content>
 </AuDataTable>
+<Shared::TablePagination
+  @metadata={{this.linksMeta}}
+  @pageQueryParamName="relevantLinksPage"
+/>
 
 <AuModal @modalOpen={{@isAddModalOpen}} @closeModal={{this.closeAddModal}}>
   <:title>Voeg link toe</:title>
