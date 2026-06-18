@@ -14,6 +14,10 @@ export default class SharedTextCompared extends Component {
       });
     }
 
+    if (typeof old === 'string') {
+      return old.trim() !== current.trim();
+    }
+
     return old !== current;
   }
 
