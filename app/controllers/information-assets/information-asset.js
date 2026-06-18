@@ -14,9 +14,9 @@ export default class InformationAssetsInformationAssetController extends Control
     { pageAttachments: 'page-attachments' },
     { sizeAttachments: 'size-attachments' },
     { sortAttachments: 'sort-attachments' },
-    'relevantLinksPage',
-    'relevantLinksSize',
-    'relevantLinksSort',
+    { relevantLinksPage: 'page-links' },
+    { relevantLinksSize: 'size-links' },
+    { relevantLinksSort: 'sort-links' },
   ];
 
   @service store;

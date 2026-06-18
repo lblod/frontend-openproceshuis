@@ -8,12 +8,12 @@ import { toSafeString } from '../../../utils/string-manipulation';
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
     { versionedProcessId: { as: 'versionedProcess' } },
-    'attachmentsPage',
-    'attachmentsSize',
-    'attachmentsSort',
-    'relevantLinksPage',
-    'relevantLinksSize',
-    'relevantLinksSort',
+    { pageAttachments: 'page-attachments' },
+    { sizeAttachments: 'size-attachments' },
+    { sortAttachments: 'sort-attachments' },
+    { relevantLinksPage: 'page-links' },
+    { relevantLinksSize: 'size-links' },
+    { relevantLinksSort: 'sort-links' },
     'diagramVersionsPage',
     'diagramVersionsSort',
     'diagramsPage',
