@@ -1,6 +1,6 @@
 {{! template-lint-disable no-invalid-interactive }}
 <td
-  class="{{if
+  class="au-u-1-2 {{if
       (eq @diagram.diagramFile.id @selectedDiagramFile.id)
       'border-left-selected'
       'border-left-transparent'
@@ -14,7 +14,7 @@
     />
   </span>
   <AuButton
-    class={{if @isSubRow "au-u-margin-left-large" ""}}
+    class={{if @isSubRow "au-u-margin-left" ""}}
     @skin="link"
     {{on "click" (fn @onDiagramFileSelected @diagram.diagramFile)}}
   >
