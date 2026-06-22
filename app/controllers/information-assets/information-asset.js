@@ -14,6 +14,9 @@ export default class InformationAssetsInformationAssetController extends Control
     { pageAttachments: 'page-attachments' },
     { sizeAttachments: 'size-attachments' },
     { sortAttachments: 'sort-attachments' },
+    { relevantLinksPage: 'page-links' },
+    { relevantLinksSize: 'size-links' },
+    { relevantLinksSort: 'sort-links' },
   ];
 
   @service store;
@@ -32,8 +35,11 @@ export default class InformationAssetsInformationAssetController extends Control
   @tracked errorMessageTitle;
 
   @tracked pageAttachments = 0;
-  @tracked sizeAttachments = 10;
-  @tracked sortAttachments = 'name';
+  @tracked sizeAttachments = 5;
+  @tracked sortAttachments = '-created';
+  @tracked relevantLinksPage = 0;
+  @tracked relevantLinksSize = 5;
+  @tracked relevantLinksSort = '-modified';
 
   get canEdit() {
     return (
@@ -203,6 +209,11 @@ export default class InformationAssetsInformationAssetController extends Control
       this.isSaving = false;
     }
   });
+
+  @action
+  fetchRelevantLinks() {
+    this.relevantLinksPage = 0;
+  }
 
   @action
   openDeleteModal() {

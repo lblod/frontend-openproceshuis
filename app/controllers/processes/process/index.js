@@ -8,12 +8,12 @@ import { toSafeString } from '../../../utils/string-manipulation';
 export default class ProcessesProcessIndexController extends Controller {
   queryParams = [
     { versionedProcessId: { as: 'versionedProcess' } },
-    'attachmentsPage',
-    'attachmentsSize',
-    'attachmentsSort',
-    'relevantLinksPage',
-    'relevantLinksSize',
-    'relevantLinksSort',
+    { pageAttachments: 'page-attachments' },
+    { sizeAttachments: 'size-attachments' },
+    { sortAttachments: 'sort-attachments' },
+    { relevantLinksPage: 'page-links' },
+    { relevantLinksSize: 'size-links' },
+    { relevantLinksSort: 'sort-links' },
     'diagramVersionsPage',
     'diagramVersionsSort',
     'diagramsPage',
@@ -25,7 +25,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked attachmentsSort = '-created';
   @tracked relevantLinksPage = 0;
   @tracked relevantLinksSize = 5;
-  @tracked relevantLinksSort = '-created';
+  @tracked relevantLinksSort = '-modified';
   @tracked diagramVersionsPage = 0;
   @tracked diagramVersionsSort = '-created';
   @tracked diagramsPage = 0;
@@ -172,6 +172,11 @@ export default class ProcessesProcessIndexController extends Controller {
         },
       );
     }
+  }
+
+  @action
+  fetchRelevantLinks() {
+    this.relevantLinksPage = 0;
   }
 
   @action

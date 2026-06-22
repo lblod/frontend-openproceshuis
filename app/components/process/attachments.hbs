@@ -112,26 +112,28 @@
           </TableMessage>
         {{else}}
           <c.body as |attachment|>
-            <td>{{attachment.name}}</td>
+            <td class="au-u-1-2">
+              {{attachment.name}}
+            </td>
             <td>{{file-size-format attachment.size}}</td>
             <td>{{attachment.extension}}</td>
             <td>{{date-format attachment.created true}}</td>
-            <td>{{attachment._source}}
-              {{#if attachment.informationAssets}}
-                {{#each attachment.informationAssets as |icr|}}
-                  <AuLink
-                    @route="information-assets.information-asset"
-                    @model={{icr.id}}
-                    @query={{hash
-                      process=@process.id
-                      parentRoute=this.currentProcessRouteName
-                    }}
-                  >
-                    {{icr.title}}
-                  </AuLink>
-                {{/each}}
-
+            <td>
+              {{#if attachment._icrSource}}
+                Asset -
+                <AuLink
+                  @route="information-assets.information-asset"
+                  @model={{attachment._icrSource.id}}
+                  @query={{hash
+                    process=@process.id
+                    parentRoute=this.currentProcessRouteName
+                    edit=false
+                  }}
+                >
+                  {{attachment._icrSource.title}}
+                </AuLink>
               {{else}}
+                Proces -
                 <AuLink @route="processes.process" @model={{@process.id}}>
                   {{@process.title}}
                 </AuLink>
@@ -150,7 +152,7 @@
                   @skin="naked"
                   @alert="true"
                   @width="block"
-                  @disabled={{attachment.informationAsset}}
+                  @disabled={{attachment._icrSource}}
                   {{on "click" (fn this.openDeleteModal attachment)}}
                 >Verwijder</AuButton>
               </td>
@@ -173,7 +175,7 @@
       @isAddModalOpen={{this.isAddLinkModalOpen}}
       @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
       @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
-      @onSaved={{@onSaved}}
+      @onSaved={{@reloadLinksData}}
     />
   </:card>
 </DataCard>

@@ -13,6 +13,7 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class ProcessRelevantLinks extends Component {
   @service store;
   @service toaster;
+  @service router;
 
   @tracked isEditModalOpen = false;
   @tracked isDeleteModalOpen = false;
@@ -22,7 +23,7 @@ export default class ProcessRelevantLinks extends Component {
   @tracked labelValue;
   @tracked linkValue;
 
-  @tracked filesMeta = {};
+  @tracked linksMeta = {};
 
   get isLinkValid() {
     return isEmptyOrUrl(this.linkValue);
@@ -70,6 +71,18 @@ export default class ProcessRelevantLinks extends Component {
     }
 
     return false;
+  }
+
+  get resource() {
+    return this.args.informationAsset ?? this.args.process;
+  }
+
+  get isIcr() {
+    return !!this.args.informationAsset;
+  }
+
+  get currentProcessRouteName() {
+    return this.router.currentRouteName?.replace('.index', '');
   }
 
   @action
@@ -120,7 +133,7 @@ export default class ProcessRelevantLinks extends Component {
       label: this.cleanLabel,
       href: this.cleanLink,
     });
-    const links = await this.args.process.links;
+    const links = await this.resource.links;
     if (links.find((l) => !l.isArchived && l.href === linkModel.href)) {
       this.toaster.error('Deze link werd al toegevoegd.', undefined, {
         timeOut: 5000,
@@ -133,8 +146,8 @@ export default class ProcessRelevantLinks extends Component {
     try {
       await linkModel.save();
       links.push(linkModel);
-      this.args.process.links = [...links];
-      await this.args.process.save();
+      this.resource.links = [...links];
+      await this.resource.save();
       this.toaster.success('Link toegevoegd', undefined, {
         timeOut: 5000,
       });
@@ -166,7 +179,9 @@ export default class ProcessRelevantLinks extends Component {
       this.toaster.success('Link succesvol verwijderd', undefined, {
         timeOut: 5000,
       });
-      this.args.process.applyVersioning.perform();
+      if (!this.isIcr) {
+        this.resource.applyVersioning.perform();
+      }
       this.args.onSaved?.();
     } catch (error) {
       console.error(error);
@@ -209,11 +224,49 @@ export default class ProcessRelevantLinks extends Component {
     this.isExecutingAction = false;
   }
 
-  fetchLinks = task({ restartable: true }, async (process) => {
-    const allLinks = process?.links?.filter((link) => !link.isArchived) ?? [];
-    const linkIds = allLinks.map((link) => link.id);
+  fetchLinks = task({ restartable: true }, async (resource) => {
+    const linkSourceMap = new Map();
+    let linkIds;
 
-    return await this.store.query('link', {
+    if (this.isIcr) {
+      const asset = await this.store.findRecord(
+        'information-asset',
+        resource.id,
+        { include: 'links', reload: true },
+      );
+      const assetLinks = asset?.links?.filter((link) => !link.isArchived) ?? [];
+      for (const link of assetLinks) {
+        linkSourceMap.set(link.id, { id: asset.id, title: asset.title ?? '/' });
+      }
+      linkIds = assetLinks.map((link) => link.id);
+    } else {
+      const process = await this.store.findRecord('process', resource.id, {
+        include: 'links,information-assets,information-assets.links',
+        reload: true,
+      });
+      const processLinks =
+        process?.links?.filter((link) => !link.isArchived) ?? [];
+      for (const icrAsset of await process.informationAssets) {
+        const links = icrAsset.links.filter((link) => !link.isArchived) ?? [];
+        for (const link of links) {
+          linkSourceMap.set(link.id, {
+            id: icrAsset.id,
+            title: icrAsset.title ?? '/',
+          });
+        }
+      }
+      linkIds = [
+        ...processLinks.map((link) => link.id),
+        ...linkSourceMap.keys(),
+      ];
+    }
+
+    if (linkIds.length === 0) {
+      this.linksMeta = {};
+      return [];
+    }
+
+    const result = await this.store.query('link', {
       'filter[id]': linkIds.join(','),
       page: {
         number: this.args.page ?? 0,
@@ -221,10 +274,20 @@ export default class ProcessRelevantLinks extends Component {
       },
       sort: this.args.sort,
     });
+    this.linksMeta = result.meta;
+
+    for (const link of result) {
+      const source = linkSourceMap.get(link.id);
+      if (source) {
+        link._icrSource = source;
+      }
+    }
+
+    return result;
   });
 
   links = trackedTask(this, this.fetchLinks, () => [
-    this.args.process,
+    this.resource,
     this.args.page,
     this.args.sort,
   ]);

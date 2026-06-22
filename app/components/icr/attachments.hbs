@@ -47,12 +47,17 @@
 
   <:card>
     <Process::RelevantLinks
-      @process={{@informationAsset}}
+      @informationAsset={{@informationAsset}}
       @canEdit={{@canEdit}}
+      @page={{@linksPage}}
+      @size={{@linksSize}}
+      @sort={{@linksSort}}
       @isAddModalOpen={{this.isAddLinkModalOpen}}
       @onLinkAdded={{fn (mut this.isAddLinkModalOpen) false}}
       @closeModal={{fn (mut this.isAddLinkModalOpen) false}}
+      @onSaved={{@onSaved}}
     />
+    <br />
     <AuDataTable
       @content={{this.attachments}}
       @isLoading={{this.attachmentsAreLoading}}
@@ -95,27 +100,25 @@
           </TableMessage>
         {{else}}
           <c.body as |attachment|>
-            <td>{{attachment.name}}</td>
+            <td class="au-u-1-2">
+              {{attachment.name}}
+            </td>
             <td>{{file-size-format attachment.size}}</td>
             <td>{{attachment.extension}}</td>
             <td>{{date-format attachment.created true}}</td>
             <td>
               <AuButton
-                @icon="download"
-                @skin="link"
+                @skin="naked"
                 @width="block"
-                @hideText="true"
                 {{on "click" (fn this.downloadFile attachment)}}
               >Download</AuButton>
             </td>
             {{#if @canEdit}}
               <td>
                 <AuButton
-                  @icon="bin"
                   @skin="naked"
                   @alert="true"
                   @width="block"
-                  @hideText="true"
                   {{on "click" (fn this.openDeleteModal attachment)}}
                 >Verwijder</AuButton>
               </td>
