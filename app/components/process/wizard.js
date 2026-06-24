@@ -182,6 +182,10 @@ export default class ProcessWizard extends Component {
   @action
   manageDiagrams() {
     this.args.onCloseModal?.();
+    this.router.transitionTo(
+      'processes.process.manage-diagrams',
+      this.args.process.id,
+    );
   }
 
   @action
