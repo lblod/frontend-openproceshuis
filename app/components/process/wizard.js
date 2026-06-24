@@ -182,9 +182,17 @@ export default class ProcessWizard extends Component {
   @action
   manageDiagrams() {
     this.args.onCloseModal?.();
+    const processRouteName = this.router.currentRouteName.replace('.index', '');
     this.router.transitionTo(
-      'processes.process.manage-diagrams',
+      `${processRouteName}.manage-diagrams`,
       this.args.process.id,
+      {
+        queryParams: {
+          previousRouteName: processRouteName,
+          previousRouteModelId: this.args.process.id,
+          previousRouteTitle: this.args.process.title,
+        },
+      },
     );
   }
 

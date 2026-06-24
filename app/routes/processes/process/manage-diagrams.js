@@ -7,6 +7,12 @@ export default class ProcessesProcessManageDiagramsRoute extends Route {
   @service store;
   @service diagram;
 
+  queryParams = [
+    { previousRouteTitle: { refreshModel: false } },
+    { previousRouteModelId: { refreshModel: false } },
+    { previousRouteName: { refreshModel: false } },
+  ];
+
   beforeModel(transition) {
     if (!this.session.isAuthenticated) {
       this.session.requireAuthentication(transition, 'auth.login');
@@ -30,7 +36,6 @@ export default class ProcessesProcessManageDiagramsRoute extends Route {
     return {
       process: process,
       diagramList: diagramList,
-      breadcrumbRouteName: parentRouteName,
     };
   }
 }
