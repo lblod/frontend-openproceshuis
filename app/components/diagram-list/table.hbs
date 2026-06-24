@@ -44,6 +44,7 @@
         {{#let (gt diagram.subItems.length 0) as |hasSubItems|}}
           <DiagramList::Table::Row
             @process={{@process}}
+            @processRouteName={{@processRouteName}}
             @diagram={{diagram}}
             @selectedDiagramFile={{@selectedDiagramFile}}
             @hasSubItems={{hasSubItems}}
@@ -56,6 +57,7 @@
                   <DiagramList::Table::Row
                     @isSubRow={{true}}
                     @process={{@process}}
+                    @processRouteName={{@processRouteName}}
                     @diagram={{subDiagram}}
                     @selectedDiagramFile={{@selectedDiagramFile}}
                     @onDiagramFileSelected={{@onDiagramFileSelected}}

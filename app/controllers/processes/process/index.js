@@ -45,6 +45,10 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked selectedDiagramFile;
   @tracked isWizardModalOpen;
 
+  get processRouteName() {
+    return this.router.currentRouteName.replace('.index', '');
+  }
+
   get process() {
     return this.model.process;
   }
