@@ -1,5 +1,4 @@
 <AuModal
-  class="process-wizard-modal"
   @modalOpen={{true}}
   @closable={{true}}
   @closeModal={{@onCloseModal}}
@@ -25,8 +24,9 @@
     {{#unless this.executeStepActionAsTask.isRunning}}
       {{#if (eq this.activeStep.step this.wizardStep.SELECT_ACTION)}}
         <Wizard::Actions
-          @onActionSelected={{this.onActionSelected}}
+          @onQuickActionSelected={{this.onQuickActionSelected}}
           @disabledActions={{this.disabledActions}}
+          @onManageDiagrams={{this.manageDiagrams}}
         />
       {{/if}}
       {{#if (eq this.activeStep.step this.wizardStep.UPLOAD_FILES)}}

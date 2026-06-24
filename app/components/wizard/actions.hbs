@@ -1,22 +1,53 @@
-<div class="wizard-actions" ...attributes>
-  {{#each this.actions as |action|}}
-    {{! template-lint-disable no-invalid-interactive }}
-    <div
-      class="{{if action.isDisabled 'is-disabled-action'}}
-        width-full border-radius animate-up"
-      {{on "click" action.next}}
-    >
-      <AuIcon
-        @icon={{action.icon}}
-        @size="large"
-        @alignment="left"
-        style={{action.iconColorClass}}
-      />
-      <p class="au-u-h4 au-u-medium">{{action.label}}</p>
-      <p>{{action.description}}</p>
-      {{#if action.isDisabled}}
-        <AuHelpText @warning={{true}}>{{action.disabledReason}}</AuHelpText>
-      {{/if}}
+<div class="au-u-flex au-u-flex--column au-u-flex--spaced" ...attributes>
+  <div class="au-u-flex au-u-flex--column">
+    <div class="wizard-action-grid">
+      {{#each this.quickActions as |action|}}
+        <button
+          type="button"
+          class="wizard-action-card
+            {{if action.isDisabled 'is-disabled-action'}}"
+          disabled={{action.isDisabled}}
+          {{on "click" action.onSelect}}
+        >
+          <AuIcon
+            @icon={{action.icon}}
+            @size="large"
+            @alignment="left"
+            style={{action.iconStyle}}
+          />
+          <p class="au-u-h4 au-u-medium">{{action.label}}</p>
+          <p>{{action.description}}</p>
+          {{#if action.isDisabled}}
+            <AuHelpText @warning={{true}}>{{action.disabledReason}}</AuHelpText>
+          {{/if}}
+        </button>
+      {{/each}}
     </div>
-  {{/each}}
+  </div>
+
+  <div class="au-u-flex au-u-flex--column">
+    <p class="au-u-h4 au-u-muted au-u-margin-bottom-small">GEAVANCEERD</p>
+    <button
+      type="button"
+      class="wizard-action-card wizard-action-card--advanced
+        {{if this.isManageDiagramsDisabled 'is-disabled-action'}}"
+      disabled={{this.isManageDiagramsDisabled}}
+      {{on "click" this.onManageDiagrams}}
+    >
+      <div class="au-u-flex au-u-flex--center">
+        <AuIcon @icon="sitemap" @size="large" @alignment="left" />
+        <div>
+          <p class="au-u-h4 au-u-medium">Diagrammen beheren</p>
+          <p>Toevoegen, verwijderen en structureren in een aparte pagina.</p>
+          {{#if this.isManageDiagramsDisabled}}
+            <AuHelpText @warning={{true}}>Deze actie is tijdelijk niet
+              beschikbaar</AuHelpText>
+          {{/if}}
+        </div>
+      </div>
+      {{#unless this.isManageDiagramsDisabled}}
+        <AuIcon @icon="chevron-right" @size="large" />
+      {{/unless}}
+    </button>
+  </div>
 </div>

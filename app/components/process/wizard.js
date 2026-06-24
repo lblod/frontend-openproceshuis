@@ -180,7 +180,12 @@ export default class ProcessWizard extends Component {
   }
 
   @action
-  async onActionSelected(action) {
+  manageDiagrams() {
+    this.args.onCloseModal?.();
+  }
+
+  @action
+  async onQuickActionSelected(action) {
     this.currentAction = action;
     if (this.currentAction === WizardAction.CHANGE_MAIN_PROCESS) {
       this.mainProcessFile = null;
@@ -188,6 +193,7 @@ export default class ProcessWizard extends Component {
     if (this.currentAction === WizardAction.REPLACE_DIAGRAMS) {
       this.diagramList = null;
       this.files = [];
+      this.fileWrappers = [];
     }
     this.nextStep();
   }
