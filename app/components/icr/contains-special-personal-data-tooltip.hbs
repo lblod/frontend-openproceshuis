@@ -1,12 +1,15 @@
-<Shared::Tooltip
-  @alignment={{@alignment}}
-  @show={{true}}
-  @text="Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische gegevens, religieuze overtuiging, etnische achtergrond, biometrische gegevens."
->
-  <AuIcon
-    class="color--info"
+<AuTooltip @placement="right" as |tooltip|>
+  <AuButton
     @icon="circle-question"
+    @hideText={{true}}
+    @skin="link"
     @size="large"
-    @alignment="right"
+    class="color--gray"
+    {{tooltip.target}}
   />
-</Shared::Tooltip>
+  <tooltip.Content>
+    <p>Gevoelige gegevens die extra bescherming vereisen bijvoorbeeld medische
+      gegevens, religieuze overtuiging, etnische achtergrond, biometrische
+      gegevens.</p>
+  </tooltip.Content>
+</AuTooltip>

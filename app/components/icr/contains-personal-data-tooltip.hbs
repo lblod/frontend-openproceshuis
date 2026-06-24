@@ -1,12 +1,14 @@
-<Shared::Tooltip
-  @alignment={{@alignment}}
-  @show={{true}}
-  @text="Gegevens die direct of indirect een persoon identificeren bijvoorbeeld geboortedatum, foto, naam, thuisadres."
->
-  <AuIcon
-    class="color--info"
+<AuTooltip @placement="right" as |tooltip|>
+  <AuButton
     @icon="circle-question"
+    @hideText={{true}}
+    @skin="link"
     @size="large"
-    @alignment="right"
+    class="color--gray"
+    {{tooltip.target}}
   />
-</Shared::Tooltip>
+  <tooltip.Content>
+    <p>Gegevens die direct of indirect een persoon identificeren bijvoorbeeld
+      geboortedatum, foto, naam, thuisadres.</p>
+  </tooltip.Content>
+</AuTooltip>
