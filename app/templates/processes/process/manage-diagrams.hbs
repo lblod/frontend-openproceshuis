@@ -5,4 +5,35 @@
   model=this.breadcrumbModel
 }}
 {{breadcrumb "Beheer process diagrammen"}}
-{{outlet}}
+
+<AuToolbar @border="bottom" @size="large" as |Group|>
+  <Group />
+  <Group>
+    <AuButtonGroup>
+      <AuButton
+        class="border-radius"
+        @skin="secondary"
+        {{on "click" this.onCancel}}
+      >
+        Annuleer
+      </AuButton>
+      <AuButton
+        @disabled={{this.saveDiagramStructure.isRunning}}
+        @loading={{this.saveDiagramStructure.isRunning}}
+        @loadingMessage="Aanpassen"
+        @skin="primary"
+        class="border-radius"
+        {{on "click" (perform this.saveDiagramStructure @model.diagramList)}}
+      >
+        Wijzigingen opslaan
+      </AuButton>
+    </AuButtonGroup>
+  </Group>
+</AuToolbar>
+<div class="au-o-box">
+  <p class="au-u-muted au-u-italic">Hieronder vind je al de diagrammen die
+    opgeladen werden. Door een diagram vast te nemen en te verplaatsen pas je de
+    positie van het diagram aan, waarbij het bovenste diagram je hoofd diagram
+    is.</p>
+  <DiagramList::DragAndDropSort @diagramList={{@model.diagramList}} />
+</div>

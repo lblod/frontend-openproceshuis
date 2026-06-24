@@ -1,7 +1,15 @@
 import Controller from '@ember/controller';
+
+import { action } from '@ember/object';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
+import { task } from 'ember-concurrency';
+
 export default class ProcessesProcessManageDiagramsController extends Controller {
+  @service router;
+  @service toaster;
+
   queryParams = [
     'previousRouteTitle',
     'previousRouteModelId',
@@ -11,6 +19,41 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked previousRouteTitle;
   @tracked previousRouteModelId;
   @tracked previousRouteName;
+
+  saveDiagramStructure = task({ drop: true }, async (diagramList) => {
+    try {
+      for (const main of diagramList.diagrams) {
+        await main.save();
+      }
+
+      const subItems = diagramList.diagrams.flatMap(
+        (main) => main.subItems ?? [],
+      );
+      for (const sub of subItems) {
+        await sub.save();
+      }
+
+      await diagramList.save();
+
+      this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
+        timeOut: 2500,
+      });
+    } catch (error) {
+      this.toaster.success(
+        'Er liep iets mis bij het aanpassen van de diagrammen structuur',
+        undefined,
+        {
+          timeOut: 5000,
+        },
+      );
+    }
+  });
+
+  @action
+  onCancel() {
+    this.model.diagramList.rollbackAttributes();
+    this.router.transitionTo(this.breadcrumbRouteName, this.breadcrumbModel);
+  }
 
   get hasPreviousRouteBreadCrumb() {
     return (
