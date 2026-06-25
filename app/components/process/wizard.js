@@ -281,7 +281,7 @@ export default class ProcessWizard extends Component {
       });
     } catch (error) {
       this.toaster.error(
-        `Er liep iets mis bij het extraheren van de BPMN elementen uit het VISIO bestand (${fileId})`,
+        `Er liep iets mis bij het extraheren van de BPMN elementen uit het Visio bestand (${fileId})`,
         null,
         { timeOut: 2500 },
       );
