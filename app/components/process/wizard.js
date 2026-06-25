@@ -66,6 +66,17 @@ export default class ProcessWizard extends Component {
     return this.steps[this.activeStepIndex];
   }
 
+  get sortedFiles() {
+    const filesWithDiagramListItemPosition = this.files.map((_fileModel) => {
+      _fileModel.position = this.diagramList.diagrams.find(
+        (d) => d.diagramFile?.id === _fileModel.id,
+      ).position;
+      return _fileModel;
+    });
+
+    return filesWithDiagramListItemPosition.sort((a, b) => a > b);
+  }
+
   @action
   async nextStep() {
     if (!this.steps[this.activeStepIndex].canGoToNextStep) {

@@ -46,7 +46,7 @@
             </Group>
           </AuToolbar>
           <div class="au-o-flow">
-            {{#each @model.files as |file|}}
+            {{#each this.sortedFiles as |file|}}
               <File::SlimCard
                 @primaryName={{file.name}}
                 @secondaryName={{file-size-format file.size}}

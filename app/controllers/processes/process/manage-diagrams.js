@@ -44,6 +44,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
         timeOut: 2500,
       });
     } catch (error) {
+      this.onCancel();
       this.toaster.success(
         'Er liep iets mis bij het aanpassen van de diagrammen structuur',
         undefined,
@@ -51,6 +52,8 @@ export default class ProcessesProcessManageDiagramsController extends Controller
           timeOut: 5000,
         },
       );
+    } finally {
+      this.isListChanged = false;
     }
   });
 
@@ -63,6 +66,19 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @action
   onDiagramListChanged() {
     this.isListChanged = true;
+  }
+
+  get sortedFiles() {
+    const filesWithDiagramListItemPosition = this.model.files.map(
+      (_fileModel) => {
+        _fileModel.position = this.model.diagramList.diagrams.find(
+          (d) => d.diagramFile?.id === _fileModel.id,
+        )?.position;
+        return _fileModel;
+      },
+    );
+
+    return filesWithDiagramListItemPosition.sort((a, b) => a > b);
   }
 
   get hasPreviousRouteBreadCrumb() {

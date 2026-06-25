@@ -52,7 +52,7 @@
             @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
           >
             {{#if hasSubItems}}
-              {{#each diagram.subItems as |subDiagram|}}
+              {{#each diagram.sortedSubItems as |subDiagram|}}
                 <tr class="diagram-sub-row" {{show-in-parent}}>
                   <DiagramList::Table::Row
                     @isSubRow={{true}}

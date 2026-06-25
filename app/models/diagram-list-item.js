@@ -26,6 +26,10 @@ export default class DiagramListItemModel extends Model {
     this.status = ARCHIVED_STATUS_URI;
   }
 
+  get sortedSubItems() {
+    return Array.from(this.subItems).sort((a, b) => a.position < b.position);
+  }
+
   async save() {
     this.modified = new Date();
     await super.save(...arguments);

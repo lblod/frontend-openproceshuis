@@ -35,6 +35,10 @@
             @secondaryName="Hoofddiagram"
           >
             <:actions>
+              <AuPill
+                @skin="border"
+                @size="small"
+              >{{subItem.parent.position}}.{{subItem.self.position}}</AuPill>
               <AuIcon
                 @icon="drag-handle"
                 @size="large"
