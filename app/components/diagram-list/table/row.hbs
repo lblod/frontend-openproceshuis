@@ -43,7 +43,7 @@
     @query={{hash
       previousRouteTitle=@process.title
       previousRouteModelId=@process.id
-      previousRouteName="processes.process"
+      previousRouteName=(or @processRouteName "processes.process")
     }}
   >
     Detail

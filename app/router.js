@@ -30,6 +30,7 @@ Router.map(function () {
   this.route('processes', { path: 'processen' }, function () {
     this.route('process', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
+      this.route('manage-diagrams', { path: 'diagrammen-beheren' });
     });
   });
 
@@ -43,6 +44,7 @@ Router.map(function () {
   this.route('shared-processes', { path: 'gedeelde-processen' }, function () {
     this.route('process', { path: '/:id/' }, function () {
       this.route('index', { path: '' });
+      this.route('manage-diagrams', { path: 'diagrammen-beheren' });
     });
   });
 
@@ -52,6 +54,7 @@ Router.map(function () {
     function () {
       this.route('process', { path: '/:id/' }, function () {
         this.route('index', { path: '' });
+        this.route('manage-diagrams', { path: 'diagrammen-beheren' });
       });
     },
   );

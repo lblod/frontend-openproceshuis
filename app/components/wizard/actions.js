@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { action } from '@ember/object';
 
 export const WizardAction = Object.freeze({
   REPLACE_DIAGRAMS: 'replace_diagrams',
@@ -7,55 +8,52 @@ export const WizardAction = Object.freeze({
 });
 
 export default class WizardActions extends Component {
-  get actions() {
+  get quickActions() {
     return [
       {
+        id: WizardAction.REPLACE_DIAGRAMS,
         label: 'Bestanden vervangen',
         icon: 'upload',
-        iconColorClass: 'fill: var(--au-blue-900) !important',
-        description: 'Upload nieuwe bestanden om de diagrammen te vervangen.',
-        next: () => {
-          if (this.isActionDisabled(WizardAction.REPLACE_DIAGRAMS)) {
-            return;
-          }
-          this.args.onActionSelected(WizardAction.REPLACE_DIAGRAMS);
-        },
+        iconStyle: 'fill: var(--au-blue-900) !important',
+        description: 'Upload nieuwe versies van bestaande diagrammen.',
         isDisabled: this.isActionDisabled(WizardAction.REPLACE_DIAGRAMS),
         disabledReason: 'Deze actie is tijdelijk niet beschikbaar',
+        onSelect: () => {
+          if (!this.isActionDisabled(WizardAction.REPLACE_DIAGRAMS)) {
+            this.args.onQuickActionSelected(WizardAction.REPLACE_DIAGRAMS);
+          }
+        },
       },
       {
+        id: WizardAction.CHANGE_MAIN_PROCESS,
         label: 'Hoofdproces wijzigen',
         icon: 'ordered-list',
-        iconColorClass: 'fill: var(--au-green-500) !important',
-        description: 'Wijzig het hoofdproces van het proces.',
-        next: () => {
-          if (this.isActionDisabled(WizardAction.CHANGE_MAIN_PROCESS)) {
-            return;
-          }
-          this.args.onActionSelected(WizardAction.CHANGE_MAIN_PROCESS);
-        },
+        iconStyle: 'fill: var(--au-green-500) !important',
+        description: 'Kies welk diagram het hoofdproces is.',
         isDisabled: this.isActionDisabled(WizardAction.CHANGE_MAIN_PROCESS),
         disabledReason:
           'Je hebt één diagram geüpload. Dit is automatisch het hoofddiagram.',
-      },
-      {
-        label: 'Diagrammen structuur wijzigen',
-        icon: 'filter',
-        iconColorClass: 'fill: var(--au-orange-500) !important',
-        description: 'Wijzig de structuur/positie van de diagrammen.',
-        next: () => {
-          if (this.isActionDisabled(WizardAction.STRUCTURE_DIAGRAMS)) {
-            return;
+        onSelect: () => {
+          if (!this.isActionDisabled(WizardAction.CHANGE_MAIN_PROCESS)) {
+            this.args.onQuickActionSelected(WizardAction.CHANGE_MAIN_PROCESS);
           }
-          this.args.onActionSelected(WizardAction.STRUCTURE_DIAGRAMS);
         },
-        isDisabled: this.isActionDisabled(WizardAction.STRUCTURE_DIAGRAMS),
-        disabledReason: 'Deze actie is tijdelijk niet beschikbaar',
       },
     ];
   }
 
+  get isManageDiagramsDisabled() {
+    return this.isActionDisabled(WizardAction.STRUCTURE_DIAGRAMS);
+  }
+
   isActionDisabled(action) {
     return this.args.disabledActions?.includes(action);
+  }
+
+  @action
+  onManageDiagrams() {
+    if (!this.isManageDiagramsDisabled) {
+      this.args.onManageDiagrams?.();
+    }
   }
 }
