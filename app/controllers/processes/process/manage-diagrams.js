@@ -23,7 +23,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked previousRouteModelId;
   @tracked previousRouteName;
 
-  @tracked isListChanged;
+  @tracked isListChanged = false;
 
   saveDiagramStructure = task({ drop: true }, async (diagramList) => {
     try {
@@ -58,9 +58,18 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   });
 
   @action
-  onCancel() {
-    this.model.diagramList.rollbackAttributes();
-    this.router.transitionTo(this.breadcrumbRouteName, this.breadcrumbModel);
+  async onResetStructure() {
+    const diagramList = this.model.diagramList;
+
+    for (const main of diagramList.diagrams) {
+      for (const sub of main.subItems ?? []) {
+        sub.rollbackAttributes();
+      }
+      main.rollbackAttributes();
+    }
+    diagramList.rollbackAttributes();
+    await this.router.refresh();
+    this.isListChanged = false;
   }
 
   @action

@@ -9,11 +9,42 @@
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   <div class="au-o-grid au-o-grid--small">
     <div class="au-o-grid__item au-u-4-6@medium">
-      <AuToolbar as |Group|>
+      <AuToolbar class="au-u-margin-bottom" as |Group|>
         <Group>
           <h2 class="au-u-h4 au-u-medium">
             Structuur
           </h2>
+        </Group>
+        <Group>
+          <AuButtonGroup>
+            <AuButton
+              @disabled={{or
+                this.saveDiagramStructure.isRunning
+                (not this.isListChanged)
+              }}
+              @skin="secondary"
+              class="border-radius"
+              {{on "click" this.onResetStructure}}
+            >
+              Zet terug
+            </AuButton>
+            <AuButton
+              @disabled={{or
+                this.saveDiagramStructure.isRunning
+                (not this.isListChanged)
+              }}
+              @loading={{this.saveDiagramStructure.isRunning}}
+              @loadingMessage="Aanpassen"
+              @skin="primary"
+              class="border-radius"
+              {{on
+                "click"
+                (perform this.saveDiagramStructure @model.diagramList)
+              }}
+            >
+              Wijzigingen opslaan
+            </AuButton>
+          </AuButtonGroup>
         </Group>
       </AuToolbar>
       <p class="au-u-muted au-u-italic au-u-margin-bottom">Hieronder vind je al
@@ -71,33 +102,6 @@
     </aside>
   </div>
 </AuBodyContainer>
-<AuToolbar @border="top" @size="large" @skin="tint" as |Group|>
-  <Group />
-  <Group>
-    <AuButtonGroup>
-      <AuButton
-        class="border-radius"
-        @skin="secondary"
-        {{on "click" this.onCancel}}
-      >
-        Annuleer
-      </AuButton>
-      <AuButton
-        @disabled={{or
-          this.saveDiagramStructure.isRunning
-          (not this.isListChanged)
-        }}
-        @loading={{this.saveDiagramStructure.isRunning}}
-        @loadingMessage="Aanpassen"
-        @skin="primary"
-        class="border-radius"
-        {{on "click" (perform this.saveDiagramStructure @model.diagramList)}}
-      >
-        Wijzigingen opslaan
-      </AuButton>
-    </AuButtonGroup>
-  </Group>
-</AuToolbar>
 
 {{#if this.isWizardModalOpen}}
   <Process::Wizard
@@ -108,3 +112,11 @@
     @onSaved={{fn (mut this.isWizardModalOpen) false}}
   />
 {{/if}}
+
+<Shared::DeleteModal
+  @isModalOpen={{this.isDeleteModalOpen}}
+  @closeModal={{this.closeDeleteModal}}
+  @onDelete={{fn (perform this.onDeleteAsset)}}
+  @isLoading={{this.onDeleteAsset.isRunning}}
+  @title="dit diagram"
+/>
