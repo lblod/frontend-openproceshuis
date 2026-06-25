@@ -81,6 +81,11 @@ export default class ProcessesProcessManageDiagramsController extends Controller
     return filesWithDiagramListItemPosition.sort((a, b) => a > b);
   }
 
+  @action
+  onRemoveFile(_file) {
+    console.log('remove file', _file?.id);
+  }
+
   get hasPreviousRouteBreadCrumb() {
     return (
       this.previousRouteTitle &&

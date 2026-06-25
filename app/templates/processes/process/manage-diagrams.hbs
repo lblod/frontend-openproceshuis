@@ -45,14 +45,23 @@
               </AuButton>
             </Group>
           </AuToolbar>
-          <div class="au-o-flow">
+          <div class="c-file-list">
             {{#each this.sortedFiles as |file|}}
               <File::SlimCard
                 @primaryName={{file.name}}
                 @secondaryName={{file-size-format file.size}}
               >
                 <:actions>
-                  <AuIcon @icon="bin" @size="large" class="au-u-margin-right" />
+                  <AuButton
+                    @skin="naked"
+                    @alert="true"
+                    @icon="bin"
+                    @hideText={{true}}
+                    aria-label="Verwijder {{file.name}}"
+                    {{on "click" (fn this.onRemoveFile file)}}
+                  >
+                    Verwijder
+                  </AuButton>
                 </:actions>
               </File::SlimCard>
             {{/each}}

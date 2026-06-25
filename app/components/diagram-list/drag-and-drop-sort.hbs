@@ -1,6 +1,6 @@
 <div>
   <DragSortList @items={{this.items}} @dragEndAction={{this.dragEnd}} as |item|>
-    <File::SlimCard
+    <File::DragCard
       class="au-u-background-gray-100"
       @primaryName={{item.label}}
       @secondaryName="Hoofddiagram"
@@ -8,7 +8,7 @@
       <:actions>
         <AuIcon @icon="drag-handle" @size="large" class="au-u-margin-right" />
       </:actions>
-    </File::SlimCard>
+    </File::DragCard>
     <div class="au-u-margin-left">
       <DragSortList
         @items={{item.subItems}}
@@ -29,7 +29,7 @@
             </div>
           </div>
         {{else}}
-          <File::SlimCard
+          <File::DragCard
             class="tree-node--sub"
             @primaryName={{subItem.label}}
             @secondaryName="Hoofddiagram"
@@ -45,7 +45,7 @@
                 class="au-u-margin-right"
               />
             </:actions>
-          </File::SlimCard>
+          </File::DragCard>
         {{/if}}
       </DragSortList>
     </div>

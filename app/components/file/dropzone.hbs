@@ -63,11 +63,9 @@
       {{#if (eq this.queue.files.length 0)}}
         <p class="au-u-muted">Er werden nog geen bestanden geselecteerd</p>
       {{/if}}
-      {{! template-lint-disable no-inline-styles }}
-      <div style="overflow-y: auto;">
+      <div class="c-file-list">
         {{#each this.queue.files as |fileWrapper|}}
           <File::SlimCard
-            class="au-u-background-gray-100"
             @primaryName={{fileWrapper.name}}
             @secondaryName={{file-size-format fileWrapper.size}}
           >
@@ -76,9 +74,12 @@
                 <AuButton
                   @skin="naked"
                   @alert="true"
-                  class="au-u-padding-right"
+                  @icon="bin"
+                  @hideText={{true}}
                   {{on "click" (fn this.removeFileFromQueue fileWrapper)}}
-                >Verwijder</AuButton>
+                >
+                  Verwijder
+                </AuButton>
               {{/if}}
             </:actions>
           </File::SlimCard>
