@@ -1,14 +1,14 @@
 <div>
   <DragSortList @items={{this.items}} @dragEndAction={{this.dragEnd}} as |item|>
-    <div
-      class="au-u-flex au-u-flex--between au-u-flex--vertical-center au-u-background-gray-100 border-line-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
+    <File::SlimCard
+      class="au-u-background-gray-100"
+      @primaryName={{item.label}}
+      @secondaryName="Hoofddiagram"
     >
-      <File::SlimCard
-        @primaryName={{item.label}}
-        @secondaryName="Hoofddiagram"
-        @showDragIcon={{true}}
-      />
-    </div>
+      <:actions>
+        <AuIcon @icon="drag-handle" @size="large" class="au-u-margin-right" />
+      </:actions>
+    </File::SlimCard>
     <div class="au-u-margin-left">
       <DragSortList
         @items={{item.subItems}}
@@ -17,7 +17,7 @@
       >
         {{#if subItem.isPlaceholder}}
           <div
-            class="cursor-not-allowed au-u-flex au-u-flex--between au-u-flex--vertical-center border-line-dashed-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
+            class="cursor-not-allowed au-u-flex au-u-flex--between au-u-flex--vertical-center border-line-dashed-200 border-radius-10 au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
           >
             <div
               class="au-u-flex au-u-flex--row au-u-flex--vertical-center au-u-flex--between"
@@ -29,15 +29,19 @@
             </div>
           </div>
         {{else}}
-          <div
-            class="tree-node--sub au-u-flex au-u-flex--between au-u-flex--vertical-center border-line-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
+          <File::SlimCard
+            class="tree-node--sub"
+            @primaryName={{subItem.label}}
+            @secondaryName="Hoofddiagram"
           >
-            <File::SlimCard
-              @primaryName={{subItem.label}}
-              @secondaryName="Hoofddiagram"
-              @showDragIcon={{true}}
-            />
-          </div>
+            <:actions>
+              <AuIcon
+                @icon="drag-handle"
+                @size="large"
+                class="au-u-margin-right"
+              />
+            </:actions>
+          </File::SlimCard>
         {{/if}}
       </DragSortList>
     </div>

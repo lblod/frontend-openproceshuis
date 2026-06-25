@@ -66,24 +66,22 @@
       {{! template-lint-disable no-inline-styles }}
       <div style="overflow-y: auto;">
         {{#each this.queue.files as |fileWrapper|}}
-          <div
-            class="au-u-flex au-u-flex--between au-u-flex--vertical-center au-u-background-gray-100 border-line-200 border-radius au-u-padding-small au-u-padding-left-tiny au-u-padding-right-tiny au-u-margin-top-tiny au-u-margin-bottom-tiny"
+          <File::SlimCard
+            class="au-u-background-gray-100"
+            @primaryName={{fileWrapper.name}}
+            @secondaryName={{file-size-format fileWrapper.size}}
           >
-            <div class="au-u-flex au-u-flex--row au-u-flex--vertical-center">
-              <AuIcon @icon="file" @size="large" class="au-u-margin-left" />
-              <div class="au-u-margin-left-small">
-                <p>{{fileWrapper.name}}</p>
-                <p class="au-u-muted">{{file-size-format fileWrapper.size}}</p>
-              </div>
-            </div>
-            {{#if @canEditFileQueue}}
-              <AuButton
-                @skin="naked"
-                @alert="true"
-                {{on "click" (fn this.removeFileFromQueue fileWrapper)}}
-              >Verwijder</AuButton>
-            {{/if}}
-          </div>
+            <:actions>
+              {{#if @canEditFileQueue}}
+                <AuButton
+                  @skin="naked"
+                  @alert="true"
+                  class="au-u-padding-right"
+                  {{on "click" (fn this.removeFileFromQueue fileWrapper)}}
+                >Verwijder</AuButton>
+              {{/if}}
+            </:actions>
+          </File::SlimCard>
         {{/each}}
       </div>
     </div>

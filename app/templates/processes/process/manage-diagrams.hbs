@@ -30,10 +30,51 @@
     </AuButtonGroup>
   </Group>
 </AuToolbar>
-<div class="au-o-box">
-  <p class="au-u-muted au-u-italic">Hieronder vind je al de diagrammen die
-    opgeladen werden. Door een diagram vast te nemen en te verplaatsen pas je de
-    positie van het diagram aan, waarbij het bovenste diagram je hoofd diagram
-    is.</p>
-  <DiagramList::DragAndDropSort @diagramList={{@model.diagramList}} />
-</div>
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+  <div class="au-o-grid au-o-grid--small">
+    <div class="au-o-grid__item au-u-4-6@medium">
+      <AuToolbar as |Group|>
+        <Group>
+          <h2 class="au-u-h4 au-u-medium">
+            Structuur
+          </h2>
+        </Group>
+      </AuToolbar>
+      <p class="au-u-muted au-u-italic au-u-margin-bottom">Hieronder vind je al
+        de diagrammen die opgeladen werden. Door een diagram vast te nemen en te
+        verplaatsen pas je de positie van het diagram aan, waarbij het bovenste
+        diagram je hoofd diagram is.</p>
+      <DiagramList::DragAndDropSort @diagramList={{@model.diagramList}} />
+    </div>
+    <aside class="au-o-grid__item au-u-2-6@medium">
+      <div class="u-top-sticky">
+        <AuContent>
+          <AuToolbar as |Group|>
+            <Group>
+              <h2 class="au-u-h4 au-u-medium">
+                Bestanden
+              </h2>
+            </Group>
+            <Group>
+              <AuButton @disabled={{false}} @skin="naked">
+                Toevoegen
+              </AuButton>
+            </Group>
+          </AuToolbar>
+          <div class="au-o-flow">
+            {{#each @model.files as |file|}}
+              <File::SlimCard
+                @primaryName={{file.name}}
+                @secondaryName={{file-size-format file.size}}
+              >
+                <:actions>
+                  <AuIcon @icon="bin" @size="large" class="au-u-margin-right" />
+                </:actions>
+              </File::SlimCard>
+            {{/each}}
+          </div>
+        </AuContent>
+      </div>
+    </aside>
+  </div>
+</AuBodyContainer>
