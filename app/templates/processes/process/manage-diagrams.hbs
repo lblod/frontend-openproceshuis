@@ -6,30 +6,6 @@
 }}
 {{breadcrumb "Beheer process diagrammen"}}
 
-<AuToolbar @border="bottom" @size="large" as |Group|>
-  <Group />
-  <Group>
-    <AuButtonGroup>
-      <AuButton
-        class="border-radius"
-        @skin="secondary"
-        {{on "click" this.onCancel}}
-      >
-        Annuleer
-      </AuButton>
-      <AuButton
-        @disabled={{this.saveDiagramStructure.isRunning}}
-        @loading={{this.saveDiagramStructure.isRunning}}
-        @loadingMessage="Aanpassen"
-        @skin="primary"
-        class="border-radius"
-        {{on "click" (perform this.saveDiagramStructure @model.diagramList)}}
-      >
-        Wijzigingen opslaan
-      </AuButton>
-    </AuButtonGroup>
-  </Group>
-</AuToolbar>
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   <div class="au-o-grid au-o-grid--small">
     <div class="au-o-grid__item au-u-4-6@medium">
@@ -44,7 +20,10 @@
         de diagrammen die opgeladen werden. Door een diagram vast te nemen en te
         verplaatsen pas je de positie van het diagram aan, waarbij het bovenste
         diagram je hoofd diagram is.</p>
-      <DiagramList::DragAndDropSort @diagramList={{@model.diagramList}} />
+      <DiagramList::DragAndDropSort
+        @diagramList={{@model.diagramList}}
+        @onUpdatedStructure={{this.onDiagramListChanged}}
+      />
     </div>
     <aside class="au-o-grid__item au-u-2-6@medium">
       <div class="u-top-sticky">
@@ -83,6 +62,33 @@
     </aside>
   </div>
 </AuBodyContainer>
+<AuToolbar @border="top" @size="large" @skin="tint" as |Group|>
+  <Group />
+  <Group>
+    <AuButtonGroup>
+      <AuButton
+        class="border-radius"
+        @skin="secondary"
+        {{on "click" this.onCancel}}
+      >
+        Annuleer
+      </AuButton>
+      <AuButton
+        @disabled={{or
+          this.saveDiagramStructure.isRunning
+          (not this.isListChanged)
+        }}
+        @loading={{this.saveDiagramStructure.isRunning}}
+        @loadingMessage="Aanpassen"
+        @skin="primary"
+        class="border-radius"
+        {{on "click" (perform this.saveDiagramStructure @model.diagramList)}}
+      >
+        Wijzigingen opslaan
+      </AuButton>
+    </AuButtonGroup>
+  </Group>
+</AuToolbar>
 
 {{#if this.isWizardModalOpen}}
   <Process::Wizard

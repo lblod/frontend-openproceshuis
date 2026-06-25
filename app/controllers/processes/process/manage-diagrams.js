@@ -23,6 +23,8 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked previousRouteModelId;
   @tracked previousRouteName;
 
+  @tracked isListChanged;
+
   saveDiagramStructure = task({ drop: true }, async (diagramList) => {
     try {
       for (const main of diagramList.diagrams) {
@@ -56,6 +58,11 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   onCancel() {
     this.model.diagramList.rollbackAttributes();
     this.router.transitionTo(this.breadcrumbRouteName, this.breadcrumbModel);
+  }
+
+  @action
+  onDiagramListChanged() {
+    this.isListChanged = true;
   }
 
   get hasPreviousRouteBreadCrumb() {
