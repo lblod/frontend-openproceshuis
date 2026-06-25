@@ -30,6 +30,18 @@ export default class DiagramListItemModel extends Model {
     return Array.from(this.subItems).sort((a, b) => a.position < b.position);
   }
 
+  get hasSubItems() {
+    if (this.subItems?.length === 0) {
+      return false;
+    }
+
+    const withoutArchived = Array.from(this.subItems).filter(
+      (item) => !item.isArchived,
+    );
+
+    return withoutArchived?.length >= 1;
+  }
+
   async save() {
     this.modified = new Date();
     await super.save(...arguments);

@@ -67,7 +67,7 @@
             </Group>
             <Group>
               <AuButton
-                @disabled={{false}}
+                @disabled={{this.isListChanged}}
                 @skin="naked"
                 @icon="add"
                 {{on "click" (fn (mut this.isWizardModalOpen) true)}}
@@ -84,12 +84,13 @@
               >
                 <:actions>
                   <AuButton
+                    @disabled={{this.isListChanged}}
                     @skin="naked"
                     @alert="true"
                     @icon="bin"
                     @hideText={{true}}
                     aria-label="Verwijder {{file.name}}"
-                    {{on "click" (fn this.onRemoveFile file)}}
+                    {{on "click" (fn this.onDeleteDiagram file)}}
                   >
                     Verwijder
                   </AuButton>
@@ -114,9 +115,9 @@
 {{/if}}
 
 <Shared::DeleteModal
-  @isModalOpen={{this.isDeleteModalOpen}}
-  @closeModal={{this.closeDeleteModal}}
-  @onDelete={{fn (perform this.onDeleteAsset)}}
-  @isLoading={{this.onDeleteAsset.isRunning}}
-  @title="dit diagram"
+  @isModalOpen={{this.diagramToDelete}}
+  @closeModal={{fn (mut this.diagramToDelete) null}}
+  @onDelete={{fn (perform this.deleteDiagram)}}
+  @isLoading={{this.deleteDiagram.isRunning}}
+  @title={{this.diagramToDelete.diagramFile.name}}
 />

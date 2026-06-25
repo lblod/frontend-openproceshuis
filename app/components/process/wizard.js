@@ -68,7 +68,7 @@ export default class ProcessWizard extends Component {
 
   get sortedFiles() {
     const filesWithDiagramListItemPosition = this.files.map((_fileModel) => {
-      _fileModel.position = this.diagramList.diagrams.find(
+      _fileModel.position = this.diagramList?.diagrams.find(
         (d) => d.diagramFile?.id === _fileModel.id,
       ).position;
       return _fileModel;

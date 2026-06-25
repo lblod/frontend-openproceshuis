@@ -36,7 +36,7 @@ export default class DiagramService extends Service {
   getAvailableFilesFromList(listWithFiles, includeSubFiles = true) {
     const mainFiles =
       listWithFiles?.diagrams
-        ?.filter((diagrams) => !diagrams?.diagramFile?.isArchived)
+        ?.filter((diagram) => !diagram?.isArchived)
         ?.map((diagram) => diagram?.diagramFile) ?? [];
 
     if (!includeSubFiles) {
@@ -45,8 +45,10 @@ export default class DiagramService extends Service {
 
     const subFiles =
       listWithFiles.diagrams
+        .filter((main) => !main?.isArchived)
         .flatMap((main) => main.subItems ?? [])
-        ?.map((diagram) => diagram?.diagramFile) ?? [];
+        .filter((sub) => !sub?.isArchived)
+        .map((sub) => sub?.diagramFile) ?? [];
 
     return [...mainFiles, ...subFiles];
   }

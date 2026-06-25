@@ -23,6 +23,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked previousRouteModelId;
   @tracked previousRouteName;
 
+  @tracked diagramToDelete;
   @tracked isListChanged = false;
 
   saveDiagramStructure = task({ drop: true }, async (diagramList) => {
@@ -44,17 +45,61 @@ export default class ProcessesProcessManageDiagramsController extends Controller
         timeOut: 2500,
       });
     } catch (error) {
-      this.onCancel();
-      this.toaster.success(
+      this.toaster.error(
         'Er liep iets mis bij het aanpassen van de diagrammen structuur',
         undefined,
         {
           timeOut: 5000,
         },
       );
+      await this.onResetStructure();
     } finally {
       this.isListChanged = false;
     }
+  });
+
+  @action
+  onDeleteDiagram(_file) {
+    const foundAsMainDiagram = this.model.diagramList.diagrams.find(
+      (main) => main.diagramFile.id === _file.id,
+    );
+
+    if (foundAsMainDiagram) {
+      if (
+        foundAsMainDiagram.subItems?.filter((listItem) => !listItem.isArchived)
+          .length >= 1
+      ) {
+        this.toaster.error(
+          'Hoof-diagrammen met sub diagrammen kunnen niet verwijderd worden.',
+          undefined,
+          {
+            timeOut: 5000,
+          },
+        );
+        this.diagramToDelete = null;
+        return;
+      }
+      this.diagramToDelete = foundAsMainDiagram;
+    } else {
+      const foundAsSubDiagram = this.model.diagramList.diagrams
+        .flatMap((main) => main.subItems ?? [])
+        .find((sub) => sub.diagramFile.id === _file.id);
+      if (!foundAsSubDiagram) {
+        this.diagramToDelete = null;
+        return;
+      }
+      this.diagramToDelete = foundAsSubDiagram;
+    }
+  }
+
+  deleteDiagram = task({ drop: true }, async () => {
+    this.diagramToDelete?.setArchivedStatus();
+    await this.diagramToDelete.save();
+    await this.router.refresh();
+    this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
+      timeOut: 2500,
+    });
+    this.diagramToDelete = null;
   });
 
   @action

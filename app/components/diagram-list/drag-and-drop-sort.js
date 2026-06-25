@@ -3,8 +3,6 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 
-import { ARCHIVED_STATUS_URI } from '../../utils/well-known-uris';
-
 export default class DiagramListDragAndDropSort extends Component {
   @service toaster;
 
@@ -14,14 +12,18 @@ export default class DiagramListDragAndDropSort extends Component {
     }
 
     const nonArchivedItems = Array.from(this.args.diagramList.diagrams).filter(
-      (listItem) => listItem.diagramFile.status !== ARCHIVED_STATUS_URI,
+      (listItem) => !listItem.isArchived,
     );
     const sortedByPosition = nonArchivedItems.sort(
       (a, b) => a.position - b.position,
     );
 
     const mapSubItems = (_listItem) => {
-      if (_listItem.subItems?.length === 0) {
+      const subItems = Array.from(_listItem.subItems).filter(
+        (listItem) => !listItem.isArchived,
+      );
+
+      if (subItems?.length === 0) {
         return [
           {
             isPlaceholder: true,
@@ -33,7 +35,7 @@ export default class DiagramListDragAndDropSort extends Component {
         ];
       }
 
-      return _listItem.subItems.map((subItem) => {
+      return subItems.map((subItem) => {
         return {
           label: subItem.diagramFile.name,
           self: subItem,

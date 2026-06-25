@@ -61,7 +61,7 @@ export default class DiagramListTable extends Component {
         size: this.size,
       },
       'filter[id]': diagramsInList.map((diagram) => diagram.id).join(','),
-      'filter[diagram-file][:not:status]': ARCHIVED_STATUS_URI,
+      'filter[:not:status]': ARCHIVED_STATUS_URI,
     });
     this.diagramsTableMeta = diagrams.meta;
 
