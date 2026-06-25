@@ -56,7 +56,12 @@
               </h2>
             </Group>
             <Group>
-              <AuButton @disabled={{false}} @skin="naked">
+              <AuButton
+                @disabled={{false}}
+                @skin="naked"
+                @icon="add"
+                {{on "click" (fn (mut this.isWizardModalOpen) true)}}
+              >
                 Toevoegen
               </AuButton>
             </Group>
@@ -78,3 +83,13 @@
     </aside>
   </div>
 </AuBodyContainer>
+
+{{#if this.isWizardModalOpen}}
+  <Process::Wizard
+    @onCloseModal={{fn (mut this.isWizardModalOpen) false}}
+    @process={{@model.process}}
+    @initialAction={{this.addFilesAction}}
+    @diagramList={{@model.diagramList}}
+    @onSaved={{fn (mut this.isWizardModalOpen) false}}
+  />
+{{/if}}

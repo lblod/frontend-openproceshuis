@@ -5,10 +5,13 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 import { task } from 'ember-concurrency';
+import { WizardAction } from '../../../components/wizard/actions';
 
 export default class ProcessesProcessManageDiagramsController extends Controller {
   @service router;
   @service toaster;
+
+  addFilesAction = WizardAction.ADD_FILES;
 
   queryParams = [
     'previousRouteTitle',

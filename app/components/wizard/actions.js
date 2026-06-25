@@ -5,6 +5,7 @@ export const WizardAction = Object.freeze({
   REPLACE_DIAGRAMS: 'replace_diagrams',
   CHANGE_MAIN_PROCESS: 'change_main_process',
   STRUCTURE_DIAGRAMS: 'structure_diagrams',
+  ADD_FILES: 'add_files',
 });
 
 export default class WizardActions extends Component {

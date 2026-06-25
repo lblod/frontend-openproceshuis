@@ -39,11 +39,15 @@ export default class ProcessWizard extends Component {
     CREATE_PROCESS: 'create_process',
     UPDATE_PROCESS: 'update_process',
     CREATE_DIAGRAM_VERSION: 'create_diagram_version',
+    ADD_FILES_TO_LIST: 'add_files_to_list',
     TO_PROCESS: 'to_process',
   });
 
   constructor(owner, args) {
     super(owner, args);
+    if (this.args.initialAction) {
+      this.currentAction = this.args.initialAction;
+    }
     const firstShownIndex = this.steps.findIndex((step) => step.isStepShown);
     if (firstShownIndex > 0) {
       this.activeStepIndex = firstShownIndex;
@@ -93,7 +97,7 @@ export default class ProcessWizard extends Component {
       {
         step: this.wizardStep.SELECT_ACTION,
         title: 'Diagrammen wijzigen',
-        isStepShown: this.args.process,
+        isStepShown: this.args.process && !this.args.initialAction,
         canGoToNextStep: this.currentAction,
         nextStepButtonLabel: null,
         action: async () => await this.prepareWizard(),
@@ -101,7 +105,10 @@ export default class ProcessWizard extends Component {
       {
         step: this.wizardStep.UPLOAD_FILES,
         title: 'Bestanden selecteren',
-        isStepShown: this.currentAction === WizardAction.REPLACE_DIAGRAMS,
+        isStepShown: [
+          WizardAction.REPLACE_DIAGRAMS,
+          WizardAction.ADD_FILES,
+        ].includes(this.currentAction),
         canGoToNextStep: this.fileWrappers.length >= 1,
         nextStepButtonLabel: 'Uploaden',
       },
@@ -146,6 +153,14 @@ export default class ProcessWizard extends Component {
         action: async () => await this.createNewDiagramVersion(this.files),
         canGoToNextStep: this.diagramList,
         nextStepButtonLabel: 'Bekijk proces',
+      },
+      {
+        step: this.wizardStep.ADD_FILES_TO_LIST,
+        title: 'Bestanden toevoegen',
+        isStepShown: this.currentAction === WizardAction.ADD_FILES,
+        action: async () => await this.uploadAndAddFilesToList(),
+        canGoToNextStep: false,
+        nextStepButtonLabel: null,
       },
       {
         step: this.wizardStep.TO_PROCESS,
@@ -432,6 +447,50 @@ export default class ProcessWizard extends Component {
       );
     } finally {
       this.loadingMessage = 'Proces werd succesvol aangepast';
+    }
+  }
+
+  async uploadAndAddFilesToList() {
+    this.showSuccessMessage = false;
+    await this.uploadFiles(this.fileWrappers);
+    if (this.files.length === 0) return;
+
+    const now = new Date();
+    const existingItems = Array.from(this.args.diagramList.diagrams);
+    const maxPosition = existingItems.reduce(
+      (max, item) => Math.max(max, item.position ?? 0),
+      0,
+    );
+    this.loadingMessage = 'Bestanden toevoegen aan diagram';
+    this.showSuccessMessage = false;
+    try {
+      const newItems = [];
+      for (let i = 0; i < this.files.length; i++) {
+        const item = this.store.createRecord('diagram-list-item', {
+          position: maxPosition + i + 1,
+          created: now,
+          modified: now,
+          diagramFile: this.files[i],
+          subItems: [],
+        });
+        await item.save();
+        newItems.push(item);
+      }
+      this.args.diagramList.diagrams = [...existingItems, ...newItems];
+      await this.args.diagramList.save();
+      this.loadingMessage = 'Bestanden succesvol toegevoegd';
+      this.showSuccessMessage = true;
+      await timeout(100);
+      this.args.onSaved?.();
+      await this.router.refresh();
+    } catch {
+      this.toaster.error(
+        'Er liep iets mis bij het toevoegen van de bestanden',
+        null,
+        { timeOut: 2500 },
+      );
+      this.showSuccessMessage = false;
+      this.loadingMessage = null;
     }
   }
 
