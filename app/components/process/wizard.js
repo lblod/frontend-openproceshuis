@@ -251,8 +251,8 @@ export default class ProcessWizard extends Component {
     }
   }
 
-  async extractBpmnElementsFromFile(fileId) {
-    this.loadingMessage = 'Processtappen extraheren';
+  async extractBboElementsFromBpmnFile(fileId) {
+    this.loadingMessage = 'Processtappen extraheren (bpmn)';
     try {
       await timeout(250);
       await this.api.fetch(`/bpmn?id=${fileId}`, {
@@ -263,7 +263,25 @@ export default class ProcessWizard extends Component {
       });
     } catch (error) {
       this.toaster.error(
-        `Er liep iets mis bij het extraheren van de BPMN elementen uit het bestand (${fileId})`,
+        `Er liep iets mis bij het extraheren van de BPMN elementen uit het BPMN bestand (${fileId})`,
+        null,
+        { timeOut: 2500 },
+      );
+    } finally {
+      this.loadingMessage = null;
+    }
+  }
+
+  async extractBboElementsFromVisioFile(fileId) {
+    this.loadingMessage = 'Processtappen extraheren (visio)';
+    try {
+      await timeout(250);
+      await this.api.fetch(`/visio?id=${fileId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      this.toaster.error(
+        `Er liep iets mis bij het extraheren van de BPMN elementen uit het Visio bestand (${fileId})`,
         null,
         { timeOut: 2500 },
       );
@@ -280,7 +298,10 @@ export default class ProcessWizard extends Component {
       if (fileId) {
         const file = await this.store.findRecord('file', fileId);
         if (file.isBpmnFile) {
-          await this.extractBpmnElementsFromFile(fileId);
+          await this.extractBboElementsFromBpmnFile(fileId);
+        }
+        if (file.isVisioFile) {
+          await this.extractBboElementsFromVisioFile(fileId);
         }
         this.files.push(file);
       } else {

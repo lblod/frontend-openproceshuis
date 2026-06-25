@@ -98,27 +98,6 @@ export default class FileUploadModalComponent extends Component {
   upload = task({ enqueue: true }, async (fileWrapper) => {
     this.resetErrors();
 
-    const forbidden = this.args.forbidden?.split(',') ?? [];
-
-    if (forbidden.includes('.bpmn') && fileWrapper.name.endsWith('.bpmn')) {
-      this.addError(
-        fileWrapper,
-        'BPMN-bestanden kunnen niet worden toegevoegd aan bijlagen.',
-      );
-      this.removeFileFromQueue(fileWrapper);
-      return;
-    } else if (
-      forbidden.includes('.vsdx') &&
-      fileWrapper.name.endsWith('.vsdx')
-    ) {
-      this.addError(
-        fileWrapper,
-        'Visiobestanden kunnen niet worden toegevoegd aan bijlagen.',
-      );
-      this.removeFileFromQueue(fileWrapper);
-      return;
-    }
-
     if (
       this.args.isSensitiveDataDetectInUploadFlow &&
       fileWrapper.name.endsWith('.bpmn')
@@ -196,10 +175,9 @@ export default class FileUploadModalComponent extends Component {
       const file = fileModels[index];
       let bpmnFileId = file.id;
       if (file.name.endsWith('.vsdx')) {
-        bpmnFileId = await this.convertVisioToBpmn(file.id);
+        await this.extractBboElementsFromVisioFile(file.id);
       }
-
-      if (this.args.extractBpmnElements && bpmnFileId) {
+      if (file.name.endsWith('.bpmn') && this.args.extractBpmnElements) {
         await this.args.extractBpmnElements.perform(bpmnFileId);
       }
     }
@@ -222,16 +200,14 @@ export default class FileUploadModalComponent extends Component {
     }
   }
 
-  async convertVisioToBpmn(visioFileId) {
+  async extractBboElementsFromVisioFile(fileId) {
     try {
-      await this.api.fetch(`/visio?id=${visioFileId}`, {
+      await this.api.fetch(`/visio?id=${fileId}`, {
         method: 'POST',
       });
     } catch (error) {
       console.log(error);
     }
-
-    return null;
   }
 
   @task
