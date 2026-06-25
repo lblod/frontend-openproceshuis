@@ -59,6 +59,18 @@
     <aside class="au-o-grid__item au-u-2-6@medium">
       <div class="u-top-sticky">
         <AuContent>
+          {{#if this.isListChanged}}
+            <AuAlert
+              @title="Acties"
+              @skin="warning"
+              @icon="info-circle"
+              @size="small"
+              @closable={{false}}
+            >
+              <p>Er kunnen geen bestanden worden toegevoegd of verwijderd als er
+                een aanpassing is gebeurt aan de bestanden structuur</p>
+            </AuAlert>
+          {{/if}}
           <AuToolbar as |Group|>
             <Group>
               <h2 class="au-u-h4 au-u-medium">
