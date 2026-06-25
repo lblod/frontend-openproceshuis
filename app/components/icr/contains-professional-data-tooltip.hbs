@@ -1,13 +1,15 @@
-<Shared::Tooltip
-  @alignment={{@alignment}}
-  @show={{true}}
-  @text="Gegevens waarmee een persoon professioneel kan worden bereikt bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de organisatie."
-  @placement="top"
->
-  <AuIcon
-    class="color--info"
+<AuTooltip @placement="right" as |tooltip|>
+  <AuButton
     @icon="circle-question"
+    @hideText={{true}}
+    @skin="link"
     @size="large"
-    @alignment="right"
+    class="color--gray"
+    {{tooltip.target}}
   />
-</Shared::Tooltip>
+  <tooltip.Content>
+    <p>Gegevens waarmee een persoon professioneel kan worden bereikt
+      bijvoorbeeld professioneel telefoonnummer/e-mailadres, postadres van de
+      organisatie.</p>
+  </tooltip.Content>
+</AuTooltip>

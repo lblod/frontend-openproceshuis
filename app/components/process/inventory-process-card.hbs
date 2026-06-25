@@ -4,10 +4,7 @@
   </:title>
   <:header>
     {{#if (and @canEdit (not this.edit))}}
-      <AuButton
-        @skin="naked"
-        {{on "click" this.toggleEdit}}
-      >Wijzig</AuButton>
+      <AuButton @skin="naked" {{on "click" this.toggleEdit}}>Wijzig</AuButton>
     {{/if}}
     {{#if this.edit}}
       <AuButton
@@ -56,17 +53,19 @@
                     {{this.processConceptTitle}}
                   </Shared::TextCompare>
                   {{#if this.linkedProcessWarnText}}
-                    <Shared::Tooltip
-                      @show={{true}}
-                      @text={{this.linkedProcessWarnText}}
-                    >
-                      <AuIcon
-                        class="color--warning"
+                    <AuTooltip @placement="right" as |tooltip|>
+                      <AuButton
                         @icon="alert-triangle"
+                        @hideText={{true}}
+                        @skin="link"
                         @size="large"
-                        @alignment="right"
+                        class="color--warning"
+                        {{tooltip.target}}
                       />
-                    </Shared::Tooltip>
+                      <tooltip.Content>
+                        <p>{{this.linkedProcessWarnText}}</p>
+                      </tooltip.Content>
+                    </AuTooltip>
                   {{/if}}
                 </div>
                 <AuButton @skin="naked" class="process-change-button" />
