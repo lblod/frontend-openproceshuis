@@ -36,6 +36,7 @@ export default class ProcessesProcessManageDiagramsRoute extends Route {
     return {
       process: process,
       diagramList: diagramList,
+      files: this.diagram.getAvailableFilesFromList(diagramList),
     };
   }
 }

@@ -41,18 +41,18 @@
       </TableMessage>
     {{else}}
       <c.body as |diagram|>
-        {{#let (gt diagram.subItems.length 0) as |hasSubItems|}}
+        {{#let diagram.hasSubItems}}
           <DiagramList::Table::Row
             @process={{@process}}
             @processRouteName={{@processRouteName}}
             @diagram={{diagram}}
             @selectedDiagramFile={{@selectedDiagramFile}}
-            @hasSubItems={{hasSubItems}}
+            @hasSubItems={{diagram.hasSubItems}}
             @onDiagramFileSelected={{@onDiagramFileSelected}}
             @onFileDownload={{fn (mut this.fileToDownload) diagram.diagramFile}}
           >
-            {{#if hasSubItems}}
-              {{#each diagram.subItems as |subDiagram|}}
+            {{#if diagram.hasSubItems}}
+              {{#each diagram.sortedSubItems as |subDiagram|}}
                 <tr class="diagram-sub-row" {{show-in-parent}}>
                   <DiagramList::Table::Row
                     @isSubRow={{true}}

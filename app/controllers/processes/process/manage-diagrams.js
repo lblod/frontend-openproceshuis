@@ -5,10 +5,13 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 import { task } from 'ember-concurrency';
+import { WizardAction } from '../../../components/wizard/actions';
 
 export default class ProcessesProcessManageDiagramsController extends Controller {
   @service router;
   @service toaster;
+
+  addFilesAction = WizardAction.ADD_FILES;
 
   queryParams = [
     'previousRouteTitle',
@@ -19,6 +22,9 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked previousRouteTitle;
   @tracked previousRouteModelId;
   @tracked previousRouteName;
+
+  @tracked diagramToDelete;
+  @tracked isListChanged = false;
 
   saveDiagramStructure = task({ drop: true }, async (diagramList) => {
     try {
@@ -39,20 +45,99 @@ export default class ProcessesProcessManageDiagramsController extends Controller
         timeOut: 2500,
       });
     } catch (error) {
-      this.toaster.success(
+      this.toaster.error(
         'Er liep iets mis bij het aanpassen van de diagrammen structuur',
         undefined,
         {
           timeOut: 5000,
         },
       );
+      await this.onResetStructure();
+    } finally {
+      this.isListChanged = false;
     }
   });
 
   @action
-  onCancel() {
-    this.model.diagramList.rollbackAttributes();
-    this.router.transitionTo(this.breadcrumbRouteName, this.breadcrumbModel);
+  onDeleteDiagram(_file) {
+    const foundAsMainDiagram = this.model.diagramList.diagrams.find(
+      (main) => main.diagramFile.id === _file.id,
+    );
+
+    if (foundAsMainDiagram) {
+      if (
+        foundAsMainDiagram.subItems?.filter((listItem) => !listItem.isArchived)
+          .length >= 1
+      ) {
+        this.toaster.error(
+          'Hoof-diagrammen met sub diagrammen kunnen niet verwijderd worden.',
+          undefined,
+          {
+            timeOut: 5000,
+          },
+        );
+        this.diagramToDelete = null;
+        return;
+      }
+      this.diagramToDelete = foundAsMainDiagram;
+    } else {
+      const foundAsSubDiagram = this.model.diagramList.diagrams
+        .flatMap((main) => main.subItems ?? [])
+        .find((sub) => sub.diagramFile.id === _file.id);
+      if (!foundAsSubDiagram) {
+        this.diagramToDelete = null;
+        return;
+      }
+      this.diagramToDelete = foundAsSubDiagram;
+    }
+  }
+
+  deleteDiagram = task({ drop: true }, async () => {
+    this.diagramToDelete?.setArchivedStatus();
+    await this.diagramToDelete.save();
+    await this.router.refresh();
+    this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
+      timeOut: 2500,
+    });
+    this.diagramToDelete = null;
+  });
+
+  @action
+  async onResetStructure() {
+    const diagramList = this.model.diagramList;
+
+    for (const main of diagramList.diagrams) {
+      for (const sub of main.subItems ?? []) {
+        sub.rollbackAttributes();
+      }
+      main.rollbackAttributes();
+    }
+    diagramList.rollbackAttributes();
+    await this.router.refresh();
+    this.isListChanged = false;
+  }
+
+  @action
+  onDiagramListChanged() {
+    this.isListChanged = true;
+  }
+
+  get sortedFiles() {
+    const filesWithDiagramListItemPosition = this.model.files.map(
+      (_fileModel) => {
+        _fileModel.position = this.model.diagramList.diagrams.find(
+          (d) => d.diagramFile?.id === _fileModel.id,
+        )?.position;
+        return _fileModel;
+      },
+    );
+
+    return filesWithDiagramListItemPosition.sort((a, b) => a > b);
+  }
+
+  @action
+  onRemoveFile(_file) {
+    console.log('remove file', _file?.id);
   }
 
   get hasPreviousRouteBreadCrumb() {

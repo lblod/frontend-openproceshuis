@@ -6,34 +6,130 @@
 }}
 {{breadcrumb "Beheer process diagrammen"}}
 
-<AuToolbar @border="bottom" @size="large" as |Group|>
-  <Group />
-  <Group>
-    <AuButtonGroup>
-      <AuButton
-        class="border-radius"
-        @skin="secondary"
-        {{on "click" this.onCancel}}
-      >
-        Annuleer
-      </AuButton>
-      <AuButton
-        @disabled={{this.saveDiagramStructure.isRunning}}
-        @loading={{this.saveDiagramStructure.isRunning}}
-        @loadingMessage="Aanpassen"
-        @skin="primary"
-        class="border-radius"
-        {{on "click" (perform this.saveDiagramStructure @model.diagramList)}}
-      >
-        Wijzigingen opslaan
-      </AuButton>
-    </AuButtonGroup>
-  </Group>
-</AuToolbar>
-<div class="au-o-box">
-  <p class="au-u-muted au-u-italic">Hieronder vind je al de diagrammen die
-    opgeladen werden. Door een diagram vast te nemen en te verplaatsen pas je de
-    positie van het diagram aan, waarbij het bovenste diagram je hoofd diagram
-    is.</p>
-  <DiagramList::DragAndDropSort @diagramList={{@model.diagramList}} />
-</div>
+<AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
+  <div class="au-o-grid au-o-grid--small">
+    <div class="au-o-grid__item au-u-4-6@medium">
+      <AuToolbar class="au-u-margin-bottom" as |Group|>
+        <Group>
+          <h2 class="au-u-h4 au-u-medium">
+            Structuur
+          </h2>
+        </Group>
+        <Group>
+          <AuButtonGroup>
+            <AuButton
+              @disabled={{or
+                this.saveDiagramStructure.isRunning
+                (not this.isListChanged)
+              }}
+              @skin="secondary"
+              class="border-radius"
+              {{on "click" this.onResetStructure}}
+            >
+              Zet terug
+            </AuButton>
+            <AuButton
+              @disabled={{or
+                this.saveDiagramStructure.isRunning
+                (not this.isListChanged)
+              }}
+              @loading={{this.saveDiagramStructure.isRunning}}
+              @loadingMessage="Aanpassen"
+              @skin="primary"
+              class="border-radius"
+              {{on
+                "click"
+                (perform this.saveDiagramStructure @model.diagramList)
+              }}
+            >
+              Wijzigingen opslaan
+            </AuButton>
+          </AuButtonGroup>
+        </Group>
+      </AuToolbar>
+      <p class="au-u-muted au-u-italic au-u-margin-bottom">Hieronder vind je al
+        de diagrammen die opgeladen werden. Door een diagram vast te nemen en te
+        verplaatsen pas je de positie van het diagram aan, waarbij het bovenste
+        diagram je hoofd diagram is.</p>
+      <DiagramList::DragAndDropSort
+        @diagramList={{@model.diagramList}}
+        @onUpdatedStructure={{this.onDiagramListChanged}}
+      />
+    </div>
+    <aside class="au-o-grid__item au-u-2-6@medium">
+      <div class="u-top-sticky">
+        <AuContent>
+          {{#if this.isListChanged}}
+            <AuAlert
+              @title="Acties"
+              @skin="warning"
+              @icon="info-circle"
+              @size="small"
+              @closable={{false}}
+            >
+              <p>Er kunnen geen bestanden worden toegevoegd of verwijderd als er
+                een aanpassing is gebeurt aan de bestanden structuur</p>
+            </AuAlert>
+          {{/if}}
+          <AuToolbar as |Group|>
+            <Group>
+              <h2 class="au-u-h4 au-u-medium">
+                Bestanden
+              </h2>
+            </Group>
+            <Group>
+              <AuButton
+                @disabled={{this.isListChanged}}
+                @skin="naked"
+                @icon="add"
+                {{on "click" (fn (mut this.isWizardModalOpen) true)}}
+              >
+                Toevoegen
+              </AuButton>
+            </Group>
+          </AuToolbar>
+          <div class="c-file-list">
+            {{#each this.sortedFiles as |file|}}
+              <File::SlimCard
+                @primaryName={{file.name}}
+                @secondaryName={{file-size-format file.size}}
+              >
+                <:actions>
+                  <AuButton
+                    @disabled={{this.isListChanged}}
+                    @skin="naked"
+                    @alert="true"
+                    @icon="bin"
+                    @hideText={{true}}
+                    aria-label="Verwijder {{file.name}}"
+                    {{on "click" (fn this.onDeleteDiagram file)}}
+                  >
+                    Verwijder
+                  </AuButton>
+                </:actions>
+              </File::SlimCard>
+            {{/each}}
+          </div>
+        </AuContent>
+      </div>
+    </aside>
+  </div>
+</AuBodyContainer>
+
+{{#if this.isWizardModalOpen}}
+  <Process::Wizard
+    @onCloseModal={{fn (mut this.isWizardModalOpen) false}}
+    @process={{@model.process}}
+    @initialAction={{this.addFilesAction}}
+    @diagramList={{@model.diagramList}}
+    @onSaved={{fn (mut this.isWizardModalOpen) false}}
+  />
+{{/if}}
+
+<Shared::DeleteModal
+  @isModalOpen={{this.diagramToDelete}}
+  @closeModal={{fn (mut this.diagramToDelete) null}}
+  @onDelete={{fn (perform this.deleteDiagram)}}
+  @isLoading={{this.deleteDiagram.isRunning}}
+  @title={{this.diagramToDelete.diagramFile.name}}
+/>

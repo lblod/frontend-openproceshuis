@@ -1,0 +1,11 @@
+<div
+  ...attributes
+  class="c-file-list__row au-u-flex au-u-flex--vertical-center"
+>
+  <AuIcon @icon="file" @size="large" />
+  <p class="c-file-list__name">{{@primaryName}}</p>
+  <p class="au-u-h6 au-u-muted">{{@secondaryName}}</p>
+  <div class="au-u-flex au-u-flex--spaced au-u-flex--vertical-center">
+    {{yield to="actions"}}
+  </div>
+</div>
