@@ -78,7 +78,7 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     if (process.isArchived) {
       throw new Error(
-        'Dit process is verwijderd en kan niet meer bekeken worden.',
+        'Dit proces is verwijderd en kan niet meer bekeken worden.',
       );
     }
 
