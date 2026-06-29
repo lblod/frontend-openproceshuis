@@ -36,7 +36,7 @@ export default class ProcessInventoryProcessCard extends Component {
       return 'Dit proces werd gearchiveerd';
     }
     if (this.args.process.linkedConcept?.processGroup?.isArchived) {
-      return 'Dit process heeft gearchiveerde parameters';
+      return 'Dit proces heeft gearchiveerde parameters';
     }
 
     return null;
