@@ -1,0 +1,34 @@
+<div class="c-file-library">
+  <div class="c-file-library__search">
+    <AuInput
+      @width="block"
+      @icon="search"
+      placeholder="Zoek bestand"
+      id="search-library-input"
+      {{on "keyup" (perform this.searchFile)}}
+    />
+  </div>
+
+  {{#if this.searchFile.isRunning}}
+    <AuLoader />
+  {{/if}}
+  {{#if (eq this.searchResults.length 0)}}
+    <p class="au-u-muted">Er werden geen bestanden gevonden</p>
+  {{/if}}
+
+  <div class="c-file-library__list au-u-margin-top">
+    {{#each this.searchResults as |file|}}
+      <div
+        class="c-file-library__row c-file-library__row--disabled au-u-flex au-u-flex--vertical-center"
+      >
+        <AuCheckbox @onChange={{this.selectFile file}}>
+          <File::SlimCard
+            @primaryName={{file.name}}
+            @secondaryName={{date-format file.created true}}
+            {{!-- @secondaryName={{file-size-format file.size}} --}}
+          />
+        </AuCheckbox>
+      </div>
+    {{/each}}
+  </div>
+</div>
