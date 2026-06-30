@@ -5,6 +5,12 @@ import { action } from '@ember/object';
 
 export default class WizardAddDiagrams extends Component {
   @tracked fileWrappers = [];
+  @tracked activeTab = 'upload';
+
+  @action
+  setActiveTab(tab) {
+    this.activeTab = tab;
+  }
 
   @action
   handleFileUpload(fileWrappers) {

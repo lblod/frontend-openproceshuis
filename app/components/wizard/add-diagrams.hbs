@@ -1,18 +1,39 @@
 <div class="au-o-grid au-o-grid--small">
   <div class="au-o-grid__item au-u-1-2">
-    <AuTabs as |Tab|>
-      <Tab>
-        <AuLink @icon="download">Upload</AuLink>
-      </Tab>
-    </AuTabs>
-    <File::Dropzone
-      @title="Eén of meer BPMN/Visio bestanden selecteren"
-      @helpTextDragDrop="Bestanden worden toegevoegd aan bibliotheek na selectie"
-      @multiple={{true}}
-      @accept=".bpmn,.vsdx"
-      @onFileUploaded={{this.handleFileUpload}}
-    />
+    <div class="c-add-diagrams__tablist">
+      <AuButton
+        @skin="naked"
+        class="c-add-diagrams__tab
+          {{if (eq this.activeTab 'upload') 'c-add-diagrams__tab--active'}}"
+        {{on "click" (fn this.setActiveTab "upload")}}
+      >
+        Uploaden
+      </AuButton>
+      <AuButton
+        @skin="naked"
+        class="c-add-diagrams__tab
+          {{if (eq this.activeTab 'library') 'c-add-diagrams__tab--active'}}"
+        {{on "click" (fn this.setActiveTab "library")}}
+      >
+        Uit bibliotheek
+      </AuButton>
+    </div>
+
+    <div hidden={{not (eq this.activeTab "upload")}}>
+      <File::Dropzone
+        @title="Eén of meer BPMN/Visio bestanden selecteren"
+        @helpTextDragDrop="Bestanden worden toegevoegd aan bibliotheek na selectie"
+        @multiple={{true}}
+        @accept=".bpmn,.vsdx"
+        @onFileUploaded={{this.handleFileUpload}}
+      />
+    </div>
+
+    <div hidden={{not (eq this.activeTab "library")}}>
+      <File::LibrarySelection />
+    </div>
   </div>
+
   <div class="au-o-grid__item au-u-1-2">
     <p>Geselecteerd
       <span class="au-u-muted">({{this.fileWrappers.length}})</span></p>
