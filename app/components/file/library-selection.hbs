@@ -21,16 +21,18 @@
       <div
         class="c-file-library__row c-file-library__row--disabled au-u-flex au-u-flex--vertical-center"
       >
-        <AuCheckbox
-          @onChange={{fn @onFileSelected file}}
-          @checked={{includes file @disabledFiles}}
-          @disabled={{includes file @disabledFiles}}
+        <File::SlimCard
+          @primaryName={{file.name}}
+          @secondaryName={{date-format file.created true}}
         >
-          <File::SlimCard
-            @primaryName={{file.name}}
-            @secondaryName={{date-format file.created true}}
-          />
-        </AuCheckbox>
+          <:leadingActions>
+            <AuCheckbox
+              @onChange={{fn @onFileSelected file}}
+              @checked={{includes file @disabledFiles}}
+              @disabled={{includes file @disabledFiles}}
+            />
+          </:leadingActions>
+        </File::SlimCard>
       </div>
     {{/each}}
   </div>
