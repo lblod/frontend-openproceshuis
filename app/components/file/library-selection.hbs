@@ -21,11 +21,14 @@
       <div
         class="c-file-library__row c-file-library__row--disabled au-u-flex au-u-flex--vertical-center"
       >
-        <AuCheckbox @onChange={{this.selectFile file}}>
+        <AuCheckbox
+          @onChange={{fn @onFileSelected file}}
+          @checked={{includes file @disabledFiles}}
+          @disabled={{includes file @disabledFiles}}
+        >
           <File::SlimCard
             @primaryName={{file.name}}
             @secondaryName={{date-format file.created true}}
-            {{!-- @secondaryName={{file-size-format file.size}} --}}
           />
         </AuCheckbox>
       </div>

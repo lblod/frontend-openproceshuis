@@ -1,11 +1,17 @@
 import Component from '@glimmer/component';
 
-import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
 export default class WizardAddDiagrams extends Component {
   @tracked fileWrappers = [];
+  @tracked files = [];
+
   @tracked activeTab = 'upload';
+
+  get combinedFiles() {
+    return [...this.fileWrappers, ...this.files] ?? [];
+  }
 
   @action
   setActiveTab(tab) {
@@ -19,9 +25,18 @@ export default class WizardAddDiagrams extends Component {
   }
 
   @action
+  addFileFromLibrary(_file) {
+    this.files = [...this.files, _file];
+  }
+
+  @action
   removeFileWrapper(fileWrapper) {
-    fileWrapper.queue.remove(fileWrapper);
-    this.fileWrappers = this.fileWrappers.filter((fw) => fw !== fileWrapper);
-    this.args.onFileWrappersChanged?.(this.fileWrappers);
+    if (fileWrapper.queue) {
+      fileWrapper.queue.remove(fileWrapper);
+      this.fileWrappers = this.fileWrappers.filter((fw) => fw !== fileWrapper);
+      this.args.onFileWrappersChanged?.(this.fileWrappers);
+    } else {
+      this.files = this.files.filter((f) => f !== fileWrapper);
+    }
   }
 }

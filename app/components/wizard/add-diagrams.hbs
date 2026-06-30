@@ -30,15 +30,18 @@
     </div>
 
     <div hidden={{not (eq this.activeTab "library")}}>
-      <File::LibrarySelection />
+      <File::LibrarySelection
+        @onFileSelected={{this.addFileFromLibrary}}
+        @disabledFiles={{this.files}}
+      />
     </div>
   </div>
 
   <div class="au-o-grid__item au-u-1-2">
     <p>Geselecteerd
-      <span class="au-u-muted">({{this.fileWrappers.length}})</span></p>
+      <span class="au-u-muted">({{this.combinedFiles.length}})</span></p>
     <div class="c-file-list au-u-margin-top">
-      {{#each this.fileWrappers as |file|}}
+      {{#each this.combinedFiles as |file|}}
         <File::SlimCard
           @primaryName={{file.name}}
           @secondaryName={{file-size-format file.size}}
