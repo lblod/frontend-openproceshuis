@@ -47,44 +47,4 @@
       </label>
     {{/if}}
   </FileDropzone>
-  {{#if @isQueueListShown}}
-    {{! template-lint-disable no-inline-styles }}
-    <div
-      class="au-u-flex au-u-flex--column au-u-margin-left au-u-3-4"
-      style="max-height: 100%"
-    >
-      <div class="au-u-flex au-u-flex--between">
-        <p class="au-u-h4">Bestanden</p>
-        {{#unless (eq this.queue.files.length 0)}}
-          <p class="au-u-h4 au-u-muted">{{this.queue.files.length}}</p>
-        {{/unless}}
-      </div>
-      <AuHr />
-      {{#if (eq this.queue.files.length 0)}}
-        <p class="au-u-muted">Er werden nog geen bestanden geselecteerd</p>
-      {{/if}}
-      <div class="c-file-list">
-        {{#each this.queue.files as |fileWrapper|}}
-          <File::SlimCard
-            @primaryName={{fileWrapper.name}}
-            @secondaryName={{file-size-format fileWrapper.size}}
-          >
-            <:actions>
-              {{#if @canEditFileQueue}}
-                <AuButton
-                  @skin="naked"
-                  @alert="true"
-                  @icon="bin"
-                  @hideText={{true}}
-                  {{on "click" (fn this.removeFileFromQueue fileWrapper)}}
-                >
-                  Verwijder
-                </AuButton>
-              {{/if}}
-            </:actions>
-          </File::SlimCard>
-        {{/each}}
-      </div>
-    </div>
-  {{/if}}
 {{/let}}
