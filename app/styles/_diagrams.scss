@@ -87,6 +87,7 @@
 .c-file-list__row {
   gap: 0.8rem;
   padding: 0.6rem 0.8rem;
+  min-width: 0;
   transition: background-color 0.1s ease-in-out;
 
   & + & {
@@ -105,6 +106,14 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--au-font-size-s, 1.4rem);
+}
+
+.c-file-library__row {
+  overflow: hidden;
+
+  > .c-file-list__row {
+    flex: 1;
+  }
 }
 
 .tree-node--sub {
