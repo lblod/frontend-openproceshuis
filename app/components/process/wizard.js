@@ -26,6 +26,7 @@ export default class ProcessWizard extends Component {
   @tracked disabledActions = [];
 
   @tracked fileWrappers = [];
+  @tracked libraryFiles = [];
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
   @tracked showSuccessMessage = false;
@@ -120,7 +121,8 @@ export default class ProcessWizard extends Component {
           WizardAction.REPLACE_DIAGRAMS,
           WizardAction.ADD_FILES,
         ].includes(this.currentAction),
-        canGoToNextStep: this.fileWrappers.length >= 1,
+        canGoToNextStep:
+          this.fileWrappers.length >= 1 || this.libraryFiles.length >= 1,
         nextStepButtonLabel: 'Uploaden',
       },
       {
@@ -221,6 +223,7 @@ export default class ProcessWizard extends Component {
       this.diagramList = null;
       this.files = [];
       this.fileWrappers = [];
+      this.libraryFiles = [];
     }
     this.nextStep();
   }
@@ -228,6 +231,11 @@ export default class ProcessWizard extends Component {
   @action
   addFileToUploadedList(fileWrappers) {
     this.fileWrappers = fileWrappers;
+  }
+
+  @action
+  addLibraryFilesToList(files) {
+    this.libraryFiles = files;
   }
 
   @action
@@ -337,6 +345,8 @@ export default class ProcessWizard extends Component {
         (file) => file.id !== fileWrapper.id,
       );
     }
+    this.files = [...this.files, ...this.libraryFiles];
+
     if (this.files.length === 0) {
       this.loadingMessage =
         'Oeps, hier liep iets mis. We brengen je terug naar de vorige stap';

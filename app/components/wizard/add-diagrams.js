@@ -27,6 +27,7 @@ export default class WizardAddDiagrams extends Component {
   @action
   addFileFromLibrary(_file) {
     this.files = [...this.files, _file];
+    this.args.onLibraryFilesChanged?.(this.files);
   }
 
   @action
@@ -37,6 +38,7 @@ export default class WizardAddDiagrams extends Component {
       this.args.onFileWrappersChanged?.(this.fileWrappers);
     } else {
       this.files = this.files.filter((f) => f !== fileWrapper);
+      this.args.onLibraryFilesChanged?.(this.files);
     }
   }
 }

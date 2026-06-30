@@ -29,6 +29,7 @@
         <div class="au-u-height-full">
           <Wizard::AddDiagrams
             @onFileWrappersChanged={{this.addFileToUploadedList}}
+            @onLibraryFilesChanged={{this.addLibraryFilesToList}}
           />
         </div>
       {{/if}}
