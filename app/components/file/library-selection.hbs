@@ -12,7 +12,13 @@
   {{#if this.searchFile.isRunning}}
     <AuLoader />
   {{/if}}
-  {{#if (eq this.searchResults.length 0)}}
+  {{#if
+    (and
+      this.hasSearched
+      (eq this.searchResults.length 0)
+      (not this.searchFile.isRunning)
+    )
+  }}
     <p class="au-u-muted">Er werden geen bestanden gevonden</p>
   {{/if}}
 

@@ -10,9 +10,11 @@ import { ARCHIVED_STATUS_URI } from '../../utils/well-known-uris';
 export default class FileLibrarySelection extends Component {
   @service store;
 
+  @tracked hasSearched = false;
   @tracked searchResults = A([]);
 
   searchFile = task({ restartable: true }, async (event) => {
+    this.hasSearched = true;
     await timeout(250);
     const inputValue = event.target?.value?.trim();
     this.searchResults.clear();
