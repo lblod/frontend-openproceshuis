@@ -20,7 +20,10 @@ export default class WizardAddDiagrams extends Component {
 
   @action
   handleFileUpload(fileWrappers) {
-    this.fileWrappers = fileWrappers;
+    this.fileWrappers = fileWrappers.map((fw) => {
+      fw._source = 'upload';
+      return fw;
+    });
     this.args.onFileWrappersChanged?.(fileWrappers);
   }
 

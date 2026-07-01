@@ -47,6 +47,9 @@
           @secondaryName={{file-size-format file.size}}
         >
           <:actions>
+            {{#if (eq file._source "upload")}}
+              <AuPill @skin="link" @size="small">Nieuw</AuPill>
+            {{/if}}
             <AuButton
               @skin="naked"
               @alert="true"
