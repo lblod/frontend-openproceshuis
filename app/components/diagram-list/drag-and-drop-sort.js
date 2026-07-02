@@ -35,14 +35,16 @@ export default class DiagramListDragAndDropSort extends Component {
         ];
       }
 
-      return subItems.map((subItem) => {
-        return {
-          label: subItem.diagramFile.name,
-          self: subItem,
-          parent: _listItem,
-          isSubItem: true,
-        };
-      });
+      return subItems
+        .sort((a, b) => a.position - b.position)
+        .map((subItem) => {
+          return {
+            label: subItem.diagramFile.name,
+            self: subItem,
+            parent: _listItem,
+            isSubItem: true,
+          };
+        });
     };
 
     return sortedByPosition.map((listItem) => ({
@@ -65,8 +67,6 @@ export default class DiagramListDragAndDropSort extends Component {
     const effectiveTarget = replacedWith ?? targetList[targetList.length - 1];
 
     if (!effectiveTarget) return;
-
-    const movedItemOldPosition = movedItem.self.position;
 
     if (movedItem.parent.id !== effectiveTarget.parent.id) {
       const hasSubItems = Boolean(movedItem.self.subItems?.length);
@@ -118,9 +118,17 @@ export default class DiagramListDragAndDropSort extends Component {
       if (!replacedWith) {
         movedItem.self.position = effectiveTarget.self.position + 1;
       } else {
-        const replacedItemOldPosition = replacedWith.self.position;
-        replacedWith.self.position = movedItemOldPosition;
-        movedItem.self.position = replacedItemOldPosition;
+        const targetPosition = replacedWith.self.position;
+        if (sourceIndex < targetIndex) {
+          sourceList.slice(sourceIndex + 1, targetIndex + 1).forEach((item) => {
+            item.self.position -= 1;
+          });
+        } else {
+          sourceList.slice(targetIndex, sourceIndex).forEach((item) => {
+            item.self.position += 1;
+          });
+        }
+        movedItem.self.position = targetPosition;
       }
     }
 
