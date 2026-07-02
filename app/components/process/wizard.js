@@ -127,7 +127,7 @@ export default class ProcessWizard extends Component {
       },
       {
         step: this.wizardStep.SELECT_MAIN_PROCESS,
-        title: 'Hoofdproces kiezen',
+        title: 'Hoofddiagram kiezen',
         isStepShown: [
           WizardAction.REPLACE_DIAGRAMS,
           WizardAction.CHANGE_MAIN_PROCESS,
