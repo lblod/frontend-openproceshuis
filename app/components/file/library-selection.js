@@ -20,6 +20,7 @@ export default class FileLibrarySelection extends Component {
     this.searchResults.clear();
     const results = await this.store.query('file', {
       'filter[name]': inputValue,
+      'filter[:or:extension]': ['.vsdx', '.bpmn'],
       'filter[:not:status]': ARCHIVED_STATUS_URI,
       sort: 'created',
       page: {
