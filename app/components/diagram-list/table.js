@@ -10,17 +10,13 @@ import { downloadFileByUrl } from 'frontend-openproceshuis/utils/file-downloader
 import { ARCHIVED_STATUS_URI } from '../../utils/well-known-uris';
 
 export default class DiagramListTable extends Component {
-  @service toaster;
   @service store;
-  @service plausible;
   @service eventTracking;
 
   @tracked fileToDownload;
   @tracked fileToDelete;
   @tracked canDeleteFile = true;
   @tracked diagramsTableMeta = {};
-
-  size = 5;
 
   get hasNoResults() {
     return this.fetchDiagrams?.value?.length === 0;
@@ -58,7 +54,7 @@ export default class DiagramListTable extends Component {
       sort: this.args.sort,
       page: {
         number: this.args.page,
-        size: this.size,
+        size: this.args.size,
       },
       'filter[id]': diagramsInList.map((diagram) => diagram.id).join(','),
       'filter[:not:status]': ARCHIVED_STATUS_URI,
@@ -71,5 +67,6 @@ export default class DiagramListTable extends Component {
   diagrams = trackedTask(this, this.fetchDiagrams, () => [
     this.args.process,
     this.args.sort,
+    this.args.size,
   ]);
 }
