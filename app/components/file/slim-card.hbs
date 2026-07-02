@@ -2,10 +2,20 @@
   ...attributes
   class="c-file-list__row au-u-flex au-u-flex--vertical-center"
 >
+  {{#if (has-block "leadingActions")}}
+    <div class="au-u-flex au-u-flex--vertical-center">
+      {{yield to="leadingActions"}}
+    </div>
+  {{/if}}
   <AuIcon @icon="file" @size="large" />
-  <p class="c-file-list__name">{{@primaryName}}</p>
+  <AuTooltip @placement="top" as |tooltip|>
+    <p class="c-file-list__name" {{tooltip.target}}>{{@primaryName}}</p>
+    <tooltip.Content>{{@primaryName}}</tooltip.Content>
+  </AuTooltip>
   <p class="au-u-h6 au-u-muted">{{@secondaryName}}</p>
-  <div class="au-u-flex au-u-flex--spaced au-u-flex--vertical-center">
-    {{yield to="actions"}}
-  </div>
+  {{#if (has-block "actions")}}
+    <div class="au-u-flex au-u-flex--spaced au-u-flex--vertical-center">
+      {{yield to="actions"}}
+    </div>
+  {{/if}}
 </div>

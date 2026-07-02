@@ -1,0 +1,16 @@
+.c-add-diagrams__tablist {
+  display: flex;
+  border-bottom: 0.1rem solid var(--au-divider-color);
+  margin-bottom: $au-unit;
+}
+
+.c-add-diagrams__tab {
+  padding: $au-unit-small $au-unit;
+  min-height: 4.8rem;
+  color: var(--au-gray-700);
+}
+
+.c-add-diagrams__tab--active {
+  color: var(--au-gray-900);
+  box-shadow: 0 -3px 0 0 inset var(--au-gray-900);
+}

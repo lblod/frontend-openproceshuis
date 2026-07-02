@@ -1,8 +1,4 @@
-<AuModal
-  @modalOpen={{true}}
-  @closable={{true}}
-  @closeModal={{@onCloseModal}}
->
+<AuModal @modalOpen={{true}} @closable={{true}} @closeModal={{@onCloseModal}}>
   <:title>
     {{this.activeStep.title}}
   </:title>
@@ -30,15 +26,10 @@
         />
       {{/if}}
       {{#if (eq this.activeStep.step this.wizardStep.UPLOAD_FILES)}}
-        <div class="au-u-flex au-u-flex--between au-u-height-full">
-          <File::Dropzone
-            @title="Eén of meer BPMN/Visio bestanden selecteren"
-            @helpTextDragDrop="Bestanden worden toegevoegd aan bibliotheek na selectie"
-            @multiple={{true}}
-            @accept=".bpmn,.vsdx"
-            @onFileUploaded={{this.addFileToUploadedList}}
-            @isQueueListShown={{true}}
-            @canEditFileQueue={{true}}
+        <div class="au-u-height-full">
+          <Wizard::AddDiagrams
+            @onFileWrappersChanged={{this.addFileToUploadedList}}
+            @onLibraryFilesChanged={{this.addLibraryFilesToList}}
           />
         </div>
       {{/if}}

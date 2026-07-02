@@ -34,4 +34,8 @@ export default class FileDownloadMultipleAsZip extends Component {
   get buttonLabel() {
     return this.args.buttonLabel ?? 'Download';
   }
+
+  get buttonSkin() {
+    return this.args.buttonSkin ?? 'naked';
+  }
 }
