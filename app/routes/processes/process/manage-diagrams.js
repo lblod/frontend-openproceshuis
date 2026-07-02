@@ -1,5 +1,6 @@
 import Route from '@ember/routing/route';
 
+import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 export default class ProcessesProcessManageDiagramsRoute extends Route {
@@ -38,5 +39,14 @@ export default class ProcessesProcessManageDiagramsRoute extends Route {
       diagramList: diagramList,
       files: this.diagram.getAvailableFilesFromList(diagramList),
     };
+  }
+
+  @action
+  async willTransition() {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
+    const controller = this.controller;
+    if (controller.isListChanged) {
+      await controller.onResetStructure();
+    }
   }
 }
