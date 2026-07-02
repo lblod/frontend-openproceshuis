@@ -16,6 +16,7 @@ export default class ProcessDiagramVersion extends Component {
 
   @tracked versionsTableMeta = {};
   @tracked deleteModalOpened = false;
+  @tracked openListId = null;
 
   size = 5;
 
@@ -117,4 +118,17 @@ export default class ProcessDiagramVersion extends Component {
     this.args.page,
     this.args.sort,
   ]);
+
+  iconSubRowOpen = (listId) => {
+    return this.openListId === listId ? 'nav-down' : 'nav-right';
+  };
+
+  get subRowButtonClass() {
+    return this.args.hasSubItems ? '' : 'hidden-element';
+  }
+
+  @action
+  openCloseSubRows(listId) {
+    this.openListId = this.openListId === listId ? null : listId;
+  }
 }

@@ -42,6 +42,9 @@ export default class ProcessesProcessIndexRoute extends Route {
     diagramsSort: {
       replace: true,
     },
+    diagramsSize: {
+      replace: true,
+    },
   };
 
   beforeModel(transition) {
@@ -78,7 +81,7 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     if (process.isArchived) {
       throw new Error(
-        'Dit process is verwijderd en kan niet meer bekeken worden.',
+        'Dit proces is verwijderd en kan niet meer bekeken worden.',
       );
     }
 

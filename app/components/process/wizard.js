@@ -527,7 +527,7 @@ export default class ProcessWizard extends Component {
 
   async goToProcess(process, isUpdateOfProcess) {
     this.showSuccessMessage = false;
-    this.loadingMessage = 'We brengen je naar het process';
+    this.loadingMessage = 'We brengen je naar het proces';
     await timeout(150);
     if (isUpdateOfProcess) {
       await this.router.refresh();

@@ -20,8 +20,8 @@
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          <th class="au-u-1-2">Hoofddiagram</th>
           <AuDataTableThSortable
+            class="au-u-1-2"
             @field="created"
             @currentSorting={{@sort}}
             @label="Toegevoegd op"
@@ -39,18 +39,22 @@
         {{else}}
           <c.body as |version|>
             <td class="au-u-1-2">
-              {{version.mainDiagramFileName}}
+              <AuButton
+                @skin="naked"
+                @icon={{this.iconSubRowOpen version.list.id}}
+                {{on "click" (fn this.openCloseSubRows version.list.id)}}
+              />
+              {{date-format version.list.created true}}
               {{#unless version.canRemove}}
                 <strong>
                   <AuIcon @icon="circle-check" />
                 </strong>
               {{/unless}}
             </td>
-            <td>{{date-format version.list.created true}}</td>
             <td>{{version.diagramFiles.length}}</td>
             <td>
               <File::DownloadMultipleAsZip
-                @showAsDownloadIcon={{true}}
+                @buttonLabel="Download .zip"
                 @folderName={{version.zipFilename}}
                 @files={{version.diagramFiles}}
               />
@@ -58,14 +62,25 @@
             {{#if @canEdit}}
               <td>
                 <AuButton
-                  @icon="bin"
+                  {{!-- @icon="bin" --}}
                   @skin="naked"
                   @alert="true"
                   @width="block"
-                  @hideText="true"
+                  {{!-- @hideText="true" --}}
                   @disabled={{not version.canRemove}}
                   {{on "click" (fn this.openDeleteModal version.list)}}
                 >Verwijder</AuButton>
+              </td>
+            {{/if}}
+            {{#if (eq this.openListId version.list.id)}}
+              <td colspan="5" {{show-in-parent}}>
+                <DiagramList::Table
+                  @isHeaderHidden={{true}}
+                  @isGoToDetailsHidden={{true}}
+                  @diagramList={{version.list}}
+                  @process={{@process}}
+                  @size={{100}}
+                />
               </td>
             {{/if}}
           </c.body>

@@ -1,11 +1,5 @@
 {{! template-lint-disable no-invalid-interactive }}
-<td
-  class="au-u-1-2 {{if
-      (eq @diagram.diagramFile.id @selectedDiagramFile.id)
-      'border-left-selected'
-      'border-left-transparent'
-    }}"
->
+<td class="au-u-1-2 {{this.classForFirstColumn}}">
   <span class={{this.subRowButtonClass}}>
     <AuButton
       @skin="naked"
@@ -35,20 +29,22 @@
 <td>
   <AuButton @skin="naked" {{on "click" @onFileDownload}}>Download</AuButton>
 </td>
-<td>
-  <AuLink
-    @route="diagrams.diagram.index"
-    @skin="button-naked"
-    @model={{@diagram.id}}
-    @query={{hash
-      previousRouteTitle=@process.title
-      previousRouteModelId=@process.id
-      previousRouteName=(or @processRouteName "processes.process")
-    }}
-  >
-    Detail
-  </AuLink>
-</td>
+{{#unless @isViewOnly}}
+  <td>
+    <AuLink
+      @route="diagrams.diagram.index"
+      @skin="button-naked"
+      @model={{@diagram.id}}
+      @query={{hash
+        previousRouteTitle=@process.title
+        previousRouteModelId=@process.id
+        previousRouteName=(or @processRouteName "processes.process")
+      }}
+    >
+      Detail
+    </AuLink>
+  </td>
+{{/unless}}
 {{#if this.isSubRowOpen}}
   {{yield}}
 {{/if}}

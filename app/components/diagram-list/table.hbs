@@ -4,34 +4,37 @@
   @isLoading={{this.fetchDiagrams.isRunning}}
   @hidePagination={{true}}
   @page={{@page}}
-  @size={{this.size}}
+  @size={{@size}}
   @sort={{@sort}}
   as |row|
 >
   <row.content class="au-c-data-table__table--small" as |c|>
     <c.header>
-      <AuDataTableThSortable
-        @field="diagram-file.name"
-        @currentSorting={{@sort}}
-        @label="Bestandsnaam"
-      />
-      <AuDataTableThSortable
-        @field="diagram-file.created"
-        @currentSorting={{@sort}}
-        @label="Toegevoegd"
-      />
-      <AuDataTableThSortable
-        @field="diagram-file.size"
-        @currentSorting={{@sort}}
-        @label="Grootte"
-      />
-      <AuDataTableThSortable
-        @field="position"
-        @currentSorting={{@sort}}
-        @label="Positie"
-      />
-      <th></th>
-      <th></th>
+      {{#unless @isHeaderHidden}}
+        <th class="au-u-1-2">Hoofddiagram</th>
+        <AuDataTableThSortable
+          @field="diagram-file.name"
+          @currentSorting={{@sort}}
+          @label="Bestandsnaam"
+        />
+        <AuDataTableThSortable
+          @field="diagram-file.created"
+          @currentSorting={{@sort}}
+          @label="Toegevoegd"
+        />
+        <AuDataTableThSortable
+          @field="diagram-file.size"
+          @currentSorting={{@sort}}
+          @label="Grootte"
+        />
+        <AuDataTableThSortable
+          @field="position"
+          @currentSorting={{@sort}}
+          @label="Positie"
+        />
+        <th></th>
+        <th></th>
+      {{/unless}}
     </c.header>
     {{#if this.fetchDiagrams.isError}}
       <TableMessage::Error />
@@ -43,6 +46,7 @@
       <c.body as |diagram|>
         {{#let diagram.hasSubItems}}
           <DiagramList::Table::Row
+            @isViewOnly={{@isGoToDetailsHidden}}
             @process={{@process}}
             @processRouteName={{@processRouteName}}
             @diagram={{diagram}}
@@ -55,6 +59,7 @@
               {{#each diagram.sortedSubItems as |subDiagram|}}
                 <tr class="diagram-sub-row" {{show-in-parent}}>
                   <DiagramList::Table::Row
+                    @isViewOnly={{@isGoToDetailsHidden}}
                     @isSubRow={{true}}
                     @process={{@process}}
                     @processRouteName={{@processRouteName}}
