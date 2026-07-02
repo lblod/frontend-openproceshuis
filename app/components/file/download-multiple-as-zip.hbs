@@ -14,6 +14,7 @@
 {{else}}
   <AuButton
     ...attributes
+    @skin="naked"
     class="border-radius"
     @disabled={{not this.hasFiles}}
     @loading={{this.downloadFiles.isRunning}}

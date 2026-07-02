@@ -18,6 +18,7 @@ export default class ProcessesProcessIndexController extends Controller {
     'diagramVersionsSort',
     'diagramsPage',
     'diagramsSort',
+    'diagramsSize',
   ];
   @tracked versionedProcessId = null;
   @tracked attachmentsPage = 0;
@@ -30,6 +31,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @tracked diagramVersionsSort = '-created';
   @tracked diagramsPage = 0;
   @tracked diagramsSort = 'position';
+  @tracked diagramsSize = 5;
 
   @service store;
   @service router;

@@ -18,4 +18,18 @@ export default class DiagramListTableRow extends Component {
   openCloseSubRows() {
     this.isSubRowOpen = !this.isSubRowOpen;
   }
+
+  get classForFirstColumn() {
+    if (this.args.isViewOnly) {
+      return '';
+    }
+
+    if (
+      this.args.diagram.diagramFile.id === this.args.selectedDiagramFile?.id
+    ) {
+      return 'border-left-selected';
+    } else {
+      return 'border-left-transparent';
+    }
+  }
 }
