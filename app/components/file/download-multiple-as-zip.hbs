@@ -1,7 +1,7 @@
 {{#if @showAsDownloadIcon}}
   <AuButton
     ...attributes
-    @skin="link"
+    @skin={{this.buttonSkin}}
     @width="block"
     @icon="download"
     @hideText={{true}}
@@ -14,7 +14,7 @@
 {{else}}
   <AuButton
     ...attributes
-    @skin="naked"
+    @skin={{this.buttonSkin}}
     class="border-radius"
     @disabled={{not this.hasFiles}}
     @loading={{this.downloadFiles.isRunning}}
