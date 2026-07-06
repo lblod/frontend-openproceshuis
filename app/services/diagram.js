@@ -44,7 +44,7 @@ export default class DiagramService extends Service {
     }
 
     const subFiles =
-      listWithFiles.diagrams
+      listWithFiles?.diagrams
         .filter((main) => !main?.isArchived)
         .flatMap((main) => main.subItems ?? [])
         .filter((sub) => !sub?.isArchived)
@@ -92,11 +92,10 @@ export default class DiagramService extends Service {
     }
   });
 
-  async createDiagramListForFiles(fileIds, currentList = null) {
+  async createDiagramListForFiles(fileModels, currentList = null) {
     const now = new Date();
     const diagramListItems = await Promise.all(
-      fileIds.map(async (fileId, index) => {
-        const file = await this.store.findRecord('file', fileId);
+      fileModels.map(async (file, index) => {
         const diagramListItem = this.store.createRecord('diagram-list-item', {
           position: index + 1,
           created: now,

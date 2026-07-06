@@ -399,13 +399,9 @@ export default class ProcessWizard extends Component {
       const defaultRelevantUnit =
         await this.currentSession.group.classification;
       const created = new Date();
-      const fileIds = files.map((file) => file.id);
-      const sortedFileIds = this.putIdFirstInArray(
-        fileIds,
-        this.mainProcessFile.id,
-      );
+      const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
       const diagramList = await this.diagram.createDiagramListForFiles(
-        sortedFileIds,
+        sortedFiles,
         null,
       );
       const process = this.store.createRecord('process', {
@@ -437,14 +433,10 @@ export default class ProcessWizard extends Component {
     this.showSuccessMessage = false;
     this.loadingMessage = 'Nieuwe diagrammen toevoegen aan het proces';
     try {
-      const fileIds = files.map((file) => file.id);
-      const sortedFileIds = this.putIdFirstInArray(
-        fileIds,
-        this.mainProcessFile.id,
-      );
+      const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
       const currentLists = await this.args.process.diagramLists;
       const diagramList = await this.diagram.createDiagramListForFiles(
-        sortedFileIds,
+        sortedFiles,
         currentLists,
       );
       this.args.process.diagramLists = [...currentLists, diagramList];
