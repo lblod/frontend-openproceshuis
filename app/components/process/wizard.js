@@ -310,7 +310,7 @@ export default class ProcessWizard extends Component {
 
   async uploadFiles(fileWrappers) {
     for (const fileWrapper of fileWrappers) {
-      this.loadingMessage = `Bestand worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
+      this.loadingMessage = `Bestanden worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
       const fileId = await this.saveFileInDatabase(fileWrapper);
       if (fileId) {
         const file = await this.store.findRecord('file', fileId);
