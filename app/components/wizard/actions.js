@@ -27,10 +27,10 @@ export default class WizardActions extends Component {
       },
       {
         id: WizardAction.CHANGE_MAIN_PROCESS,
-        label: 'Hoofdproces wijzigen',
+        label: 'Hoofddiagram wijzigen',
         icon: 'ordered-list',
         iconStyle: 'fill: var(--au-green-500) !important',
-        description: 'Kies welk diagram het hoofdproces is.',
+        description: 'Kies welk diagram het hoofddiagram is.',
         isDisabled: this.isActionDisabled(WizardAction.CHANGE_MAIN_PROCESS),
         disabledReason:
           'Je hebt één diagram geüpload. Dit is automatisch het hoofddiagram.',

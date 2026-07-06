@@ -11,8 +11,8 @@
   <row.content class="au-c-data-table__table--small" as |c|>
     <c.header>
       {{#unless @isHeaderHidden}}
-        <th class="au-u-1-2">Hoofddiagram</th>
         <AuDataTableThSortable
+          class="au-u-1-2"
           @field="diagram-file.name"
           @currentSorting={{@sort}}
           @label="Bestandsnaam"
