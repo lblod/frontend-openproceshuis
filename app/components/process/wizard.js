@@ -278,9 +278,7 @@ export default class ProcessWizard extends Component {
   }
 
   async extractBboElementsFromBpmnFile(fileId) {
-    this.loadingMessage = 'Processtappen extraheren (bpmn)';
     try {
-      await timeout(250);
       await this.api.fetch(`/bpmn?id=${fileId}`, {
         method: 'POST',
         headers: {
@@ -293,15 +291,11 @@ export default class ProcessWizard extends Component {
         null,
         { timeOut: 2500 },
       );
-    } finally {
-      this.loadingMessage = null;
     }
   }
 
   async extractBboElementsFromVisioFile(fileId) {
-    this.loadingMessage = 'Processtappen extraheren (visio)';
     try {
-      await timeout(250);
       await this.api.fetch(`/visio?id=${fileId}`, {
         method: 'POST',
       });
@@ -311,22 +305,21 @@ export default class ProcessWizard extends Component {
         null,
         { timeOut: 2500 },
       );
-    } finally {
-      this.loadingMessage = null;
     }
   }
 
   async uploadFiles(fileWrappers) {
     for (const fileWrapper of fileWrappers) {
       this.loadingMessage = `Bestand worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
-      await timeout(250);
       const fileId = await this.saveFileInDatabase(fileWrapper);
       if (fileId) {
         const file = await this.store.findRecord('file', fileId);
         if (file.isBpmnFile) {
+          this.loadingMessage = 'Processtappen extraheren (bpmn)';
           await this.extractBboElementsFromBpmnFile(fileId);
         }
         if (file.isVisioFile) {
+          this.loadingMessage = 'Processtappen extraheren (visio)';
           await this.extractBboElementsFromVisioFile(fileId);
         }
         this.files.push(file);
@@ -350,7 +343,7 @@ export default class ProcessWizard extends Component {
     if (this.files.length === 0) {
       this.loadingMessage =
         'Oeps, hier liep iets mis. We brengen je terug naar de vorige stap';
-      await timeout(1500);
+      await timeout(500);
       this.activeStepIndex = this.activeStepIndex - 1;
       this.showSuccessMessage = false;
       this.loadingMessage = null;
@@ -370,7 +363,6 @@ export default class ProcessWizard extends Component {
     this.showSuccessMessage = false;
     this.loadingMessage = 'Hoofddiagram aanpassen';
     try {
-      await timeout(500);
       const items = Array.from(this.diagramList.diagrams).sort(
         (a, b) => a.position - b.position,
       );
@@ -404,7 +396,6 @@ export default class ProcessWizard extends Component {
     this.showSuccessMessage = false;
     this.loadingMessage = 'Bezig met het aanmaken van het proces';
     try {
-      await timeout(250);
       const defaultRelevantUnit =
         await this.currentSession.group.classification;
       const created = new Date();
@@ -501,7 +492,6 @@ export default class ProcessWizard extends Component {
       await this.args.diagramList.save();
       this.loadingMessage = 'Bestanden succesvol toegevoegd';
       this.showSuccessMessage = true;
-      await timeout(100);
       this.args.onSaved?.();
       await this.router.refresh();
     } catch {
