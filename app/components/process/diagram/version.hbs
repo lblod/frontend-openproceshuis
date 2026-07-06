@@ -62,11 +62,9 @@
             {{#if @canEdit}}
               <td>
                 <AuButton
-                  {{!-- @icon="bin" --}}
                   @skin="naked"
                   @alert="true"
                   @width="block"
-                  {{!-- @hideText="true" --}}
                   @disabled={{not version.canRemove}}
                   {{on "click" (fn this.openDeleteModal version.list)}}
                 >Verwijder</AuButton>
@@ -80,6 +78,7 @@
                   @diagramList={{version.list}}
                   @process={{@process}}
                   @size={{100}}
+                  @sort="position"
                 />
               </td>
             {{/if}}
