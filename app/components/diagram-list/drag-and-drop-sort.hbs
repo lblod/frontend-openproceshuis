@@ -7,7 +7,6 @@
     >
       <:actions>
         <AuPill @skin="border" @size="small">{{item.self.position}}</AuPill>
-        <AuIcon @icon="drag-handle" @size="large" class="au-u-margin-right" />
       </:actions>
     </File::DragCard>
     <div class="au-u-margin-left">
@@ -40,11 +39,6 @@
                 @skin="border"
                 @size="small"
               >{{subItem.parent.position}}.{{subItem.self.position}}</AuPill>
-              <AuIcon
-                @icon="drag-handle"
-                @size="large"
-                class="au-u-margin-right"
-              />
             </:actions>
           </File::DragCard>
         {{/if}}
