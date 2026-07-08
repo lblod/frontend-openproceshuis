@@ -6,7 +6,7 @@
     class="width-full au-u-flex au-u-flex--row au-u-flex--vertical-center au-u-flex--between"
   >
     <div class="au-u-flex au-u-flex--row au-u-flex--vertical-center">
-      <AuIcon @icon="file" @size="large" class="au-u-margin-left" />
+      <AuIcon @icon="drag-handle" @size="large" class="au-u-margin-left" />
       <div class="au-u-margin-left-small">
         <p class="au-u-h5">{{@primaryName}}</p>
         {{#if @secondaryName}}
@@ -14,7 +14,9 @@
         {{/if}}
       </div>
     </div>
-    <div class="au-u-flex au-u-flex--spaced au-u-flex--vertical-center">
+    <div
+      class="au-u-flex au-u-flex--spaced au-u-flex--vertical-center au-u-margin-right-small"
+    >
       {{yield to="actions"}}
     </div>
   </div>
