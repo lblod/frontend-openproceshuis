@@ -359,14 +359,16 @@ export default class ProcessWizard extends Component {
     this.areFilesCreated = true;
   }
 
-  async createNewDiagramListVersion(orderedItems = null) {
+  async createNewDiagramListVersion(_diagramList, orderedItems = null) {
     const currentLists = Array.from(this.args.process.diagramLists);
     const newDiagramList = await this.diagram.cloneDiagramList(
-      this.diagramList,
+      _diagramList,
       `v0.0.${currentLists.length}`,
       orderedItems,
     );
     this.args.process.diagramLists = [...currentLists, newDiagramList];
+
+    return newDiagramList;
   }
 
   async changeMainDiagramOnProcess(mainFile) {
@@ -382,7 +384,7 @@ export default class ProcessWizard extends Component {
         ...items.filter((item) => item.diagramFile.id !== mainFile.id),
       ];
 
-      await this.createNewDiagramListVersion(sorted);
+      await this.createNewDiagramListVersion(this.diagramList, sorted);
       await this.args.process.save();
       this.process = this.args.process;
       this.showSuccessMessage = true;
@@ -486,8 +488,11 @@ export default class ProcessWizard extends Component {
         await item.save();
         newItems.push(item);
       }
-      this.args.diagramList.diagrams = [...existingItems, ...newItems];
-      await this.args.diagramList.save();
+      await this.createNewDiagramListVersion(this.args.diagramList, [
+        ...existingItems,
+        ...newItems,
+      ]);
+      await this.args.process.save();
       this.loadingMessage = 'Bestanden succesvol toegevoegd';
       this.showSuccessMessage = true;
       this.args.onSaved?.();
