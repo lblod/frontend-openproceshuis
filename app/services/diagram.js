@@ -117,4 +117,39 @@ export default class DiagramService extends Service {
 
     return diagramList;
   }
+
+  async cloneDiagramList(_diagramList, versionString) {
+    const now = new Date();
+    const listItems = Array.from(_diagramList.diagrams);
+    const newListItems = await Promise.all(
+      listItems.map((_listItem) => this.cloneDiagramListItem(_listItem)),
+    );
+
+    const newList = this.store.createRecord('diagram-list', {
+      created: now,
+      modified: now,
+      version: versionString,
+      diagrams: newListItems,
+    });
+    await newList.save();
+    return newList;
+  }
+
+  async cloneDiagramListItem(_diagramListItem) {
+    const now = new Date();
+    const subItems = Array.from(_diagramListItem.subItems ?? []);
+    const newSubItems = await Promise.all(
+      subItems.map((_subItem) => this.cloneDiagramListItem(_subItem)),
+    );
+
+    const newListItem = this.store.createRecord('diagram-list-item', {
+      position: _diagramListItem.position,
+      created: now,
+      modified: now,
+      diagramFile: _diagramListItem.diagramFile,
+      subItems: newSubItems,
+    });
+    await newListItem.save();
+    return newListItem;
+  }
 }
