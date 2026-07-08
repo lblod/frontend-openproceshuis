@@ -22,8 +22,9 @@ export default class DiagramListItemModel extends Model {
     return this.status === ARCHIVED_STATUS_URI;
   }
 
-  setArchivedStatus() {
+  async archive() {
     this.status = ARCHIVED_STATUS_URI;
+    await this.save();
   }
 
   get sortedSubItems() {

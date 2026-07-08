@@ -359,6 +359,17 @@ export default class ProcessWizard extends Component {
     this.areFilesCreated = true;
   }
 
+  async createNewDiagramListVersion(orderedItems = null) {
+    const currentLists = Array.from(this.args.process.diagramLists);
+    const newDiagramList = await this.diagram.cloneDiagramList(
+      this.diagramList,
+      `v0.0.${currentLists.length}`,
+      orderedItems,
+    );
+    this.args.process.diagramLists = [...currentLists, newDiagramList];
+    await this.diagramList.archive();
+  }
+
   async changeMainDiagramOnProcess(mainFile) {
     this.showSuccessMessage = false;
     this.loadingMessage = 'Hoofddiagram aanpassen';
@@ -372,10 +383,8 @@ export default class ProcessWizard extends Component {
         ...items.filter((item) => item.diagramFile.id !== mainFile.id),
       ];
 
-      for (let i = 0; i < sorted.length; i++) {
-        sorted[i].position = i + 1;
-        await sorted[i].save();
-      }
+      await this.createNewDiagramListVersion(sorted);
+      await this.args.process.save();
       this.process = this.args.process;
       this.showSuccessMessage = true;
     } catch {

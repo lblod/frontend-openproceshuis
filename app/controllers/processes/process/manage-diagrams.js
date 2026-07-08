@@ -92,8 +92,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   }
 
   deleteDiagram = task({ drop: true }, async () => {
-    this.diagramToDelete?.setArchivedStatus();
-    await this.diagramToDelete.save();
+    this.diagramToDelete?.archive();
     await this.router.refresh();
     this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
       timeOut: 2500,
