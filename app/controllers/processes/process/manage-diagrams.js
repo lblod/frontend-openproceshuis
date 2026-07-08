@@ -40,7 +40,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
       }
 
       await diagramList.save();
-
+      await this.model.process.save();
       this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
         timeOut: 2500,
       });
