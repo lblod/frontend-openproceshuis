@@ -484,6 +484,7 @@ export default class ProcessWizard extends Component {
       await this.args.diagramList.save();
       this.loadingMessage = 'Bestanden succesvol toegevoegd';
       this.showSuccessMessage = true;
+      await this.args.process.save();
       this.args.onSaved?.();
       await this.router.refresh();
     } catch {
