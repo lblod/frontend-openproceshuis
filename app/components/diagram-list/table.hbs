@@ -60,9 +60,9 @@
                 <tr class="diagram-sub-row" {{show-in-parent}}>
                   <DiagramList::Table::Row
                     @isViewOnly={{@isGoToDetailsHidden}}
-                    @isSubRow={{true}}
                     @process={{@process}}
                     @processRouteName={{@processRouteName}}
+                    @mainDiagram={{diagram}}
                     @diagram={{subDiagram}}
                     @selectedDiagramFile={{@selectedDiagramFile}}
                     @onDiagramFileSelected={{@onDiagramFileSelected}}
