@@ -367,7 +367,6 @@ export default class ProcessWizard extends Component {
       orderedItems,
     );
     this.args.process.diagramLists = [...currentLists, newDiagramList];
-    await this.diagramList.archive();
   }
 
   async changeMainDiagramOnProcess(mainFile) {
