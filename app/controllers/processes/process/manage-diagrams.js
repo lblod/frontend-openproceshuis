@@ -10,6 +10,7 @@ import { WizardAction } from '../../../components/wizard/actions';
 export default class ProcessesProcessManageDiagramsController extends Controller {
   @service router;
   @service toaster;
+  @service diagram;
 
   addFilesAction = WizardAction.ADD_FILES;
 
@@ -26,20 +27,15 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked diagramToDelete;
   @tracked isListChanged = false;
 
-  saveDiagramStructure = task({ drop: true }, async (diagramList) => {
+  saveDiagramStructure = task({ drop: true }, async (_diagramList) => {
     try {
-      for (const main of diagramList.diagrams) {
-        await main.save();
-      }
-
-      const subItems = diagramList.diagrams.flatMap(
-        (main) => main.subItems ?? [],
+      const currentLists = Array.from(this.model.process.diagramLists);
+      const newDiagramList = await this.diagram.cloneDiagramList(
+        _diagramList,
+        `v0.0.${currentLists.length}`,
       );
-      for (const sub of subItems) {
-        await sub.save();
-      }
-
-      await diagramList.save();
+      this.model.process.diagramLists = [...currentLists, newDiagramList];
+      await this.model.process.save();
       this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
         timeOut: 2500,
       });
