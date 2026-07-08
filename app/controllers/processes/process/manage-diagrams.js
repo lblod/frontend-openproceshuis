@@ -40,7 +40,6 @@ export default class ProcessesProcessManageDiagramsController extends Controller
       }
 
       await diagramList.save();
-      await this.model.process.save();
       this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
         timeOut: 2500,
       });
@@ -70,7 +69,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
           .length >= 1
       ) {
         this.toaster.error(
-          'Hoof-diagrammen met sub diagrammen kunnen niet verwijderd worden.',
+          'Hoofdiagrammen met sub diagrammen kunnen niet verwijderd worden.',
           undefined,
           {
             timeOut: 5000,
@@ -95,7 +94,6 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   deleteDiagram = task({ drop: true }, async () => {
     this.diagramToDelete?.setArchivedStatus();
     await this.diagramToDelete.save();
-    await this.model.process.save();
     await this.router.refresh();
     this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
       timeOut: 2500,

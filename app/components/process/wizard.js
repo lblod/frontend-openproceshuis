@@ -376,8 +376,6 @@ export default class ProcessWizard extends Component {
         sorted[i].position = i + 1;
         await sorted[i].save();
       }
-
-      await this.args.process.save();
       this.process = this.args.process;
       this.showSuccessMessage = true;
     } catch {
@@ -484,7 +482,6 @@ export default class ProcessWizard extends Component {
       await this.args.diagramList.save();
       this.loadingMessage = 'Bestanden succesvol toegevoegd';
       this.showSuccessMessage = true;
-      await this.args.process.save();
       this.args.onSaved?.();
       await this.router.refresh();
     } catch {
