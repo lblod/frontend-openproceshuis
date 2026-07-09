@@ -6,6 +6,7 @@ import { tracked } from '@glimmer/tracking';
 
 import { task } from 'ember-concurrency';
 import { WizardAction } from '../../../components/wizard/actions';
+import { ARCHIVED_STATUS_URI } from '../../../utils/well-known-uris';
 
 export default class ProcessesProcessManageDiagramsController extends Controller {
   @service router;
@@ -29,13 +30,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
 
   saveDiagramStructure = task({ drop: true }, async (_diagramList) => {
     try {
-      const currentLists = Array.from(this.model.process.diagramLists);
-      const newDiagramList = await this.diagram.cloneDiagramList(
-        _diagramList,
-        `v0.0.${currentLists.length}`,
-      );
-      this.model.process.diagramLists = [...currentLists, newDiagramList];
-      await this.model.process.save();
+      await this.createNewDiagramList(_diagramList);
       this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
         timeOut: 2500,
       });
@@ -88,7 +83,13 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   }
 
   deleteDiagram = task({ drop: true }, async () => {
-    this.diagramToDelete?.archive();
+    this.diagramToDelete.status = ARCHIVED_STATUS_URI;
+    await this.createNewDiagramList(this.model.diagramList);
+    this.diagramToDelete.status = null;
+    this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
+      timeOut: 2500,
+    });
+
     await this.router.refresh();
     this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
       timeOut: 2500,
@@ -132,6 +133,16 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @action
   onRemoveFile(_file) {
     console.log('remove file', _file?.id);
+  }
+
+  async createNewDiagramList(_diagramList) {
+    const currentLists = Array.from(this.model.process.diagramLists);
+    const newDiagramList = await this.diagram.cloneDiagramList(
+      _diagramList,
+      `v0.0.${currentLists.length}`,
+    );
+    this.model.process.diagramLists = [...currentLists, newDiagramList];
+    await this.model.process.save();
   }
 
   get hasPreviousRouteBreadCrumb() {

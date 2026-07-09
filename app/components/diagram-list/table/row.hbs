@@ -13,6 +13,7 @@
     <AuButton
       class={{if @isSubRow "au-u-margin-left" ""}}
       @skin="link"
+      @wrap={{true}}
       {{on "click" (fn @onDiagramFileSelected @diagram.diagramFile)}}
     >
       {{@diagram.diagramFile.name}}
