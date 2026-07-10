@@ -25,10 +25,26 @@
 <td>
   {{#if @mainDiagram}}
     <AuPill @skin="info" @size="small">Subdiagram
-      {{@mainDiagram.position}}.{{@diagram.position}}</AuPill>
+      <Shared::TextCompare
+        @current="{{@mainDiagram.position}}.{{@diagram.position}}"
+        @old={{@versionedDiagram._comparePosition}}
+        @enableHighlighting={{if @versionedDiagram true}}
+      >
+        Subdiagram
+        {{@mainDiagram.position}}.{{@diagram.position}}
+      </Shared::TextCompare>
+    </AuPill>
   {{else}}
-    <AuPill @skin="success" @size="small">Hoofddiagram
-      {{@diagram.position}}</AuPill>
+    <AuPill @skin="success" @size="small">
+      <Shared::TextCompare
+        @current="{{@diagram.position}}"
+        @old={{@versionedDiagram._comparePosition}}
+        @enableHighlighting={{if @versionedDiagram true}}
+      >
+        Hoofddiagram
+        {{@diagram.position}}
+      </Shared::TextCompare>
+    </AuPill>
   {{/if}}
 </td>
 <td>

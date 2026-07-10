@@ -11,6 +11,7 @@ import { ARCHIVED_STATUS_URI } from '../../utils/well-known-uris';
 
 export default class DiagramListTable extends Component {
   @service store;
+  @service diagram;
   @service eventTracking;
 
   @tracked fileToDownload;
@@ -20,6 +21,45 @@ export default class DiagramListTable extends Component {
 
   get hasNoResults() {
     return this.fetchDiagrams?.value?.length === 0;
+  }
+
+  get diagramVersionMap() {
+    const versionedList = this.args.versionedDiagramList;
+    if (!versionedList) return {};
+
+    const byFileId = {};
+    for (const main of Array.from(versionedList.diagrams ?? [])) {
+      if (main.diagramFile?.id) {
+        byFileId[main.diagramFile.id] = { diagram: main, parent: null };
+      }
+      for (const sub of Array.from(main.subItems ?? [])) {
+        if (sub.diagramFile?.id) {
+          byFileId[sub.diagramFile.id] = { diagram: sub, parent: main };
+        }
+      }
+    }
+
+    const toEnrichedDiagram = (currentItem) => {
+      const found = byFileId[currentItem.diagramFile?.id];
+      const comparePosition = found
+        ? found.parent
+          ? `${found.parent.position}.${found.diagram.position}`
+          : `${found.diagram.position}`
+        : null;
+      return {
+        diagram: found?.diagram ?? null,
+        _comparePosition: comparePosition,
+      };
+    };
+
+    const mapping = {};
+    for (const currentItem of Array.from(this.diagrams?.value ?? [])) {
+      mapping[currentItem.id] = toEnrichedDiagram(currentItem);
+      for (const sub of Array.from(currentItem.subItems ?? [])) {
+        mapping[sub.id] = toEnrichedDiagram(sub);
+      }
+    }
+    return mapping;
   }
 
   @action

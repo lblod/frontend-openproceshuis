@@ -50,6 +50,7 @@
             @process={{@process}}
             @processRouteName={{@processRouteName}}
             @diagram={{diagram}}
+            @versionedDiagram={{get this.diagramVersionMap diagram.id}}
             @selectedDiagramFile={{@selectedDiagramFile}}
             @hasSubItems={{diagram.hasSubItems}}
             @onDiagramFileSelected={{@onDiagramFileSelected}}
@@ -64,6 +65,10 @@
                     @processRouteName={{@processRouteName}}
                     @mainDiagram={{diagram}}
                     @diagram={{subDiagram}}
+                    @versionedDiagram={{get
+                      this.diagramVersionMap
+                      subDiagram.id
+                    }}
                     @selectedDiagramFile={{@selectedDiagramFile}}
                     @onDiagramFileSelected={{@onDiagramFileSelected}}
                     @onFileDownload={{fn

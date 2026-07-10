@@ -34,6 +34,10 @@ export default class DiagramService extends Service {
   }
 
   getAvailableFilesFromList(listWithFiles, includeSubFiles = true) {
+    if (!listWithFiles) {
+      return [];
+    }
+
     const mainFiles =
       listWithFiles?.diagrams
         ?.filter((diagram) => !diagram?.isArchived)

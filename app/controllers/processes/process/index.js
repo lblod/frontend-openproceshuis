@@ -42,7 +42,7 @@ export default class ProcessesProcessIndexController extends Controller {
   @service eventTracking;
 
   @tracked versionedProcess = null;
-  @tracked versionedDiagrams = [];
+  @tracked versionedDiagramList = null;
   @tracked isEditingDetails = false;
   @tracked selectedDiagramFile;
   @tracked isWizardModalOpen;
@@ -73,11 +73,9 @@ export default class ProcessesProcessIndexController extends Controller {
           ].join(','),
         })
       : null;
-    const latestVersionedList = await this.diagram.getLatestDiagramList(
+    this.versionedDiagramList = await this.diagram.getLatestDiagramList(
       this.versionedProcessId,
     );
-    this.versionedDiagrams =
-      this.diagram.getAvailableFilesFromList(latestVersionedList) ?? [];
   });
 
   get canEdit() {
@@ -150,6 +148,7 @@ export default class ProcessesProcessIndexController extends Controller {
     this.isWizardModalOpen = false;
     this.loadVersionedProcess.cancelAll();
     this.versionedProcess = null;
+    this.versionedDiagramList = null;
 
     this.attachmentsPage = 0;
     this.diagramVersionsPage = 0;
@@ -210,6 +209,10 @@ export default class ProcessesProcessIndexController extends Controller {
 
   get diagramFiles() {
     return this.diagram.getAvailableFilesFromList(this.model.diagramList);
+  }
+
+  get versionedDiagrams() {
+    return this.diagram.getAvailableFilesFromList(this.versionedDiagramList);
   }
 
   get diagramsDownloadFolderName() {
