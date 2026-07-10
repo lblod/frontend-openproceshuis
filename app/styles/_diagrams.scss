@@ -132,3 +132,13 @@
     border-bottom-left-radius: 5px;
   }
 }
+
+.dragSortList .dragSortItem.-placeholderBefore::before,
+.dragSortList .dragSortItem.-placeholderAfter::before {
+  left: 0;
+  right: 0;
+  height: 0.5rem;
+  border-radius: 10px;
+  background-color: var(--au-blue-300);
+  line-height: unset;
+}

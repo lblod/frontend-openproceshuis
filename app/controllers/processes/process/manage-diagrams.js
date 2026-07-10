@@ -6,10 +6,12 @@ import { tracked } from '@glimmer/tracking';
 
 import { task } from 'ember-concurrency';
 import { WizardAction } from '../../../components/wizard/actions';
+import { ARCHIVED_STATUS_URI } from '../../../utils/well-known-uris';
 
 export default class ProcessesProcessManageDiagramsController extends Controller {
   @service router;
   @service toaster;
+  @service diagram;
 
   addFilesAction = WizardAction.ADD_FILES;
 
@@ -26,21 +28,9 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked diagramToDelete;
   @tracked isListChanged = false;
 
-  saveDiagramStructure = task({ drop: true }, async (diagramList) => {
+  saveDiagramStructure = task({ drop: true }, async (_diagramList) => {
     try {
-      for (const main of diagramList.diagrams) {
-        await main.save();
-      }
-
-      const subItems = diagramList.diagrams.flatMap(
-        (main) => main.subItems ?? [],
-      );
-      for (const sub of subItems) {
-        await sub.save();
-      }
-
-      await diagramList.save();
-
+      await this.createNewDiagramList(_diagramList);
       this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
         timeOut: 2500,
       });
@@ -70,7 +60,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
           .length >= 1
       ) {
         this.toaster.error(
-          'Hoof-diagrammen met sub diagrammen kunnen niet verwijderd worden.',
+          'Hoofdiagrammen met sub diagrammen kunnen niet verwijderd worden.',
           undefined,
           {
             timeOut: 5000,
@@ -93,8 +83,13 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   }
 
   deleteDiagram = task({ drop: true }, async () => {
-    this.diagramToDelete?.setArchivedStatus();
-    await this.diagramToDelete.save();
+    this.diagramToDelete.status = ARCHIVED_STATUS_URI;
+    await this.createNewDiagramList(this.model.diagramList);
+    this.diagramToDelete.status = null;
+    this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
+      timeOut: 2500,
+    });
+
     await this.router.refresh();
     this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
       timeOut: 2500,
@@ -138,6 +133,16 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @action
   onRemoveFile(_file) {
     console.log('remove file', _file?.id);
+  }
+
+  async createNewDiagramList(_diagramList) {
+    const currentLists = Array.from(this.model.process.diagramLists);
+    const newDiagramList = await this.diagram.cloneDiagramList(
+      _diagramList,
+      `v0.0.${currentLists.length}`,
+    );
+    this.model.process.diagramLists = [...currentLists, newDiagramList];
+    await this.model.process.save();
   }
 
   get hasPreviousRouteBreadCrumb() {

@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
+
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
 import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 
-export default class ProcessChangedStatusPillsAttachments extends Component {
+export default class ProcessChangedStatusPillsCount extends Component {
   @tracked addedCount = 0;
   @tracked removedCount = 0;
 

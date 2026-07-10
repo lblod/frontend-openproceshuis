@@ -102,10 +102,12 @@ export default class ProcessesProcessIndexRoute extends Route {
     stats.processViews += 1;
     await stats.save();
 
+    const diagramList = await this.diagram.getLatestDiagramList(process.id);
     return {
       process,
       breadcrumRouteName: parentRouteName,
-      diagramList: await this.diagram.getLatestDiagramList(process.id),
+      diagramList: diagramList,
+      allDiagramFiles: this.diagram.getAvailableFilesFromList(diagramList),
     };
   }
 

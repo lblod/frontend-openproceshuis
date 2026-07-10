@@ -7,10 +7,9 @@
     >
       <:actions>
         <AuPill @skin="border" @size="small">{{item.self.position}}</AuPill>
-        <AuIcon @icon="drag-handle" @size="large" class="au-u-margin-right" />
       </:actions>
     </File::DragCard>
-    <div class="au-u-margin-left">
+    <div class="au-u-margin-left au-u-margin-right">
       <DragSortList
         @items={{item.subItems}}
         @dragEndAction={{this.dragEnd}}
@@ -33,18 +32,13 @@
           <File::DragCard
             class="tree-node--sub"
             @primaryName={{subItem.label}}
-            @secondaryName="Hoofddiagram"
+            @secondaryName="Subdiagram"
           >
             <:actions>
               <AuPill
                 @skin="border"
                 @size="small"
               >{{subItem.parent.position}}.{{subItem.self.position}}</AuPill>
-              <AuIcon
-                @icon="drag-handle"
-                @size="large"
-                class="au-u-margin-right"
-              />
             </:actions>
           </File::DragCard>
         {{/if}}

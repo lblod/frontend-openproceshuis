@@ -1,5 +1,7 @@
 import Model, { hasMany, attr } from '@ember-data/model';
+
 import ENV from 'frontend-openproceshuis/config/environment';
+import { ARCHIVED_STATUS_URI } from '../utils/well-known-uris';
 
 export default class DiagramListModel extends Model {
   @attr('string', {
@@ -22,11 +24,13 @@ export default class DiagramListModel extends Model {
   }
 
   get isArchived() {
-    return this.status === ENV.resourceStates.archived;
+    return this.status === ARCHIVED_STATUS_URI;
   }
 
-  archive() {
-    this.status = ENV.resourceStates.archived;
+  async archive() {
+    this.status = ARCHIVED_STATUS_URI;
+    await this.save();
+    await Promise.all(this.diagrams.map((_diagram) => _diagram.archive()));
   }
 
   async save() {

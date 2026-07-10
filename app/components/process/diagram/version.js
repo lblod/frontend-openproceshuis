@@ -47,8 +47,7 @@ export default class ProcessDiagramVersion extends Component {
         this.diagramListToDelete.diagrams
           .filter((item) => !item.isArchived)
           .map((item) => {
-            item.setArchivedStatus();
-            return item.save();
+            return item.archive();
           }),
       );
       this.toaster.success(
