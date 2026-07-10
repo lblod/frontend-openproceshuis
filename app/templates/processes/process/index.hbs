@@ -106,7 +106,6 @@
     {{/if}}
     {{#if @model.diagramList}}
       <div>
-        <h1>l: {{this.versionedDiagrams.length}}</h1>
         <DiagramList::Table
           @diagramList={{@model.diagramList}}
           @versionedDiagramList={{this.versionedDiagramList}}

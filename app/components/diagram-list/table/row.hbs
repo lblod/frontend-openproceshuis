@@ -24,7 +24,7 @@
 <td>{{file-size-format @diagram.diagramFile.size}}</td>
 <td>
   {{#if @mainDiagram}}
-    <AuPill @skin="info" @size="small">Subdiagram
+    <AuPill @skin="info" @size="small">
       <Shared::TextCompare
         @current="{{@mainDiagram.position}}.{{@diagram.position}}"
         @old={{@versionedDiagram._comparePosition}}

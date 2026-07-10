@@ -100,8 +100,7 @@ export default class ProcessesProcessIndexController extends Controller {
       this.versionedProcessId = processOrVersioned.id;
       this.loadVersionedProcess.perform(processOrVersioned.id);
     } else {
-      this.versionedProcessId = null;
-      this.loadVersionedProcess.perform(null);
+      this.clearVersionedProcess();
     }
   }
 
@@ -124,7 +123,8 @@ export default class ProcessesProcessIndexController extends Controller {
   @action
   clearVersionedProcess() {
     this.versionedProcessId = null;
-    this.loadVersionedProcess.perform(null);
+    this.versionedProcess = null;
+    this.versionedDiagramList = null;
   }
 
   @action
@@ -147,8 +147,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
     this.isWizardModalOpen = false;
     this.loadVersionedProcess.cancelAll();
-    this.versionedProcess = null;
-    this.versionedDiagramList = null;
+    this.clearVersionedProcess();
 
     this.attachmentsPage = 0;
     this.diagramVersionsPage = 0;
