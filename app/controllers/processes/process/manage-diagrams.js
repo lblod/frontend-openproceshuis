@@ -98,7 +98,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   });
 
   @action
-  async onResetStructure() {
+  onResetStructure() {
     const diagramList = this.model.diagramList;
 
     for (const main of diagramList.diagrams) {
@@ -108,7 +108,6 @@ export default class ProcessesProcessManageDiagramsController extends Controller
       main.rollbackAttributes();
     }
     diagramList.rollbackAttributes();
-    await this.router.refresh();
     this.isListChanged = false;
   }
 
