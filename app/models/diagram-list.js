@@ -45,6 +45,13 @@ export default class DiagramListModel extends Model {
         _diagram.position = expectedPosition;
         _diagram.save();
       }
+      _diagram.subItems.map((_subDiagram, index) => {
+        const expectedPosition = index + 1;
+        if (_subDiagram.position !== expectedPosition) {
+          _subDiagram.position = expectedPosition;
+          _subDiagram.save();
+        }
+      });
     });
   }
 }
