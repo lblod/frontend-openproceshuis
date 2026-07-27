@@ -33,6 +33,7 @@ export default class ProcessesProcessManageDiagramsRoute extends Route {
 
     const process = await this.store.findRecord('process', processId);
     const diagramList = await this.diagram.getLatestDiagramList(processId);
+    await diagramList.recalculateDiagramPositions();
 
     return {
       process: process,
