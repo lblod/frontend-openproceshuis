@@ -9,14 +9,16 @@
       >
         Uploaden
       </AuButton>
-      <AuButton
-        @skin="naked"
-        class="c-add-diagrams__tab
-          {{if (eq this.activeTab 'library') 'c-add-diagrams__tab--active'}}"
-        {{on "click" (fn this.setActiveTab "library")}}
-      >
-        Uit bibliotheek
-      </AuButton>
+      {{#if this.isLibraryFileSearchEnabled}}
+        <AuButton
+          @skin="naked"
+          class="c-add-diagrams__tab
+            {{if (eq this.activeTab 'library') 'c-add-diagrams__tab--active'}}"
+          {{on "click" (fn this.setActiveTab "library")}}
+        >
+          Uit bibliotheek
+        </AuButton>
+      {{/if}}
     </div>
 
     <div hidden={{not (eq this.activeTab "upload")}}>

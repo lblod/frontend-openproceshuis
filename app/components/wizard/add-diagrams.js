@@ -13,6 +13,10 @@ export default class WizardAddDiagrams extends Component {
     return [...this.fileWrappers, ...this.files] ?? [];
   }
 
+  get isLibraryFileSearchEnabled() {
+    return false;
+  }
+
   @action
   setActiveTab(tab) {
     this.activeTab = tab;
