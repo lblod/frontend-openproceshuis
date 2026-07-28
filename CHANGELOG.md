@@ -1,3 +1,46 @@
+## 1.6.3 (2026-07-28)
+
+#### :rocket: Enhancement
+
+- [#258](https://github.com/lblod/frontend-openproceshuis/pull/258) OPH-1048 | Diagram table re-structure improvements by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#256](https://github.com/lblod/frontend-openproceshuis/pull/256) OPH-1114 | Refine useability of wizard by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#254](https://github.com/lblod/frontend-openproceshuis/pull/254) OPH-866 | Show the versions table with the diagram structure of that version by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#253](https://github.com/lblod/frontend-openproceshuis/pull/253) OPH-864 | Select existing files for upload by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#251](https://github.com/lblod/frontend-openproceshuis/pull/251) OPH-1056 | Addition for adding and removing files to a diagram list by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#250](https://github.com/lblod/frontend-openproceshuis/pull/250) OPH-1056 | Move the structuring of the diagrams to a separate route for full page edit by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#249](https://github.com/lblod/frontend-openproceshuis/pull/249) OPH-1110 | Improve tooltips by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#245](https://github.com/lblod/frontend-openproceshuis/pull/245) OPH-1109 | Relevant links show gekoppeld aan by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#242](https://github.com/lblod/frontend-openproceshuis/pull/242) OPH-864 | Allow structuring of diagrams by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#241](https://github.com/lblod/frontend-openproceshuis/pull/241) OPH-1099 | Transform relevant links to a table with modified dates by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#240](https://github.com/lblod/frontend-openproceshuis/pull/240) OPH-1106 | Test out ember drag sort for re-ordening of diagrams by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#239](https://github.com/lblod/frontend-openproceshuis/pull/239) OPH-867 | Attachments can have any extension (none forbidden) by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#238](https://github.com/lblod/frontend-openproceshuis/pull/238) OPH-1082 | Also show the tooltips for the ICR filters (check boxes for personal info) by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#236](https://github.com/lblod/frontend-openproceshuis/pull/236) OPH-961 | Can change main process by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#210](https://github.com/lblod/frontend-openproceshuis/pull/210) OPH-1031 | Process versioning by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+#### :bug: Bug Fixes
+
+- [#260](https://github.com/lblod/frontend-openproceshuis/pull/260) OPH-1119 | Re-calculate positions when diagram is removed by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#257](https://github.com/lblod/frontend-openproceshuis/pull/257) OPH-1117 | Diagram structuring, issues by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#255](https://github.com/lblod/frontend-openproceshuis/pull/255) OPH-1111 | Allocating diagrams is incorrect by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#248](https://github.com/lblod/frontend-openproceshuis/pull/248) OPH-906 | Visio isn't called correctly by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#247](https://github.com/lblod/frontend-openproceshuis/pull/247) OPH-1098 | Prevent action on enter date input by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#246](https://github.com/lblod/frontend-openproceshuis/pull/246) OPH-1100 | Compare string values with all spaces removed at the end by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#244](https://github.com/lblod/frontend-openproceshuis/pull/244) OPH-1108 | Fix sub structuring and show sub rows in diagramlist table by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#237](https://github.com/lblod/frontend-openproceshuis/pull/237) OPH-1096 | When no files do not go to select main diagram by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#231](https://github.com/lblod/frontend-openproceshuis/pull/231) OPH-1074, -1073 | Diagram count is off when doing multiple edits by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#230](https://github.com/lblod/frontend-openproceshuis/pull/230) OPH-1075 | Do not show linked processes when they are versioned by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#216](https://github.com/lblod/frontend-openproceshuis/pull/216) Don't require admin role for editing ICR assets by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#202](https://github.com/lblod/frontend-openproceshuis/pull/202) Hide information asset versions component by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#197](https://github.com/lblod/frontend-openproceshuis/pull/197) OPH-1011 | Reset process query param when routing away from the icr page by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#196](https://github.com/lblod/frontend-openproceshuis/pull/196) Bugfixes v2.6.0 by [@MartijnBogaert](https://github.com/MartijnBogaert)
+
+#### :wrench: Maintenance
+
+- [#252](https://github.com/lblod/frontend-openproceshuis/pull/252) Fix typos by [@MartijnBogaert](https://github.com/MartijnBogaert)
+- [#235](https://github.com/lblod/frontend-openproceshuis/pull/235) Transition for sync master development by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#232](https://github.com/lblod/frontend-openproceshuis/pull/232) OPH-1069 | Prep prod deploy v2.7.x by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
 ## 1.6.2 (2026-06-01)
 
 #### :rocket: Enhancement
