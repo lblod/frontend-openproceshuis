@@ -6,6 +6,12 @@
 }}
 {{breadcrumb "Beheer proces diagrammen"}}
 
+{{#if this.router.isLoading}}
+  <div class="c-loading-overlay">
+    <Shared::Loader />
+  </div>
+{{/if}}
+
 <AuBodyContainer class="au-o-box au-o-flow" @scroll={{true}}>
   <div class="au-o-grid au-o-grid--small">
     <div class="au-o-grid__item au-u-4-6@medium">
