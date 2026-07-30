@@ -32,6 +32,8 @@ export default class ProcessWizard extends Component {
   @tracked showSuccessMessage = false;
   @tracked isSelectMainDiagramDisabled = false;
 
+  maxUploadAmount = 10;
+
   wizardStep = Object.freeze({
     SELECT_ACTION: 'select_action',
     UPLOAD_FILES: 'upload_files',
@@ -230,6 +232,17 @@ export default class ProcessWizard extends Component {
 
   @action
   addFileToUploadedList(fileWrappers) {
+    if (fileWrappers.length > this.maxUploadAmount) {
+      for (const fw of fileWrappers) {
+        fw.queue?.remove(fw);
+      }
+      this.toaster.error(
+        `Je kan maximaal ${this.maxUploadAmount} bestanden tegelijk uploaden.`,
+        null,
+        { timeOut: 2500 },
+      );
+      return;
+    }
     this.fileWrappers = fileWrappers;
   }
 
@@ -352,7 +365,7 @@ export default class ProcessWizard extends Component {
 
     const fileModels = await this.store.query('file', {
       'filter[id]': fileIds.join(','),
-      page: { size: 100 }, // I hope no one uploads 100 files in one time
+      page: { size: this.maxFileUpload },
     });
     for (const fileModel of fileModels) {
       if (fileModel.isBpmnFile) {
