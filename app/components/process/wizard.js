@@ -529,4 +529,15 @@ export default class ProcessWizard extends Component {
       this.router.transitionTo('processes.process', process.id);
     }
   }
+
+  @action
+  onCloseModal() {
+    if (this.loadingMessage) {
+      this.toaster.loading(`Er is nog een actie bezig`, 'wizard', {
+        timeOut: 2500,
+      });
+      return;
+    }
+    this.args.onCloseModal?.();
+  }
 }
