@@ -357,7 +357,7 @@ export default class ProcessWizard extends Component {
       await this.batchUploadFileWrappers(fileWrappers);
     if (failedFileWrappers.length >= 1) {
       this.toaster.error(
-        `Er konden ${failedFileWrappers.length} bestanden worden geüpload. Probeer het later opnieuw.`,
+        `Er konden ${failedFileWrappers.length} bestanden niet worden geüpload. Probeer het later opnieuw.`,
         null,
         { timeOut: 5000 },
       );
