@@ -149,6 +149,10 @@ export default class IpdcApiService extends Service {
   }
 
   async getToepassingsGebiedenCodelist() {
+    if (this.gebiedIds?.length >= 1) {
+      return;
+    }
+
     const response = await fetch(
       `/ipdc/api/codelijsten/geografisch-toepassingsgebied?include-inactive=false`,
     );
