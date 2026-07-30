@@ -136,6 +136,6 @@
   @isModalOpen={{this.diagramToDelete}}
   @closeModal={{fn (mut this.diagramToDelete) null}}
   @onDelete={{fn (perform this.deleteDiagram)}}
-  @isLoading={{this.deleteDiagram.isRunning}}
+  @isLoading={{this.isDeletingDiagram}}
   @title={{this.diagramToDelete.diagramFile.name}}
 />
