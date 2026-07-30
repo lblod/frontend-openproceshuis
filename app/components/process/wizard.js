@@ -308,35 +308,62 @@ export default class ProcessWizard extends Component {
     }
   }
 
-  async uploadFiles(fileWrappers) {
-    for (const fileWrapper of fileWrappers) {
-      this.loadingMessage = `Bestanden worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
-      const fileId = await this.saveFileInDatabase(fileWrapper);
-      if (fileId) {
-        const file = await this.store.findRecord('file', fileId);
-        if (file.isBpmnFile) {
-          this.loadingMessage = 'Processtappen extraheren (bpmn)';
-          await this.extractBboElementsFromBpmnFile(fileId);
-        }
-        if (file.isVisioFile) {
-          this.loadingMessage = 'Processtappen extraheren (visio)';
-          await this.extractBboElementsFromVisioFile(fileId);
-        }
-        this.files.push(file);
-      } else {
-        this.loadingMessage = 'Oeps, hier liep iets mis';
-        this.fileWrappers = this.fileWrappers.filter(
-          (file) => file.id !== fileWrapper.id,
-        );
-        this.toaster.error(
-          `${fileWrapper.name} is verwijderd uit de bestanden lijst. Probeer het later opnieuw.`,
-          null,
-          { timeOut: 5000 },
-        );
-      }
-      this.fileWrappers = this.fileWrappers.filter(
-        (file) => file.id !== fileWrapper.id,
+  async batchUploadFileWrappers(fileWrappers) {
+    const fileIds = [];
+    const failedFileWrappers = [];
+
+    const batchSize = 4;
+    const batches = [];
+
+    for (let i = 0; i < fileWrappers.length; i += batchSize) {
+      batches.push(fileWrappers.slice(i, i + batchSize));
+    }
+
+    let processedCount = 0;
+    for (let index = 0; index < batches.length; index++) {
+      const batch = batches[index];
+      processedCount += batch.length;
+      this.loadingMessage = `Bestanden worden opgeladen (${processedCount}/${fileWrappers.length})`;
+      await Promise.all(
+        batch.map(async (_fileWrapper) => {
+          const fileId = await this.saveFileInDatabase(_fileWrapper);
+          if (!fileId) {
+            failedFileWrappers.push(_fileWrapper);
+          } else {
+            fileIds.push(fileId);
+          }
+        }),
       );
+    }
+
+    return { fileIds, failedFileWrappers };
+  }
+
+  async uploadFiles(fileWrappers) {
+    const { fileIds, failedFileWrappers } =
+      await this.batchUploadFileWrappers(fileWrappers);
+    if (failedFileWrappers.length >= 1) {
+      this.toaster.error(
+        `Er konden ${failedFileWrappers.length} bestanden worden geüpload. Probeer het later opnieuw.`,
+        null,
+        { timeOut: 5000 },
+      );
+    }
+
+    const fileModels = await this.store.query('file', {
+      'filter[id]': fileIds.join(','),
+      page: { size: 100 }, // I hope no one uploads 100 files in one time
+    });
+    for (const fileModel of fileModels) {
+      if (fileModel.isBpmnFile) {
+        this.loadingMessage = 'Processtappen extraheren (bpmn)';
+        await this.extractBboElementsFromBpmnFile(fileModel.id);
+      }
+      if (fileModel.isVisioFile) {
+        this.loadingMessage = 'Processtappen extraheren (visio)';
+        await this.extractBboElementsFromVisioFile(fileModel.id);
+      }
+      this.files.push(fileModel);
     }
     this.files = [...this.files, ...this.libraryFiles];
 
