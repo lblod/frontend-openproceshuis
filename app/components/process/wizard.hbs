@@ -1,4 +1,8 @@
-<AuModal @modalOpen={{true}} @closable={{true}} @closeModal={{this.onCloseModal}}>
+<AuModal
+  @modalOpen={{true}}
+  @closable={{true}}
+  @closeModal={{this.onCloseModal}}
+>
   <:title>
     {{this.activeStep.title}}
   </:title>
@@ -62,7 +66,12 @@
   </:body>
   <:footer>
     <AuToolbar as |Group|>
-      <Group />
+      <Group>
+        {{#if (eq this.activeStep.step this.wizardStep.UPLOAD_FILES)}}
+          <p class="color--warning">Maximum aantal bestanden is
+            {{this.maxUploadAmount}}</p>
+        {{/if}}
+      </Group>
       <Group>
         {{#if this.activeStep.canCancelStep}}
           <AuButton
