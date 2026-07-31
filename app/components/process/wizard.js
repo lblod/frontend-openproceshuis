@@ -290,9 +290,9 @@ export default class ProcessWizard extends Component {
     }
   }
 
-  async extractBboElementsFromBpmnFile(fileId) {
+  extractBboElementsFromBpmnFile(fileId) {
     try {
-      await this.api.fetch(`/bpmn?id=${fileId}`, {
+      this.api.fetch(`/bpmn?id=${fileId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/vnd.api+json',
@@ -307,9 +307,9 @@ export default class ProcessWizard extends Component {
     }
   }
 
-  async extractBboElementsFromVisioFile(fileId) {
+  extractBboElementsFromVisioFile(fileId) {
     try {
-      await this.api.fetch(`/visio?id=${fileId}`, {
+      this.api.fetch(`/visio?id=${fileId}`, {
         method: 'POST',
       });
     } catch (error) {
@@ -370,11 +370,11 @@ export default class ProcessWizard extends Component {
     for (const fileModel of fileModels) {
       if (fileModel.isBpmnFile) {
         this.loadingMessage = 'Processtappen extraheren (bpmn)';
-        await this.extractBboElementsFromBpmnFile(fileModel.id);
+        this.extractBboElementsFromBpmnFile(fileModel.id);
       }
       if (fileModel.isVisioFile) {
         this.loadingMessage = 'Processtappen extraheren (visio)';
-        await this.extractBboElementsFromVisioFile(fileModel.id);
+        this.extractBboElementsFromVisioFile(fileModel.id);
       }
       this.files.push(fileModel);
     }
