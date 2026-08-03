@@ -6,7 +6,7 @@
 }}
 {{breadcrumb "Beheer proces diagrammen"}}
 
-{{#if this.router.isLoading}}
+{{#if (or this.router.isLoading this.saveDiagramStructure.isRunning)}}
   <div class="c-loading-overlay">
     <Shared::Loader />
   </div>

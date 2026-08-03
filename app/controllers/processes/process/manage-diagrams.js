@@ -107,6 +107,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
       main.rollbackAttributes();
     }
     diagramList.rollbackAttributes();
+    this.router.refresh();
     this.isListChanged = false;
   }
 
