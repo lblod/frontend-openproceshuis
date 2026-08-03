@@ -16,7 +16,7 @@ export default class SharedProcessesIndexController extends Controller {
 
   @tracked page = 0;
   @tracked size = 20;
-  @tracked sort = 'title';
+  @tracked sort = '-modified';
   @tracked title = '';
   @tracked processToDelete = undefined;
   @tracked deleteModalOpened = false;
