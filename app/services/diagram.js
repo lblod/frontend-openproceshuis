@@ -18,24 +18,29 @@ export default class DiagramService extends Service {
     this.downloadModalOpened = false;
   }
 
-  async getDiagramListsWithFilesForProcess(processId) {
-    const processWithLists = await this.store.query('process', {
+  async getDiagramListsForProcess(processId) {
+    const processesWithLists = await this.store.query('process', {
       'filter[id]': processId,
-      include:
-        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file,diagram-lists.diagrams.sub-items,diagram-lists.diagrams.sub-items.diagram-file',
+      include: 'diagram-lists',
+      page: { number: 0, size: 1 },
       reload: true,
     });
-    const diagramLists = Array.from(processWithLists[0]?.diagramLists);
-    return diagramLists.filter((list) => {
-      return (
-        !list.isArchived && list.diagrams.some((d) => !d.diagramFile.isArchived)
-      );
-    });
+
+    if (processesWithLists?.length === 0) {
+      return [];
+    }
+
+    return Array.from(processesWithLists[0]?.diagramLists).filter(
+      (_list) => !_list.isArchived,
+    );
   }
 
-  getAvailableFilesFromList(listWithFiles, includeSubFiles = true) {
+  getAvailableFilesFromList(_listWithFiles, includeSubFiles = true) {
+    if (!_listWithFiles) {
+      return [];
+    }
     const mainFiles =
-      listWithFiles?.diagrams
+      _listWithFiles?.diagrams
         ?.filter((diagram) => !diagram?.isArchived)
         ?.map((diagram) => diagram?.diagramFile) ?? [];
 
@@ -44,7 +49,7 @@ export default class DiagramService extends Service {
     }
 
     const subFiles =
-      listWithFiles?.diagrams
+      _listWithFiles?.diagrams
         .filter((main) => !main?.isArchived)
         .flatMap((main) => main.subItems ?? [])
         .filter((sub) => !sub?.isArchived)
@@ -53,17 +58,42 @@ export default class DiagramService extends Service {
     return [...mainFiles, ...subFiles];
   }
 
-  async getLatestDiagramList(processId) {
-    if (!processId) {
+  async fetchDiagramListWithDiagrams(_listId, _includeSubItems = false) {
+    if (!_listId) {
       return null;
     }
 
-    const allDiagramLists =
-      await this.getDiagramListsWithFilesForProcess(processId);
+    let included = ['diagrams', 'diagrams.diagram-file'];
+    if (_includeSubItems) {
+      included.push('diagrams.sub-items', 'diagrams.sub-items.diagram-file');
+    }
+
+    const query = {
+      'filter[id]': _listId,
+      include: included.join(','),
+      page: { number: 0, size: 1 },
+    };
+    const lists = await this.store.query('diagram-list', query);
+
+    return lists[0];
+  }
+
+  async getLatestDiagramList(_processId) {
+    if (!_processId) {
+      return null;
+    }
+
+    const allDiagramLists = await this.getDiagramListsForProcess(_processId);
     const sortedOnCreatedLists = allDiagramLists.sort(
       (a, b) => new Date(b.created) - new Date(a.created),
     );
-    return sortedOnCreatedLists[0];
+    const diagramList = sortedOnCreatedLists[0];
+
+    if (!diagramList) {
+      return null;
+    }
+
+    return diagramList;
   }
 
   getFirstFileOfList(list) {
