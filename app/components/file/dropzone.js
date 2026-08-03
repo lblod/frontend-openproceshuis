@@ -61,7 +61,7 @@ export default class FileDropzone extends Component {
       this.toaster.error(
         fileWrapper.name,
         'Dit bestandsformaat wordt niet ondersteund.',
-        { timeOut: 2500 },
+        { timeOut: 5000 },
       );
       return false;
     }
