@@ -71,8 +71,6 @@ export default class ProcessesProcessIndexRoute extends Route {
         'ipdc-products',
         'information-assets',
         'linked-concept',
-        'linked-concept.process-groups.process-domains',
-        'linked-concept.process-groups.process-domains.process-categories',
         'relevant-administrative-units',
         'linked-blueprints',
       ].join(','),

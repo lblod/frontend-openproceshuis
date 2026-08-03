@@ -1,12 +1,17 @@
 import Component from '@glimmer/component';
+
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { dropTask } from 'ember-concurrency';
 import { service } from '@ember/service';
+
+import { task, dropTask } from 'ember-concurrency';
+import { task as trackedTask } from 'reactiveweb/ember-concurrency';
 import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-messages';
 
 export default class ProcessInventoryProcessCard extends Component {
   @service toaster;
+  @service store;
+
   @tracked edit = false;
   @tracked conceptModalOpened = false;
 
@@ -32,10 +37,10 @@ export default class ProcessInventoryProcessCard extends Component {
   }
 
   get linkedProcessWarnText() {
-    if (this.args.process.linkedConcept?.isArchived) {
+    if (this.args.inventoryProcess?.isArchived) {
       return 'Dit proces werd gearchiveerd';
     }
-    if (this.args.process.linkedConcept?.processGroup?.isArchived) {
+    if (this.linkedConcept?.processGroup?.isArchived) {
       return 'Dit proces heeft gearchiveerde parameters';
     }
 
@@ -43,47 +48,42 @@ export default class ProcessInventoryProcessCard extends Component {
   }
 
   get processConceptTitle() {
-    return this.args.process.linkedConcept?.title || '/';
+    return this.linkedConcept?.title || '/';
   }
 
   get processGroupLabel() {
-    return this.args.process.linkedConcept?.processGroup?.label || '/';
+    return this.linkedConcept?.processGroup?.label || '/';
   }
 
   get processDomainLabel() {
-    return (
-      this.args.process.linkedConcept?.processGroup?.processDomain?.label || '/'
-    );
+    return this.linkedConcept?.processGroup?.processDomain?.label || '/';
   }
 
   get processCategoryLabel() {
     return (
-      this.args.process.linkedConcept?.processGroup?.processDomain
-        ?.processCategory?.label || '/'
+      this.linkedConcept?.processGroup?.processDomain?.processCategory?.label ||
+      '/'
     );
   }
 
   get versionedProcessConceptTitle() {
-    return this.args.versionedProcess?.linkedConcept?.title || '/';
+    return this.versionedLinkedConcept?.title || '/';
   }
 
   get versionedProcessGroupLabel() {
-    return (
-      this.args.versionedProcess?.linkedConcept?.processGroup?.label || '/'
-    );
+    return this.versionedLinkedConcept?.processGroup?.label || '/';
   }
 
   get versionedProcessDomainLabel() {
     return (
-      this.args.versionedProcess?.linkedConcept?.processGroup?.processDomain
-        ?.label || '/'
+      this.versionedLinkedConcept?.processGroup?.processDomain?.label || '/'
     );
   }
 
   get versionedProcessCategoryLabel() {
     return (
-      this.args.versionedProcess?.linkedConcept?.processGroup?.processDomain
-        ?.processCategory?.label || '/'
+      this.versionedLinkedConcept?.processGroup?.processDomain?.processCategory
+        ?.label || '/'
     );
   }
 
@@ -103,4 +103,44 @@ export default class ProcessInventoryProcessCard extends Component {
       this.resetModel();
     }
   }
+
+  fetchInventoryProcess = task(
+    { restartable: true },
+    async (_inventoryProcess) => {
+      if (!_inventoryProcess) {
+        return null;
+      }
+
+      const fullModel = await this.store.findRecord(
+        'conceptual-process',
+        _inventoryProcess.id,
+        {
+          include: [
+            'process-groups',
+            'process-groups.process-domains',
+            'process-groups.process-domains.process-categories',
+          ].join(','),
+        },
+      );
+      return fullModel;
+    },
+  );
+
+  get linkedConcept() {
+    return this.inventoryProcess?.value;
+  }
+
+  get versionedLinkedConcept() {
+    return this.versionedInventoryProcess?.value;
+  }
+
+  inventoryProcess = trackedTask(this, this.fetchInventoryProcess, () => [
+    this.args.inventoryProcess,
+  ]);
+
+  versionedInventoryProcess = trackedTask(
+    this,
+    this.fetchInventoryProcess,
+    () => [this.args.versionedInventoryProcess],
+  );
 }
