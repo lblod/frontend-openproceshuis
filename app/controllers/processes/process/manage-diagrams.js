@@ -135,6 +135,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
 
   async createNewDiagramList(_diagramList) {
     const currentLists = Array.from(this.model.process.diagramLists);
+    _diagramList.recalculateDiagramPositions();
     const newDiagramList = await this.diagram.cloneDiagramList(
       _diagramList,
       `v0.0.${currentLists.length}`,

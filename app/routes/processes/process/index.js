@@ -104,7 +104,7 @@ export default class ProcessesProcessIndexRoute extends Route {
 
     const diagramList = await this.diagram.getLatestDiagramList(process.id);
     const diagramListWithFiles =
-      await this.diagram.fetchDiagramListWithDiagrams(diagramList?.id, false);
+      await this.diagram.fetchDiagramListWithDiagrams(diagramList?.id, true);
     return {
       process,
       breadcrumRouteName: parentRouteName,

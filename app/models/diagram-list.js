@@ -38,18 +38,16 @@ export default class DiagramListModel extends Model {
     await super.save(...arguments);
   }
 
-  async recalculateDiagramPositions() {
+  recalculateDiagramPositions() {
     this.diagrams.map((_diagram, index) => {
       const expectedPosition = index + 1;
       if (_diagram.position !== expectedPosition) {
         _diagram.position = expectedPosition;
-        _diagram.save();
       }
       _diagram.subItems.map((_subDiagram, index) => {
         const expectedPosition = index + 1;
         if (_subDiagram.position !== expectedPosition) {
           _subDiagram.position = expectedPosition;
-          _subDiagram.save();
         }
       });
     });
