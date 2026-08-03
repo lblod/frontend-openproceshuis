@@ -159,7 +159,7 @@ export default class DiagramService extends Service {
     });
     await newList.save();
 
-    const sourceItems = Array.from(_diagrams ?? _diagramList.diagrams);
+    const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
     for (let i = 0; i < sourceItems.length; i += BATCH_SIZE) {
       const batch = sourceItems.slice(i, i + BATCH_SIZE);
       const results = await Promise.all(

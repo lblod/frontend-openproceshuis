@@ -37,19 +37,4 @@ export default class DiagramListModel extends Model {
     this.modified = new Date();
     await super.save(...arguments);
   }
-
-  recalculateDiagramPositions() {
-    this.diagrams.map((_diagram, index) => {
-      const expectedPosition = index + 1;
-      if (_diagram.position !== expectedPosition) {
-        _diagram.position = expectedPosition;
-      }
-      _diagram.subItems.map((_subDiagram, index) => {
-        const expectedPosition = index + 1;
-        if (_subDiagram.position !== expectedPosition) {
-          _subDiagram.position = expectedPosition;
-        }
-      });
-    });
-  }
 }
