@@ -6,6 +6,7 @@ import { task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 import removeFileNameExtension from '../../utils/file-extension-remover';
+import { runInBatches } from '../../utils/batch';
 import { WizardAction } from '../wizard/actions';
 
 export default class ProcessWizard extends Component {
@@ -325,29 +326,23 @@ export default class ProcessWizard extends Component {
     const fileIds = [];
     const failedFileWrappers = [];
 
-    const batchSize = 4;
-    const batches = [];
-
-    for (let i = 0; i < fileWrappers.length; i += batchSize) {
-      batches.push(fileWrappers.slice(i, i + batchSize));
-    }
-
-    let processedCount = 0;
-    for (let index = 0; index < batches.length; index++) {
-      const batch = batches[index];
-      processedCount += batch.length;
-      this.loadingMessage = `Bestanden worden opgeladen (${processedCount}/${fileWrappers.length})`;
-      await Promise.all(
-        batch.map(async (_fileWrapper) => {
-          const fileId = await this.saveFileInDatabase(_fileWrapper);
-          if (!fileId) {
-            failedFileWrappers.push(_fileWrapper);
-          } else {
-            fileIds.push(fileId);
-          }
-        }),
-      );
-    }
+    await runInBatches(
+      fileWrappers,
+      async (_fileWrapper) => {
+        const fileId = await this.saveFileInDatabase(_fileWrapper);
+        if (!fileId) {
+          failedFileWrappers.push(_fileWrapper);
+        } else {
+          fileIds.push(fileId);
+        }
+      },
+      {
+        onBatch: async (batchResults, batchStart) => {
+          const processedCount = batchStart + batchResults.length;
+          this.loadingMessage = `Bestanden worden opgeladen (${processedCount}/${fileWrappers.length})`;
+        },
+      },
+    );
 
     return { fileIds, failedFileWrappers };
   }
@@ -519,19 +514,26 @@ export default class ProcessWizard extends Component {
     this.loadingMessage = 'Bestanden toevoegen als diagrammen';
     this.showSuccessMessage = false;
     try {
-      const newItems = [];
-      for (let i = 0; i < this.files.length; i++) {
-        this.loadingMessage = `Bestand toevoegen aan diagram (${i + 1}/${this.files.length})`;
-        const item = this.store.createRecord('diagram-list-item', {
-          position: maxPosition + i + 1,
-          created: now,
-          modified: now,
-          diagramFile: this.files[i],
-          subItems: [],
-        });
-        await item.save();
-        newItems.push(item);
-      }
+      const newItems = await runInBatches(
+        this.files,
+        async (file, index) => {
+          const item = this.store.createRecord('diagram-list-item', {
+            position: maxPosition + index + 1,
+            created: now,
+            modified: now,
+            diagramFile: file,
+            subItems: [],
+          });
+          await item.save();
+          return item;
+        },
+        {
+          onBatch: async (_, batchStart) => {
+            const processedCount = Math.min(batchStart + 4, this.files.length);
+            this.loadingMessage = `Bestand toevoegen aan diagram (${processedCount}/${this.files.length})`;
+          },
+        },
+      );
       this.loadingMessage = 'Proces uitbreiden met nieuwe diagrammen';
       await this.createNewDiagramListVersion(this.args.diagramList, [
         ...existingItems,

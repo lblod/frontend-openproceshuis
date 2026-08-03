@@ -5,6 +5,8 @@ import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
 import ENV from 'frontend-openproceshuis/config/environment';
 
+import { runInBatches } from '../utils/batch';
+
 export default class DiagramService extends Service {
   @service store;
 
@@ -123,7 +125,6 @@ export default class DiagramService extends Service {
   });
 
   async createDiagramListForFiles(fileModels, currentList = null) {
-    const BATCH_SIZE = 4;
     const now = new Date();
     const diagramList = this.store.createRecord('diagram-list', {
       created: now,
@@ -133,30 +134,31 @@ export default class DiagramService extends Service {
     });
     await diagramList.save();
 
-    for (let i = 0; i < fileModels.length; i += BATCH_SIZE) {
-      const batch = fileModels.slice(i, i + BATCH_SIZE);
-      const results = await Promise.all(
-        batch.map(async (file, batchIndex) => {
-          const diagramListItem = this.store.createRecord('diagram-list-item', {
-            position: i + batchIndex + 1,
-            created: now,
-            modified: now,
-            diagramFile: file,
-            subItems: [],
-          });
-          await diagramListItem.save();
-          return diagramListItem;
-        }),
-      );
-      diagramList.diagrams.push(...results);
-      await diagramList.save();
-    }
+    await runInBatches(
+      fileModels,
+      async (file, index) => {
+        const diagramListItem = this.store.createRecord('diagram-list-item', {
+          position: index + 1,
+          created: now,
+          modified: now,
+          diagramFile: file,
+          subItems: [],
+        });
+        await diagramListItem.save();
+        return diagramListItem;
+      },
+      {
+        onBatch: async (batchResults) => {
+          diagramList.diagrams.push(...batchResults);
+          await diagramList.save();
+        },
+      },
+    );
 
     return diagramList;
   }
 
   async cloneDiagramList(_diagramList, _versionString, _diagrams = null) {
-    const BATCH_SIZE = 4;
     const now = new Date();
     const newList = this.store.createRecord('diagram-list', {
       created: now,
@@ -167,19 +169,22 @@ export default class DiagramService extends Service {
     await newList.save();
 
     const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
-    for (let i = 0; i < sourceItems.length; i += BATCH_SIZE) {
-      const batch = sourceItems.slice(i, i + BATCH_SIZE);
-      const results = await Promise.all(
-        batch.map((_listItem, batchIndex) =>
-          this.cloneDiagramListItem(
-            _listItem,
-            _diagrams != null ? i + batchIndex + 1 : null,
-          ),
+    await runInBatches(
+      sourceItems,
+      (_listItem, index) =>
+        this.cloneDiagramListItem(
+          _listItem,
+          _diagrams != null ? index + 1 : null,
         ),
-      );
-      newList.diagrams.push(...results.filter((item) => item !== null));
-      await newList.save();
-    }
+      {
+        onBatch: async (batchResults) => {
+          newList.diagrams.push(
+            ...batchResults.filter((item) => item !== null),
+          );
+          await newList.save();
+        },
+      },
+    );
 
     return newList;
   }
