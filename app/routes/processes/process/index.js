@@ -74,7 +74,6 @@ export default class ProcessesProcessIndexRoute extends Route {
         'relevant-administrative-units',
         'linked-blueprints',
       ].join(','),
-      reload: true,
     });
 
     if (process.isArchived) {
