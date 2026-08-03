@@ -109,7 +109,7 @@ export default class DiagramService extends Service {
         (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
         diagram.diagramFile.status !== ENV.resourceStates.archived,
     );
-    return diagrams[0].diagramFile;
+    return diagrams?.[0]?.diagramFile;
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {
@@ -149,24 +149,31 @@ export default class DiagramService extends Service {
   }
 
   async cloneDiagramList(_diagramList, _versionString, _diagrams = null) {
+    const BATCH_SIZE = 4;
     const now = new Date();
-    const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
-    const newListItems = await Promise.all(
-      sourceItems.map((_listItem, index) =>
-        this.cloneDiagramListItem(
-          _listItem,
-          _diagrams != null ? index + 1 : null,
-        ),
-      ),
-    );
-
     const newList = this.store.createRecord('diagram-list', {
       created: now,
       modified: now,
       version: _versionString,
-      diagrams: newListItems.filter((isNotNull) => isNotNull),
+      diagrams: [],
     });
     await newList.save();
+
+    const sourceItems = Array.from(_diagrams ?? _diagramList.diagrams);
+    for (let i = 0; i < sourceItems.length; i += BATCH_SIZE) {
+      const batch = sourceItems.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map((_listItem, batchIndex) =>
+          this.cloneDiagramListItem(
+            _listItem,
+            _diagrams != null ? i + batchIndex + 1 : null,
+          ),
+        ),
+      );
+      newList.diagrams.push(...results.filter((item) => item !== null));
+      await newList.save();
+    }
+
     return newList;
   }
 
@@ -174,20 +181,29 @@ export default class DiagramService extends Service {
     if (_diagramListItem.isArchived) {
       return null;
     }
-    const now = new Date();
-    const subItems = Array.from(_diagramListItem.subItems ?? []);
-    const newSubItems = await Promise.all(
-      subItems.map((_subItem) => this.cloneDiagramListItem(_subItem)),
-    );
 
+    const now = new Date();
     const newListItem = this.store.createRecord('diagram-list-item', {
       position: _position ?? _diagramListItem.position,
       created: now,
       modified: now,
       diagramFile: _diagramListItem.diagramFile,
-      subItems: newSubItems.filter((isNotNull) => isNotNull),
+      subItems: [],
     });
     await newListItem.save();
+
+    const subItems = Array.from(_diagramListItem.subItems ?? []).filter(
+      (_subItem) => !_subItem.isArchived,
+    );
+    if (subItems.length > 0) {
+      const results = await Promise.all(
+        subItems.map((_subItem) => this.cloneDiagramListItem(_subItem)),
+      );
+
+      newListItem.subItems.push(...results.filter((item) => item !== null));
+      await newListItem.save();
+    }
+
     return newListItem;
   }
 }
