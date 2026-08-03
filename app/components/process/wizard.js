@@ -423,8 +423,9 @@ export default class ProcessWizard extends Component {
         items.find((item) => item.diagramFile.id === mainFile.id),
         ...items.filter((item) => item.diagramFile.id !== mainFile.id),
       ];
-
+      this.loadingMessage = 'Nieuwe diagram versie aanmaken';
       await this.createNewDiagramListVersion(this.diagramList, sorted);
+      this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
       await this.args.process.save();
       this.process = this.args.process;
       this.showSuccessMessage = true;
@@ -483,11 +484,13 @@ export default class ProcessWizard extends Component {
     try {
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
       const currentLists = await this.args.process.diagramLists;
+      this.loadingMessage = 'Nieuwe diagram versie aanmaken';
       const diagramList = await this.diagram.createDiagramListForFiles(
         sortedFiles,
         currentLists,
       );
       this.args.process.diagramLists = [...currentLists, diagramList];
+      this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
       await this.args.process.save();
       this.diagramList = diagramList;
       this.showSuccessMessage = true;
@@ -513,11 +516,12 @@ export default class ProcessWizard extends Component {
       (max, item) => Math.max(max, item.position ?? 0),
       0,
     );
-    this.loadingMessage = 'Bestanden toevoegen aan diagram';
+    this.loadingMessage = 'Bestanden toevoegen als diagrammen';
     this.showSuccessMessage = false;
     try {
       const newItems = [];
       for (let i = 0; i < this.files.length; i++) {
+        this.loadingMessage = `Bestand toevoegen aan diagram (${i + 1}/${this.files.length})`;
         const item = this.store.createRecord('diagram-list-item', {
           position: maxPosition + i + 1,
           created: now,
@@ -528,6 +532,7 @@ export default class ProcessWizard extends Component {
         await item.save();
         newItems.push(item);
       }
+      this.loadingMessage = 'Proces uitbreiden met nieuwe diagrammen';
       await this.createNewDiagramListVersion(this.args.diagramList, [
         ...existingItems,
         ...newItems,
