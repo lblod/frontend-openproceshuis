@@ -528,8 +528,9 @@ export default class ProcessWizard extends Component {
           return item;
         },
         {
+          batchSize: 2,
           onBatch: async (_, batchStart) => {
-            const processedCount = Math.min(batchStart + 4, this.files.length);
+            const processedCount = Math.min(batchStart + 2, this.files.length);
             this.loadingMessage = `Bestand toevoegen aan diagram (${processedCount}/${this.files.length})`;
           },
         },
