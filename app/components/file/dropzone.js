@@ -38,7 +38,7 @@ export default class FileDropzone extends Component {
       this.removeFileFromQueue(fileWrapper);
       return;
     }
-    this.args.onFileUploaded?.(this.queue.fileQueue.files);
+    this.args.onFileUploaded?.(this.queue.files);
   });
 
   @action
@@ -61,7 +61,7 @@ export default class FileDropzone extends Component {
       this.toaster.error(
         fileWrapper.name,
         'Dit bestandsformaat wordt niet ondersteund.',
-        { timeOut: 2500 },
+        { timeOut: 5000 },
       );
       return false;
     }
@@ -95,12 +95,19 @@ export default class FileDropzone extends Component {
     );
   }
 
+  willDestroy() {
+    super.willDestroy(...arguments);
+    for (const file of this.queue.files) {
+      this.queue.remove(file);
+    }
+  }
+
   removeFileFromQueue = (fileWrapper) => {
     if (!fileWrapper) {
       return;
     }
     this.queue.remove(fileWrapper);
-    this.args.onFileUploaded?.(this.queue.fileQueue.files);
+    this.args.onFileUploaded?.(this.queue.files);
   };
 }
 

@@ -71,12 +71,9 @@ export default class ProcessesProcessIndexRoute extends Route {
         'ipdc-products',
         'information-assets',
         'linked-concept',
-        'linked-concept.process-groups.process-domains',
-        'linked-concept.process-groups.process-domains.process-categories',
         'relevant-administrative-units',
         'linked-blueprints',
       ].join(','),
-      reload: true,
     });
 
     if (process.isArchived) {
@@ -103,11 +100,14 @@ export default class ProcessesProcessIndexRoute extends Route {
     await stats.save();
 
     const diagramList = await this.diagram.getLatestDiagramList(process.id);
+    const diagramListWithFiles =
+      await this.diagram.fetchDiagramListWithDiagrams(diagramList?.id, true);
     return {
       process,
       breadcrumRouteName: parentRouteName,
       diagramList: diagramList,
-      allDiagramFiles: this.diagram.getAvailableFilesFromList(diagramList),
+      allDiagramFiles:
+        this.diagram.getAvailableFilesFromList(diagramListWithFiles),
     };
   }
 

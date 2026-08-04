@@ -23,8 +23,10 @@ export default class ProcessChangedStatusPillsCount extends Component {
 
     const currentActiveItems = _current.filter((item) => !item.isArchived);
 
-    const currentActiveIds = new Set(currentActiveItems.map((item) => item.id));
-    const olderActiveIds = new Set(_older.map((item) => item.id));
+    const currentActiveIds = new Set(
+      currentActiveItems.map((item) => item?.id),
+    );
+    const olderActiveIds = new Set(_older.map((item) => item?.id));
 
     let added = 0;
     for (const id of currentActiveIds) {

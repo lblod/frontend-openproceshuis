@@ -72,14 +72,18 @@ export default class ProcessDiagramVersion extends Component {
     const latestDiagramList = await this.diagram.getLatestDiagramList(
       this.args.process.id,
     );
-    const lists = await this.diagram.getDiagramListsWithFilesForProcess(
+    const lists = await this.diagram.getDiagramListsForProcess(
       this.args.process.id,
     );
     const filteredLists = await this.getListsWithAppliedFilters(lists);
     this.versionsTableMeta = filteredLists.meta;
 
     const mappedListOfVersions = filteredLists.map(async (list) => {
-      const firstFileInList = this.diagram.getFirstFileOfList(list);
+      const listWithFiles = await this.diagram.fetchDiagramListWithDiagrams(
+        list.id,
+        true,
+      );
+      const firstFileInList = this.diagram.getFirstFileOfList(listWithFiles);
       const mainFileName = firstFileInList?.name;
 
       return {
@@ -87,7 +91,7 @@ export default class ProcessDiagramVersion extends Component {
         list,
         mainDiagramFileName: mainFileName ?? list.displayVersion,
         zipFilename: `${mainFileName}-${list.displayVersion}`,
-        diagramFiles: this.diagram.getAvailableFilesFromList(list),
+        diagramFiles: this.diagram.getAvailableFilesFromList(listWithFiles),
       };
     });
 

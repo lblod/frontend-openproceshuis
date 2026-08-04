@@ -6,7 +6,7 @@
 }}
 {{breadcrumb "Beheer proces diagrammen"}}
 
-{{#if this.router.isLoading}}
+{{#if (or this.router.isLoading this.saveDiagramStructure.isRunning)}}
   <div class="c-loading-overlay">
     <Shared::Loader />
   </div>
@@ -80,7 +80,7 @@
           <AuToolbar as |Group|>
             <Group>
               <h2 class="au-u-h4 au-u-medium">
-                Bestanden
+                Bestanden ({{or this.sortedFiles.length 0}})
               </h2>
             </Group>
             <Group>
@@ -136,6 +136,6 @@
   @isModalOpen={{this.diagramToDelete}}
   @closeModal={{fn (mut this.diagramToDelete) null}}
   @onDelete={{fn (perform this.deleteDiagram)}}
-  @isLoading={{this.deleteDiagram.isRunning}}
+  @isLoading={{this.isDeletingDiagram}}
   @title={{this.diagramToDelete.diagramFile.name}}
 />

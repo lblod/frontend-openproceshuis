@@ -14,22 +14,7 @@ export default class ProcessesProcessRoute extends Route {
     const parentRouteName = transition.to?.name?.replace('.index', '');
     const processId = id ?? this.modelFor(parentRouteName);
 
-    const process = await this.store.findRecord('process', processId, {
-      include: [
-        'process-statistics',
-        'publisher',
-        'creator',
-        'publisher.primary-site',
-        'publisher.primary-site.contacts',
-        'publisher.classification',
-        'ipdc-products',
-        'information-assets',
-        'linked-concept',
-        'linked-concept.process-groups.process-domains',
-        'linked-concept.process-groups.process-domains.process-categories',
-        'relevant-administrative-units',
-      ].join(','),
-    });
+    const process = await this.store.findRecord('process', processId);
 
     return {
       process,

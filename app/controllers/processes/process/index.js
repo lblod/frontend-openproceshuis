@@ -56,23 +56,31 @@ export default class ProcessesProcessIndexController extends Controller {
   }
 
   loadVersionedProcess = restartableTask(async (versionId) => {
-    this.versionedProcess = versionId
-      ? await this.store.findRecord('versioned-process', versionId, {
-          reload: true,
-          include: [
-            'ipdc-products',
-            'relevant-administrative-units',
-            'diagram-lists',
-            'diagram-lists.diagrams',
-            'links',
-            'linked-concept',
-            'linked-concept.process-groups.process-domains',
-            'linked-concept.process-groups.process-domains.process-categories',
-            'linked-blueprints',
-            'information-assets',
-          ].join(','),
-        })
-      : null;
+    if (!versionId) {
+      this.versionedProcessId = null;
+      this.versionedProcess = null;
+      this.versionedDiagrams = [];
+      return;
+    }
+    this.versionedProcess = await this.store.findRecord(
+      'versioned-process',
+      versionId,
+      {
+        reload: true,
+        include: [
+          'ipdc-products',
+          'relevant-administrative-units',
+          'diagram-lists',
+          'diagram-lists.diagrams',
+          'links',
+          'linked-concept',
+          'linked-concept.process-groups.process-domains',
+          'linked-concept.process-groups.process-domains.process-categories',
+          'linked-blueprints',
+          'information-assets',
+        ].join(','),
+      },
+    );
     const latestVersionedList = await this.diagram.getLatestDiagramList(
       this.versionedProcessId,
     );
@@ -102,7 +110,6 @@ export default class ProcessesProcessIndexController extends Controller {
       this.versionedProcessId = processOrVersioned.id;
       this.loadVersionedProcess.perform(processOrVersioned.id);
     } else {
-      this.versionedProcessId = null;
       this.loadVersionedProcess.perform(null);
     }
   }
@@ -125,7 +132,6 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   clearVersionedProcess() {
-    this.versionedProcessId = null;
     this.loadVersionedProcess.perform(null);
   }
 

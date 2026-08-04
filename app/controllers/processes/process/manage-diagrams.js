@@ -25,7 +25,8 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   @tracked previousRouteModelId;
   @tracked previousRouteName;
 
-  @tracked diagramToDelete;
+  @tracked isDeletingDiagram = false;
+  @tracked diagramToDelete = null;
   @tracked isListChanged = false;
 
   saveDiagramStructure = task({ drop: true }, async (_diagramList) => {
@@ -83,18 +84,16 @@ export default class ProcessesProcessManageDiagramsController extends Controller
   }
 
   deleteDiagram = task({ drop: true }, async () => {
+    this.isDeletingDiagram = true;
     this.diagramToDelete.status = ARCHIVED_STATUS_URI;
     await this.createNewDiagramList(this.model.diagramList);
     this.diagramToDelete.status = null;
-    this.toaster.success('Diagrammen structuur werd aangepast', undefined, {
-      timeOut: 2500,
-    });
-
-    await this.router.refresh();
     this.toaster.success('Diagram werd succesvol verwijderd', undefined, {
       timeOut: 2500,
     });
+    this.isDeletingDiagram = false;
     this.diagramToDelete = null;
+    await this.router.refresh();
   });
 
   @action
@@ -108,6 +107,7 @@ export default class ProcessesProcessManageDiagramsController extends Controller
       main.rollbackAttributes();
     }
     diagramList.rollbackAttributes();
+    this.router.refresh();
     this.isListChanged = false;
   }
 

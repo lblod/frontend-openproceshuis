@@ -193,5 +193,4 @@ export const ERROR_CODES = {
   ),
 };
 
-export const getMessageForErrorCode = (key) =>
-  ERROR_CODES[key] ?? 'Oeps, er is iets misgelopen!';
+export const getMessageForErrorCode = (key) => ERROR_CODES[key] ?? key;

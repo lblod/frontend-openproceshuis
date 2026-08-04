@@ -5,6 +5,8 @@ import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
 import ENV from 'frontend-openproceshuis/config/environment';
 
+import { runInBatches } from '../utils/batch';
+
 export default class DiagramService extends Service {
   @service store;
 
@@ -18,24 +20,29 @@ export default class DiagramService extends Service {
     this.downloadModalOpened = false;
   }
 
-  async getDiagramListsWithFilesForProcess(processId) {
-    const processWithLists = await this.store.query('process', {
+  async getDiagramListsForProcess(processId) {
+    const processesWithLists = await this.store.query('process', {
       'filter[id]': processId,
-      include:
-        'diagram-lists,diagram-lists.diagrams,diagram-lists.diagrams.diagram-file,diagram-lists.diagrams.sub-items,diagram-lists.diagrams.sub-items.diagram-file',
+      include: 'diagram-lists',
+      page: { number: 0, size: 1 },
       reload: true,
     });
-    const diagramLists = Array.from(processWithLists[0]?.diagramLists);
-    return diagramLists.filter((list) => {
-      return (
-        !list.isArchived && list.diagrams.some((d) => !d.diagramFile.isArchived)
-      );
-    });
+
+    if (processesWithLists?.length === 0) {
+      return [];
+    }
+
+    return Array.from(processesWithLists[0]?.diagramLists).filter(
+      (_list) => !_list.isArchived,
+    );
   }
 
-  getAvailableFilesFromList(listWithFiles, includeSubFiles = true) {
+  getAvailableFilesFromList(_listWithFiles, includeSubFiles = true) {
+    if (!_listWithFiles) {
+      return [];
+    }
     const mainFiles =
-      listWithFiles?.diagrams
+      _listWithFiles?.diagrams
         ?.filter((diagram) => !diagram?.isArchived)
         ?.map((diagram) => diagram?.diagramFile) ?? [];
 
@@ -44,7 +51,7 @@ export default class DiagramService extends Service {
     }
 
     const subFiles =
-      listWithFiles?.diagrams
+      _listWithFiles?.diagrams
         .filter((main) => !main?.isArchived)
         .flatMap((main) => main.subItems ?? [])
         .filter((sub) => !sub?.isArchived)
@@ -53,17 +60,42 @@ export default class DiagramService extends Service {
     return [...mainFiles, ...subFiles];
   }
 
-  async getLatestDiagramList(processId) {
-    if (!processId) {
+  async fetchDiagramListWithDiagrams(_listId, _includeSubItems = false) {
+    if (!_listId) {
       return null;
     }
 
-    const allDiagramLists =
-      await this.getDiagramListsWithFilesForProcess(processId);
+    let included = ['diagrams', 'diagrams.diagram-file'];
+    if (_includeSubItems) {
+      included.push('diagrams.sub-items', 'diagrams.sub-items.diagram-file');
+    }
+
+    const query = {
+      'filter[id]': _listId,
+      include: included.join(','),
+      page: { number: 0, size: 1 },
+    };
+    const lists = await this.store.query('diagram-list', query);
+
+    return lists[0];
+  }
+
+  async getLatestDiagramList(_processId) {
+    if (!_processId) {
+      return null;
+    }
+
+    const allDiagramLists = await this.getDiagramListsForProcess(_processId);
     const sortedOnCreatedLists = allDiagramLists.sort(
       (a, b) => new Date(b.created) - new Date(a.created),
     );
-    return sortedOnCreatedLists[0];
+    const diagramList = sortedOnCreatedLists[0];
+
+    if (!diagramList) {
+      return null;
+    }
+
+    return diagramList;
   }
 
   getFirstFileOfList(list) {
@@ -79,7 +111,7 @@ export default class DiagramService extends Service {
         (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
         diagram.diagramFile.status !== ENV.resourceStates.archived,
     );
-    return diagrams[0].diagramFile;
+    return diagrams?.[0]?.diagramFile;
   }
 
   fetchLatest = task({ keepLatest: true }, async (processId) => {
@@ -94,8 +126,17 @@ export default class DiagramService extends Service {
 
   async createDiagramListForFiles(fileModels, currentList = null) {
     const now = new Date();
-    const diagramListItems = await Promise.all(
-      fileModels.map(async (file, index) => {
+    const diagramList = this.store.createRecord('diagram-list', {
+      created: now,
+      modified: now,
+      version: `v0.0.${(currentList?.length ?? 0) + 1}`,
+      diagrams: [],
+    });
+    await diagramList.save();
+
+    await runInBatches(
+      fileModels,
+      async (file, index) => {
         const diagramListItem = this.store.createRecord('diagram-list-item', {
           position: index + 1,
           created: now,
@@ -105,38 +146,46 @@ export default class DiagramService extends Service {
         });
         await diagramListItem.save();
         return diagramListItem;
-      }),
+      },
+      {
+        onBatch: async (batchResults) => {
+          diagramList.diagrams.push(...batchResults);
+          await diagramList.save();
+        },
+      },
     );
-    const diagramList = this.store.createRecord('diagram-list', {
-      created: now,
-      modified: now,
-      version: `v0.0.${(currentList?.length ?? 0) + 1}`,
-      diagrams: diagramListItems,
-    });
-    await diagramList.save();
 
     return diagramList;
   }
 
   async cloneDiagramList(_diagramList, _versionString, _diagrams = null) {
     const now = new Date();
-    const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
-    const newListItems = await Promise.all(
-      sourceItems.map((_listItem, index) =>
-        this.cloneDiagramListItem(
-          _listItem,
-          _diagrams != null ? index + 1 : null,
-        ),
-      ),
-    );
-
     const newList = this.store.createRecord('diagram-list', {
       created: now,
       modified: now,
       version: _versionString,
-      diagrams: newListItems.filter((isNotNull) => isNotNull),
+      diagrams: [],
     });
     await newList.save();
+
+    const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
+    await runInBatches(
+      sourceItems,
+      (_listItem, index) =>
+        this.cloneDiagramListItem(
+          _listItem,
+          _diagrams != null ? index + 1 : null,
+        ),
+      {
+        onBatch: async (batchResults) => {
+          newList.diagrams.push(
+            ...batchResults.filter((item) => item !== null),
+          );
+          await newList.save();
+        },
+      },
+    );
+
     return newList;
   }
 
@@ -144,20 +193,29 @@ export default class DiagramService extends Service {
     if (_diagramListItem.isArchived) {
       return null;
     }
-    const now = new Date();
-    const subItems = Array.from(_diagramListItem.subItems ?? []);
-    const newSubItems = await Promise.all(
-      subItems.map((_subItem) => this.cloneDiagramListItem(_subItem)),
-    );
 
+    const now = new Date();
     const newListItem = this.store.createRecord('diagram-list-item', {
       position: _position ?? _diagramListItem.position,
       created: now,
       modified: now,
       diagramFile: _diagramListItem.diagramFile,
-      subItems: newSubItems.filter((isNotNull) => isNotNull),
+      subItems: [],
     });
     await newListItem.save();
+
+    const subItems = Array.from(_diagramListItem.subItems ?? []).filter(
+      (_subItem) => !_subItem.isArchived,
+    );
+    if (subItems.length > 0) {
+      const results = await Promise.all(
+        subItems.map((_subItem) => this.cloneDiagramListItem(_subItem)),
+      );
+
+      newListItem.subItems.push(...results.filter((item) => item !== null));
+      await newListItem.save();
+    }
+
     return newListItem;
   }
 }

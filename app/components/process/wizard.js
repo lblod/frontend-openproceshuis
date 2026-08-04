@@ -6,6 +6,7 @@ import { task, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 
 import removeFileNameExtension from '../../utils/file-extension-remover';
+import { runInBatches } from '../../utils/batch';
 import { WizardAction } from '../wizard/actions';
 
 export default class ProcessWizard extends Component {
@@ -31,6 +32,8 @@ export default class ProcessWizard extends Component {
   @tracked loadingMessage = null;
   @tracked showSuccessMessage = false;
   @tracked isSelectMainDiagramDisabled = false;
+
+  maxUploadAmount = 10;
 
   wizardStep = Object.freeze({
     SELECT_ACTION: 'select_action',
@@ -230,6 +233,17 @@ export default class ProcessWizard extends Component {
 
   @action
   addFileToUploadedList(fileWrappers) {
+    if (fileWrappers.length > this.maxUploadAmount) {
+      for (const fw of fileWrappers) {
+        fw.queue?.remove(fw);
+      }
+      this.toaster.error(
+        `Je kan maximaal ${this.maxUploadAmount} bestanden tegelijk uploaden.`,
+        null,
+        { timeOut: 2500 },
+      );
+      return;
+    }
     this.fileWrappers = fileWrappers;
   }
 
@@ -277,9 +291,9 @@ export default class ProcessWizard extends Component {
     }
   }
 
-  async extractBboElementsFromBpmnFile(fileId) {
+  extractBboElementsFromBpmnFile(fileId) {
     try {
-      await this.api.fetch(`/bpmn?id=${fileId}`, {
+      this.api.fetch(`/bpmn?id=${fileId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/vnd.api+json',
@@ -294,9 +308,9 @@ export default class ProcessWizard extends Component {
     }
   }
 
-  async extractBboElementsFromVisioFile(fileId) {
+  extractBboElementsFromVisioFile(fileId) {
     try {
-      await this.api.fetch(`/visio?id=${fileId}`, {
+      this.api.fetch(`/visio?id=${fileId}`, {
         method: 'POST',
       });
     } catch (error) {
@@ -308,35 +322,56 @@ export default class ProcessWizard extends Component {
     }
   }
 
+  async batchUploadFileWrappers(fileWrappers) {
+    const fileIds = [];
+    const failedFileWrappers = [];
+
+    await runInBatches(
+      fileWrappers,
+      async (_fileWrapper) => {
+        const fileId = await this.saveFileInDatabase(_fileWrapper);
+        if (!fileId) {
+          failedFileWrappers.push(_fileWrapper);
+        } else {
+          fileIds.push(fileId);
+        }
+      },
+      {
+        onBatch: async (batchResults, batchStart) => {
+          const processedCount = batchStart + batchResults.length;
+          this.loadingMessage = `Bestanden worden opgeladen (${processedCount}/${fileWrappers.length})`;
+        },
+      },
+    );
+
+    return { fileIds, failedFileWrappers };
+  }
+
   async uploadFiles(fileWrappers) {
-    for (const fileWrapper of fileWrappers) {
-      this.loadingMessage = `Bestanden worden opgeladen (${this.files.length + 1}/${this.fileWrappers.length + this.files.length})`;
-      const fileId = await this.saveFileInDatabase(fileWrapper);
-      if (fileId) {
-        const file = await this.store.findRecord('file', fileId);
-        if (file.isBpmnFile) {
-          this.loadingMessage = 'Processtappen extraheren (bpmn)';
-          await this.extractBboElementsFromBpmnFile(fileId);
-        }
-        if (file.isVisioFile) {
-          this.loadingMessage = 'Processtappen extraheren (visio)';
-          await this.extractBboElementsFromVisioFile(fileId);
-        }
-        this.files.push(file);
-      } else {
-        this.loadingMessage = 'Oeps, hier liep iets mis';
-        this.fileWrappers = this.fileWrappers.filter(
-          (file) => file.id !== fileWrapper.id,
-        );
-        this.toaster.error(
-          `${fileWrapper.name} is verwijderd uit de bestanden lijst. Probeer het later opnieuw.`,
-          null,
-          { timeOut: 5000 },
-        );
-      }
-      this.fileWrappers = this.fileWrappers.filter(
-        (file) => file.id !== fileWrapper.id,
+    const { fileIds, failedFileWrappers } =
+      await this.batchUploadFileWrappers(fileWrappers);
+    if (failedFileWrappers.length >= 1) {
+      this.toaster.error(
+        `Er konden ${failedFileWrappers.length} bestanden niet worden geüpload. Probeer het later opnieuw.`,
+        null,
+        { timeOut: 5000 },
       );
+    }
+
+    const fileModels = await this.store.query('file', {
+      'filter[id]': fileIds.join(','),
+      page: { size: this.maxFileUpload },
+    });
+    for (const fileModel of fileModels) {
+      if (fileModel.isBpmnFile) {
+        this.loadingMessage = 'Processtappen extraheren (bpmn)';
+        this.extractBboElementsFromBpmnFile(fileModel.id);
+      }
+      if (fileModel.isVisioFile) {
+        this.loadingMessage = 'Processtappen extraheren (visio)';
+        this.extractBboElementsFromVisioFile(fileModel.id);
+      }
+      this.files.push(fileModel);
     }
     this.files = [...this.files, ...this.libraryFiles];
 
@@ -383,8 +418,9 @@ export default class ProcessWizard extends Component {
         items.find((item) => item.diagramFile.id === mainFile.id),
         ...items.filter((item) => item.diagramFile.id !== mainFile.id),
       ];
-
+      this.loadingMessage = 'Nieuwe diagram versie aanmaken';
       await this.createNewDiagramListVersion(this.diagramList, sorted);
+      this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
       await this.args.process.save();
       this.process = this.args.process;
       this.showSuccessMessage = true;
@@ -443,11 +479,13 @@ export default class ProcessWizard extends Component {
     try {
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
       const currentLists = await this.args.process.diagramLists;
+      this.loadingMessage = 'Nieuwe diagram versie aanmaken';
       const diagramList = await this.diagram.createDiagramListForFiles(
         sortedFiles,
         currentLists,
       );
       this.args.process.diagramLists = [...currentLists, diagramList];
+      this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
       await this.args.process.save();
       this.diagramList = diagramList;
       this.showSuccessMessage = true;
@@ -473,21 +511,31 @@ export default class ProcessWizard extends Component {
       (max, item) => Math.max(max, item.position ?? 0),
       0,
     );
-    this.loadingMessage = 'Bestanden toevoegen aan diagram';
+    this.loadingMessage = 'Bestanden toevoegen als diagrammen';
     this.showSuccessMessage = false;
     try {
-      const newItems = [];
-      for (let i = 0; i < this.files.length; i++) {
-        const item = this.store.createRecord('diagram-list-item', {
-          position: maxPosition + i + 1,
-          created: now,
-          modified: now,
-          diagramFile: this.files[i],
-          subItems: [],
-        });
-        await item.save();
-        newItems.push(item);
-      }
+      const newItems = await runInBatches(
+        this.files,
+        async (file, index) => {
+          const item = this.store.createRecord('diagram-list-item', {
+            position: maxPosition + index + 1,
+            created: now,
+            modified: now,
+            diagramFile: file,
+            subItems: [],
+          });
+          await item.save();
+          return item;
+        },
+        {
+          batchSize: 2,
+          onBatch: async (_, batchStart) => {
+            const processedCount = Math.min(batchStart + 2, this.files.length);
+            this.loadingMessage = `Bestand toevoegen aan diagram (${processedCount}/${this.files.length})`;
+          },
+        },
+      );
+      this.loadingMessage = 'Proces uitbreiden met nieuwe diagrammen';
       await this.createNewDiagramListVersion(this.args.diagramList, [
         ...existingItems,
         ...newItems,
@@ -528,5 +576,16 @@ export default class ProcessWizard extends Component {
     } else {
       this.router.transitionTo('processes.process', process.id);
     }
+  }
+
+  @action
+  onCloseModal() {
+    if (this.loadingMessage) {
+      this.toaster.loading(`Er is nog een actie bezig`, 'wizard', {
+        timeOut: 2500,
+      });
+      return;
+    }
+    this.args.onCloseModal?.();
   }
 }
