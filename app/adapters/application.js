@@ -41,12 +41,11 @@ export default class ApplicationAdapter extends JSONAPIAdapter {
 
   async withRetries(url, options, originalFetch) {
     const newOptions = { ...(options || { method: 'GET' }) };
-    if (['GET', 'PATCH'].indexOf(newOptions.method) < 0) {
+    if (newOptions.method !== 'GET') {
       return originalFetch(url, newOptions);
     }
     const timeout = {
       GET: 3000,
-      PATCH: 3000,
     };
     let retries = 3;
     let response = null;
