@@ -124,7 +124,11 @@ export default class DiagramService extends Service {
     }
   });
 
-  async createDiagramListForFiles(fileModels, currentList = null) {
+  async createDiagramListForFiles(
+    fileModels,
+    currentList = null,
+    putFirstDiagramAsMain = false,
+  ) {
     const now = new Date();
     const diagramList = this.store.createRecord('diagram-list', {
       created: now,
@@ -134,8 +138,24 @@ export default class DiagramService extends Service {
     });
     await diagramList.save();
 
+    const files = fileModels ?? [];
+    let mainDiagramListItem = null;
+    if (putFirstDiagramAsMain && files.length > 1) {
+      const mainFile = files.shift();
+      mainDiagramListItem = this.store.createRecord('diagram-list-item', {
+        position: 1,
+        created: now,
+        modified: now,
+        diagramFile: mainFile,
+        subItems: [],
+      });
+      await mainDiagramListItem.save();
+      diagramList.diagrams.push(mainDiagramListItem);
+      await diagramList.save();
+    }
+
     await runInBatches(
-      fileModels,
+      files,
       async (file, index) => {
         const diagramListItem = this.store.createRecord('diagram-list-item', {
           position: index + 1,
@@ -149,8 +169,13 @@ export default class DiagramService extends Service {
       },
       {
         onBatch: async (batchResults) => {
-          diagramList.diagrams.push(...batchResults);
-          await diagramList.save();
+          if (mainDiagramListItem) {
+            mainDiagramListItem.subItems.push(...batchResults);
+            await mainDiagramListItem.save();
+          } else {
+            diagramList.diagrams.push(...batchResults);
+            await diagramList.save();
+          }
         },
       },
     );

@@ -444,9 +444,11 @@ export default class ProcessWizard extends Component {
         await this.currentSession.group.classification;
       const created = new Date();
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
+      const putFirstDiagramAsMain = true;
       const diagramList = await this.diagram.createDiagramListForFiles(
         sortedFiles,
         null,
+        putFirstDiagramAsMain,
       );
       const process = this.store.createRecord('process', {
         title: removeFileNameExtension(
