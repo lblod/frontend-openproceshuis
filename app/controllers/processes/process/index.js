@@ -1,7 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { restartableTask, task, timeout } from 'ember-concurrency';
+import { restartableTask, timeout } from 'ember-concurrency';
 import { service } from '@ember/service';
 import { toSafeString } from '../../../utils/string-manipulation';
 
@@ -85,7 +85,7 @@ export default class ProcessesProcessIndexController extends Controller {
       this.versionedProcessId,
     );
     this.versionedDiagrams =
-      this.diagram.getAvailableFilesFromList(latestVersionedList) ?? [];
+      this.diagram.getAvailableFilesFromList(latestVersionedList);
   });
 
   get canEdit() {
@@ -204,7 +204,7 @@ export default class ProcessesProcessIndexController extends Controller {
 
   @action
   onDiagramsDownloadedAsZip() {
-    for (const file of this.diagramFiles) {
+    for (const file of this.model.allDiagramFiles) {
       this.trackDownloadFileEvent(
         file.id,
         file.name,
@@ -214,10 +214,6 @@ export default class ProcessesProcessIndexController extends Controller {
     }
   }
 
-  get diagramFiles() {
-    return this.diagram.getAvailableFilesFromList(this.model.diagramList);
-  }
-
   get diagramsDownloadFolderName() {
     if (this.model.process.title) {
       return `${toSafeString(this.model.process?.title)}`;
@@ -225,18 +221,6 @@ export default class ProcessesProcessIndexController extends Controller {
 
     return 'proces_diagrammen';
   }
-  downloadDiagrams = task({ drop: true }, async () => {
-    const diagramFiles = this.model.diagramList?.diagrams
-      ?.filter((diagrams) => !diagrams.diagramFile.isArchived)
-      ?.map((diagram) => diagram.diagramFile);
-
-    if (!diagramFiles) {
-      this.toaster.error('Er werden geen diagrammen gevonden', undefined, {
-        timeOut: 5000,
-      });
-      return;
-    }
-  });
 
   get diagramsRouteNameFromParent() {
     if (!this.model.breadcrumRouteName) {
