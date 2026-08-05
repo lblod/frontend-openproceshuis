@@ -78,7 +78,9 @@ export default class ProcessWizard extends Component {
       return _fileModel;
     });
 
-    return filesWithDiagramListItemPosition.sort((a, b) => a > b);
+    return filesWithDiagramListItemPosition.sort(
+      (a, b) => a.position - b.position,
+    );
   }
 
   @action
@@ -413,15 +415,18 @@ export default class ProcessWizard extends Component {
       const items = Array.from(this.diagramList.diagrams).sort(
         (a, b) => a.position - b.position,
       );
+      const newMainIsCurrentMain = items[0]?.diagramFile.id === mainFile.id;
+      if (!newMainIsCurrentMain) {
+        const sorted = [
+          items.find((item) => item.diagramFile.id === mainFile.id),
+          ...items.filter((item) => item.diagramFile.id !== mainFile.id),
+        ];
+        this.loadingMessage = 'Nieuwe diagram versie aanmaken';
+        await this.createNewDiagramListVersion(this.diagramList, sorted);
+        this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
+        await this.args.process.save();
+      }
 
-      const sorted = [
-        items.find((item) => item.diagramFile.id === mainFile.id),
-        ...items.filter((item) => item.diagramFile.id !== mainFile.id),
-      ];
-      this.loadingMessage = 'Nieuwe diagram versie aanmaken';
-      await this.createNewDiagramListVersion(this.diagramList, sorted);
-      this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
-      await this.args.process.save();
       this.process = this.args.process;
       this.showSuccessMessage = true;
     } catch {
@@ -444,9 +449,11 @@ export default class ProcessWizard extends Component {
         await this.currentSession.group.classification;
       const created = new Date();
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
+      const putFirstDiagramAsMain = true;
       const diagramList = await this.diagram.createDiagramListForFiles(
         sortedFiles,
         null,
+        putFirstDiagramAsMain,
       );
       const process = this.store.createRecord('process', {
         title: removeFileNameExtension(
@@ -480,9 +487,11 @@ export default class ProcessWizard extends Component {
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
       const currentLists = await this.args.process.diagramLists;
       this.loadingMessage = 'Nieuwe diagram versie aanmaken';
+      const putFirstDiagramAsMain = true;
       const diagramList = await this.diagram.createDiagramListForFiles(
         sortedFiles,
         currentLists,
+        putFirstDiagramAsMain,
       );
       this.args.process.diagramLists = [...currentLists, diagramList];
       this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';

@@ -65,18 +65,6 @@
     <aside class="au-o-grid__item au-u-2-6@medium">
       <div class="u-top-sticky">
         <AuContent>
-          {{#if this.isListChanged}}
-            <AuAlert
-              @title="Acties"
-              @skin="warning"
-              @icon="info-circle"
-              @size="small"
-              @closable={{false}}
-            >
-              <p>Er kunnen geen bestanden worden toegevoegd of verwijderd als er
-                een aanpassing is gebeurd aan de bestanden structuur</p>
-            </AuAlert>
-          {{/if}}
           <AuToolbar as |Group|>
             <Group>
               <h2 class="au-u-h4 au-u-medium">
@@ -84,14 +72,24 @@
               </h2>
             </Group>
             <Group>
-              <AuButton
-                @disabled={{this.isListChanged}}
-                @skin="naked"
-                @icon="add"
-                {{on "click" (fn (mut this.isWizardModalOpen) true)}}
-              >
-                Toevoegen
-              </AuButton>
+              <AuTooltip @placement="left" as |tooltip|>
+                <AuButton
+                  {{tooltip.target}}
+                  @disabled={{this.isListChanged}}
+                  @skin="naked"
+                  @icon="add"
+                  {{on "click" (fn (mut this.isWizardModalOpen) true)}}
+                >
+                  Toevoegen
+                </AuButton>
+                <tooltip.Content>
+                  {{#if this.isListChanged}}
+                    <p>Sla je wijzigingen eerst op om bestanden toe te voegen</p>
+                  {{else}}
+                    <p>Voeg nieuwe bestanden toe</p>
+                  {{/if}}
+                </tooltip.Content>
+              </AuTooltip>
             </Group>
           </AuToolbar>
           <div class="c-file-list">
@@ -101,17 +99,28 @@
                 @secondaryName={{file-size-format file.size}}
               >
                 <:actions>
-                  <AuButton
-                    @disabled={{this.isListChanged}}
-                    @skin="naked"
-                    @alert="true"
-                    @icon="bin"
-                    @hideText={{true}}
-                    aria-label="Verwijder {{file.name}}"
-                    {{on "click" (fn this.onDeleteDiagram file)}}
-                  >
-                    Verwijder
-                  </AuButton>
+                  <AuTooltip @placement="left" as |tooltip|>
+                    <AuButton
+                      {{tooltip.target}}
+                      @disabled={{this.isListChanged}}
+                      @skin="naked"
+                      @alert="true"
+                      @icon="bin"
+                      @hideText={{true}}
+                      aria-label="Verwijder {{file.name}}"
+                      {{on "click" (fn this.onDeleteDiagram file)}}
+                    >
+                      Verwijder
+                    </AuButton>
+                    <tooltip.Content>
+                      {{#if this.isListChanged}}
+                        <p>Sla je wijzigingen eerst op om dit bestand te
+                          verwijderen</p>
+                      {{else}}
+                        <p>Verwijder dit bestand</p>
+                      {{/if}}
+                    </tooltip.Content>
+                  </AuTooltip>
                 </:actions>
               </File::SlimCard>
             {{/each}}
