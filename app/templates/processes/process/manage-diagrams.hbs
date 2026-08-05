@@ -67,14 +67,14 @@
         <AuContent>
           {{#if this.isListChanged}}
             <AuAlert
-              @title="Acties"
+              @title="Bestandsstructuur gewijzigd"
               @skin="warning"
               @icon="info-circle"
               @size="small"
               @closable={{false}}
             >
-              <p>Er kunnen geen bestanden worden toegevoegd of verwijderd als er
-                een aanpassing is gebeurd aan de bestanden structuur</p>
+              <p>Sla je wijzigingen op voordat je bestanden kunt toevoegen of
+                verwijderen.</p>
             </AuAlert>
           {{/if}}
           <AuToolbar as |Group|>
