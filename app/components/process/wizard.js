@@ -79,7 +79,7 @@ export default class ProcessWizard extends Component {
     });
 
     return filesWithDiagramListItemPosition.sort(
-      (a, b) => a.position > b.position,
+      (a, b) => a.position - b.position,
     );
   }
 

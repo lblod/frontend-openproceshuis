@@ -28,7 +28,7 @@ export default class DiagramListItemModel extends Model {
   }
 
   get sortedSubItems() {
-    return Array.from(this.subItems).sort((a, b) => a.position < b.position);
+    return Array.from(this.subItems).sort((a, b) => b.position - a.position);
   }
 
   get hasSubItems() {

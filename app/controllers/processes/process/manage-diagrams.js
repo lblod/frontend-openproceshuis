@@ -126,7 +126,9 @@ export default class ProcessesProcessManageDiagramsController extends Controller
       },
     );
 
-    return filesWithDiagramListItemPosition.sort((a, b) => a > b);
+    return filesWithDiagramListItemPosition.sort(
+      (a, b) => a.position - b.position,
+    );
   }
 
   @action
