@@ -482,9 +482,11 @@ export default class ProcessWizard extends Component {
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
       const currentLists = await this.args.process.diagramLists;
       this.loadingMessage = 'Nieuwe diagram versie aanmaken';
+      const putFirstDiagramAsMain = true;
       const diagramList = await this.diagram.createDiagramListForFiles(
         sortedFiles,
         currentLists,
+        putFirstDiagramAsMain,
       );
       this.args.process.diagramLists = [...currentLists, diagramList];
       this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
