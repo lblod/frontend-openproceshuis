@@ -37,7 +37,7 @@ export default class EventTrackingService extends Service {
     async (targetExtension, processId) => {
       try {
         const process = await this.store.findRecord('process', processId);
-        const stats = process.processStatistics;
+        const stats = await process.processStatistics;
         switch (targetExtension) {
           case 'bpmn':
             stats.bpmnDownloads += 1;
