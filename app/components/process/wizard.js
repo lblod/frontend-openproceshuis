@@ -588,9 +588,30 @@ export default class ProcessWizard extends Component {
     }
   }
 
+  get isClosingModalBlocked() {
+    if (this.loadingMessage) {
+      return true;
+    }
+    if (
+      this.successMessage &&
+      this.currentAction !== WizardAction.CHANGE_MAIN_PROCESS
+    ) {
+      return true;
+    }
+    const blockingSteps = [
+      this.wizardStep.UPDATE_PROCESS,
+      this.wizardStep.CREATE_PROCESS,
+    ];
+    if (blockingSteps.includes(this.activeStep?.step)) {
+      return true;
+    }
+
+    return false;
+  }
+
   @action
   onCloseModal() {
-    if (this.loadingMessage) {
+    if (this.isClosingModalBlocked) {
       this.toaster.loading(`Er is nog een actie bezig`, 'wizard', {
         timeOut: 2500,
       });
