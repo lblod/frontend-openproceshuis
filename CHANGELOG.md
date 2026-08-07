@@ -1,3 +1,16 @@
+## 1.6.5 (2026-08-07)
+
+#### :bug: Bug Fixes
+
+- [#267](https://github.com/lblod/frontend-openproceshuis/pull/267) OPH-1158 | change main diagram blocked by [@JonasVanHoof](https://github.com/JonasVanHoof) 
+- [#266](https://github.com/lblod/frontend-openproceshuis/pull/266) OPH-1152 | resolve docx comments for release to prod by [@JonasVanHoof](https://github.com/JonasVanHoof)
+- [#265](https://github.com/lblod/frontend-openproceshuis/pull/265) Feature/oph 1148 upload issues qa by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+#### :wrench: Maintenance
+
+- [#262](https://github.com/lblod/frontend-openproceshuis/pull/262) OPH-1145 | Disable use of library files in upload wizard by [@JonasVanHoof](https://github.com/JonasVanHoof)
+
+
 ## 1.6.3 (2026-07-28)
 
 #### :rocket: Enhancement
