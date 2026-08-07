@@ -30,7 +30,7 @@ export default class ProcessWizard extends Component {
   @tracked libraryFiles = [];
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
-  @tracked showSuccessMessage = false;
+  @tracked successMessage = null;
   @tracked isSelectMainDiagramDisabled = false;
 
   maxUploadAmount = 10;
@@ -260,7 +260,7 @@ export default class ProcessWizard extends Component {
   }
 
   async prepareWizard() {
-    this.showSuccessMessage = false;
+    this.successMessage = null;
     this.loadingMessage = null;
     if (this.args.process) {
       this.diagramList = await this.diagram.getLatestDiagramList(
@@ -350,6 +350,7 @@ export default class ProcessWizard extends Component {
   }
 
   async uploadFiles(fileWrappers) {
+    this.successMessage = null;
     const { fileIds, failedFileWrappers } =
       await this.batchUploadFileWrappers(fileWrappers);
     if (failedFileWrappers.length >= 1) {
@@ -359,7 +360,7 @@ export default class ProcessWizard extends Component {
         { timeOut: 5000 },
       );
     }
-
+    this.loadingMessage = 'Organizing the uploaded files';
     const fileModels = await this.store.query('file', {
       'filter[id]': fileIds.join(','),
       page: { size: this.maxFileUpload },
@@ -382,13 +383,12 @@ export default class ProcessWizard extends Component {
         'Oeps, hier liep iets mis. We brengen je terug naar de vorige stap';
       await timeout(500);
       this.activeStepIndex = this.activeStepIndex - 1;
-      this.showSuccessMessage = false;
       this.loadingMessage = null;
       return;
     }
 
-    this.loadingMessage = `${this.files.length === 1 ? 'Het bestand werd' : 'De bestanden werden'} succesvol opgeladen`;
-    this.showSuccessMessage = true;
+    this.loadingMessage = null;
+    this.successMessage = `${this.files.length === 1 ? 'Het bestand werd' : 'De bestanden werden'} succesvol opgeladen`;
     if (this.files.length === 1) {
       this.mainProcessFile = this.files[0];
       this.isSelectMainDiagramDisabled = true;
@@ -409,7 +409,7 @@ export default class ProcessWizard extends Component {
   }
 
   async changeMainDiagramOnProcess(mainFile) {
-    this.showSuccessMessage = false;
+    this.successMessage = null;
     this.loadingMessage = 'Hoofddiagram aanpassen';
     try {
       const items = Array.from(this.diagramList.diagrams).sort(
@@ -428,7 +428,8 @@ export default class ProcessWizard extends Component {
       }
 
       this.process = this.args.process;
-      this.showSuccessMessage = true;
+      this.loadingMessage = null;
+      this.successMessage = 'Hoofddiagram werd succesvol aangepast';
     } catch {
       this.toaster.error(
         'Er liep iets mis bij het aanpassen van het hoofddiagram',
@@ -436,13 +437,12 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     } finally {
-      this.loadingMessage = 'Hoofddiagram werd succesvol aangepast';
-      this.showSuccessMessage = true;
+      this.loadingMessage = null;
     }
   }
 
   async createProcess(files) {
-    this.showSuccessMessage = false;
+    this.successMessage = null;
     this.loadingMessage = 'Bezig met het aanmaken van het proces';
     try {
       const defaultRelevantUnit =
@@ -468,7 +468,8 @@ export default class ProcessWizard extends Component {
       });
       await process.save();
       this.process = process;
-      this.showSuccessMessage = true;
+      this.loadingMessage = null;
+      this.successMessage = 'Proces werd succesvol aangemaakt';
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het aanmaken van het proces',
@@ -476,12 +477,12 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     } finally {
-      this.loadingMessage = 'Proces werd succesvol aangemaakt';
+      this.loadingMessage = null;
     }
   }
 
   async createNewDiagramVersion(files) {
-    this.showSuccessMessage = false;
+    this.successMessage = null;
     this.loadingMessage = 'Nieuwe diagrammen toevoegen aan het proces';
     try {
       const sortedFiles = this.putIdFirstInArray(files, this.mainProcessFile);
@@ -497,7 +498,8 @@ export default class ProcessWizard extends Component {
       this.loadingMessage = 'Nieuwe diagram versie linken aan het proces';
       await this.args.process.save();
       this.diagramList = diagramList;
-      this.showSuccessMessage = true;
+      this.loadingMessage = null;
+      this.successMessage = 'Proces werd succesvol aangepast';
     } catch (error) {
       this.toaster.error(
         'Er liep iets mis bij het aanpassen van het proces',
@@ -505,12 +507,12 @@ export default class ProcessWizard extends Component {
         { timeOut: 2500 },
       );
     } finally {
-      this.loadingMessage = 'Proces werd succesvol aangepast';
+      this.loadingMessage = null;
     }
   }
 
   async uploadAndAddFilesToList() {
-    this.showSuccessMessage = false;
+    this.successMessage = null;
     await this.uploadFiles(this.fileWrappers);
     if (this.files.length === 0) return;
 
@@ -521,7 +523,6 @@ export default class ProcessWizard extends Component {
       0,
     );
     this.loadingMessage = 'Bestanden toevoegen als diagrammen';
-    this.showSuccessMessage = false;
     try {
       const newItems = await runInBatches(
         this.files,
@@ -550,8 +551,8 @@ export default class ProcessWizard extends Component {
         ...newItems,
       ]);
       await this.args.process.save();
-      this.loadingMessage = 'Bestanden succesvol toegevoegd';
-      this.showSuccessMessage = true;
+      this.successMessage = 'Bestanden succesvol toegevoegd';
+      this.loadingMessage = null;
       this.args.onSaved?.();
       await this.router.refresh();
     } catch {
@@ -560,7 +561,7 @@ export default class ProcessWizard extends Component {
         null,
         { timeOut: 2500 },
       );
-      this.showSuccessMessage = false;
+    } finally {
       this.loadingMessage = null;
     }
   }
@@ -576,7 +577,7 @@ export default class ProcessWizard extends Component {
   }
 
   async goToProcess(process, isUpdateOfProcess) {
-    this.showSuccessMessage = false;
+    this.successMessage = null;
     this.loadingMessage = 'We brengen je naar het proces';
     await timeout(150);
     if (isUpdateOfProcess) {
@@ -587,9 +588,30 @@ export default class ProcessWizard extends Component {
     }
   }
 
+  get isClosingModalBlocked() {
+    if (this.loadingMessage) {
+      return true;
+    }
+    if (
+      this.successMessage &&
+      this.currentAction !== WizardAction.CHANGE_MAIN_PROCESS
+    ) {
+      return true;
+    }
+    const blockingSteps = [
+      this.wizardStep.UPDATE_PROCESS,
+      this.wizardStep.CREATE_PROCESS,
+    ];
+    if (blockingSteps.includes(this.activeStep?.step)) {
+      return true;
+    }
+
+    return false;
+  }
+
   @action
   onCloseModal() {
-    if (this.loadingMessage) {
+    if (this.isClosingModalBlocked) {
       this.toaster.loading(`Er is nog een actie bezig`, 'wizard', {
         timeOut: 2500,
       });
