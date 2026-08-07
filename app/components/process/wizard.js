@@ -30,7 +30,7 @@ export default class ProcessWizard extends Component {
   @tracked libraryFiles = [];
   @tracked areFilesCreated = false;
   @tracked loadingMessage = null;
-  @tracked successMessage = false;
+  @tracked successMessage = null;
   @tracked isSelectMainDiagramDisabled = false;
 
   maxUploadAmount = 10;
