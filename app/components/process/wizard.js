@@ -513,6 +513,7 @@ export default class ProcessWizard extends Component {
       (max, item) => Math.max(max, item.position ?? 0),
       0,
     );
+    this.successMessage = null;
     this.loadingMessage = 'Bestanden toevoegen als diagrammen';
     try {
       const newItems = await runInBatches(
