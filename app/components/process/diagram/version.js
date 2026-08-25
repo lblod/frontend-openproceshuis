@@ -69,12 +69,12 @@ export default class ProcessDiagramVersion extends Component {
   });
 
   fetchVersions = task({ restartable: true }, async () => {
-    const latestDiagramList = await this.diagram.getLatestDiagramList(
-      this.args.process.id,
-    );
     const lists = await this.diagram.getDiagramListsForProcess(
       this.args.process.id,
     );
+    const latestDiagramList = [...lists].sort(
+      (a, b) => new Date(b.created) - new Date(a.created),
+    )[0];
     const filteredLists = await this.getListsWithAppliedFilters(lists);
     this.versionsTableMeta = filteredLists.meta;
 

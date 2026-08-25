@@ -31,8 +31,10 @@ export default class ProcessesProcessManageDiagramsRoute extends Route {
       processId = process?.id;
     }
 
-    const process = await this.store.findRecord('process', processId);
-    const diagramList = await this.diagram.getLatestDiagramList(processId);
+    const [process, diagramList] = await Promise.all([
+      this.store.findRecord('process', processId),
+      this.diagram.getLatestDiagramList(processId),
+    ]);
     const diagramListWithFiles =
       await this.diagram.fetchDiagramListWithDiagrams(diagramList?.id, true);
     return {

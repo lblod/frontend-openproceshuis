@@ -3,9 +3,9 @@ import Service from '@ember/service';
 import { service } from '@ember/service';
 import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
-import ENV from 'frontend-openproceshuis/config/environment';
 
 import { runInBatches } from '../utils/batch';
+import { ARCHIVED_STATUS_URI } from '../utils/well-known-uris';
 
 export default class DiagramService extends Service {
   @service store;
@@ -32,7 +32,7 @@ export default class DiagramService extends Service {
       return [];
     }
 
-    return Array.from(processesWithLists[0]?.diagramLists).filter(
+    return Array.from(processesWithLists[0]?.diagramLists ?? []).filter(
       (_list) => !_list.isArchived,
     );
   }
@@ -109,7 +109,7 @@ export default class DiagramService extends Service {
     const diagrams = sortedDiagrams.filter(
       (diagram) =>
         (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
-        diagram.diagramFile.status !== ENV.resourceStates.archived,
+        diagram.diagramFile.status !== ARCHIVED_STATUS_URI,
     );
     return diagrams?.[0]?.diagramFile;
   }
