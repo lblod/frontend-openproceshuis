@@ -168,6 +168,7 @@ export default class DiagramService extends Service {
         return diagramListItem;
       },
       {
+        batchSize: 1,
         onBatch: async (batchResults) => {
           if (mainDiagramListItem) {
             mainDiagramListItem.subItems.push(...batchResults);
@@ -202,6 +203,7 @@ export default class DiagramService extends Service {
           _diagrams != null ? index + 1 : null,
         ),
       {
+        batchSize: 1,
         onBatch: async (batchResults) => {
           newList.diagrams.push(
             ...batchResults.filter((item) => item !== null),

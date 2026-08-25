@@ -339,6 +339,7 @@ export default class ProcessWizard extends Component {
         }
       },
       {
+        batchSize: 1,
         onBatch: async (batchResults, batchStart) => {
           const processedCount = batchStart + batchResults.length;
           this.loadingMessage = `Bestanden worden opgeladen (${processedCount}/${fileWrappers.length})`;
@@ -365,17 +366,7 @@ export default class ProcessWizard extends Component {
       'filter[id]': fileIds.join(','),
       page: { size: this.maxFileUpload },
     });
-    for (const fileModel of fileModels) {
-      if (fileModel.isBpmnFile) {
-        this.loadingMessage = 'Processtappen extraheren (bpmn)';
-        this.extractBboElementsFromBpmnFile(fileModel.id);
-      }
-      if (fileModel.isVisioFile) {
-        this.loadingMessage = 'Processtappen extraheren (visio)';
-        this.extractBboElementsFromVisioFile(fileModel.id);
-      }
-      this.files.push(fileModel);
-    }
+    this.files.push(...fileModels);
     this.files = [...this.files, ...this.libraryFiles];
 
     if (this.files.length === 0) {
