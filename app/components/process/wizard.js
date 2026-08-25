@@ -364,7 +364,7 @@ export default class ProcessWizard extends Component {
     this.loadingMessage = 'Organizing the uploaded files';
     const fileModels = await this.store.query('file', {
       'filter[id]': fileIds.join(','),
-      page: { size: this.maxFileUpload },
+      page: { size: this.maxUploadAmount },
     });
     this.files.push(...fileModels);
     this.files = [...this.files, ...this.libraryFiles];

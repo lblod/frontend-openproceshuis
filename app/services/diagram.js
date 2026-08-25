@@ -154,7 +154,7 @@ export default class DiagramService extends Service {
       await diagramList.save();
     }
 
-    await runInBatches(
+    const items = await runInBatches(
       files,
       async (file, index) => {
         const diagramListItem = this.store.createRecord('diagram-list-item', {
@@ -167,19 +167,16 @@ export default class DiagramService extends Service {
         await diagramListItem.save();
         return diagramListItem;
       },
-      {
-        batchSize: 1,
-        onBatch: async (batchResults) => {
-          if (mainDiagramListItem) {
-            mainDiagramListItem.subItems.push(...batchResults);
-            await mainDiagramListItem.save();
-          } else {
-            diagramList.diagrams.push(...batchResults);
-            await diagramList.save();
-          }
-        },
-      },
+      { batchSize: 1 },
     );
+
+    if (mainDiagramListItem) {
+      mainDiagramListItem.subItems.push(...items);
+      await mainDiagramListItem.save();
+    } else {
+      diagramList.diagrams.push(...items);
+      await diagramList.save();
+    }
 
     return diagramList;
   }
@@ -195,23 +192,18 @@ export default class DiagramService extends Service {
     await newList.save();
 
     const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
-    await runInBatches(
+    const clonedItems = await runInBatches(
       sourceItems,
       (_listItem, index) =>
         this.cloneDiagramListItem(
           _listItem,
           _diagrams != null ? index + 1 : null,
         ),
-      {
-        batchSize: 1,
-        onBatch: async (batchResults) => {
-          newList.diagrams.push(
-            ...batchResults.filter((item) => item !== null),
-          );
-          await newList.save();
-        },
-      },
+      { batchSize: 1 },
     );
+
+    newList.diagrams.push(...clonedItems.filter((item) => item !== null));
+    await newList.save();
 
     return newList;
   }
