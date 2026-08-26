@@ -181,7 +181,12 @@ export default class DiagramService extends Service {
     return diagramList;
   }
 
-  async cloneDiagramList(_diagramList, _versionString, _diagrams = null) {
+  async cloneDiagramList(
+    _diagramList,
+    _versionString,
+    _diagrams = null,
+    _newFiles = [],
+  ) {
     const now = new Date();
     const newList = this.store.createRecord('diagram-list', {
       created: now,
@@ -202,7 +207,23 @@ export default class DiagramService extends Service {
       { batchSize: 1 },
     );
 
-    newList.diagrams.push(...clonedItems.filter((item) => item !== null));
+    const newItems = [];
+    for (let i = 0; i < _newFiles.length; i++) {
+      const item = this.store.createRecord('diagram-list-item', {
+        position: sourceItems.length + i + 1,
+        created: now,
+        modified: now,
+        diagramFile: _newFiles[i],
+        subItems: [],
+      });
+      await item.save();
+      newItems.push(item);
+    }
+
+    newList.diagrams.push(
+      ...clonedItems.filter((item) => item !== null),
+      ...newItems,
+    );
     await newList.save();
 
     return newList;
