@@ -366,7 +366,17 @@ export default class ProcessWizard extends Component {
       'filter[id]': fileIds.join(','),
       page: { size: this.maxUploadAmount },
     });
-    this.files.push(...fileModels);
+    for (const fileModel of fileModels) {
+      if (fileModel.isBpmnFile) {
+        this.loadingMessage = 'Processtappen extraheren (bpmn)';
+        this.extractBboElementsFromBpmnFile(fileModel.id);
+      }
+      if (fileModel.isVisioFile) {
+        this.loadingMessage = 'Processtappen extraheren (visio)';
+        this.extractBboElementsFromVisioFile(fileModel.id);
+      }
+      this.files.push(fileModel);
+    }
     this.files = [...this.files, ...this.libraryFiles];
 
     if (this.files.length === 0) {
