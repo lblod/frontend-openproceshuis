@@ -339,6 +339,7 @@ export default class ProcessWizard extends Component {
         }
       },
       {
+        batchSize: 1,
         onBatch: async (batchResults, batchStart) => {
           const processedCount = batchStart + batchResults.length;
           this.loadingMessage = `Bestanden worden opgeladen (${processedCount}/${fileWrappers.length})`;
@@ -363,7 +364,7 @@ export default class ProcessWizard extends Component {
     this.loadingMessage = 'Organizing the uploaded files';
     const fileModels = await this.store.query('file', {
       'filter[id]': fileIds.join(','),
-      page: { size: this.maxFileUpload },
+      page: { size: this.maxUploadAmount },
     });
     for (const fileModel of fileModels) {
       if (fileModel.isBpmnFile) {
@@ -396,12 +397,17 @@ export default class ProcessWizard extends Component {
     this.areFilesCreated = true;
   }
 
-  async createNewDiagramListVersion(_diagramList, orderedItems = null) {
+  async createNewDiagramListVersion(
+    _diagramList,
+    orderedItems = null,
+    newFiles = [],
+  ) {
     const currentLists = Array.from(this.args.process.diagramLists);
     const newDiagramList = await this.diagram.cloneDiagramList(
       _diagramList,
       `v0.0.${currentLists.length}`,
       orderedItems,
+      newFiles,
     );
     this.args.process.diagramLists = [...currentLists, newDiagramList];
 
@@ -516,40 +522,15 @@ export default class ProcessWizard extends Component {
     await this.uploadFiles(this.fileWrappers);
     if (this.files.length === 0) return;
 
-    const now = new Date();
     const existingItems = Array.from(this.args.diagramList.diagrams);
-    const maxPosition = existingItems.reduce(
-      (max, item) => Math.max(max, item.position ?? 0),
-      0,
-    );
-    this.loadingMessage = 'Bestanden toevoegen als diagrammen';
+    this.successMessage = null;
+    this.loadingMessage = 'Proces uitbreiden met nieuwe diagrammen';
     try {
-      const newItems = await runInBatches(
+      await this.createNewDiagramListVersion(
+        this.args.diagramList,
+        existingItems,
         this.files,
-        async (file, index) => {
-          const item = this.store.createRecord('diagram-list-item', {
-            position: maxPosition + index + 1,
-            created: now,
-            modified: now,
-            diagramFile: file,
-            subItems: [],
-          });
-          await item.save();
-          return item;
-        },
-        {
-          batchSize: 2,
-          onBatch: async (_, batchStart) => {
-            const processedCount = Math.min(batchStart + 2, this.files.length);
-            this.loadingMessage = `Bestand toevoegen aan diagram (${processedCount}/${this.files.length})`;
-          },
-        },
       );
-      this.loadingMessage = 'Proces uitbreiden met nieuwe diagrammen';
-      await this.createNewDiagramListVersion(this.args.diagramList, [
-        ...existingItems,
-        ...newItems,
-      ]);
       await this.args.process.save();
       this.successMessage = 'Bestanden succesvol toegevoegd';
       this.loadingMessage = null;

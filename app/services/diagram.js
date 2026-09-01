@@ -3,9 +3,9 @@ import Service from '@ember/service';
 import { service } from '@ember/service';
 import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
-import ENV from 'frontend-openproceshuis/config/environment';
 
 import { runInBatches } from '../utils/batch';
+import { ARCHIVED_STATUS_URI } from '../utils/well-known-uris';
 
 export default class DiagramService extends Service {
   @service store;
@@ -32,7 +32,7 @@ export default class DiagramService extends Service {
       return [];
     }
 
-    return Array.from(processesWithLists[0]?.diagramLists).filter(
+    return Array.from(processesWithLists[0]?.diagramLists ?? []).filter(
       (_list) => !_list.isArchived,
     );
   }
@@ -109,7 +109,7 @@ export default class DiagramService extends Service {
     const diagrams = sortedDiagrams.filter(
       (diagram) =>
         (diagram.diagramFile.isBpmnFile || diagram.diagramFile.isVisioFile) &&
-        diagram.diagramFile.status !== ENV.resourceStates.archived,
+        diagram.diagramFile.status !== ARCHIVED_STATUS_URI,
     );
     return diagrams?.[0]?.diagramFile;
   }
@@ -154,7 +154,7 @@ export default class DiagramService extends Service {
       await diagramList.save();
     }
 
-    await runInBatches(
+    const items = await runInBatches(
       files,
       async (file, index) => {
         const diagramListItem = this.store.createRecord('diagram-list-item', {
@@ -167,23 +167,26 @@ export default class DiagramService extends Service {
         await diagramListItem.save();
         return diagramListItem;
       },
-      {
-        onBatch: async (batchResults) => {
-          if (mainDiagramListItem) {
-            mainDiagramListItem.subItems.push(...batchResults);
-            await mainDiagramListItem.save();
-          } else {
-            diagramList.diagrams.push(...batchResults);
-            await diagramList.save();
-          }
-        },
-      },
+      { batchSize: 1 },
     );
+
+    if (mainDiagramListItem) {
+      mainDiagramListItem.subItems.push(...items);
+      await mainDiagramListItem.save();
+    } else {
+      diagramList.diagrams.push(...items);
+      await diagramList.save();
+    }
 
     return diagramList;
   }
 
-  async cloneDiagramList(_diagramList, _versionString, _diagrams = null) {
+  async cloneDiagramList(
+    _diagramList,
+    _versionString,
+    _diagrams = null,
+    _newFiles = [],
+  ) {
     const now = new Date();
     const newList = this.store.createRecord('diagram-list', {
       created: now,
@@ -194,22 +197,34 @@ export default class DiagramService extends Service {
     await newList.save();
 
     const sourceItems = _diagrams ?? Array.from(_diagramList.diagrams);
-    await runInBatches(
+    const clonedItems = await runInBatches(
       sourceItems,
       (_listItem, index) =>
         this.cloneDiagramListItem(
           _listItem,
           _diagrams != null ? index + 1 : null,
         ),
-      {
-        onBatch: async (batchResults) => {
-          newList.diagrams.push(
-            ...batchResults.filter((item) => item !== null),
-          );
-          await newList.save();
-        },
-      },
+      { batchSize: 1 },
     );
+
+    const newItems = [];
+    for (let i = 0; i < _newFiles.length; i++) {
+      const item = this.store.createRecord('diagram-list-item', {
+        position: sourceItems.length + i + 1,
+        created: now,
+        modified: now,
+        diagramFile: _newFiles[i],
+        subItems: [],
+      });
+      await item.save();
+      newItems.push(item);
+    }
+
+    newList.diagrams.push(
+      ...clonedItems.filter((item) => item !== null),
+      ...newItems,
+    );
+    await newList.save();
 
     return newList;
   }
