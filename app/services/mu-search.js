@@ -42,10 +42,18 @@ export default class MuSearchService extends Service {
   }
 
   _buildMuSearchAndFilter(params) {
-    const { title } = params;
+    const { title, sort } = params;
 
     const filters = {};
     if (title) filters['filter[title,description]'] = title;
+    if (sort) {
+      let sortField = sort;
+      const isDescending = sort.startsWith('-');
+      if (isDescending) {
+        sortField = sortField.replace('-', '');
+      }
+      filters[`sort[${sortField}.keyword]`] = isDescending ? 'desc' : 'asc';
+    }
 
     return filters;
   }
