@@ -1,98 +1,93 @@
 import Service from '@ember/service';
-import fetch from 'fetch';
-import ArrayProxy from '@ember/array/proxy';
-import { A } from '@ember/array';
 
 export default class MuSearchService extends Service {
-  sortOrder(sort) {
-    if (sort.startsWith('-')) {
-      return 'desc';
-    }
-    if (sort.length > 0) {
-      return 'asc';
-    }
-    return null;
-  }
-  stripSort(sort) {
-    return sort.replace(/(^\+)|(^-)/g, '');
-  }
+  async searchOnProcesses(params) {
+    await this._validateServiceOnline();
 
-  getPaginationMetadata(pageNumber, size, total) {
-    const pagination = {};
+    const pageNumber = params.page ?? 0;
+    const pageSize = params.size ?? 20;
 
-    pagination.first = {
-      number: 0,
-      size,
-    };
-
-    const lastPageNumber =
-      total % size === 0
-        ? Math.floor(total / size) - 1
-        : Math.floor(total / size);
-    const lastPageSize = total % size === 0 ? size : total % size;
-    pagination.last = {
-      number: lastPageNumber,
-      size: lastPageSize,
-    };
-
-    pagination.self = {
-      number: pageNumber,
-      size,
-    };
-
-    if (pageNumber > 0) {
-      pagination.prev = {
-        number: pageNumber - 1,
-        size,
-      };
-    }
-
-    if (pageNumber < lastPageNumber) {
-      const nextPageSize =
-        pageNumber + 1 === lastPageNumber ? lastPageSize : size;
-      pagination.next = {
-        number: pageNumber + 1,
-        size: nextPageSize,
-      };
-    }
-
-    return pagination;
-  }
-
-  async search(request) {
-    let { index, page, size, sort, filters, dataMapping } = request;
-    const params = [];
-    params.push(`page[size]=${size}`);
-    params.push(`page[number]=${page}`);
-
-    for (const field in filters) {
-      let q = filters[field];
-      let f = field;
-      params.push(`filter[${f}]=${q}`);
-    }
-
-    if (sort) {
-      const sortParams = sort.split(',');
-      sortParams.forEach((sortParam) => {
-        params.push(
-          `sort[${this.stripSort(sortParam)}.keyword]=${this.sortOrder(
-            sortParam,
-          )}`,
-        );
-      });
-    }
-
-    const endpoint = `/search/${index}/search?${params.join('&')}`;
-    const { count, data } = await (await fetch(endpoint)).json();
-    const pagination = this.getPaginationMetadata(page, size, count);
-    const entries = A(data.flatMap(dataMapping));
-
-    return ArrayProxy.create({
-      content: entries,
-      meta: {
-        count,
-        pagination,
-      },
+    const filters = this._buildMuSearchAndFilter(params);
+    const queryParams = new URLSearchParams({
+      ...filters,
+      'filter[:has-no:isVersionedResource]': true,
+      'page[number]': pageNumber,
+      'page[size]': pageSize,
     });
+
+    const response = await fetch(
+      `/search/processes/search?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/vnd.api+json',
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Search failed: ${response.status}`);
+    }
+
+    const { count, data } = await response.json();
+
+    return {
+      ids: data.map((result) => result.id),
+      meta: this._createMetaForResults(count, pageNumber, pageSize),
+      page: {
+        number: pageNumber,
+        size: pageSize,
+      },
+    };
+  }
+
+  _buildMuSearchAndFilter(params) {
+    const { title } = params;
+
+    const filters = {};
+    if (title) filters['filter[title,description]'] = title;
+
+    return filters;
+  }
+
+  async _validateServiceOnline() {
+    const response = await fetch('/search/health');
+
+    if (!response.ok) {
+      throw new Error('Unreachable service: mu-search');
+    }
+
+    return true;
+  }
+
+  _createMetaForResults(totalCount, page, size) {
+    const meta = {};
+    meta.count = totalCount;
+    meta.pagination = {
+      first: {
+        number: 0,
+      },
+      self: {
+        number: page,
+        size: size,
+      },
+      last: {
+        number: Math.floor(meta.count / size),
+      },
+    };
+    if (page * size < meta.count) {
+      meta.pagination.next = {
+        number: page + 1,
+        size: size,
+      };
+    }
+    if (page > 0) {
+      meta.pagination.prev = {
+        number: page - 1,
+        size: size,
+      };
+    }
+
+    return meta;
   }
 }
