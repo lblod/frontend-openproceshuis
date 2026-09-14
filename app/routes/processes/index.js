@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { task } from 'ember-concurrency';
 import { service } from '@ember/service';
-// import ENV from 'frontend-openproceshuis/config/environment';
 
 export default class ProcessesIndexRoute extends Route {
   @service session;
@@ -49,45 +48,6 @@ export default class ProcessesIndexRoute extends Route {
           'relevant-administrative-units',
         ].join(','),
       };
-
-      // if (params.sort) {
-      //   const isDescending = params.sort.startsWith('-');
-
-      //   let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-
-      //   if (fieldName === 'organization') fieldName = 'publisher.name';
-      //   else if (fieldName === 'classification')
-      //     fieldName = 'publisher.classification.label';
-
-      //   let sortValue = `:no-case:${fieldName}`;
-      //   if (isDescending) sortValue = `-${sortValue}`;
-
-      //   query.sort = sortValue;
-      // }
-
-      // if (params.modifiedSince) {
-      //   query['filter[:gte:modified]'] = params.modifiedSince;
-      // }
-
-      // if (params.classifications) {
-      //   query['filter[relevant-administrative-units][:id:]'] =
-      //     params.classifications;
-      // }
-
-      // if (params.group) query['filter[publisher][:exact:name]'] = params.group;
-      // if (params.creator)
-      //   query['filter[creator][:exact:name]'] = params.creator;
-
-      // if (params.blueprint) {
-      //   query['filter[is-blueprint]'] = params.blueprint;
-      // }
-
-      // if (params.ipdcProducts) {
-      //   query['filter[ipdc-products][:id:]'] = params.ipdcProducts;
-      // }
-
-      // query['filter[:not:status]'] = ENV.resourceStates.archived;
-      // query['filter[:not:is-versioned-resource]'] = true;
 
       const processModels = await this.store.query('process', query);
       processModels.meta = meta;

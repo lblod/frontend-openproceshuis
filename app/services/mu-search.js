@@ -11,6 +11,7 @@ export default class MuSearchService extends Service {
     const queryParams = new URLSearchParams({
       ...filters,
       'filter[:has-no:isVersionedResource]': true,
+      'filter[:has-no:status]': true,
       'page[number]': pageNumber,
       'page[size]': pageSize,
     });
@@ -42,10 +43,20 @@ export default class MuSearchService extends Service {
   }
 
   _buildMuSearchAndFilter(params) {
-    const { title, sort } = params;
+    const {
+      title,
+      sort,
+      modifiedSince,
+      classifications,
+      group,
+      creator,
+      blueprint,
+    } = params;
 
     const filters = {};
-    if (title) filters['filter[title,description]'] = title;
+    if (title) {
+      filters['filter[title,description]'] = title;
+    }
     if (sort) {
       let sortField = sort;
       const isDescending = sort.startsWith('-');
@@ -53,6 +64,22 @@ export default class MuSearchService extends Service {
         sortField = sortField.replace('-', '');
       }
       filters[`sort[${sortField}.keyword]`] = isDescending ? 'desc' : 'asc';
+    }
+    // Filter with label 'Laatst aangepast of nieuw sinds'
+    if (modifiedSince) {
+      filters['filter[:gte:modified]'] = modifiedSince;
+    }
+    if (classifications) {
+      filters['filter[relevantAdministrativeUnits.id]'] = classifications;
+    }
+    if (group) {
+      filters['filter[publisher.name]'] = group;
+    }
+    if (creator) {
+      filters['filter[creator.name]'] = creator;
+    }
+    if (blueprint) {
+      filters['filter[isBlueprint]'] = blueprint;
     }
 
     return filters;
