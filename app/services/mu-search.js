@@ -57,7 +57,7 @@ export default class MuSearchService extends Service {
 
     const filters = {};
     if (title) {
-      filters['filter[title,description]'] = title;
+      filters['filter[:sqs:title,description]'] = title;
     }
     // Filter with label 'Laatst aangepast of nieuw sinds'
     if (modifiedSince) {
