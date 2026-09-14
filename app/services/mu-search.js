@@ -51,6 +51,7 @@ export default class MuSearchService extends Service {
       group,
       creator,
       blueprint,
+      ipdcProducts,
     } = params;
 
     const filters = {};
@@ -80,6 +81,9 @@ export default class MuSearchService extends Service {
     }
     if (blueprint) {
       filters['filter[isBlueprint]'] = blueprint;
+    }
+    if (ipdcProducts) {
+      filters['filter[ipdcProductIds]'] = ipdcProducts;
     }
 
     return filters;
