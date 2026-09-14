@@ -7,9 +7,11 @@ export default class MuSearchService extends Service {
     const pageNumber = params.page ?? 0;
     const pageSize = params.size ?? 20;
 
-    const filters = this._buildMuSearchAndFilter(params);
+    const filters = this._buildMuSearchFilter(params);
+    const sort = this._buildMuSearchSort(params.sort);
     const queryParams = new URLSearchParams({
       ...filters,
+      ...sort,
       'filter[:has-no:isVersionedResource]': true,
       'filter[:has-no:status]': true,
       'page[number]': pageNumber,
@@ -42,10 +44,9 @@ export default class MuSearchService extends Service {
     };
   }
 
-  _buildMuSearchAndFilter(params) {
+  _buildMuSearchFilter(params) {
     const {
       title,
-      sort,
       modifiedSince,
       classifications,
       group,
@@ -57,14 +58,6 @@ export default class MuSearchService extends Service {
     const filters = {};
     if (title) {
       filters['filter[title,description]'] = title;
-    }
-    if (sort) {
-      let sortField = sort;
-      const isDescending = sort.startsWith('-');
-      if (isDescending) {
-        sortField = sortField.replace('-', '');
-      }
-      filters[`sort[${sortField}.keyword]`] = isDescending ? 'desc' : 'asc';
     }
     // Filter with label 'Laatst aangepast of nieuw sinds'
     if (modifiedSince) {
@@ -87,6 +80,34 @@ export default class MuSearchService extends Service {
     }
 
     return filters;
+  }
+
+  _buildMuSearchSort(sortField) {
+    if (!sortField) {
+      return {};
+    }
+
+    const isDescending = sortField.startsWith('-');
+    if (isDescending) {
+      sortField = sortField.replace('-', '');
+    }
+
+    const sortKeys = {
+      title: 'title.keyword',
+      description: 'description.keyword',
+      modified: 'modified',
+      classification: 'relevantAdministrativeUnits.name.keyword',
+      organization: 'publisher.name.keyword',
+      creator: 'creator.name.keyword',
+    };
+
+    if (!Object.keys(sortKeys).includes(sortField)) {
+      return {};
+    }
+
+    return {
+      [`sort[${sortKeys[sortField]}]`]: isDescending ? 'desc' : 'asc',
+    };
   }
 
   async _validateServiceOnline() {
