@@ -59,18 +59,18 @@ export default class MuSearchService extends Service {
     if (title) {
       filters['filter[:sqs:title,description]'] = title;
     }
-    // Filter with label 'Laatst aangepast of nieuw sinds'
     if (modifiedSince) {
       filters['filter[:gte:modified]'] = modifiedSince;
     }
     if (classifications) {
-      filters['filter[relevantAdministrativeUnits.id]'] = classifications;
+      // Direct path targeting the nested uuid field
+      filters['filter[relevantAdministrativeUnits.uuid]'] = classifications;
     }
     if (group) {
-      filters['filter[publisher.name]'] = group;
+      filters['filter[publisher.name.keyword]'] = group;
     }
     if (creator) {
-      filters['filter[creator.name]'] = creator;
+      filters['filter[creator.name.keyword]'] = creator;
     }
     if (blueprint) {
       filters['filter[isBlueprint]'] = blueprint;
