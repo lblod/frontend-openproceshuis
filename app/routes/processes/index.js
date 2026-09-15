@@ -34,8 +34,6 @@ export default class ProcessesIndexRoute extends Route {
     { keepLatest: true, cancelOn: 'deactivate' },
     async (params) => {
       const { ids, meta } = await this.muSearch.searchOnProcesses(params);
-      console.log({ ids });
-      console.log({ meta });
       let query = {
         filter: {
           id: ids.join(','),
@@ -50,9 +48,13 @@ export default class ProcessesIndexRoute extends Route {
       };
 
       const processModels = await this.store.query('process', query);
-      processModels.meta = meta;
+      const sortedProcesses = processModels.slice().sort((a, b) => {
+        return ids.indexOf(a.id) - ids.indexOf(b.id);
+      });
 
-      return processModels;
+      sortedProcesses.meta = meta;
+
+      return sortedProcesses;
     },
   );
 }

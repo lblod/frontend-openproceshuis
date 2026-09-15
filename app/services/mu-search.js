@@ -88,9 +88,7 @@ export default class MuSearchService extends Service {
     }
 
     const isDescending = sortField.startsWith('-');
-    if (isDescending) {
-      sortField = sortField.replace('-', '');
-    }
+    const cleanField = isDescending ? sortField.slice(1) : sortField;
 
     const sortKeys = {
       title: 'title.keyword',
@@ -101,12 +99,15 @@ export default class MuSearchService extends Service {
       creator: 'creator.name.keyword',
     };
 
-    if (!Object.keys(sortKeys).includes(sortField)) {
+    if (!Object.keys(sortKeys).includes(cleanField)) {
       return {};
     }
 
+    const mappedField = sortKeys[cleanField];
+
+    // Return sort[field]=desc or sort[field]=asc
     return {
-      [`sort[${sortKeys[sortField]}]`]: isDescending ? 'desc' : 'asc',
+      [`sort[${mappedField}]`]: isDescending ? 'desc' : 'asc',
     };
   }
 
