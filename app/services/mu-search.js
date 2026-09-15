@@ -12,7 +12,7 @@ export default class MuSearchService extends Service {
     const queryParams = new URLSearchParams({
       ...filters,
       ...sort,
-      'filter[:has-no:isVersionedResource]': true,
+      'filter[:has-no:canonical]': true,
       'filter[:has-no:status]': true,
       'page[number]': pageNumber,
       'page[size]': pageSize,

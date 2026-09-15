@@ -13,7 +13,7 @@ import { task } from 'ember-concurrency';
 export default class ProcessModel extends Model {
   @service currentSession;
 
-  @attr('boolean', { defaultValue: false }) isVersionedResource;
+  @attr('boolean') isVersionedResource;
   @attr('string') title;
   @attr('string') description;
   @attr('string') email;
