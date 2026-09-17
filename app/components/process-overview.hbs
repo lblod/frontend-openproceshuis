@@ -118,67 +118,27 @@
 
     <AuDataTable
       @content={{this.processes}}
-      @isLoading={{this.isLoading}}
+      @isLoading={{this.loadProcessesTaskInstance.isRunning}}
       @page={{this.page}}
       @size={{this.size}}
       as |t|
     >
       <t.content class="au-c-data-table__table--small" as |c|>
         <c.header>
-          {{#if this.showTitleColumn}}
-            <AuDataTableThSortable
-              @field="title"
-              @currentSorting={{this.sort}}
-              @label="Titel"
-            />
-          {{/if}}
-          {{#if this.showDescriptionColumn}}
-            <AuDataTableThSortable
-              @field="description"
-              @currentSorting={{this.sort}}
-              @label="Beschrijving"
-            />
-          {{/if}}
-          {{#if this.showModifiedColumn}}
-            <AuDataTableThSortable
-              @field="modified"
-              @currentSorting={{this.sort}}
-              @label="Laatst aangepast op"
-            />
-          {{/if}}
-          {{#if this.showCreatedColumn}}
-            <AuDataTableThSortable
-              @field="created"
-              @currentSorting={{this.sort}}
-              @label="Aangemaakt op"
-            />
-          {{/if}}
-          {{#if this.showClassificationColumn}}
-            <AuDataTableThSortable
-              @field="classification"
-              @currentSorting={{this.sort}}
-              @label="Relevant voor"
-            />
-          {{/if}}
-          {{#if this.showOrganizationColumn}}
-            <AuDataTableThSortable
-              @field="organization"
-              @currentSorting={{this.sort}}
-              @label="Bestuur"
-            />
-          {{/if}}
-          {{#if this.showCreatorColumn}}
-            <AuDataTableThSortable
-              @field="creator"
-              @currentSorting={{this.sort}}
-              @label="Via leverancier"
-            />
-          {{/if}}
+          {{#each this.tableHeaders as |column|}}
+            {{#if column.isShown}}
+              <AuDataTableThSortable
+                @field={{column.field}}
+                @currentSorting={{this.sort}}
+                @label={{column.label}}
+              />
+            {{/if}}
+          {{/each}}
           {{#if this.showActionsColumn}}
             <th></th>
           {{/if}}
         </c.header>
-        {{#if this.hasErrored}}
+        {{#if this.loadProcessesTaskInstance.isError}}
           <TableMessage::Error />
         {{else if this.hasNoResults}}
           <TableMessage>
@@ -188,7 +148,7 @@
           </TableMessage>
         {{else}}
           <c.body as |process|>
-            {{#if this.showTitleColumn}}
+            {{#if (this.isColumnShown "title")}}
               <td>
                 <div
                   class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
@@ -216,7 +176,7 @@
                 </div>
               </td>
             {{/if}}
-            {{#if this.showDescriptionColumn}}
+            {{#if (this.isColumnShown "description")}}
               <td>
                 <span class="u-preserve-line-breaks">{{or
                     (truncate (trim process.description) 150 true)
@@ -224,13 +184,13 @@
                   }}</span>
               </td>
             {{/if}}
-            {{#if this.showModifiedColumn}}
+            {{#if (this.isColumnShown "modified")}}
               <td>{{date-format process.modified}}</td>
             {{/if}}
-            {{#if this.showCreatedColumn}}
+            {{#if (this.isColumnShown "created")}}
               <td>{{date-format process.created}}</td>
             {{/if}}
-            {{#if this.showClassificationColumn}}
+            {{#if (this.isColumnShown "classification")}}
               <td>
                 <ul>
                   {{#each process.relevantAdministrativeUnits as |adminUnit|}}
@@ -239,11 +199,27 @@
                 </ul>
               </td>
             {{/if}}
-            {{#if this.showOrganizationColumn}}
+            {{#if (this.isColumnShown "organization")}}
               <td>{{process.publisher.name}}</td>
             {{/if}}
-            {{#if this.showCreatorColumn}}
+            {{#if (this.isColumnShown "creator")}}
               <td>{{or process.creator.name "/"}}</td>
+            {{/if}}
+            {{!-- Watch out for the archived reosurces TODO --}}
+            {{#if (this.isColumnShown "linkedConcept")}}
+              <td>{{or process.linkedConcept.title "/"}}</td>
+            {{/if}}
+            {{#if (this.isColumnShown "linkedConceptGroup")}}
+              <td>{{or process.linkedConcept.processGroup.label "/"}}</td>
+            {{/if}}
+            {{#if (this.isColumnShown "linkedConceptDomain")}}
+              <td>{{or process.linkedConcept.processGroup.processDomain.label "/"}}</td>
+            {{/if}}
+            {{#if (this.isColumnShown "linkedConceptCategory")}}
+              <td>{{or
+                  process.linkedConcept.processGroup.processDomain.processCategory.label
+                  "/"
+                }}</td>
             {{/if}}
             {{#if this.showActionsColumn}}
               <td>{{yield process to="rowActions"}}</td>

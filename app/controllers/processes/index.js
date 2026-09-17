@@ -19,6 +19,10 @@ export default class ProcessesIndexController extends Controller {
     'classification',
     'organization',
     'creator',
+    'linkedConcept',
+    'linkedConceptGroup',
+    'linkedConceptDomain',
+    'linkedConceptCategory',
   ];
 
   queryParams = [

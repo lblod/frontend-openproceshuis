@@ -24,18 +24,10 @@ export default class ProcessOverviewComponent extends Component {
       : this.args.model?.loadedProcesses;
   }
 
-  get isLoading() {
-    return this.loadProcessesTaskInstance?.isRunning ?? false;
-  }
-
   get hasNoResults() {
     return (
       this.loadProcessesTaskInstance?.isFinished && this.processes?.length === 0
     );
-  }
-
-  get hasErrored() {
-    return this.loadProcessesTaskInstance?.isError ?? false;
   }
 
   get page() {
@@ -126,33 +118,32 @@ export default class ProcessOverviewComponent extends Component {
     return this.filters.includes('ipdc');
   }
 
-  get showTitleColumn() {
-    return this.columns.includes('title');
+  get tableHeaders() {
+    const headers = [
+      { field: 'title', label: 'Titel' },
+      { field: 'description', label: 'Beschrijving' },
+      { field: 'modified', label: 'Laatst aangepast op' },
+      { field: 'created', label: 'Aangemaakt op' },
+      { field: 'classification', label: 'Relevant voor' },
+      { field: 'organization', label: 'Bestuur' },
+      { field: 'creator', label: 'Via leverancier' },
+      { field: 'linkedConcept', label: 'Gelinkt proces' },
+      { field: 'linkedConceptGroup', label: 'Proces groep' },
+      { field: 'linkedConceptDomain', label: 'Proces domein' },
+      { field: 'linkedConceptCategory', label: 'Proces categorie' },
+    ];
+
+    return headers
+      .filter((column) => this.isColumnShown(column.field))
+      .map((column) => ({ ...column, isShown: true }));
   }
 
-  get showDescriptionColumn() {
-    return this.columns.includes('description');
-  }
-
-  get showModifiedColumn() {
-    return this.columns.includes('modified');
-  }
-
-  get showCreatedColumn() {
-    return this.columns.includes('created');
-  }
-
-  get showClassificationColumn() {
-    return this.columns.includes('classification');
-  }
-
-  get showOrganizationColumn() {
-    return this.columns.includes('organization');
-  }
-
-  get showCreatorColumn() {
-    return this.columns.includes('creator');
-  }
+  isColumnShown = (fieldName) => {
+    if (!fieldName) {
+      return false;
+    }
+    return this.columns.includes(fieldName);
+  };
 
   get showActionsColumn() {
     return this.columns.includes('actions');
