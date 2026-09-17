@@ -127,6 +127,10 @@ export default class ProcessOverviewComponent extends Component {
       { field: 'classification', label: 'Relevant voor' },
       { field: 'organization', label: 'Bestuur' },
       { field: 'creator', label: 'Via leverancier' },
+      { field: 'linkedConcept', label: 'Gelinkt proces' },
+      { field: 'linkedConceptGroup', label: 'Proces groep' },
+      { field: 'linkedConceptDomain', label: 'Proces domein' },
+      { field: 'linkedConceptCategory', label: 'Proces categorie' },
     ];
 
     return headers

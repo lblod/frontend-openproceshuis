@@ -205,6 +205,22 @@
             {{#if (this.isColumnShown "creator")}}
               <td>{{or process.creator.name "/"}}</td>
             {{/if}}
+            {{!-- Watch out for the archived reosurces TODO --}}
+            {{#if (this.isColumnShown "linkedConcept")}}
+              <td>{{or process.linkedConcept.title "/"}}</td>
+            {{/if}}
+            {{#if (this.isColumnShown "linkedConceptGroup")}}
+              <td>{{or process.linkedConcept.processGroup.label "/"}}</td>
+            {{/if}}
+            {{#if (this.isColumnShown "linkedConceptDomain")}}
+              <td>{{or process.linkedConcept.processGroup.processDomain.label "/"}}</td>
+            {{/if}}
+            {{#if (this.isColumnShown "linkedConceptCategory")}}
+              <td>{{or
+                  process.linkedConcept.processGroup.processDomain.processCategory.label
+                  "/"
+                }}</td>
+            {{/if}}
             {{#if this.showActionsColumn}}
               <td>{{yield process to="rowActions"}}</td>
             {{/if}}

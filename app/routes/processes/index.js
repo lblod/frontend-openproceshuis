@@ -44,6 +44,9 @@ export default class ProcessesIndexRoute extends Route {
           'users',
           'publisher.classification',
           'relevant-administrative-units',
+          'linked-concept',
+          'linked-concept.process-groups.process-domains',
+          'linked-concept.process-groups.process-domains.process-categories',
         ].join(','),
       };
 
