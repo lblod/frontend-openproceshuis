@@ -17,6 +17,10 @@ export default class ProcessesIndexRoute extends Route {
     creator: { refreshModel: true, replace: true },
     blueprint: { refreshModel: true },
     ipdcProducts: { refreshModel: true, replace: true },
+    linkedConcept: { refreshModel: true, replace: true },
+    linkedConceptGroup: { refreshModel: true, replace: true },
+    linkedConceptDomain: { refreshModel: true, replace: true },
+    linkedConceptCategory: { refreshModel: true, replace: true },
   };
 
   beforeModel(transition) {

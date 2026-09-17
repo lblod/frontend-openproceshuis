@@ -97,6 +97,12 @@ export default class MuSearchService extends Service {
       classification: 'relevantAdministrativeUnits.name.keyword',
       organization: 'publisher.name.keyword',
       creator: 'creator.name.keyword',
+      ['linked-concept']: 'conceptualProcess.name.keyword',
+      ['linked-concept-group']: 'conceptualProcess.processGroup.name.keyword',
+      ['linked-concept-domain']:
+        'conceptualProcess.processGroup.processDomain.name.keyword',
+      ['linked-concept-category']:
+        'conceptualProcess.processGroup.processDomain.processCategory.name.keyword',
     };
 
     if (!Object.keys(sortKeys).includes(cleanField)) {
