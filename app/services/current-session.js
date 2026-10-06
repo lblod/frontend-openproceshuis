@@ -49,11 +49,11 @@ export default class CurrentSessionService extends Service {
   }
 
   get hasReaderRole() {
-    return this.roles.some((role) => READER_ROLES.includes(role));
+    return this.roles?.some((role) => READER_ROLES.includes(role));
   }
 
   get hasEditorRole() {
-    return this.roles.includes(EDITOR_ROLE);
+    return this.roles?.includes(EDITOR_ROLE);
   }
 
   get isAbbOrDv() {
