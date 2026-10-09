@@ -49,11 +49,11 @@
           {{/unless}}
           {{#unless this.currentSession.isAuthenticated}}
             <div class="au-o-grid__item">
-              <AuLink
+              {{!-- <AuLink
                 @skin="button"
                 @route="auth.login"
                 class="au-u-margin-right-tiny"
-              >Log in</AuLink>
+              >Log in</AuLink> --}}
               <AuLink @skin="button-secondary" @route="inventory">Inventaris
                 processen bekijken</AuLink>
             </div>
