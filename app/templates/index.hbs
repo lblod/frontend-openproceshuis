@@ -13,7 +13,9 @@
       </div>
     </div>
   </div>
+  {{!-- template-lint-disable no-inline-styles --}}
   <div
+    style="background-color: orange !important;"
     class="au-c-sidebar-container__content au-u-background-gray-100 c-home-center
       {{if this.currentSession.isAuthenticated '' 'au-u-flex--center'}}"
     id="content"
@@ -23,8 +25,8 @@
       <div class="c-home-limit-width-70">
         <AuContent class="au-o-flow">
           <AuHeading @level="1" @skin="2" class="au-u-padding au-u-margin-top">
-            Welkom bij Open Proces Huis, jouw centrale bron voor het ontdekken
-            en delen van processen.
+            Welkom bij Deploy Workflow Test, jouw centrale bron voor het
+            ontdekken en delen van processen.
           </AuHeading>
           {{#unless this.currentSession.isAuthenticated}}
             <ul>
@@ -47,11 +49,11 @@
           {{/unless}}
           {{#unless this.currentSession.isAuthenticated}}
             <div class="au-o-grid__item">
-              <AuLink
+              {{!-- <AuLink
                 @skin="button"
                 @route="auth.login"
                 class="au-u-margin-right-tiny"
-              >Log in</AuLink>
+              >Log in</AuLink> --}}
               <AuLink @skin="button-secondary" @route="inventory">Inventaris
                 processen bekijken</AuLink>
             </div>
