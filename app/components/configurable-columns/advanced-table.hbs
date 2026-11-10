@@ -1,0 +1,37 @@
+<div
+  class="au-c-advanced-table
+    {{if this.hasStickyFirstColumn 'au-c-advanced-table--sticky-first-column'}}"
+>
+  <AuDataTable
+    @content={{this.model}}
+    @isLoading={{this.isLoading}}
+    @page={{this.page}}
+    @size={{this.size}}
+    as |t|
+  >
+    <t.content class="au-c-data-table__table--small" as |c|>
+      <c.header>
+        {{#each this.columns as |column|}}
+          {{#if column.isSortable}}
+            <AuDataTableThSortable
+              @field={{column.key}}
+              @label={{column.label}}
+              @currentSorting={{this.sort}}
+            />
+          {{else}}
+            <th>{{column.label}}</th>
+          {{/if}}
+        {{/each}}
+      </c.header>
+      <c.body as |row|>
+        {{#each this.columns as |column index|}}
+          {{#if (eq index 0)}}
+            <th scope="row">{{yield row column to="cell"}}</th>
+          {{else}}
+            <td>{{yield row column to="cell"}}</td>
+          {{/if}}
+        {{/each}}
+      </c.body>
+    </t.content>
+  </AuDataTable>
+</div>
