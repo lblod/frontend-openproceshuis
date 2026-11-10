@@ -5,14 +5,7 @@ import { service } from '@ember/service';
 
 export default class MyLocalGovernmentIndexController extends Controller {
   filters = ['title', 'modifiedSince'];
-  columns = [
-    'title',
-    'description',
-    'modified',
-    'classification',
-    'organization',
-    'creator',
-  ];
+  columns = ['title', 'modified', 'classification', 'organization', 'creator'];
 
   queryParams = ['page', 'size', 'sort', 'title', 'modifiedSince'];
 
