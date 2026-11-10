@@ -7,7 +7,7 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 
 export default class SharedProcessesIndexController extends Controller {
   filters = ['title'];
-  columns = ['title', 'description', 'created', 'modified', 'actions'];
+  columns = ['title', 'created', 'modified', 'actions'];
 
   queryParams = ['page', 'size', 'sort', 'title'];
 
