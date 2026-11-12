@@ -1,7 +1,4 @@
-<div
-  class="au-c-advanced-table
-    {{if this.hasStickyFirstColumn 'au-c-advanced-table--sticky-first-column'}}"
->
+<div class="au-c-advanced-table" {{sticky-columns this.stickyColumnCount}}>
   <AuDataTable
     @content={{this.model}}
     @isLoading={{this.isLoading}}

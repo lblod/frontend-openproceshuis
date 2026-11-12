@@ -9,8 +9,12 @@ export default class ConfigurableColumnsAdvancedTable extends Component {
     return this.args.columns ?? [];
   }
 
-  get hasStickyFirstColumn() {
-    return this.args.hasStickyFirstColumn ?? false;
+  get stickyColumnCount() {
+    if (this.args.stickyColumnCount != null) {
+      return this.args.stickyColumnCount;
+    }
+
+    return this.args.hasStickyFirstColumn ? 1 : 0;
   }
 
   get isLoading() {
