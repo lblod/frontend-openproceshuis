@@ -22,8 +22,29 @@
     </AuToolbar>
     <AuToolbar @size="small" @nowrap={{true}} @reverse={{true}} as |Group|>
       <Group>
-        <AuButton @skin="link" @icon="gear">Kolommen aanpassen</AuButton>
+        <AuButton
+          @skin="link"
+          @icon="gear"
+          {{on "click" (fn (mut this.isConfigureColumnsOpen) true)}}
+        >Kolommen aanpassen</AuButton>
       </Group>
     </AuToolbar>
   </:content>
 </SidebarContainer>
+
+<AuModal @modalOpen={{this.isConfigureColumnsOpen}} @closable={{false}}>
+  <:title>Kolommen aanpassen</:title>
+  <:body>
+    <p>Kies de table kolommen die je wilt zien in de processenbibliotheek, en
+      hun volgorde.</p>
+  </:body>
+  <:footer>
+    <div class="au-u-flex au-u-flex--end">
+      <AuButton
+        @skin="naked"
+        {{on "click" (fn (mut this.isConfigureColumnsOpen) false)}}
+      >Annuleer</AuButton>s
+      <AuButton>Bewaren</AuButton>
+    </div>
+  </:footer>
+</AuModal>
