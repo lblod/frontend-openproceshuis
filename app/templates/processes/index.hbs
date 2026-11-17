@@ -35,15 +35,27 @@
 <AuModal @modalOpen={{this.isConfigureColumnsOpen}} @closable={{false}}>
   <:title>Kolommen aanpassen</:title>
   <:body>
-    <p>Kies de table kolommen die je wilt zien in de processenbibliotheek, en
-      hun volgorde.</p>
+    <p class="au-u-margin-bottom">Kies de table kolommen die je wilt zien in de
+      processenbibliotheek, en hun volgorde.</p>
+    <div class="au-o-grid">
+      <div class="au-o-grid__item au-u-1-2 au-u-padding-small">
+        <div class="cc-in-modal-border au-u-padding-small">
+          <ConfigurableColumns::SelectColumns />
+        </div>
+      </div>
+      <div class="au-o-grid__item au-u-1-2 au-u-padding-small">
+        <div class="cc-in-modal-border au-u-padding-small">
+          <ConfigurableColumns::ManageColumns />
+        </div>
+      </div>
+    </div>
   </:body>
   <:footer>
     <div class="au-u-flex au-u-flex--end">
       <AuButton
         @skin="naked"
         {{on "click" (fn (mut this.isConfigureColumnsOpen) false)}}
-      >Annuleer</AuButton>s
+      >Annuleer</AuButton>
       <AuButton>Bewaren</AuButton>
     </div>
   </:footer>
