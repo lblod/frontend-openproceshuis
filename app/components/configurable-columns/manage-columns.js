@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 
+import { action } from '@ember/object';
 import { service } from '@ember/service';
 
 export default class ConfigurableColumnsManageColumns extends Component {
@@ -15,5 +16,10 @@ export default class ConfigurableColumnsManageColumns extends Component {
         ),
       )
       .filter(Boolean);
+  }
+
+  @action
+  resetConfiguration() {
+    this.columnConfigurationService.resetConfiguration();
   }
 }

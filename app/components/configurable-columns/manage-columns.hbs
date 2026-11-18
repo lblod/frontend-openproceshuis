@@ -1,7 +1,11 @@
 <AuHeading @level="3" @skin="6">Geselecteerde kolommen</AuHeading>
 <p class="au-u-muted">Versleep de kolommen om de volgorde aan te passen.</p>
 <div class="au-u-flex au-u-flex--end au-u-margin-top-small">
-  <AuButton @skin="link" @icon="undo">Kolommen herstellen</AuButton>
+  <AuButton
+    @skin="link"
+    @icon="undo"
+    {{on "click" this.resetConfiguration}}
+  >Kolommen herstellen</AuButton>
 </div>
 <AuAlert
   @title={{null}}

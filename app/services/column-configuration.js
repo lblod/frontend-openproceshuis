@@ -6,17 +6,27 @@ import { tracked } from '@glimmer/tracking';
 export default class ColumnConfigurationService extends Service {
   @tracked configuration = [];
 
+  fields = [];
+
   initialize(fields) {
-    this.configuration =
-      this.loadConfiguration() ??
-      fields.map((field, index) => {
-        return {
-          key: field.key,
-          isFixed: Boolean(field.isFixed),
-          isSelected: Boolean(field.isFixed || field.isDefault),
-          position: index,
-        };
-      });
+    this.fields = fields;
+    this.configuration = this.loadConfiguration() ?? this.defaultConfiguration;
+  }
+
+  get defaultConfiguration() {
+    return this.fields.map((field, index) => {
+      return {
+        key: field.key,
+        isFixed: Boolean(field.isFixed),
+        isSelected: Boolean(field.isFixed || field.isDefault),
+        position: index,
+      };
+    });
+  }
+
+  @action
+  resetConfiguration() {
+    this.configuration = this.defaultConfiguration;
   }
 
   get sortedConfiguration() {
