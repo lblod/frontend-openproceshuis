@@ -22,8 +22,12 @@
         as |Group|
       >
         {{#each category.fields as |field|}}
-          <div class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny">
-            <Group.Checkbox @value={{field.key}}>{{field.label}}</Group.Checkbox>
+          <div
+            class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny"
+          >
+            <Group.Checkbox
+              @value={{field.key}}
+            >{{field.label}}</Group.Checkbox>
             {{#if field.hintText}}
               <AuTooltip @placement="right" as |tooltip|>
                 <AuButton
@@ -32,7 +36,7 @@
                   @skin="link"
                   class="color--gray"
                   {{tooltip.target}}
-                >Toelichting bij {{field.label}}</AuButton>
+                />
                 <tooltip.Content>
                   <p>{{field.hintText}}</p>
                 </tooltip.Content>

@@ -13,3 +13,27 @@
   <p>Veel kolommen selecteren kan er voor zorgen dat sommige kolommen uit beeld
     vallen.</p>
 </AuAlert>
+
+<AuHeading @level="3" @skin="6" class="au-u-margin-bottom-tiny">vaste kolommen</AuHeading>
+<AuHelpText>Vaste kolommen kunnen niet aangepast worden.</AuHelpText>
+{{#each this.fieldService.fixedFields as |field|}}
+  <div
+    class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-padding-left au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+  >
+    <p>{{field.label}}</p>
+    {{#if field.hintText}}
+      <AuTooltip @placement="right" as |tooltip|>
+        <AuButton
+          @icon="circle-info"
+          @hideText={{true}}
+          @skin="link"
+          class="color--gray"
+          {{tooltip.target}}
+        />
+        <tooltip.Content>
+          <p>{{field.hintText}}</p>
+        </tooltip.Content>
+      </AuTooltip>
+    {{/if}}
+  </div>
+{{/each}}
