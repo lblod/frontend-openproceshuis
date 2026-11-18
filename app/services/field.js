@@ -9,12 +9,6 @@ export default class FieldService extends Service {
     return this.availableFields.filter((field) => !field.isFixed);
   }
 
-  get selectedFields() {
-    return this.availableFields
-      .filter((field) => field.isDefault)
-      .map((field) => field.key);
-  }
-
   get availableFields() {
     return [
       {

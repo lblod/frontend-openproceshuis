@@ -43,13 +43,16 @@
   @skin="6"
   class="au-u-margin-bottom-tiny au-u-margin-top"
 >Meescrollende kolommen</AuHeading>
-<DragSortList @items={{this.fieldService.dynamicFields}} as |field|>
+<DragSortList
+  @items={{this.selectedColumns}}
+  as |column|
+>
   <div
     class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
   >
     <AuIcon @icon="drag" @size="large" />
-    <p>{{field.label}}</p>
-    {{#if field.hintText}}
+    <p>{{column.label}}</p>
+    {{#if column.hintText}}
       <AuTooltip @placement="right" as |tooltip|>
         <AuButton
           @icon="circle-info"
@@ -59,7 +62,7 @@
           {{tooltip.target}}
         />
         <tooltip.Content>
-          <p>{{field.hintText}}</p>
+          <p>{{column.hintText}}</p>
         </tooltip.Content>
       </AuTooltip>
     {{/if}}

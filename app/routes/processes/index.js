@@ -6,6 +6,8 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class ProcessesIndexRoute extends Route {
   @service session;
   @service store;
+  @service('field') fieldService;
+  @service('column-configuration') columnConfigurationService;
 
   queryParams = {
     page: { refreshModel: true },
@@ -18,6 +20,14 @@ export default class ProcessesIndexRoute extends Route {
     blueprint: { refreshModel: true },
     ipdcProducts: { refreshModel: true, replace: true },
   };
+
+  setupController(controller, model, transition) {
+    super.setupController(controller, model, transition);
+
+    this.columnConfigurationService.initialize(
+      this.fieldService.availableFields,
+    );
+  }
 
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');

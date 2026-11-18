@@ -19,7 +19,8 @@
       >{{category.label}}</AuHeading>
       <AuCheckboxGroup
         @name={{category.name}}
-        @selected={{this.fieldService.selectedFields}}
+        @selected={{this.selectedColumns}}
+        @onChange={{this.updateSelectedColumns}}
         as |Group|
       >
         {{#each category.fields as |field|}}
@@ -28,6 +29,7 @@
           >
             <Group.Checkbox
               @value={{field.key}}
+              @disabled={{field.isFixed}}
             >{{field.label}}</Group.Checkbox>
             {{#if field.hintText}}
               <AuTooltip @placement="right" as |tooltip|>
