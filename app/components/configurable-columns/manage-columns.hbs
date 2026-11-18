@@ -47,28 +47,30 @@
   @skin="6"
   class="au-u-margin-bottom-tiny au-u-margin-top"
 >Meescrollende kolommen</AuHeading>
-<DragSortList
-  @items={{this.selectedColumns}}
-  as |column|
->
-  <div
-    class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+<div class="cc-scrollable-list">
+  <DragSortList
+    @items={{this.selectedColumns}}
+    as |column|
   >
-    <AuIcon @icon="drag" @size="large" />
-    <p>{{column.label}}</p>
-    {{#if column.hintText}}
-      <AuTooltip @placement="right" as |tooltip|>
-        <AuButton
-          @icon="circle-info"
-          @hideText={{true}}
-          @skin="link"
-          class="color--gray"
-          {{tooltip.target}}
-        />
-        <tooltip.Content>
-          <p>{{column.hintText}}</p>
-        </tooltip.Content>
-      </AuTooltip>
-    {{/if}}
-  </div>
-</DragSortList>
+    <div
+      class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+    >
+      <AuIcon @icon="drag" @size="large" />
+      <p>{{column.label}}</p>
+      {{#if column.hintText}}
+        <AuTooltip @placement="right" as |tooltip|>
+          <AuButton
+            @icon="circle-info"
+            @hideText={{true}}
+            @skin="link"
+            class="color--gray"
+            {{tooltip.target}}
+          />
+          <tooltip.Content>
+            <p>{{column.hintText}}</p>
+          </tooltip.Content>
+        </AuTooltip>
+      {{/if}}
+    </div>
+  </DragSortList>
+</div>

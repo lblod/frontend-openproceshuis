@@ -2,12 +2,13 @@
   @modalOpen={{@isModalOpen}}
   @closable={{true}}
   @closeModal={{@closeModal}}
+  class="cc-modal"
 >
   <:title>Kolommen aanpassen</:title>
   <:body>
     <p class="au-u-margin-bottom">Kies de table kolommen die je wilt zien in de
       processenbibliotheek, en hun volgorde.</p>
-    <div class="au-o-grid au-o-grid--small">
+    <div class="au-o-grid au-o-grid--small cc-columns-grid">
       <div class="au-o-grid__item au-u-1-2@medium">
         <div class="cc-columns-container au-u-padding-small">
           <ConfigurableColumns::SelectColumns />

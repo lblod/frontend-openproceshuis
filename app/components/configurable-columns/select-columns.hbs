@@ -10,14 +10,14 @@
 />
 <AuButton
   @skin="link"
-  class="au-u-margin-top-small"
+  class="au-u-margin-top-small au-u-margin-bottom-small"
   {{on "click" this.toggleAllColumns}}
 >{{if
     this.areAllColumnsSelected
     "Deselecteer alle kolommen"
     "Selecteer alle kolommen"
   }}</AuButton>
-<div class="au-u-padding-left-small">
+<div class="au-u-padding-left-small cc-scrollable-list">
   {{#each this.fieldCategories as |category|}}
     <div class="au-u-margin-bottom-small">
       <AuHeading

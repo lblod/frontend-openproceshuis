@@ -1,7 +1,47 @@
+.cc-modal {
+  @include mq(medium) {
+    .au-c-modal__header,
+    .au-c-modal__footer {
+      flex-shrink: 0;
+    }
+
+    .au-c-modal__body {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
+}
+
+.cc-columns-grid {
+  @include mq(medium) {
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    min-height: 0;
+
+    > .au-o-grid__item {
+      display: flex;
+      min-height: 0;
+    }
+  }
+}
+
 .cc-columns-container {
   border: 1px solid var(--au-gray-200);
   border-radius: var(--au-radius);
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.cc-scrollable-list {
+  @include mq(medium) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
 }
 
 .cc-draggable-field-container {
