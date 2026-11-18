@@ -8,3 +8,39 @@
   id="input-column-field-name"
 />
 <AuButton @skin="link" class="au-u-margin-top-small">Selecteer alle kolommen</AuButton>
+<div class="au-u-padding-left-small">
+  {{#each this.fieldCategories as |category|}}
+    <div class="au-u-margin-bottom-small">
+      <AuHeading
+        @level="3"
+        @skin="6"
+        class="au-u-margin-bottom-tiny"
+      >{{category.label}}</AuHeading>
+      <AuCheckboxGroup
+        @name={{category.name}}
+        @selected={{this.fieldService.selectedFields}}
+        as |Group|
+      >
+        {{#each category.fields as |field|}}
+          <div class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny">
+            <Group.Checkbox @value={{field.key}}>{{field.label}}</Group.Checkbox>
+            {{#if field.hintText}}
+              <AuTooltip @placement="right" as |tooltip|>
+                <AuButton
+                  @icon="circle-info"
+                  @hideText={{true}}
+                  @skin="link"
+                  class="color--gray"
+                  {{tooltip.target}}
+                >Toelichting bij {{field.label}}</AuButton>
+                <tooltip.Content>
+                  <p>{{field.hintText}}</p>
+                </tooltip.Content>
+              </AuTooltip>
+            {{/if}}
+          </div>
+        {{/each}}
+      </AuCheckboxGroup>
+    </div>
+  {{/each}}
+</div>
