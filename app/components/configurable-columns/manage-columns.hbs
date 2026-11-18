@@ -1,5 +1,5 @@
-<p class="au-u-medium">Geselecteerde kolommen</p>
-<AuHelpText>Versleep de kolommen om de volgorde aan te passen.</AuHelpText>
+<AuHeading @level="3" @skin="6">Geselecteerde kolommen</AuHeading>
+<p class="au-u-muted">Versleep de kolommen om de volgorde aan te passen.</p>
 <div class="au-u-flex au-u-flex--end au-u-margin-top-small">
   <AuButton @skin="link" @icon="undo">Kolommen herstellen</AuButton>
 </div>
@@ -14,8 +14,9 @@
     vallen.</p>
 </AuAlert>
 
-<AuHeading @level="3" @skin="6" class="au-u-margin-bottom-tiny">Vaste kolommen</AuHeading>
-<AuHelpText>Vaste kolommen kunnen niet aangepast worden.</AuHelpText>
+<AuHeading @level="3" @skin="6">Vaste kolommen</AuHeading>
+<p class="au-u-muted au-u-margin-bottom-tiny">Vaste kolommen kunnen niet
+  aangepast worden.</p>
 {{#each this.fieldService.fixedFields as |field|}}
   <div
     class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-padding-left au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
@@ -37,11 +38,16 @@
     {{/if}}
   </div>
 {{/each}}
-<AuHeading @level="3" @skin="6" class="au-u-margin-bottom-tiny">Meescrollende kolommen</AuHeading>
-{{#each this.fieldService.dynamicFields as |field|}}
+<AuHeading
+  @level="3"
+  @skin="6"
+  class="au-u-margin-bottom-tiny au-u-margin-top"
+>Meescrollende kolommen</AuHeading>
+<DragSortList @items={{this.fieldService.dynamicFields}} as |field|>
   <div
-    class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-padding-left au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+    class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
   >
+    <AuIcon @icon="drag" @size="large" />
     <p>{{field.label}}</p>
     {{#if field.hintText}}
       <AuTooltip @placement="right" as |tooltip|>
@@ -58,4 +64,4 @@
       </AuTooltip>
     {{/if}}
   </div>
-{{/each}}
+</DragSortList>

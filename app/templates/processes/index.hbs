@@ -32,7 +32,12 @@
   </:content>
 </SidebarContainer>
 
-<AuModal @modalOpen={{this.isConfigureColumnsOpen}} @closable={{false}} @size="large">
+<AuModal
+  @modalOpen={{this.isConfigureColumnsOpen}}
+  @closable={{true}}
+  @onClose={{fn (mut this.isConfigureColumnsOpen) false}}
+  @size="large"
+>
   <:title>Kolommen aanpassen</:title>
   <:body>
     <p class="au-u-margin-bottom">Kies de table kolommen die je wilt zien in de
