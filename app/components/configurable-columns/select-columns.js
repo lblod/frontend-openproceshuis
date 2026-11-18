@@ -36,6 +36,15 @@ export default class ConfigurableColumnsSelectColumns extends Component {
       .map((column) => column.key);
   }
 
+  get areAllColumnsSelected() {
+    return this.columnConfigurationService.areAllColumnsSelected;
+  }
+
+  @action
+  toggleAllColumns() {
+    this.columnConfigurationService.toggleAllColumns();
+  }
+
   @action
   updateSelectedColumns(selectedKeys) {
     this.columnConfigurationService.setSelectedColumns(selectedKeys);

@@ -34,6 +34,36 @@ export default class ColumnConfigurationService extends Service {
     );
   }
 
+  get areAllColumnsSelected() {
+    return (
+      this.configuration.length > 0 &&
+      this.configuration.every((column) => column.isSelected)
+    );
+  }
+
+  @action
+  toggleAllColumns() {
+    if (this.areAllColumnsSelected) {
+      this.deselectAllColumns();
+    } else {
+      this.selectAllColumns();
+    }
+  }
+
+  @action
+  selectAllColumns() {
+    this.configuration = this.configuration.map((column) => {
+      return { ...column, isSelected: true };
+    });
+  }
+
+  @action
+  deselectAllColumns() {
+    this.configuration = this.configuration.map((column) => {
+      return { ...column, isSelected: column.isFixed };
+    });
+  }
+
   @action
   setSelectedColumns(keys) {
     this.configuration = this.configuration.map((column) => {
