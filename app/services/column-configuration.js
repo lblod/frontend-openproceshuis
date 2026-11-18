@@ -107,7 +107,19 @@ export default class ColumnConfigurationService extends Service {
     return null;
   }
 
+  @action
   saveConfiguration() {
+    this.configuration = this.sortedConfiguration.map((column, index) => {
+      return { ...column, position: index };
+    });
+
     // TODO - save to localStorage
+    console.table(
+      this.configuration
+        .filter((column) => column.isSelected)
+        .map((column) => {
+          return { key: column.key, position: column.position };
+        }),
+    );
   }
 }

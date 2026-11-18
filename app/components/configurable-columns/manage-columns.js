@@ -1,12 +1,14 @@
 import Component from '@glimmer/component';
 
 import { action } from '@ember/object';
+import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 
 export default class ConfigurableColumnsManageColumns extends Component {
   @service('field') fieldService;
   @service('column-configuration') columnConfigurationService;
 
+  @cached
   get selectedColumns() {
     return this.columnConfigurationService.sortedConfiguration
       .filter((column) => column.isSelected)
