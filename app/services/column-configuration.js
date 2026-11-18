@@ -3,6 +3,8 @@ import Service from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
+const STORAGE_KEY = 'COLUMN_CONFIGURATION';
+
 export default class ColumnConfigurationService extends Service {
   @tracked configuration = [];
 
@@ -10,6 +12,11 @@ export default class ColumnConfigurationService extends Service {
 
   initialize(fields) {
     this.fields = fields;
+    this.revertConfiguration();
+  }
+
+  @action
+  revertConfiguration() {
     this.configuration = this.loadConfiguration() ?? this.defaultConfiguration;
   }
 
@@ -103,8 +110,41 @@ export default class ColumnConfigurationService extends Service {
   }
 
   loadConfiguration() {
-    // TODO - load from localStorage
-    return null;
+    let storedConfiguration;
+
+    try {
+      storedConfiguration = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    } catch {
+      return null;
+    }
+
+    if (!Array.isArray(storedConfiguration)) {
+      return null;
+    }
+
+    const storedColumns = new Map(
+      storedConfiguration.map((column) => [column.key, column]),
+    );
+
+    const configuration = this.defaultConfiguration.map((column, index) => {
+      const storedColumn = storedColumns.get(column.key);
+
+      if (!storedColumn) {
+        return { ...column, position: this.fields.length + index };
+      }
+
+      return {
+        ...column,
+        isSelected: column.isFixed || Boolean(storedColumn.isSelected),
+        position: storedColumn.position ?? this.fields.length + index,
+      };
+    });
+
+    return configuration
+      .sort((a, b) => a.position - b.position)
+      .map((column, index) => {
+        return { ...column, position: index };
+      });
   }
 
   @action
@@ -113,13 +153,6 @@ export default class ColumnConfigurationService extends Service {
       return { ...column, position: index };
     });
 
-    // TODO - save to localStorage
-    console.table(
-      this.configuration
-        .filter((column) => column.isSelected)
-        .map((column) => {
-          return { key: column.key, position: column.position };
-        }),
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.configuration));
   }
 }

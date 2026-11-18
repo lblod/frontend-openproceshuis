@@ -1,7 +1,7 @@
 <AuModal
   @modalOpen={{@isModalOpen}}
   @closable={{true}}
-  @closeModal={{@closeModal}}
+  @closeModal={{this.cancelConfiguration}}
   class="cc-modal"
 >
   <:title>Kolommen aanpassen</:title>
@@ -23,10 +23,11 @@
   </:body>
   <:footer>
     <div class="au-u-flex au-u-flex--end">
-      <AuButton @skin="naked" {{on "click" @closeModal}}>Annuleer</AuButton>
       <AuButton
-        {{on "click" this.saveConfiguration}}
-      >Bewaren</AuButton>
+        @skin="naked"
+        {{on "click" this.cancelConfiguration}}
+      >Annuleer</AuButton>
+      <AuButton {{on "click" this.saveConfiguration}}>Bewaren</AuButton>
     </div>
   </:footer>
 </AuModal>

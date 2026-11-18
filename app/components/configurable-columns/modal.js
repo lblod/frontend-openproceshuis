@@ -8,11 +8,20 @@ export default class ConfigurableColumnsModal extends Component {
   @service toaster;
 
   @action
+  cancelConfiguration() {
+    this.columnConfigurationService.revertConfiguration();
+    this.toaster.success('Configuratie werd succesvol teruggezet', 'Kolommen', {
+      timeOut: 3000,
+    });
+    this.args.closeModal?.();
+  }
+
+  @action
   saveConfiguration() {
     try {
       this.columnConfigurationService.saveConfiguration();
       this.toaster.success('Configuratie succesvol bewaard', 'Kolommen', {
-        timeOut: 5000,
+        timeOut: 3000,
       });
       this.args.closeModal?.();
     } catch {
