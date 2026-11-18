@@ -22,7 +22,7 @@ export default class FieldService extends Service {
         key: 'description',
         label: 'Beschrijving',
         hintText:
-          'Om plaats te besparen, wordt de beschrijving als tooltip getoond wanneer je met de muis over de title beweegt.',
+          'Om plaats te besparen, wordt de beschrijving als tooltip getoond wanneer je met de muis over de titel beweegt.',
         category: 'Algemene informatie',
         isDefault: true,
         isFixed: true,
