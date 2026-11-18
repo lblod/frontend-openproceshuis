@@ -7,6 +7,7 @@
   value={{this.searchFieldValue}}
   placeholder="Zoek op veldnaam"
   id="input-column-field-name"
+  {{on "input" this.updateSearchFieldValue}}
 />
 <AuButton
   @skin="link"

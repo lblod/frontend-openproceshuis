@@ -8,12 +8,24 @@ export default class ConfigurableColumnsSelectColumns extends Component {
   @service('field') fieldService;
   @service('column-configuration') columnConfigurationService;
 
-  @tracked searchFieldValue;
+  @tracked searchFieldValue = '';
+
+  get matchingFields() {
+    const query = this.searchFieldValue?.trim().toLowerCase();
+
+    if (!query) {
+      return this.fieldService.availableFields;
+    }
+
+    return this.fieldService.availableFields.filter((field) => {
+      return field.label.toLowerCase().includes(query);
+    });
+  }
 
   get fieldCategories() {
     const fieldsByCategory = new Map();
 
-    for (const field of this.fieldService.availableFields) {
+    for (const field of this.matchingFields) {
       if (!fieldsByCategory.has(field.category)) {
         fieldsByCategory.set(field.category, []);
       }
@@ -38,6 +50,11 @@ export default class ConfigurableColumnsSelectColumns extends Component {
 
   get areAllColumnsSelected() {
     return this.columnConfigurationService.areAllColumnsSelected;
+  }
+
+  @action
+  updateSearchFieldValue(event) {
+    this.searchFieldValue = event.target?.value;
   }
 
   @action
