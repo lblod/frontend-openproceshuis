@@ -3,3 +3,13 @@
 <div class="au-u-flex au-u-flex--end au-u-margin-top-small">
   <AuButton @skin="link" @icon="undo">Kolommen herstellen</AuButton>
 </div>
+<AuAlert
+  @title={{null}}
+  @skin="warning"
+  @icon="alert-triangle"
+  @size="small"
+  @closable={{false}}
+>
+  <p>Veel kolommen selecteren kan er voor zorgen dat sommige kolommen uit beeld
+    vallen.</p>
+</AuAlert>
