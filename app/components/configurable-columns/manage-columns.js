@@ -19,6 +19,19 @@ export default class ConfigurableColumnsManageColumns extends Component {
   }
 
   @action
+  updateColumnOrder({ sourceList, sourceIndex, targetList, targetIndex }) {
+    if (sourceList === targetList && sourceIndex === targetIndex) {
+      return;
+    }
+
+    const keys = this.selectedColumns.map((field) => field.key);
+    const [movedKey] = keys.splice(sourceIndex, 1);
+    keys.splice(targetIndex, 0, movedKey);
+
+    this.columnConfigurationService.reorderColumns(keys);
+  }
+
+  @action
   resetConfiguration() {
     this.columnConfigurationService.resetConfiguration();
   }

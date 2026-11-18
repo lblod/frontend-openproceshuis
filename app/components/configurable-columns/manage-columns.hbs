@@ -50,6 +50,7 @@
 <div class="cc-scrollable-list">
   <DragSortList
     @items={{this.selectedColumns}}
+    @dragEndAction={{this.updateColumnOrder}}
     as |column|
   >
     <div

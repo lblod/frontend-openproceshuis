@@ -84,6 +84,24 @@ export default class ColumnConfigurationService extends Service {
     });
   }
 
+  @action
+  reorderColumns(keys) {
+    const positions = this.configuration
+      .filter((column) => keys.includes(column.key))
+      .map((column) => column.position)
+      .sort((a, b) => a - b);
+
+    this.configuration = this.configuration.map((column) => {
+      const index = keys.indexOf(column.key);
+
+      if (index === -1) {
+        return column;
+      }
+
+      return { ...column, position: positions[index] };
+    });
+  }
+
   loadConfiguration() {
     // TODO - load from localStorage
     return null;
