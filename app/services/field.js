@@ -4,6 +4,11 @@ export default class FieldService extends Service {
   get fixedFields() {
     return this.availableFields.filter((field) => field.isFixed);
   }
+
+  get dynamicFields() {
+    return this.availableFields.filter((field) => !field.isFixed);
+  }
+
   get selectedFields() {
     return this.availableFields
       .filter((field) => field.isDefault)
