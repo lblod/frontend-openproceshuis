@@ -92,6 +92,17 @@ export default class ColumnConfigurationService extends Service {
   }
 
   @action
+  deselectColumn(key) {
+    this.configuration = this.configuration.map((column) => {
+      if (column.key !== key || column.isFixed) {
+        return column;
+      }
+
+      return { ...column, isSelected: false };
+    });
+  }
+
+  @action
   reorderColumns(keys) {
     const positions = this.configuration
       .filter((column) => keys.includes(column.key))

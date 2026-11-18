@@ -54,24 +54,33 @@
     as |column|
   >
     <div
-      class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+      class="au-u-flex au-u-flex--vertical-center au-u-flex--between au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
     >
-      <AuIcon @icon="drag" @size="large" />
-      <p>{{column.label}}</p>
-      {{#if column.hintText}}
-        <AuTooltip @placement="right" as |tooltip|>
-          <AuButton
-            @icon="circle-info"
-            @hideText={{true}}
-            @skin="link"
-            class="color--gray"
-            {{tooltip.target}}
-          />
-          <tooltip.Content>
-            <p>{{column.hintText}}</p>
-          </tooltip.Content>
-        </AuTooltip>
-      {{/if}}
+      <div class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny">
+        <AuIcon @icon="drag" @size="large" />
+        <p>{{column.label}}</p>
+        {{#if column.hintText}}
+          <AuTooltip @placement="right" as |tooltip|>
+            <AuButton
+              @icon="circle-info"
+              @hideText={{true}}
+              @skin="link"
+              class="color--gray"
+              {{tooltip.target}}
+            />
+            <tooltip.Content>
+              <p>{{column.hintText}}</p>
+            </tooltip.Content>
+          </AuTooltip>
+        {{/if}}
+      </div>
+      <AuButton
+        @icon="cross"
+        @hideText={{true}}
+        @skin="link"
+        class="color--gray"
+        {{on "click" (fn this.removeColumn column.key)}}
+      >Kolom verwijderen</AuButton>
     </div>
   </DragSortList>
 </div>

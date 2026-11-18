@@ -34,6 +34,11 @@ export default class ConfigurableColumnsManageColumns extends Component {
   }
 
   @action
+  removeColumn(key) {
+    this.columnConfigurationService.deselectColumn(key);
+  }
+
+  @action
   resetConfiguration() {
     this.columnConfigurationService.resetConfiguration();
   }
