@@ -32,36 +32,9 @@
   </:content>
 </SidebarContainer>
 
-<AuModal
-  @modalOpen={{this.isConfigureColumnsOpen}}
-  @closable={{true}}
-  @onClose={{fn (mut this.isConfigureColumnsOpen) false}}
-  @size="large"
->
-  <:title>Kolommen aanpassen</:title>
-  <:body>
-    <p class="au-u-margin-bottom">Kies de table kolommen die je wilt zien in de
-      processenbibliotheek, en hun volgorde.</p>
-    <div class="au-o-grid au-o-grid--small">
-      <div class="au-o-grid__item au-u-1-2@medium">
-        <div class="cc-columns-container au-u-padding-small">
-          <ConfigurableColumns::SelectColumns />
-        </div>
-      </div>
-      <div class="au-o-grid__item au-u-1-2@medium">
-        <div class="cc-columns-container au-u-padding-small">
-          <ConfigurableColumns::ManageColumns />
-        </div>
-      </div>
-    </div>
-  </:body>
-  <:footer>
-    <div class="au-u-flex au-u-flex--end">
-      <AuButton
-        @skin="naked"
-        {{on "click" (fn (mut this.isConfigureColumnsOpen) false)}}
-      >Annuleer</AuButton>
-      <AuButton>Bewaren</AuButton>
-    </div>
-  </:footer>
-</AuModal>
+{{#if this.isConfigureColumnsOpen}}
+  <ConfigurableColumns::Modal
+    @isModalOpen={{this.isConfigureColumnsOpen}}
+    @closeModal={{fn (mut this.isConfigureColumnsOpen) false}}
+  />
+{{/if}}
