@@ -6,7 +6,13 @@ import { service } from '@ember/service';
 export default class MyLocalGovernmentIndexController extends Controller {
   filters = ['title', 'modifiedSince'];
   columns = [
-    { key: 'title', label: 'Titel', isSortable: true },
+    {
+      key: 'title',
+      label: 'Titel',
+      isSortable: true,
+      isIconField: true,
+      isTooltipField: true,
+    },
     { key: 'modified', label: 'Laatst aangepast op', isSortable: true },
     { key: 'classification', label: 'Relevant voor', isSortable: true },
     { key: 'organization', label: 'Opgeladen door', isSortable: true },

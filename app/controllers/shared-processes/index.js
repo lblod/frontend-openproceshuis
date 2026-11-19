@@ -8,7 +8,13 @@ import { getMessageForErrorCode } from 'frontend-openproceshuis/utils/error-mess
 export default class SharedProcessesIndexController extends Controller {
   filters = ['title'];
   columns = [
-    { key: 'title', label: 'Titel', isSortable: true },
+    {
+      key: 'title',
+      label: 'Titel',
+      isSortable: true,
+      isIconField: true,
+      isTooltipField: true,
+    },
     { key: 'created', label: 'Aangemaakt op', isSortable: true },
     { key: 'modified', label: 'Laatst aangepast op', isSortable: true },
     { key: 'actions', label: '', isSortable: false },
