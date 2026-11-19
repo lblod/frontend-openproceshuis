@@ -209,6 +209,7 @@ export default class FieldService extends Service {
       },
       {
         key: 'diagramCount',
+        context: 'processes',
         label: 'Aantal diagrammen',
         category: 'Algemene informatie',
         order: 24,
