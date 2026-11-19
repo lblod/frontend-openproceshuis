@@ -42,6 +42,7 @@
 
 {{#if this.isConfigureColumnsOpen}}
   <ConfigurableColumns::Modal
+    @context="processes"
     @isModalOpen={{this.isConfigureColumnsOpen}}
     @closeModal={{fn (mut this.isConfigureColumnsOpen) false}}
   />

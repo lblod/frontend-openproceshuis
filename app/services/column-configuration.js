@@ -9,10 +9,16 @@ export default class ColumnConfigurationService extends Service {
   @tracked configuration = [];
 
   fields = [];
+  context = null;
 
-  initialize(fields) {
+  initialize(fields, context) {
     this.fields = fields;
+    this.context = context;
     this.revertConfiguration();
+  }
+
+  get storageKey() {
+    return `${STORAGE_KEY}_${this.context}`;
   }
 
   @action
@@ -42,6 +48,22 @@ export default class ColumnConfigurationService extends Service {
 
   get selectedColumns() {
     return this.sortedConfiguration.filter((column) => column.isSelected);
+  }
+
+  get columns() {
+    const fields = this.selectedColumns
+      .map((column) => this.fields.find((field) => field.key === column.key))
+      .filter(Boolean);
+
+    return fields
+      .filter((field) => !field.tooltipFor)
+      .map((field) => {
+        return {
+          ...field,
+          tooltipField:
+            fields.find((tooltip) => tooltip.tooltipFor === field.key) ?? null,
+        };
+      });
   }
 
   isSelected(key) {
@@ -124,7 +146,7 @@ export default class ColumnConfigurationService extends Service {
     let storedConfiguration;
 
     try {
-      storedConfiguration = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      storedConfiguration = JSON.parse(localStorage.getItem(this.storageKey));
     } catch {
       return null;
     }
@@ -164,6 +186,6 @@ export default class ColumnConfigurationService extends Service {
       return { ...column, position: index };
     });
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.configuration));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.configuration));
   }
 }

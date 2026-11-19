@@ -1,25 +1,32 @@
 import Service from '@ember/service';
 
 export default class FieldService extends Service {
-  get fixedFields() {
-    return this.availableFields.filter((field) => field.isFixed);
+  availableFieldsFor(context) {
+    return this.availableFields.filter((field) => field.context === context);
   }
 
-  get dynamicFields() {
-    return this.availableFields.filter((field) => !field.isFixed);
+  fixedFieldsFor(context) {
+    return this.availableFieldsFor(context).filter((field) => field.isFixed);
+  }
+
+  dynamicFieldsFor(context) {
+    return this.availableFieldsFor(context).filter((field) => !field.isFixed);
   }
 
   get availableFields() {
     return [
       {
         key: 'title',
+        context: 'processes',
         label: 'Titel',
         category: 'Algemene informatie',
+        isSortable: true,
         isDefault: true,
         isFixed: true,
       },
       {
         key: 'description',
+        context: 'processes',
         label: 'Beschrijving',
         hintText:
           'Om plaats te besparen, wordt de beschrijving als tooltip getoond wanneer je met de muis over de titel beweegt.',
@@ -29,15 +36,19 @@ export default class FieldService extends Service {
         tooltipFor: 'title',
       },
       {
-        key: 'uploadedBy',
+        key: 'organization',
+        context: 'processes',
         label: 'Opgeladen door',
         category: 'Algemene informatie',
+        isSortable: true,
         isDefault: true,
       },
       {
-        key: 'relevantFor',
+        key: 'classification',
+        context: 'processes',
         label: 'Relevant voor',
         category: 'Algemene informatie',
+        isSortable: true,
         isDefault: true,
       },
       {
@@ -53,25 +64,33 @@ export default class FieldService extends Service {
         isDefault: true,
       },
       {
-        key: 'lastEditDate',
+        key: 'modified',
+        context: 'processes',
         label: 'Laatst aangepast op',
         category: 'Algemene informatie',
+        isSortable: true,
         isDefault: true,
       },
       {
-        key: 'creationDate',
+        key: 'created',
+        context: 'processes',
         label: 'Aangemaakt op',
         category: 'Algemene informatie',
+        isSortable: true,
       },
       {
         key: 'blueprint',
+        context: 'processes',
         label: 'Blauwdruk',
         category: 'Algemene informatie',
+        isSortable: true,
       },
       {
-        key: 'serviceProvider',
+        key: 'creator',
+        context: 'processes',
         label: 'Via leverancier',
         category: 'Algemene informatie',
+        isSortable: true,
       },
       {
         key: 'processGroup',

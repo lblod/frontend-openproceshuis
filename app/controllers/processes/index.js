@@ -46,9 +46,7 @@ export default class ProcessesIndexController extends Controller {
   @tracked isConfigureColumnsOpen = false;
 
   get columns() {
-    return this.columnConfigurationService.configuration
-      .filter((column) => column.isSelected)
-      .map((column) => column.key);
+    return this.columnConfigurationService.columns;
   }
 
   get query() {

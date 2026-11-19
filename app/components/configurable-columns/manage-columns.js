@@ -8,14 +8,18 @@ export default class ConfigurableColumnsManageColumns extends Component {
   @service('field') fieldService;
   @service('column-configuration') columnConfigurationService;
 
+  get fixedFields() {
+    return this.fieldService.fixedFieldsFor(this.args.context);
+  }
+
   @cached
   get selectedColumns() {
     return this.columnConfigurationService.sortedConfiguration
       .filter((column) => column.isSelected)
       .map((column) =>
-        this.fieldService.dynamicFields.find(
-          (field) => field.key === column.key,
-        ),
+        this.fieldService
+          .dynamicFieldsFor(this.args.context)
+          .find((field) => field.key === column.key),
       )
       .filter(Boolean);
   }

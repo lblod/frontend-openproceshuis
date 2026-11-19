@@ -63,22 +63,6 @@ export default class ProcessesTable extends Component {
     return this.query.modifiedSince;
   }
 
-  get advancedTableColumns() {
-    const availableColumns = [
-      { key: 'title', label: 'Titel', isSortable: true },
-      { key: 'modified', label: 'Laatst aangepast op', isSortable: true },
-      { key: 'created', label: 'Aangemaakt op', isSortable: true },
-      { key: 'classification', label: 'Relevant voor', isSortable: true },
-      { key: 'organization', label: 'Bestuur', isSortable: true },
-      { key: 'creator', label: 'Via leverancier', isSortable: true },
-      { key: 'actions', label: '', isSortable: false },
-    ];
-
-    return availableColumns.filter((column) =>
-      this.columns.includes(column.key),
-    );
-  }
-
   @action
   updateQuery(changes) {
     this.args.onQueryChange?.({

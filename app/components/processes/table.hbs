@@ -11,7 +11,7 @@
     @model={{this.processes}}
     @isLoading={{this.isLoading}}
     @hasStickyFirstColumn={{@hasStickyFirstColumn}}
-    @columns={{this.advancedTableColumns}}
+    @columns={{this.columns}}
     @page={{this.page}}
     @onPageChange={{this.onPageChange}}
     @size={{this.size}}
@@ -27,22 +27,32 @@
           {{#if process.isBlueprint}}
             <CustomIcon @icon="blueprint" @size="large" />
           {{/if}}
-          <AuTooltip @placement="right" as |tooltip|>
+          {{#if column.tooltipField}}
+            <AuTooltip @placement="right" as |tooltip|>
+              <LinkTo
+                class="au-c-link"
+                @model={{process.id}}
+                @route={{@processRoute}}
+                {{tooltip.target}}
+              >
+                {{process.title}}
+              </LinkTo>
+              <tooltip.Content>
+                <span class="u-preserve-line-breaks">{{or
+                    (truncate (trim process.description) 150 true)
+                    "/"
+                  }}</span>
+              </tooltip.Content>
+            </AuTooltip>
+          {{else}}
             <LinkTo
               class="au-c-link"
               @model={{process.id}}
               @route={{@processRoute}}
-              {{tooltip.target}}
             >
               {{process.title}}
             </LinkTo>
-            <tooltip.Content>
-              <span class="u-preserve-line-breaks">{{or
-                  (truncate (trim process.description) 150 true)
-                  "/"
-                }}</span>
-            </tooltip.Content>
-          </AuTooltip>
+          {{/if}}
           {{#if (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)}}
             <AuPill @skin="link">Nieuw</AuPill>
           {{/if}}

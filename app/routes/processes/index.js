@@ -25,7 +25,8 @@ export default class ProcessesIndexRoute extends Route {
     super.setupController(controller, model, transition);
 
     this.columnConfigurationService.initialize(
-      this.fieldService.availableFields,
+      this.fieldService.availableFieldsFor('processes'),
+      'processes',
     );
   }
 
