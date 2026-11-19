@@ -2,6 +2,11 @@
   <:sidebar>
     <div class="au-c-sidebar">
       <div class="au-c-sidebar__content">
+        <Processes::Filters
+          @filters={{this.filters}}
+          @query={{this.query}}
+          @onQueryChange={{this.updateQuery}}
+        />
       </div>
     </div>
   </:sidebar>

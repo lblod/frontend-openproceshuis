@@ -105,7 +105,8 @@ export default class FieldService extends Service {
         key: 'blueprint',
         context: 'processes',
         label: 'Blauwdruk',
-        hintText: 'Blauwdrukken worden met een icoon voor de titel aangeduid.',
+        hintText:
+          'Om plaats te besparen, wordt "Blauwdruk" als geel icoon getoond voor de titel.',
         category: 'Algemene informatie',
         iconFor: 'title',
         order: 9,
