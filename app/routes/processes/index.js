@@ -37,7 +37,7 @@ export default class ProcessesIndexRoute extends Route {
   async model(params) {
     return {
       loadProcessesTaskInstance: this.loadProcessesTask.perform(params),
-      loadedProcesses: this.loadProcessesTask.lastSuccesful?.value,
+      loadedProcesses: this.loadProcessesTask.lastSuccessful?.value,
     };
   }
 
