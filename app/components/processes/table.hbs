@@ -104,6 +104,24 @@
         {{else}}
           /
         {{/if}}
+      {{else if (eq column.key "linkedBlueprint")}}
+        <ul>
+          {{#each process.linkedBlueprints as |blueprint|}}
+            <li>
+              <AuLink
+                @model={{blueprint.id}}
+                @route={{@processRoute}}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                -
+                {{blueprint.title}}
+              </AuLink>
+            </li>
+          {{else}}
+            <li>/</li>
+          {{/each}}
+        </ul>
       {{else if (eq column.key "creator")}}
         {{or process.creator.name "/"}}
       {{else if (eq column.key "actions")}}

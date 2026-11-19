@@ -212,6 +212,7 @@ export default class FieldService extends Service {
       },
       {
         key: 'linkedBlueprint',
+        context: 'processes',
         label: 'Gekoppeld aan blauwdruk',
         category: 'Algemene informatie',
         order: 25,
