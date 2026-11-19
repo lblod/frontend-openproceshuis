@@ -193,6 +193,7 @@ export default class FieldService extends Service {
       },
       {
         key: 'processEmail',
+        context: 'processes',
         label: 'Emailadres proces',
         category: 'Algemene informatie',
         order: 22,

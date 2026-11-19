@@ -96,6 +96,14 @@
           @conceptualProcess={{process.linkedConcept}}
           @field="category"
         />
+      {{else if (eq column.key "processEmail")}}
+        {{#if process.email}}
+          <a class="au-c-link" href="mailto:{{process.email}}">
+            {{process.email}}
+          </a>
+        {{else}}
+          /
+        {{/if}}
       {{else if (eq column.key "creator")}}
         {{or process.creator.name "/"}}
       {{else if (eq column.key "actions")}}
