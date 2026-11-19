@@ -29,6 +29,13 @@
         >Kolommen aanpassen</AuButton>
       </Group>
     </AuToolbar>
+    <Processes::Table
+      @model={{this.model}}
+      @columns={{this.columns}}
+      @query={{this.query}}
+      @onQueryChange={{this.updateQuery}}
+      @processRoute="processes.process"
+    />
   </:content>
 </SidebarContainer>
 
