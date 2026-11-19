@@ -6,7 +6,13 @@ export function isAttachedField(field) {
 
 export default class FieldService extends Service {
   availableFieldsFor(context) {
-    return this.availableFields.filter((field) => field.context === context);
+    return this.availableFields
+      .filter((field) => field.context === context)
+      .sort(
+        (a, b) =>
+          (a.order ?? Number.MAX_SAFE_INTEGER) -
+          (b.order ?? Number.MAX_SAFE_INTEGER),
+      );
   }
 
   fixedFieldsFor(context) {
@@ -30,6 +36,7 @@ export default class FieldService extends Service {
         isSortable: true,
         isDefault: true,
         isFixed: true,
+        order: 1,
       },
       {
         key: 'description',
@@ -41,6 +48,95 @@ export default class FieldService extends Service {
         isDefault: true,
         isFixed: true,
         tooltipFor: 'title',
+        order: 2,
+      },
+      {
+        key: 'organization',
+        context: 'processes',
+        label: 'Opgeladen door',
+        category: 'Algemene informatie',
+        isSortable: true,
+        isDefault: true,
+        order: 3,
+      },
+      {
+        key: 'classification',
+        context: 'processes',
+        label: 'Relevant voor',
+        category: 'Algemene informatie',
+        isSortable: true,
+        isDefault: true,
+        order: 4,
+      },
+      {
+        key: 'linkedConcept',
+        context: 'processes',
+        label: 'Gekoppeld aan inventaris',
+        category: 'Link met procesinventaris',
+        isDefault: true,
+        order: 5,
+      },
+      {
+        key: 'processCategory',
+        context: 'processes',
+        label: 'Procescategorie',
+        category: 'Link met procesinventaris',
+        isDefault: true,
+        order: 6,
+      },
+      {
+        key: 'modified',
+        context: 'processes',
+        label: 'Laatst aangepast op',
+        category: 'Algemene informatie',
+        isSortable: true,
+        isDefault: true,
+        order: 7,
+      },
+      {
+        key: 'created',
+        context: 'processes',
+        label: 'Aangemaakt op',
+        category: 'Algemene informatie',
+        isSortable: true,
+        order: 8,
+      },
+      {
+        key: 'blueprint',
+        context: 'processes',
+        label: 'Blauwdruk',
+        hintText: 'Blauwdrukken worden met een icoon voor de titel aangeduid.',
+        category: 'Algemene informatie',
+        iconFor: 'title',
+        order: 9,
+      },
+      {
+        key: 'creator',
+        context: 'processes',
+        label: 'Via leverancier',
+        category: 'Algemene informatie',
+        isSortable: true,
+        order: 10,
+      },
+      {
+        key: 'processGroup',
+        context: 'processes',
+        label: 'Procesgroep',
+        category: 'Link met procesinventaris',
+        order: 11,
+      },
+      {
+        key: 'processDomain',
+        context: 'processes',
+        label: 'Procesdomein',
+        category: 'Link met procesinventaris',
+        order: 12,
+      },
+      {
+        key: 'ipdcLpdcLink',
+        label: 'Link naar IPDC/LPDC',
+        category: 'Algemene informatie',
+        order: 13,
       },
       {
         key: 'usedBy',
@@ -50,138 +146,73 @@ export default class FieldService extends Service {
           'Om plaats te besparen, wordt "In gebruik" als pilletje getoond naast de titel.',
         category: 'Algemene informatie',
         iconFor: 'title',
-      },
-      {
-        key: 'blueprint',
-        context: 'processes',
-        label: 'Blauwdruk',
-        hintText: 'Blauwdrukken worden met een icoon voor de titel aangeduid.',
-        category: 'Algemene informatie',
-        iconFor: 'title',
-      },
-      {
-        key: 'organization',
-        context: 'processes',
-        label: 'Opgeladen door',
-        category: 'Algemene informatie',
-        isSortable: true,
-        isDefault: true,
-      },
-      {
-        key: 'classification',
-        context: 'processes',
-        label: 'Relevant voor',
-        category: 'Algemene informatie',
-        isSortable: true,
-        isDefault: true,
-      },
-      {
-        key: 'modified',
-        context: 'processes',
-        label: 'Laatst aangepast op',
-        category: 'Algemene informatie',
-        isSortable: true,
-        isDefault: true,
-      },
-      {
-        key: 'created',
-        context: 'processes',
-        label: 'Aangemaakt op',
-        category: 'Algemene informatie',
-        isSortable: true,
-      },
-      {
-        key: 'creator',
-        context: 'processes',
-        label: 'Via leverancier',
-        category: 'Algemene informatie',
-        isSortable: true,
-      },
-      {
-        key: 'ipdcLpdcLink',
-        label: 'Link naar IPDC/LPDC',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'processEmail',
-        label: 'Emailadres proces',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'authorityEmail',
-        label: 'Emailadres bestuur',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'diagramCount',
-        label: 'Aantal diagrammen',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'linkedBlueprint',
-        label: 'Gekoppeld aan blauwdruk',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'linkedConcept',
-        context: 'processes',
-        label: 'Gekoppeld aan inventaris',
-        category: 'Link met procesinventaris',
-        isDefault: true,
-      },
-      {
-        key: 'processCategory',
-        context: 'processes',
-        label: 'Procescategorie',
-        category: 'Link met procesinventaris',
-        isDefault: true,
-      },
-      {
-        key: 'processGroup',
-        context: 'processes',
-        label: 'Procesgroep',
-        category: 'Link met procesinventaris',
-      },
-      {
-        key: 'processDomain',
-        context: 'processes',
-        label: 'Procesdomein',
-        category: 'Link met procesinventaris',
+        order: 14,
       },
       {
         key: 'professionalData',
         label: 'Bevat professionele gegevens',
         category: 'Informatie Klasse Bepaling',
+        order: 15,
       },
       {
         key: 'personalData',
         label: 'Bevat persoonsgegevens',
         category: 'Informatie Klasse Bepaling',
+        order: 16,
       },
       {
         key: 'specialPersonalData',
         label: 'Bevat bijzondere persoonsgegevens',
         category: 'Informatie Klasse Bepaling',
+        order: 17,
       },
       {
         key: 'availability',
         label: 'Beschikbaarheid',
         category: 'Informatie Klasse Bepaling',
+        order: 18,
       },
       {
         key: 'integrity',
         label: 'Integriteit',
         category: 'Informatie Klasse Bepaling',
+        order: 19,
       },
       {
         key: 'confidentiality',
         label: 'Vertrouwelijkheid',
         category: 'Informatie Klasse Bepaling',
+        order: 20,
       },
       {
         key: 'informationAsset',
         label: 'Informatie-asset',
         category: 'Informatie Klasse Bepaling',
+        order: 21,
+      },
+      {
+        key: 'processEmail',
+        label: 'Emailadres proces',
+        category: 'Algemene informatie',
+        order: 22,
+      },
+      {
+        key: 'authorityEmail',
+        label: 'Emailadres bestuur',
+        category: 'Algemene informatie',
+        order: 23,
+      },
+      {
+        key: 'diagramCount',
+        label: 'Aantal diagrammen',
+        category: 'Algemene informatie',
+        order: 24,
+      },
+      {
+        key: 'linkedBlueprint',
+        label: 'Gekoppeld aan blauwdruk',
+        category: 'Algemene informatie',
+        order: 25,
       },
     ];
   }
