@@ -75,13 +75,25 @@
       {{else if (eq column.key "organization")}}
         {{process.publisher.name}}
       {{else if (eq column.key "linkedConcept")}}
-        {{process.linkedConcept.title}}
+        <ConceptualProcess::DisplayField
+          @conceptualProcess={{process.linkedConcept}}
+          @field="process"
+        />
       {{else if (eq column.key "processGroup")}}
-        {{process.linkedConcept.processGroup.label}}
+        <ConceptualProcess::DisplayField
+          @conceptualProcess={{process.linkedConcept}}
+          @field="group"
+        />
       {{else if (eq column.key "processDomain")}}
-        {{process.linkedConcept.processGroup.processDomain.label}}
+        <ConceptualProcess::DisplayField
+          @conceptualProcess={{process.linkedConcept}}
+          @field="domain"
+        />
       {{else if (eq column.key "processCategory")}}
-        {{process.linkedConcept.processGroup.processDomain.processCategory.label}}
+        <ConceptualProcess::DisplayField
+          @conceptualProcess={{process.linkedConcept}}
+          @field="category"
+        />
       {{else if (eq column.key "creator")}}
         {{or process.creator.name "/"}}
       {{else if (eq column.key "actions")}}

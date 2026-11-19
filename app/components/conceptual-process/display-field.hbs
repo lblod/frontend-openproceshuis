@@ -1,0 +1,11 @@
+{{#if this.label}}
+  <p>{{this.label}}</p>
+{{else if this.conceptualProcess.isRunning}}
+  <AuLoader
+    @inline={{false}}
+    @hideMessage={{true}}
+    @centered={{this.centered}}
+  />
+{{else}}
+  <p>/</p>
+{{/if}}
