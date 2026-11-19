@@ -14,8 +14,16 @@ export default class ColumnConfigurationService extends Service {
   context = null;
 
   initialize(fields, context) {
+    const isInitialized =
+      this.context === context && this.configuration.length > 0;
+
     this.fields = fields;
     this.context = context;
+
+    if (isInitialized) {
+      return;
+    }
+
     this.revertConfiguration();
   }
 

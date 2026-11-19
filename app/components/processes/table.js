@@ -22,7 +22,10 @@ export default class ProcessesTable extends Component {
   }
 
   get isLoading() {
-    return this.loadProcessesTaskInstance?.isRunning ?? false;
+    return (
+      (this.loadProcessesTaskInstance?.isRunning ?? false) &&
+      !this.processes?.length
+    );
   }
 
   get hasNoResults() {
