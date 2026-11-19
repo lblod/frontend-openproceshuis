@@ -135,6 +135,7 @@ export default class FieldService extends Service {
       },
       {
         key: 'ipdcLpdcLink',
+        context: 'processes',
         label: 'Link naar IPDC/LPDC',
         category: 'Algemene informatie',
         order: 13,
