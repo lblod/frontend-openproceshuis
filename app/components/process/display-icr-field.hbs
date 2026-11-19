@@ -1,4 +1,4 @@
-{{#if this.informationAssets.isRunning}}
+{{#if this.process.isRunning}}
   <AuLoader @inline={{false}} @hideMessage={{true}} />
 {{else if this.isScore}}
   <Process::IcrScore @score={{this.score}} />
