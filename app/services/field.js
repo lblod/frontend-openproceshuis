@@ -20,6 +20,7 @@ export default class FieldService extends Service {
   }
 
   get availableFields() {
+    // TODO - move this to the database (migration)
     return [
       {
         key: 'title',
@@ -66,18 +67,6 @@ export default class FieldService extends Service {
         isDefault: true,
       },
       {
-        key: 'linkedProcess',
-        label: 'Gekoppeld aan inventaris',
-        category: 'Link met procesinventaris',
-        isDefault: true,
-      },
-      {
-        key: 'processCategory',
-        label: 'Procescategorie',
-        category: 'Link met procesinventaris',
-        isDefault: true,
-      },
-      {
         key: 'modified',
         context: 'processes',
         label: 'Laatst aangepast op',
@@ -100,16 +89,6 @@ export default class FieldService extends Service {
         isSortable: true,
       },
       {
-        key: 'processGroup',
-        label: 'Procesgroep',
-        category: 'Link met procesinventaris',
-      },
-      {
-        key: 'processDomain',
-        label: 'Procesdomein',
-        category: 'Link met procesinventaris',
-      },
-      {
         key: 'ipdcLpdcLink',
         label: 'Link naar IPDC/LPDC',
         category: 'Algemene informatie',
@@ -118,6 +97,48 @@ export default class FieldService extends Service {
         key: 'usedBy',
         label: 'Gebruikt door',
         category: 'Algemene informatie',
+      },
+      {
+        key: 'processEmail',
+        label: 'Emailadres proces',
+        category: 'Algemene informatie',
+      },
+      {
+        key: 'authorityEmail',
+        label: 'Emailadres bestuur',
+        category: 'Algemene informatie',
+      },
+      {
+        key: 'diagramCount',
+        label: 'Aantal diagrammen',
+        category: 'Algemene informatie',
+      },
+      {
+        key: 'linkedBlueprint',
+        label: 'Gekoppeld aan blauwdruk',
+        category: 'Algemene informatie',
+      },
+      {
+        key: 'linkedProcess',
+        label: 'Gekoppeld aan inventaris',
+        category: 'Link met procesinventaris',
+        isDefault: true,
+      },
+      {
+        key: 'processCategory',
+        label: 'Procescategorie',
+        category: 'Link met procesinventaris',
+        isDefault: true,
+      },
+      {
+        key: 'processGroup',
+        label: 'Procesgroep',
+        category: 'Link met procesinventaris',
+      },
+      {
+        key: 'processDomain',
+        label: 'Procesdomein',
+        category: 'Link met procesinventaris',
       },
       {
         key: 'professionalData',
@@ -153,26 +174,6 @@ export default class FieldService extends Service {
         key: 'informationAsset',
         label: 'Informatie-asset',
         category: 'Informatie Klasse Bepaling',
-      },
-      {
-        key: 'processEmail',
-        label: 'Emailadres proces',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'authorityEmail',
-        label: 'Emailadres bestuur',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'diagramCount',
-        label: 'Aantal diagrammen',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'linkedBlueprint',
-        label: 'Gekoppeld aan blauwdruk',
-        category: 'Algemene informatie',
       },
     ];
   }
