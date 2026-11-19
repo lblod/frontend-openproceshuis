@@ -105,25 +105,10 @@
           /
         {{/if}}
       {{else if (eq column.key "linkedBlueprint")}}
-        <ul>
-          {{#each process.linkedBlueprints as |blueprint|}}
-            <li>
-              <AuLink
-                @model={{blueprint.id}}
-                @route={{@processRoute}}
-                @icon="external-link"
-                @iconAlignment="right"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                -
-                {{blueprint.title}}
-              </AuLink>
-            </li>
-          {{else}}
-            <li>/</li>
-          {{/each}}
-        </ul>
+        <Process::DisplayLinkedBlueprints
+          @process={{process}}
+          @route={{@processRoute}}
+        />
       {{else if (eq column.key "informationAsset")}}
         <Process::DisplayInformationAssets @process={{process}} />
       {{else if (eq column.key "creator")}}
