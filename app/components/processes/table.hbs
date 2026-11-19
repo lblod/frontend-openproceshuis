@@ -1,0 +1,72 @@
+{{#if this.hasErrored}}
+  <TableMessage::Error />
+{{else if this.hasNoResults}}
+  <TableMessage>
+    <p>
+      Er werden geen zoekresultaten gevonden.
+    </p>
+  </TableMessage>
+{{else}}
+  <ConfigurableColumns::AdvancedTable
+    @model={{this.processes}}
+    @isLoading={{this.isLoading}}
+    @hasStickyFirstColumn={{true}}
+    @columns={{this.advancedTableColumns}}
+    @page={{this.page}}
+    @onPageChange={{this.onPageChange}}
+    @size={{this.size}}
+    @onSizeChange={{this.onSizeChange}}
+    @sort={{this.sort}}
+    @onSortChange={{this.onSortChange}}
+  >
+    <:cell as |process column|>
+      {{#if (eq column.key "title")}}
+        <div
+          class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+        >
+          {{#if process.isBlueprint}}
+            <CustomIcon @icon="blueprint" @size="large" />
+          {{/if}}
+          <AuTooltip @placement="right" as |tooltip|>
+            <LinkTo
+              class="au-c-link"
+              @model={{process.id}}
+              @route={{@processRoute}}
+              {{tooltip.target}}
+            >
+              {{process.title}}
+            </LinkTo>
+            <tooltip.Content>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate (trim process.description) 150 true)
+                  "/"
+                }}</span>
+            </tooltip.Content>
+          </AuTooltip>
+          {{#if (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)}}
+            <AuPill @skin="link">Nieuw</AuPill>
+          {{/if}}
+          {{#if process.isUsedByCurrentGroup}}
+            <AuPill @skin="success">In gebruik</AuPill>
+          {{/if}}
+        </div>
+      {{else if (eq column.key "modified")}}
+        {{date-format process.modified}}
+      {{else if (eq column.key "created")}}
+        {{date-format process.created}}
+      {{else if (eq column.key "classification")}}
+        <ul>
+          {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+            <li>{{adminUnit.label}}</li>
+          {{/each}}
+        </ul>
+      {{else if (eq column.key "organization")}}
+        {{process.publisher.name}}
+      {{else if (eq column.key "creator")}}
+        {{or process.creator.name "/"}}
+      {{else if (eq column.key "actions")}}
+        {{yield process to="rowActions"}}
+      {{/if}}
+    </:cell>
+  </ConfigurableColumns::AdvancedTable>
+{{/if}}
