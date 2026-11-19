@@ -56,7 +56,9 @@
           {{#if (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)}}
             <AuPill @skin="link">Nieuw</AuPill>
           {{/if}}
-          {{#if (and column.attachedFields.usedBy process.isUsedByCurrentGroup)}}
+          {{#if
+            (and column.attachedFields.usedBy process.isUsedByCurrentGroup)
+          }}
             <AuPill @skin="success">In gebruik</AuPill>
           {{/if}}
         </div>
@@ -72,6 +74,14 @@
         </ul>
       {{else if (eq column.key "organization")}}
         {{process.publisher.name}}
+      {{else if (eq column.key "linkedConcept")}}
+        {{process.linkedConcept.title}}
+      {{else if (eq column.key "processGroup")}}
+        {{process.linkedConcept.processGroup.label}}
+      {{else if (eq column.key "processDomain")}}
+        {{process.linkedConcept.processGroup.processDomain.label}}
+      {{else if (eq column.key "processCategory")}}
+        {{process.linkedConcept.processGroup.processDomain.processCategory.label}}
       {{else if (eq column.key "creator")}}
         {{or process.creator.name "/"}}
       {{else if (eq column.key "actions")}}
