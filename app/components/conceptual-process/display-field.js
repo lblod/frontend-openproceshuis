@@ -43,6 +43,12 @@ export default class ConceptualProcessDisplayField extends Component {
   get label() {
     return this.fieldConfig.label(this.conceptualProcess?.value);
   }
+
+  get hasLinkToProcess() {
+    return (
+      this.args.field === 'process' && this.conceptualProcess?.value?.number
+    );
+  }
 }
 
 const FIELDS = {

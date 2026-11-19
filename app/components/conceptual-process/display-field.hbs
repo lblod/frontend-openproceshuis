@@ -1,11 +1,24 @@
-{{#if this.label}}
-  <p>{{this.label}}</p>
-{{else if this.conceptualProcess.isRunning}}
+{{#if this.conceptualProcess.isRunning}}
   <AuLoader
     @inline={{false}}
     @hideMessage={{true}}
     @centered={{this.centered}}
   />
+{{else if this.label}}
+  <p>
+    {{#if this.hasLinkToProcess}}
+      <AuLink
+        @route="inventory.index"
+        @query={{hash processNumber=this.conceptualProcess.value.number}}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{this.label}}
+      </AuLink>
+    {{else}}
+      {{this.label}}
+    {{/if}}
+  </p>
 {{else}}
   <p>/</p>
 {{/if}}
