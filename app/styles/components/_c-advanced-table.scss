@@ -33,3 +33,17 @@
       inset 0 -0.2rem 0 0 var(--au-gray-300);
   }
 }
+
+/* Show the line between the first and second column when first is not fixed */
+.au-c-advanced-table:not(.au-c-advanced-table--sticky-first-column) {
+  .au-c-data-table__table tbody th + td:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 0.1rem;
+    left: -0.1rem;
+    top: 0;
+    height: 100%;
+    border-left: 0.1rem dotted var(--au-gray-300);
+  }
+}
