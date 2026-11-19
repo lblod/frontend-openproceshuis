@@ -104,6 +104,8 @@
         {{else}}
           /
         {{/if}}
+      {{else if (eq column.key "authorityEmail")}}
+        <Process::DisplayAuthorityEmail @process={{process}} />
       {{else if (eq column.key "ipdcLpdcLink")}}
         <Process::DisplayIpdcProducts @process={{process}} />
       {{else if (eq column.key "linkedBlueprint")}}

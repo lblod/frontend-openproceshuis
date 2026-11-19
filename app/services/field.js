@@ -202,6 +202,7 @@ export default class FieldService extends Service {
       },
       {
         key: 'authorityEmail',
+        context: 'processes',
         label: 'Emailadres bestuur',
         category: 'Algemene informatie',
         order: 23,
