@@ -111,11 +111,34 @@
               <AuLink
                 @model={{blueprint.id}}
                 @route={{@processRoute}}
+                @icon="external-link"
+                @iconAlignment="right"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 -
                 {{blueprint.title}}
+              </AuLink>
+            </li>
+          {{else}}
+            <li>/</li>
+          {{/each}}
+        </ul>
+      {{else if (eq column.key "informationAsset")}}
+        <ul>
+          {{#each process.activeInformationAssets as |asset|}}
+            <li>
+              <AuLink
+                @model={{asset.id}}
+                @route="information-assets.information-asset"
+                @query={{hash version=null edit=null}}
+                @icon="external-link"
+                @iconAlignment="right"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                -
+                {{asset.title}}
               </AuLink>
             </li>
           {{else}}

@@ -57,6 +57,7 @@ export default class ProcessesIndexRoute extends Route {
           'relevant-administrative-units',
           'linked-concept',
           'linked-blueprints',
+          'information-assets',
         ].join(','),
       };
 

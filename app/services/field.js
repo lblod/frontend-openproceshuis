@@ -187,6 +187,7 @@ export default class FieldService extends Service {
       },
       {
         key: 'informationAsset',
+        context: 'processes',
         label: 'Informatie-asset',
         category: 'Informatie Klasse Bepaling',
         order: 21,

@@ -108,6 +108,12 @@ export default class ProcessModel extends Model {
     return ovoCodes.includes(this.publisher?.identifier);
   }
 
+  get activeInformationAssets() {
+    return Array.from(this.informationAssets ?? []).filter(
+      (asset) => !asset.isArchived,
+    );
+  }
+
   get isUsedByCurrentGroup() {
     return this.users?.includes(this.currentSession.group);
   }
