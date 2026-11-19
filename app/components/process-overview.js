@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+
 import { action } from '@ember/object';
 
 export default class ProcessOverviewComponent extends Component {
@@ -90,10 +91,6 @@ export default class ProcessOverviewComponent extends Component {
     return this.query.blueprint ?? false;
   }
 
-  get ipdcProducts() {
-    return this.query.ipdcProducts;
-  }
-
   get selectedIpdcProducts() {
     return this.query.selectedIpdcProducts;
   }
@@ -126,36 +123,35 @@ export default class ProcessOverviewComponent extends Component {
     return this.filters.includes('ipdc');
   }
 
-  get showTitleColumn() {
-    return this.columns.includes('title');
+  get advancedTableColumns() {
+    const availableColumns = [
+      { key: 'title', label: 'Titel', isSortable: true },
+      { key: 'modified', label: 'Laatst aangepast op', isSortable: true },
+      { key: 'created', label: 'Aangemaakt op', isSortable: true },
+      { key: 'classification', label: 'Relevant voor', isSortable: true },
+      { key: 'organization', label: 'Bestuur', isSortable: true },
+      { key: 'creator', label: 'Via leverancier', isSortable: true },
+      { key: 'actions', label: '', isSortable: false },
+    ];
+
+    return availableColumns.filter((column) =>
+      this.columns.includes(column.key),
+    );
   }
 
-  get showDescriptionColumn() {
-    return this.columns.includes('description');
+  @action
+  onPageChange(page) {
+    this.page = page;
   }
 
-  get showModifiedColumn() {
-    return this.columns.includes('modified');
+  @action
+  onSizeChange(size) {
+    this.size = size;
   }
 
-  get showCreatedColumn() {
-    return this.columns.includes('created');
-  }
-
-  get showClassificationColumn() {
-    return this.columns.includes('classification');
-  }
-
-  get showOrganizationColumn() {
-    return this.columns.includes('organization');
-  }
-
-  get showCreatorColumn() {
-    return this.columns.includes('creator');
-  }
-
-  get showActionsColumn() {
-    return this.columns.includes('actions');
+  @action
+  onSortChange(sort) {
+    this.sort = sort;
   }
 
   @action
