@@ -116,141 +116,79 @@
       </:action>
     </PageHeader>
 
-    <AuDataTable
-      @content={{this.processes}}
-      @isLoading={{this.isLoading}}
-      @page={{this.page}}
-      @size={{this.size}}
-      as |t|
-    >
-      <t.content class="au-c-data-table__table--small" as |c|>
-        <c.header>
-          {{#if this.showTitleColumn}}
-            <AuDataTableThSortable
-              @field="title"
-              @currentSorting={{this.sort}}
-              @label="Titel"
-            />
-          {{/if}}
-          {{#if this.showDescriptionColumn}}
-            <AuDataTableThSortable
-              @field="description"
-              @currentSorting={{this.sort}}
-              @label="Beschrijving"
-            />
-          {{/if}}
-          {{#if this.showModifiedColumn}}
-            <AuDataTableThSortable
-              @field="modified"
-              @currentSorting={{this.sort}}
-              @label="Laatst aangepast op"
-            />
-          {{/if}}
-          {{#if this.showCreatedColumn}}
-            <AuDataTableThSortable
-              @field="created"
-              @currentSorting={{this.sort}}
-              @label="Aangemaakt op"
-            />
-          {{/if}}
-          {{#if this.showClassificationColumn}}
-            <AuDataTableThSortable
-              @field="classification"
-              @currentSorting={{this.sort}}
-              @label="Relevant voor"
-            />
-          {{/if}}
-          {{#if this.showOrganizationColumn}}
-            <AuDataTableThSortable
-              @field="organization"
-              @currentSorting={{this.sort}}
-              @label="Bestuur"
-            />
-          {{/if}}
-          {{#if this.showCreatorColumn}}
-            <AuDataTableThSortable
-              @field="creator"
-              @currentSorting={{this.sort}}
-              @label="Via leverancier"
-            />
-          {{/if}}
-          {{#if this.showActionsColumn}}
-            <th></th>
-          {{/if}}
-        </c.header>
-        {{#if this.hasErrored}}
-          <TableMessage::Error />
-        {{else if this.hasNoResults}}
-          <TableMessage>
-            <p>
-              Er werden geen zoekresultaten gevonden.
-            </p>
-          </TableMessage>
-        {{else}}
-          <c.body as |process|>
-            {{#if this.showTitleColumn}}
-              <td>
-                <div
-                  class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+    {{#if this.hasErrored}}
+      <TableMessage::Error />
+    {{else if this.hasNoResults}}
+      <TableMessage>
+        <p>
+          Er werden geen zoekresultaten gevonden.
+        </p>
+      </TableMessage>
+    {{else}}
+      <ConfigurableColumns::AdvancedTable
+        @model={{this.processes}}
+        @isLoading={{this.isLoading}}
+        @hasStickyFirstColumn={{true}}
+        @columns={{this.advancedTableColumns}}
+        @page={{this.page}}
+        @onPageChange={{this.onPageChange}}
+        @size={{this.size}}
+        @onSizeChange={{this.onSizeChange}}
+        @sort={{this.sort}}
+        @onSortChange={{this.onSortChange}}
+      >
+        <:cell as |process column|>
+          {{#if (eq column.key "title")}}
+            <div
+              class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
+            >
+              {{#if process.isBlueprint}}
+                <CustomIcon @icon="blueprint" @size="large" />
+              {{/if}}
+              <AuTooltip @placement="right" as |tooltip|>
+                <LinkTo
+                  class="au-c-link"
+                  @model={{process.id}}
+                  @route={{@processRoute}}
+                  {{tooltip.target}}
                 >
-                  {{#if process.isBlueprint}}
-                    <CustomIcon @icon="blueprint" @size="large" />
-                  {{/if}}
-                  <LinkTo
-                    class="au-c-link"
-                    @model={{process.id}}
-                    @route={{@processRoute}}
-                  >
-                    {{process.title}}
-                  </LinkTo>
-                  {{#if
-                    (and
-                      this.modifiedSince process.isCreatedAndModifiedOnSameDay
-                    )
-                  }}
-                    <AuPill @skin="link">Nieuw</AuPill>
-                  {{/if}}
-                  {{#if process.isUsedByCurrentGroup}}
-                    <AuPill @skin="success">In gebruik</AuPill>
-                  {{/if}}
-                </div>
-              </td>
-            {{/if}}
-            {{#if this.showDescriptionColumn}}
-              <td>
-                <span class="u-preserve-line-breaks">{{or
-                    (truncate (trim process.description) 150 true)
-                    "/"
-                  }}</span>
-              </td>
-            {{/if}}
-            {{#if this.showModifiedColumn}}
-              <td>{{date-format process.modified}}</td>
-            {{/if}}
-            {{#if this.showCreatedColumn}}
-              <td>{{date-format process.created}}</td>
-            {{/if}}
-            {{#if this.showClassificationColumn}}
-              <td>
-                <ul>
-                  {{#each process.relevantAdministrativeUnits as |adminUnit|}}
-                    <li>{{adminUnit.label}}</li>
-                  {{/each}}
-                </ul>
-              </td>
-            {{/if}}
-            {{#if this.showOrganizationColumn}}
-              <td>{{process.publisher.name}}</td>
-            {{/if}}
-            {{#if this.showCreatorColumn}}
-              <td>{{or process.creator.name "/"}}</td>
-            {{/if}}
-            {{#if this.showActionsColumn}}
-              <td>{{yield process to="rowActions"}}</td>
-            {{/if}}
-          </c.body>
-        {{/if}}
-      </t.content>
-    </AuDataTable>
+                  {{process.title}}
+                </LinkTo>
+                <tooltip.Content>
+                  <span class="u-preserve-line-breaks">{{or
+                      (truncate (trim process.description) 150 true)
+                      "/"
+                    }}</span>
+                </tooltip.Content>
+              </AuTooltip>
+              {{#if
+                (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)
+              }}
+                <AuPill @skin="link">Nieuw</AuPill>
+              {{/if}}
+              {{#if process.isUsedByCurrentGroup}}
+                <AuPill @skin="success">In gebruik</AuPill>
+              {{/if}}
+            </div>
+          {{else if (eq column.key "modified")}}
+            {{date-format process.modified}}
+          {{else if (eq column.key "created")}}
+            {{date-format process.created}}
+          {{else if (eq column.key "classification")}}
+            <ul>
+              {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+                <li>{{adminUnit.label}}</li>
+              {{/each}}
+            </ul>
+          {{else if (eq column.key "organization")}}
+            {{process.publisher.name}}
+          {{else if (eq column.key "creator")}}
+            {{or process.creator.name "/"}}
+          {{else if (eq column.key "actions")}}
+            {{yield process to="rowActions"}}
+          {{/if}}
+        </:cell>
+      </ConfigurableColumns::AdvancedTable>
+    {{/if}}
   </:content>
 </SidebarContainer>

@@ -12,14 +12,7 @@ export default class ProcessesIndexController extends Controller {
     'creator',
     'ipdc',
   ];
-  columns = [
-    'title',
-    'description',
-    'modified',
-    'classification',
-    'organization',
-    'creator',
-  ];
+  columns = ['title', 'modified', 'classification', 'organization', 'creator'];
 
   queryParams = [
     'page',
