@@ -3,6 +3,8 @@ import Service from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
+import { isAttachedField } from 'frontend-openproceshuis/services/field';
+
 const STORAGE_KEY = 'COLUMN_CONFIGURATION';
 
 export default class ColumnConfigurationService extends Service {
@@ -56,12 +58,14 @@ export default class ColumnConfigurationService extends Service {
       .filter(Boolean);
 
     return fields
-      .filter((field) => !field.tooltipFor)
+      .filter((field) => !isAttachedField(field))
       .map((field) => {
         return {
           ...field,
-          tooltipField:
-            fields.find((tooltip) => tooltip.tooltipFor === field.key) ?? null,
+          isTooltipField: fields.some(
+            (tooltip) => tooltip.tooltipFor === field.key,
+          ),
+          isIconField: fields.some((icon) => icon.iconFor === field.key),
         };
       });
   }

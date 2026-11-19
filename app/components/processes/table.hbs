@@ -24,10 +24,10 @@
         <div
           class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
         >
-          {{#if process.isBlueprint}}
+          {{#if (and column.isIconField process.isBlueprint)}}
             <CustomIcon @icon="blueprint" @size="large" />
           {{/if}}
-          {{#if column.tooltipField}}
+          {{#if column.isTooltipField}}
             <AuTooltip @placement="right" as |tooltip|>
               <LinkTo
                 class="au-c-link"

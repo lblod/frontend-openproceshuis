@@ -1,5 +1,9 @@
 import Service from '@ember/service';
 
+export function isAttachedField(field) {
+  return Boolean(field.tooltipFor || field.iconFor);
+}
+
 export default class FieldService extends Service {
   availableFieldsFor(context) {
     return this.availableFields.filter((field) => field.context === context);
@@ -10,7 +14,9 @@ export default class FieldService extends Service {
   }
 
   dynamicFieldsFor(context) {
-    return this.availableFieldsFor(context).filter((field) => !field.isFixed);
+    return this.availableFieldsFor(context).filter(
+      (field) => !field.isFixed && !isAttachedField(field),
+    );
   }
 
   get availableFields() {
@@ -34,6 +40,14 @@ export default class FieldService extends Service {
         isDefault: true,
         isFixed: true,
         tooltipFor: 'title',
+      },
+      {
+        key: 'blueprint',
+        context: 'processes',
+        label: 'Blauwdruk',
+        hintText: 'Blauwdrukken worden met een icoon voor de titel aangeduid.',
+        category: 'Algemene informatie',
+        iconFor: 'title',
       },
       {
         key: 'organization',
@@ -75,13 +89,6 @@ export default class FieldService extends Service {
         key: 'created',
         context: 'processes',
         label: 'Aangemaakt op',
-        category: 'Algemene informatie',
-        isSortable: true,
-      },
-      {
-        key: 'blueprint',
-        context: 'processes',
-        label: 'Blauwdruk',
         category: 'Algemene informatie',
         isSortable: true,
       },
