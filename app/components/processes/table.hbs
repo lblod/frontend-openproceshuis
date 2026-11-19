@@ -104,6 +104,27 @@
         {{else}}
           /
         {{/if}}
+      {{else if (eq column.key "professionalData")}}
+        <Process::DisplayIcrField
+          @process={{process}}
+          @field="professionalData"
+        />
+      {{else if (eq column.key "personalData")}}
+        <Process::DisplayIcrField @process={{process}} @field="personalData" />
+      {{else if (eq column.key "specialPersonalData")}}
+        <Process::DisplayIcrField
+          @process={{process}}
+          @field="specialPersonalData"
+        />
+      {{else if (eq column.key "availability")}}
+        <Process::DisplayIcrField @process={{process}} @field="availability" />
+      {{else if (eq column.key "integrity")}}
+        <Process::DisplayIcrField @process={{process}} @field="integrity" />
+      {{else if (eq column.key "confidentiality")}}
+        <Process::DisplayIcrField
+          @process={{process}}
+          @field="confidentiality"
+        />
       {{else if (eq column.key "diagramCount")}}
         <Process::DisplayMainDiagramCount @process={{process}} />
       {{else if (eq column.key "authorityEmail")}}
