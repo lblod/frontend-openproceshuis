@@ -63,17 +63,19 @@
           {{/if}}
         </div>
       {{else if (eq column.key "modified")}}
-        {{date-format process.modified}}
+        {{or (date-format process.modified) "/"}}
       {{else if (eq column.key "created")}}
-        {{date-format process.created}}
+        {{or (date-format process.created) "/"}}
       {{else if (eq column.key "classification")}}
         <ul>
           {{#each process.relevantAdministrativeUnits as |adminUnit|}}
-            <li>{{adminUnit.label}}</li>
+            <li>{{or adminUnit.label "/"}}</li>
+          {{else}}
+            <li>/</li>
           {{/each}}
         </ul>
       {{else if (eq column.key "organization")}}
-        {{process.publisher.name}}
+        {{or process.publisher.name "/"}}
       {{else if (eq column.key "linkedConcept")}}
         <ConceptualProcess::DisplayField
           @conceptualProcess={{process.linkedConcept}}
