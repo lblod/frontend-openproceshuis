@@ -43,6 +43,15 @@ export default class FieldService extends Service {
         tooltipFor: 'title',
       },
       {
+        key: 'usedBy',
+        context: 'processes',
+        label: 'In gebruik',
+        hintText:
+          'Om plaats te besparen, wordt "In gebruik" als pilletje getoond naast de titel.',
+        category: 'Algemene informatie',
+        iconFor: 'title',
+      },
+      {
         key: 'blueprint',
         context: 'processes',
         label: 'Blauwdruk',
@@ -91,11 +100,6 @@ export default class FieldService extends Service {
       {
         key: 'ipdcLpdcLink',
         label: 'Link naar IPDC/LPDC',
-        category: 'Algemene informatie',
-      },
-      {
-        key: 'usedBy',
-        label: 'Gebruikt door',
         category: 'Algemene informatie',
       },
       {

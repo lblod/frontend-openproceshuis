@@ -62,10 +62,15 @@ export default class ColumnConfigurationService extends Service {
       .map((field) => {
         return {
           ...field,
-          isTooltipField: fields.some(
-            (tooltip) => tooltip.tooltipFor === field.key,
+          attachedFields: Object.fromEntries(
+            fields
+              .filter(
+                (attached) =>
+                  attached.tooltipFor === field.key ||
+                  attached.iconFor === field.key,
+              )
+              .map((attached) => [attached.key, true]),
           ),
-          isIconField: fields.some((icon) => icon.iconFor === field.key),
         };
       });
   }

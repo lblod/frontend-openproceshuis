@@ -24,10 +24,10 @@
         <div
           class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
         >
-          {{#if (and column.isIconField process.isBlueprint)}}
+          {{#if (and column.attachedFields.blueprint process.isBlueprint)}}
             <CustomIcon @icon="blueprint" @size="large" />
           {{/if}}
-          {{#if column.isTooltipField}}
+          {{#if column.attachedFields.description}}
             <AuTooltip @placement="right" as |tooltip|>
               <LinkTo
                 class="au-c-link"
@@ -56,7 +56,7 @@
           {{#if (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)}}
             <AuPill @skin="link">Nieuw</AuPill>
           {{/if}}
-          {{#if process.isUsedByCurrentGroup}}
+          {{#if (and column.attachedFields.usedBy process.isUsedByCurrentGroup)}}
             <AuPill @skin="success">In gebruik</AuPill>
           {{/if}}
         </div>
