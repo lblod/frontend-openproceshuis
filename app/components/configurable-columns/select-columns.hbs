@@ -1,0 +1,62 @@
+<AuHeading @level="3" @skin="6" class="au-u-margin-bottom-tiny">Kies gewenste
+  kolommen</AuHeading>
+<AuInput
+  @width="block"
+  @icon="search"
+  @iconAlignment="right"
+  value={{this.searchFieldValue}}
+  placeholder="Zoek op veldnaam"
+  id="input-column-field-name"
+  {{on "input" this.updateSearchFieldValue}}
+/>
+<AuButton
+  @skin="link"
+  class="au-u-margin-top-small au-u-margin-bottom-small"
+  {{on "click" this.toggleAllColumns}}
+>{{if
+    this.areAllColumnsSelected
+    "Deselecteer alle kolommen"
+    "Selecteer alle kolommen"
+  }}</AuButton>
+<div class="au-u-padding-left-small cc-scrollable-list">
+  {{#each this.fieldCategories as |category|}}
+    <div class="au-u-margin-bottom-small">
+      <AuHeading
+        @level="3"
+        @skin="6"
+        class="au-u-margin-bottom-tiny"
+      >{{category.label}}</AuHeading>
+      <AuCheckboxGroup
+        @name={{category.name}}
+        @selected={{this.selectedColumns}}
+        @onChange={{this.updateSelectedColumns}}
+        as |Group|
+      >
+        {{#each category.fields as |field|}}
+          <div
+            class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny"
+          >
+            <Group.Checkbox
+              @value={{field.key}}
+              @disabled={{field.isFixed}}
+            >{{field.label}}</Group.Checkbox>
+            {{#if field.hintText}}
+              <AuTooltip @placement="right" as |tooltip|>
+                <AuButton
+                  @icon="circle-info"
+                  @hideText={{true}}
+                  @skin="link"
+                  class="color--gray"
+                  {{tooltip.target}}
+                />
+                <tooltip.Content>
+                  <p>{{field.hintText}}</p>
+                </tooltip.Content>
+              </AuTooltip>
+            {{/if}}
+          </div>
+        {{/each}}
+      </AuCheckboxGroup>
+    </div>
+  {{/each}}
+</div>

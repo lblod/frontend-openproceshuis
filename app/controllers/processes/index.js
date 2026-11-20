@@ -40,6 +40,8 @@ export default class ProcessesIndexController extends Controller {
   @tracked creator = '';
   @tracked blueprint = false;
 
+  @tracked isConfigureColumnsOpen = false;
+
   get query() {
     return {
       page: this.page,
