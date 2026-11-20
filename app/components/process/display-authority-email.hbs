@@ -1,0 +1,9 @@
+{{#if this.publisher.isRunning}}
+  <AuLoader @inline={{false}} @hideMessage={{true}} />
+{{else if this.email}}
+  <a class="au-c-link" href="mailto:{{this.email}}">
+    {{this.email}}
+  </a>
+{{else}}
+  /
+{{/if}}

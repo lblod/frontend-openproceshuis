@@ -5,7 +5,33 @@ import { service } from '@ember/service';
 
 export default class MyLocalGovernmentIndexController extends Controller {
   filters = ['title', 'modifiedSince'];
-  columns = ['title', 'modified', 'classification', 'organization', 'creator'];
+  columns = [
+    {
+      key: 'title',
+      label: 'Titel',
+      isSortable: true,
+      attachedFields: { blueprint: true, description: true },
+    },
+    { key: 'modified', label: 'Laatst aangepast op', isSortable: true },
+    {
+      key: 'classification',
+      label: 'Relevant voor',
+      isSortable: true,
+      resourcesSortPath: 'relevant-administrative-units.label',
+    },
+    {
+      key: 'organization',
+      label: 'Opgeladen door',
+      isSortable: true,
+      resourcesSortPath: 'publisher.name',
+    },
+    {
+      key: 'creator',
+      label: 'Via leverancier',
+      isSortable: true,
+      resourcesSortPath: 'creator.name',
+    },
+  ];
 
   queryParams = ['page', 'size', 'sort', 'title', 'modifiedSince'];
 

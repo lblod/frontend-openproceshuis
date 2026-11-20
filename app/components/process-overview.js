@@ -15,54 +15,6 @@ export default class ProcessOverviewComponent extends Component {
     return this.args.query ?? {};
   }
 
-  get loadProcessesTaskInstance() {
-    return this.args.model?.loadProcessesTaskInstance;
-  }
-
-  get processes() {
-    return this.loadProcessesTaskInstance?.isFinished
-      ? this.loadProcessesTaskInstance.value
-      : this.args.model?.loadedProcesses;
-  }
-
-  get isLoading() {
-    return this.loadProcessesTaskInstance?.isRunning ?? false;
-  }
-
-  get hasNoResults() {
-    return (
-      this.loadProcessesTaskInstance?.isFinished && this.processes?.length === 0
-    );
-  }
-
-  get hasErrored() {
-    return this.loadProcessesTaskInstance?.isError ?? false;
-  }
-
-  get page() {
-    return this.query.page;
-  }
-
-  set page(page) {
-    this.updateQuery({ page });
-  }
-
-  get size() {
-    return this.query.size;
-  }
-
-  set size(size) {
-    this.updateQuery({ size });
-  }
-
-  get sort() {
-    return this.query.sort;
-  }
-
-  set sort(sort) {
-    this.updateQuery({ sort });
-  }
-
   get title() {
     return this.query.title ?? '';
   }
@@ -121,37 +73,6 @@ export default class ProcessOverviewComponent extends Component {
 
   get showIpdcFilter() {
     return this.filters.includes('ipdc');
-  }
-
-  get advancedTableColumns() {
-    const availableColumns = [
-      { key: 'title', label: 'Titel', isSortable: true },
-      { key: 'modified', label: 'Laatst aangepast op', isSortable: true },
-      { key: 'created', label: 'Aangemaakt op', isSortable: true },
-      { key: 'classification', label: 'Relevant voor', isSortable: true },
-      { key: 'organization', label: 'Bestuur', isSortable: true },
-      { key: 'creator', label: 'Via leverancier', isSortable: true },
-      { key: 'actions', label: '', isSortable: false },
-    ];
-
-    return availableColumns.filter((column) =>
-      this.columns.includes(column.key),
-    );
-  }
-
-  @action
-  onPageChange(page) {
-    this.page = page;
-  }
-
-  @action
-  onSizeChange(size) {
-    this.size = size;
-  }
-
-  @action
-  onSortChange(sort) {
-    this.sort = sort;
   }
 
   @action

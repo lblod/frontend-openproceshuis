@@ -1,0 +1,24 @@
+{{#if this.process.isRunning}}
+  <AuLoader @inline={{false}} @hideMessage={{true}} />
+{{else}}
+  <ul>
+    {{#each this.assets as |asset|}}
+      <li>
+        <AuLink
+          @model={{asset.id}}
+          @route="information-assets.information-asset"
+          @query={{hash version=null edit=null}}
+          @icon="external-link"
+          @iconAlignment="right"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          -
+          {{asset.title}}
+        </AuLink>
+      </li>
+    {{else}}
+      <li>/</li>
+    {{/each}}
+  </ul>
+{{/if}}

@@ -25,7 +25,8 @@ export default class ProcessesIndexRoute extends Route {
     super.setupController(controller, model, transition);
 
     this.columnConfigurationService.initialize(
-      this.fieldService.availableFields,
+      this.fieldService.availableFieldsFor('processes'),
+      'processes',
     );
   }
 
@@ -36,7 +37,7 @@ export default class ProcessesIndexRoute extends Route {
   async model(params) {
     return {
       loadProcessesTaskInstance: this.loadProcessesTask.perform(params),
-      loadedProcesses: this.loadProcessesTask.lastSuccesful?.value,
+      loadedProcesses: this.loadProcessesTask.lastSuccessful?.value,
     };
   }
 
@@ -54,6 +55,7 @@ export default class ProcessesIndexRoute extends Route {
           'users',
           'publisher.classification',
           'relevant-administrative-units',
+          'linked-concept',
         ].join(','),
       };
 

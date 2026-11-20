@@ -10,14 +10,18 @@ export default class ConfigurableColumnsSelectColumns extends Component {
 
   @tracked searchFieldValue = '';
 
+  get availableFields() {
+    return this.fieldService.availableFieldsFor(this.args.context);
+  }
+
   get matchingFields() {
     const query = this.searchFieldValue?.trim().toLowerCase();
 
     if (!query) {
-      return this.fieldService.availableFields;
+      return this.availableFields;
     }
 
-    return this.fieldService.availableFields.filter((field) => {
+    return this.availableFields.filter((field) => {
       return field.label.toLowerCase().includes(query);
     });
   }

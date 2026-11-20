@@ -3,16 +3,32 @@ import Service from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
+import { isAttachedField } from 'frontend-openproceshuis/services/field';
+
 const STORAGE_KEY = 'COLUMN_CONFIGURATION';
 
 export default class ColumnConfigurationService extends Service {
   @tracked configuration = [];
 
   fields = [];
+  context = null;
 
-  initialize(fields) {
+  initialize(fields, context) {
+    const isInitialized =
+      this.context === context && this.configuration.length > 0;
+
     this.fields = fields;
+    this.context = context;
+
+    if (isInitialized) {
+      return;
+    }
+
     this.revertConfiguration();
+  }
+
+  get storageKey() {
+    return `${STORAGE_KEY}_${this.context}`;
   }
 
   @action
@@ -42,6 +58,29 @@ export default class ColumnConfigurationService extends Service {
 
   get selectedColumns() {
     return this.sortedConfiguration.filter((column) => column.isSelected);
+  }
+
+  get columns() {
+    const fields = this.selectedColumns
+      .map((column) => this.fields.find((field) => field.key === column.key))
+      .filter(Boolean);
+
+    return fields
+      .filter((field) => !isAttachedField(field))
+      .map((field) => {
+        return {
+          ...field,
+          attachedFields: Object.fromEntries(
+            fields
+              .filter(
+                (attached) =>
+                  attached.tooltipFor === field.key ||
+                  attached.iconFor === field.key,
+              )
+              .map((attached) => [attached.key, true]),
+          ),
+        };
+      });
   }
 
   isSelected(key) {
@@ -124,7 +163,7 @@ export default class ColumnConfigurationService extends Service {
     let storedConfiguration;
 
     try {
-      storedConfiguration = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      storedConfiguration = JSON.parse(localStorage.getItem(this.storageKey));
     } catch {
       return null;
     }
@@ -164,6 +203,6 @@ export default class ColumnConfigurationService extends Service {
       return { ...column, position: index };
     });
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.configuration));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.configuration));
   }
 }

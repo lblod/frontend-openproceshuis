@@ -1,0 +1,96 @@
+<form
+  {{on "reset" this.resetFilters}}
+  class="au-o-box au-o-box--small au-o-flow au-o-flow--small au-u-padding"
+>
+  <h1 class="au-u-h3 au-u-medium">Filters</h1>
+  {{#if this.showBlueprintFilter}}
+    <div class="au-u-flex au-u-flex--between au-u-flex--vertical-center">
+      <AuLabel for="filter-blueprint">Blauwdruk</AuLabel>
+      <AuCheckbox
+        id="filter-blueprint"
+        @checked={{this.blueprint}}
+        @onChange={{this.toggleBlueprintFilter}}
+      />
+    </div>
+  {{/if}}
+  {{#if this.showTitleFilter}}
+    <div>
+      <AuLabel for="filter-title">Titel of beschrijving</AuLabel>
+      <ProcessSelectByTitle
+        @id="filter-title"
+        @selected={{this.title}}
+        @onChange={{this.setTitle}}
+        @publisher={{@titlePublisher}}
+        class="grow"
+      />
+    </div>
+  {{/if}}
+  {{#if this.showModifiedSinceFilter}}
+    <div>
+      <AuLabel for="filter-modified-since">
+        Laatst aangepast of nieuw sinds
+      </AuLabel>
+      <AuDateInput
+        @id="filter-modified-since"
+        @value={{this.modifiedSince}}
+        @onChange={{this.setModifiedSince}}
+        {{prevent-action-on-enter}}
+      />
+    </div>
+  {{/if}}
+  {{#if this.showClassificationFilter}}
+    <div>
+      <AuLabel for="filter-classification">Relevant voor</AuLabel>
+      <ProcessSelectByClassification
+        @id="filter-classification"
+        @selected={{this.selectedClassifications}}
+        @onChange={{this.setClassifications}}
+        class="grow"
+      />
+    </div>
+  {{/if}}
+  {{#if this.showGroupFilter}}
+    <div>
+      <AuLabel for="filter-group">Naam bestuur</AuLabel>
+      <ProcessSelectByGroup
+        @id="filter-group"
+        @selected={{this.group}}
+        @onChange={{this.setGroup}}
+        @classifications={{this.classifications}}
+        class="grow"
+      />
+    </div>
+  {{/if}}
+  {{#if this.showCreatorFilter}}
+    <div>
+      <AuLabel for="filter-vendor">Via leverancier</AuLabel>
+      <ProcessSelectByVendor
+        @id="filter-vendor"
+        @selected={{this.creator}}
+        @onChange={{this.setCreator}}
+        class="grow"
+      />
+    </div>
+  {{/if}}
+  {{#if this.showIpdcFilter}}
+    <div>
+      <AuLabel for="filter-ipdc">Filter op IPDC product</AuLabel>
+      <ProcessSelectByIpdc
+        @id="filter-ipdc"
+        @selected={{this.selectedIpdcProducts}}
+        @onChange={{this.setIpdcProducts}}
+        class="grow"
+      />
+    </div>
+  {{/if}}
+  <div class="au-u-flex au-u-flex--end">
+    <AuButton
+      @icon="cross"
+      @skin="link"
+      type="reset"
+      class="au-u-padding-none au-u-medium"
+    >
+      Herstel alle filters
+    </AuButton>
+  </div>
+</form>

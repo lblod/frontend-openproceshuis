@@ -2,6 +2,11 @@
   <:sidebar>
     <div class="au-c-sidebar">
       <div class="au-c-sidebar__content">
+        <Processes::Filters
+          @filters={{this.filters}}
+          @query={{this.query}}
+          @onQueryChange={{this.updateQuery}}
+        />
       </div>
     </div>
   </:sidebar>
@@ -17,7 +22,6 @@
         >
           Handleiding
         </AuLinkExternal>
-        <AuButton>Proces toevoegen</AuButton>
       </Group>
     </AuToolbar>
     <AuToolbar @size="small" @nowrap={{true}} @reverse={{true}} as |Group|>
@@ -29,11 +33,20 @@
         >Kolommen aanpassen</AuButton>
       </Group>
     </AuToolbar>
+    <Processes::Table
+      @model={{this.model}}
+      @columns={{this.columns}}
+      @hasStickyFirstColumn={{true}}
+      @query={{this.query}}
+      @onQueryChange={{this.updateQuery}}
+      @processRoute="processes.process"
+    />
   </:content>
 </SidebarContainer>
 
 {{#if this.isConfigureColumnsOpen}}
   <ConfigurableColumns::Modal
+    @context="processes"
     @isModalOpen={{this.isConfigureColumnsOpen}}
     @closeModal={{fn (mut this.isConfigureColumnsOpen) false}}
   />
