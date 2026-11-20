@@ -44,11 +44,7 @@ export default class MyLocalGovernmentIndexRoute extends Route {
     if (params.sort) {
       const isDescending = params.sort.startsWith('-');
 
-      let fieldName = isDescending ? params.sort.substring(1) : params.sort;
-
-      if (fieldName === 'organization') fieldName = 'publisher.name';
-      else if (fieldName === 'classification')
-        fieldName = 'publisher.classification.label';
+      const fieldName = isDescending ? params.sort.substring(1) : params.sort;
 
       let sortValue = `:no-case:${fieldName}`;
       if (isDescending) sortValue = `-${sortValue}`;

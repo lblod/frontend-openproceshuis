@@ -56,6 +56,7 @@ export default class FieldService extends Service {
         label: 'Opgeladen door',
         category: 'Algemene informatie',
         isSortable: true,
+        resourcesSortPath: 'publisher.name',
         isDefault: true,
         order: 3,
       },
@@ -65,6 +66,7 @@ export default class FieldService extends Service {
         label: 'Relevant voor',
         category: 'Algemene informatie',
         isSortable: true,
+        resourcesSortPath: 'relevant-administrative-units.label',
         isDefault: true,
         order: 4,
       },
@@ -122,6 +124,7 @@ export default class FieldService extends Service {
         label: 'Via leverancier',
         category: 'Algemene informatie',
         isSortable: true,
+        resourcesSortPath: 'creator.name',
         order: 10,
       },
       {
@@ -214,6 +217,8 @@ export default class FieldService extends Service {
         context: 'processes',
         label: 'Emailadres proces',
         category: 'Algemene informatie',
+        isSortable: true,
+        resourcesSortPath: 'email',
         order: 22,
       },
       {
@@ -221,6 +226,8 @@ export default class FieldService extends Service {
         context: 'processes',
         label: 'Emailadres bestuur',
         category: 'Algemene informatie',
+        isSortable: true,
+        resourcesSortPath: 'publisher.primary-site.contacts.email',
         order: 23,
       },
       {
