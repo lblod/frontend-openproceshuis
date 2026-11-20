@@ -71,6 +71,8 @@ export default class FieldService extends Service {
       {
         key: 'linkedConcept',
         context: 'processes',
+        isSortable: true,
+        resourcesSortPath: 'linked-concept.title',
         label: 'Gekoppeld aan inventaris',
         category: 'Link met procesinventaris',
         isDefault: true,
@@ -79,6 +81,9 @@ export default class FieldService extends Service {
       {
         key: 'processCategory',
         context: 'processes',
+        isSortable: true,
+        resourcesSortPath:
+          'linked-concept.process-groups.process-domains.process-categories.label',
         label: 'Procescategorie',
         category: 'Link met procesinventaris',
         isDefault: true,
@@ -122,6 +127,8 @@ export default class FieldService extends Service {
       {
         key: 'processGroup',
         context: 'processes',
+        isSortable: true,
+        resourcesSortPath: 'linked-concept.process-groups.label',
         label: 'Procesgroep',
         category: 'Link met procesinventaris',
         order: 11,
@@ -129,6 +136,9 @@ export default class FieldService extends Service {
       {
         key: 'processDomain',
         context: 'processes',
+        isSortable: true,
+        resourcesSortPath:
+          'linked-concept.process-groups.process-domains.label',
         label: 'Procesdomein',
         category: 'Link met procesinventaris',
         order: 12,

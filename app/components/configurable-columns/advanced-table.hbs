@@ -14,7 +14,7 @@
         {{#each this.columns key="key" as |column|}}
           {{#if column.isSortable}}
             <AuDataTableThSortable
-              @field={{column.key}}
+              @field={{or column.resourcesSortPath column.key}}
               @label={{column.label}}
               @currentSorting={{this.sort}}
             />
