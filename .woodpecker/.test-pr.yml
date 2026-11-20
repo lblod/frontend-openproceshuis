@@ -1,23 +1,49 @@
+when:
+  - event: [pull_request, manual]
+  - event: push
+    branch: development
+
+variables:
+  - &ember_image danlynn/ember-cli:5.12.0-node_20.18
+
 steps:
   install:
-    image: danlynn/ember-cli:4.8.0
+    image: *ember_image
     commands:
-      - npm ci
-  lint:
-    image: danlynn/ember-cli:4.8.0
-    group: lint
+      - npm ci --no-fund
+
+  lint-js:
+    image: *ember_image
+    depends_on: [install]
     commands:
-      - npm run lint
+      - npm run lint:js
+  
+  lint-hbs:
+    image: *ember_image
+    depends_on: [install]
+    commands:
+      - npm run lint:hbs
+
+  lint-css:
+    image: *ember_image
+    depends_on: [install]
+    commands:
+      - npm run lint:css
+
   dependency-lint:
-    image: danlynn/ember-cli:4.8.0
-    group: lint
+    image: *ember_image
+    depends_on: [install]
     commands:
       - npx ember dependency-lint
-    failure: ignore
+
   test:
-    image: danlynn/ember-cli:4.8.0
+    image: *ember_image
+    depends_on: [install]
     commands:
       - npm run test:ember
-    failure: ignore
-when:
-  event: pull_request
+
+  build:
+    image: *ember_image
+    depends_on: [install]
+    commands:
+      - npx ember build --environment=production --output-path=/tmp/dist
