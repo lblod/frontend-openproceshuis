@@ -9,13 +9,14 @@ const STORAGE_KEY = 'COLUMN_CONFIGURATION';
 
 export default class ColumnConfigurationService extends Service {
   @tracked configuration = [];
+  @tracked savedConfiguration = [];
 
   fields = [];
   context = null;
 
   initialize(fields, context) {
     const isInitialized =
-      this.context === context && this.configuration.length > 0;
+      this.context === context && this.savedConfiguration.length > 0;
 
     this.fields = fields;
     this.context = context;
@@ -24,7 +25,9 @@ export default class ColumnConfigurationService extends Service {
       return;
     }
 
-    this.revertConfiguration();
+    this.savedConfiguration =
+      this.loadConfiguration() ?? this.defaultConfiguration;
+    this.configuration = this.savedConfiguration;
   }
 
   get storageKey() {
@@ -57,7 +60,9 @@ export default class ColumnConfigurationService extends Service {
   }
 
   get selectedColumns() {
-    return this.sortedConfiguration.filter((column) => column.isSelected);
+    return [...this.savedConfiguration]
+      .sort((a, b) => a.position - b.position)
+      .filter((column) => column.isSelected);
   }
 
   get columns() {
@@ -85,8 +90,8 @@ export default class ColumnConfigurationService extends Service {
 
   isSelected(key) {
     return (
-      this.configuration.find((column) => column.key === key)?.isSelected ??
-      false
+      this.savedConfiguration.find((column) => column.key === key)
+        ?.isSelected ?? false
     );
   }
 
@@ -204,5 +209,7 @@ export default class ColumnConfigurationService extends Service {
     });
 
     localStorage.setItem(this.storageKey, JSON.stringify(this.configuration));
+
+    this.savedConfiguration = this.configuration;
   }
 }
