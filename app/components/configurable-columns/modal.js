@@ -10,9 +10,6 @@ export default class ConfigurableColumnsModal extends Component {
   @action
   cancelConfiguration() {
     this.columnConfigurationService.revertConfiguration();
-    this.toaster.success('Configuratie werd succesvol teruggezet', 'Kolommen', {
-      timeOut: 3000,
-    });
     this.args.closeModal?.();
   }
 
@@ -20,9 +17,6 @@ export default class ConfigurableColumnsModal extends Component {
   saveConfiguration() {
     try {
       this.columnConfigurationService.saveConfiguration();
-      this.toaster.success('Configuratie succesvol bewaard', 'Kolommen', {
-        timeOut: 3000,
-      });
       this.args.closeModal?.();
     } catch {
       this.toaster.error(
