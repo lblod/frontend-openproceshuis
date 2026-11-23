@@ -23,15 +23,19 @@
           {{/if}}
         {{/each}}
       </c.header>
-      <c.body as |row|>
-        {{#each this.columns key="key" as |column index|}}
-          {{#if (eq index 0)}}
-            <th scope="row">{{yield row column to="cell"}}</th>
-          {{else}}
-            <td>{{yield row column to="cell"}}</td>
-          {{/if}}
-        {{/each}}
-      </c.body>
+      {{#if this.hasMessage}}
+        {{yield to="message"}}
+      {{else}}
+        <c.body as |row|>
+          {{#each this.columns key="key" as |column index|}}
+            {{#if (eq index 0)}}
+              <th scope="row">{{yield row column to="cell"}}</th>
+            {{else}}
+              <td>{{yield row column to="cell"}}</td>
+            {{/if}}
+          {{/each}}
+        </c.body>
+      {{/if}}
     </t.content>
   </AuDataTable>
 </div>

@@ -1,148 +1,144 @@
-{{#if this.hasErrored}}
-  <TableMessage::Error />
-{{else if this.hasNoResults}}
-  <TableMessage>
-    <p>
-      Er werden geen zoekresultaten gevonden.
-    </p>
-  </TableMessage>
-{{else}}
-  <ConfigurableColumns::AdvancedTable
-    @model={{this.processes}}
-    @isLoading={{this.isLoading}}
-    @hasStickyFirstColumn={{@hasStickyFirstColumn}}
-    @columns={{this.columns}}
-    @page={{this.page}}
-    @onPageChange={{this.onPageChange}}
-    @size={{this.size}}
-    @onSizeChange={{this.onSizeChange}}
-    @sort={{this.sort}}
-    @onSortChange={{this.onSortChange}}
-  >
-    <:cell as |process column|>
-      {{#if (eq column.key "title")}}
-        <div
-          class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center"
-        >
-          {{#if (and column.attachedFields.blueprint process.isBlueprint)}}
-            <CustomIcon @icon="blueprint" @size="large" />
-          {{/if}}
-          {{#if column.attachedFields.description}}
-            <AuTooltip @placement="right" as |tooltip|>
-              <LinkTo
-                class="au-c-link"
-                @model={{process.id}}
-                @route={{@processRoute}}
-                {{tooltip.target}}
-              >
-                {{process.title}}
-              </LinkTo>
-              <tooltip.Content>
-                <span class="u-preserve-line-breaks">{{or
-                    (truncate (trim process.description) 150 true)
-                    "/"
-                  }}</span>
-              </tooltip.Content>
-            </AuTooltip>
-          {{else}}
+<ConfigurableColumns::AdvancedTable
+  @model={{this.processes}}
+  @isLoading={{this.isLoading}}
+  @hasStickyFirstColumn={{@hasStickyFirstColumn}}
+  @columns={{this.columns}}
+  @page={{this.page}}
+  @onPageChange={{this.onPageChange}}
+  @size={{this.size}}
+  @onSizeChange={{this.onSizeChange}}
+  @sort={{this.sort}}
+  @onSortChange={{this.onSortChange}}
+  @hasMessage={{or this.hasErrored this.hasNoResults}}
+>
+  <:message>
+    {{#if this.hasErrored}}
+      <TableMessage::Error />
+    {{else}}
+      <TableMessage>
+        <p>
+          Er werden geen zoekresultaten gevonden.
+        </p>
+      </TableMessage>
+    {{/if}}
+  </:message>
+
+  <:cell as |process column|>
+    {{#if (eq column.key "title")}}
+      <div class="au-u-flex au-u-flex--spaced-tiny au-u-flex--vertical-center">
+        {{#if (and column.attachedFields.blueprint process.isBlueprint)}}
+          <CustomIcon @icon="blueprint" @size="large" />
+        {{/if}}
+        {{#if column.attachedFields.description}}
+          <AuTooltip @placement="right" as |tooltip|>
             <LinkTo
               class="au-c-link"
               @model={{process.id}}
               @route={{@processRoute}}
+              {{tooltip.target}}
             >
               {{process.title}}
             </LinkTo>
-          {{/if}}
-          {{#if (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)}}
-            <AuPill @skin="link">Nieuw</AuPill>
-          {{/if}}
-          {{#if
-            (and column.attachedFields.usedBy process.isUsedByCurrentGroup)
-          }}
-            <AuPill @skin="success">In gebruik</AuPill>
-          {{/if}}
-        </div>
-      {{else if (eq column.key "modified")}}
-        {{or (date-format process.modified) "/"}}
-      {{else if (eq column.key "created")}}
-        {{or (date-format process.created) "/"}}
-      {{else if (eq column.key "classification")}}
-        <ul>
-          {{#each process.relevantAdministrativeUnits as |adminUnit|}}
-            <li>{{or adminUnit.label "/"}}</li>
-          {{else}}
-            <li>/</li>
-          {{/each}}
-        </ul>
-      {{else if (eq column.key "organization")}}
-        {{or process.publisher.name "/"}}
-      {{else if (eq column.key "linkedConcept")}}
-        <ConceptualProcess::DisplayField
-          @conceptualProcess={{process.linkedConcept}}
-          @field="process"
-        />
-      {{else if (eq column.key "processGroup")}}
-        <ConceptualProcess::DisplayField
-          @conceptualProcess={{process.linkedConcept}}
-          @field="group"
-        />
-      {{else if (eq column.key "processDomain")}}
-        <ConceptualProcess::DisplayField
-          @conceptualProcess={{process.linkedConcept}}
-          @field="domain"
-        />
-      {{else if (eq column.key "processCategory")}}
-        <ConceptualProcess::DisplayField
-          @conceptualProcess={{process.linkedConcept}}
-          @field="category"
-        />
-      {{else if (eq column.key "processEmail")}}
-        {{#if process.email}}
-          <a class="au-c-link" href="mailto:{{process.email}}">
-            {{process.email}}
-          </a>
+            <tooltip.Content>
+              <span class="u-preserve-line-breaks">{{or
+                  (truncate (trim process.description) 150 true)
+                  "/"
+                }}</span>
+            </tooltip.Content>
+          </AuTooltip>
         {{else}}
-          /
+          <LinkTo
+            class="au-c-link"
+            @model={{process.id}}
+            @route={{@processRoute}}
+          >
+            {{process.title}}
+          </LinkTo>
         {{/if}}
-      {{else if (eq column.key "professionalData")}}
-        <Process::DisplayIcrField
-          @process={{process}}
-          @field="professionalData"
-        />
-      {{else if (eq column.key "personalData")}}
-        <Process::DisplayIcrField @process={{process}} @field="personalData" />
-      {{else if (eq column.key "specialPersonalData")}}
-        <Process::DisplayIcrField
-          @process={{process}}
-          @field="specialPersonalData"
-        />
-      {{else if (eq column.key "availability")}}
-        <Process::DisplayIcrField @process={{process}} @field="availability" />
-      {{else if (eq column.key "integrity")}}
-        <Process::DisplayIcrField @process={{process}} @field="integrity" />
-      {{else if (eq column.key "confidentiality")}}
-        <Process::DisplayIcrField
-          @process={{process}}
-          @field="confidentiality"
-        />
-      {{else if (eq column.key "diagramCount")}}
-        <Process::DisplayMainDiagramCount @process={{process}} />
-      {{else if (eq column.key "authorityEmail")}}
-        <Process::DisplayAuthorityEmail @process={{process}} />
-      {{else if (eq column.key "ipdcLpdcLink")}}
-        <Process::DisplayIpdcProducts @process={{process}} />
-      {{else if (eq column.key "linkedBlueprint")}}
-        <Process::DisplayLinkedBlueprints
-          @process={{process}}
-          @route={{@processRoute}}
-        />
-      {{else if (eq column.key "informationAsset")}}
-        <Process::DisplayInformationAssets @process={{process}} />
-      {{else if (eq column.key "creator")}}
-        {{or process.creator.name "/"}}
-      {{else if (eq column.key "actions")}}
-        {{yield process to="rowActions"}}
+        {{#if (and this.modifiedSince process.isCreatedAndModifiedOnSameDay)}}
+          <AuPill @skin="link">Nieuw</AuPill>
+        {{/if}}
+        {{#if (and column.attachedFields.usedBy process.isUsedByCurrentGroup)}}
+          <AuPill @skin="success">In gebruik</AuPill>
+        {{/if}}
+      </div>
+    {{else if (eq column.key "modified")}}
+      {{or (date-format process.modified) "/"}}
+    {{else if (eq column.key "created")}}
+      {{or (date-format process.created) "/"}}
+    {{else if (eq column.key "classification")}}
+      <ul>
+        {{#each process.relevantAdministrativeUnits as |adminUnit|}}
+          <li>{{or adminUnit.label "/"}}</li>
+        {{else}}
+          <li>/</li>
+        {{/each}}
+      </ul>
+    {{else if (eq column.key "organization")}}
+      {{or process.publisher.name "/"}}
+    {{else if (eq column.key "linkedConcept")}}
+      <ConceptualProcess::DisplayField
+        @conceptualProcess={{process.linkedConcept}}
+        @field="process"
+      />
+    {{else if (eq column.key "processGroup")}}
+      <ConceptualProcess::DisplayField
+        @conceptualProcess={{process.linkedConcept}}
+        @field="group"
+      />
+    {{else if (eq column.key "processDomain")}}
+      <ConceptualProcess::DisplayField
+        @conceptualProcess={{process.linkedConcept}}
+        @field="domain"
+      />
+    {{else if (eq column.key "processCategory")}}
+      <ConceptualProcess::DisplayField
+        @conceptualProcess={{process.linkedConcept}}
+        @field="category"
+      />
+    {{else if (eq column.key "processEmail")}}
+      {{#if process.email}}
+        <a class="au-c-link" href="mailto:{{process.email}}">
+          {{process.email}}
+        </a>
+      {{else}}
+        /
       {{/if}}
-    </:cell>
-  </ConfigurableColumns::AdvancedTable>
-{{/if}}
+    {{else if (eq column.key "professionalData")}}
+      <Process::DisplayIcrField
+        @process={{process}}
+        @field="professionalData"
+      />
+    {{else if (eq column.key "personalData")}}
+      <Process::DisplayIcrField @process={{process}} @field="personalData" />
+    {{else if (eq column.key "specialPersonalData")}}
+      <Process::DisplayIcrField
+        @process={{process}}
+        @field="specialPersonalData"
+      />
+    {{else if (eq column.key "availability")}}
+      <Process::DisplayIcrField @process={{process}} @field="availability" />
+    {{else if (eq column.key "integrity")}}
+      <Process::DisplayIcrField @process={{process}} @field="integrity" />
+    {{else if (eq column.key "confidentiality")}}
+      <Process::DisplayIcrField @process={{process}} @field="confidentiality" />
+    {{else if (eq column.key "diagramCount")}}
+      <Process::DisplayMainDiagramCount @process={{process}} />
+    {{else if (eq column.key "authorityEmail")}}
+      <Process::DisplayAuthorityEmail @process={{process}} />
+    {{else if (eq column.key "ipdcLpdcLink")}}
+      <Process::DisplayIpdcProducts @process={{process}} />
+    {{else if (eq column.key "linkedBlueprint")}}
+      <Process::DisplayLinkedBlueprints
+        @process={{process}}
+        @route={{@processRoute}}
+      />
+    {{else if (eq column.key "informationAsset")}}
+      <Process::DisplayInformationAssets @process={{process}} />
+    {{else if (eq column.key "creator")}}
+      {{or process.creator.name "/"}}
+    {{else if (eq column.key "actions")}}
+      {{yield process to="rowActions"}}
+    {{/if}}
+  </:cell>
+</ConfigurableColumns::AdvancedTable>

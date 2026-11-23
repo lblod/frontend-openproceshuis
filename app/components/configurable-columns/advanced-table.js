@@ -17,6 +17,10 @@ export default class ConfigurableColumnsAdvancedTable extends Component {
     return this.args.isLoading ?? false;
   }
 
+  get hasMessage() {
+    return this.args.hasMessage ?? false;
+  }
+
   get page() {
     return this.args.page ?? 0;
   }
