@@ -22,8 +22,10 @@ function keysOf(columns) {
   return columns.map((column) => column.key);
 }
 
-function isSelected(service, key) {
-  return keysOf(service.selectedColumns).includes(key);
+function draftSelection(service) {
+  return keysOf(
+    service.sortedConfiguration.filter((column) => column.isSelected),
+  );
 }
 
 module(
@@ -60,20 +62,39 @@ module(
         ]);
       });
 
-      test('keeps the existing configuration when re-initialized with the same context', function (assert) {
+      test('starts with the draft and the saved configuration in sync', function (assert) {
+        this.service.initialize(FIELDS, CONTEXT);
+
+        assert.deepEqual(
+          this.service.savedConfiguration,
+          this.service.configuration,
+        );
+      });
+
+      test('keeps the saved configuration when re-initialized with the same context', function (assert) {
+        this.service.initialize(FIELDS, CONTEXT);
+        this.service.deselectColumn('organization');
+        this.service.saveConfiguration();
+        this.service.initialize(FIELDS, CONTEXT);
+
+        assert.false(this.service.isSelected('organization'));
+      });
+
+      test('discards an unsaved draft when re-initialized with the same context', function (assert) {
         this.service.initialize(FIELDS, CONTEXT);
         this.service.deselectColumn('organization');
         this.service.initialize(FIELDS, CONTEXT);
 
-        assert.false(isSelected(this.service, 'organization'));
+        assert.true(this.service.isSelected('organization'));
       });
 
       test('rebuilds the configuration when initialized with a different context', function (assert) {
         this.service.initialize(FIELDS, CONTEXT);
         this.service.deselectColumn('organization');
+        this.service.saveConfiguration();
         this.service.initialize(FIELDS, 'another-context');
 
-        assert.true(isSelected(this.service, 'organization'));
+        assert.true(this.service.isSelected('organization'));
         assert.strictEqual(
           this.service.storageKey,
           'COLUMN_CONFIGURATION_another-context',
@@ -86,7 +107,7 @@ module(
         this.service.initialize(FIELDS, CONTEXT);
       });
 
-      test('sortedConfiguration returns the columns ordered by position', function (assert) {
+      test('sortedConfiguration returns the draft columns ordered by position', function (assert) {
         this.service.reorderColumns(['organization', 'title']);
 
         assert.deepEqual(keysOf(this.service.sortedConfiguration), [
@@ -98,7 +119,7 @@ module(
         ]);
       });
 
-      test('selectedColumns returns only the selected columns, in position order', function (assert) {
+      test('selectedColumns returns only the saved selected columns, in position order', function (assert) {
         assert.deepEqual(keysOf(this.service.selectedColumns), [
           'title',
           'description',
@@ -106,7 +127,58 @@ module(
         ]);
       });
 
-      test('areAllColumnsSelected is true only when every column is selected', function (assert) {
+      test('selectedColumns only follows the draft once it is saved', function (assert) {
+        this.service.setSelectedColumns(['created']);
+
+        assert.deepEqual(draftSelection(this.service), [
+          'title',
+          'description',
+          'created',
+        ]);
+        assert.deepEqual(keysOf(this.service.selectedColumns), [
+          'title',
+          'description',
+          'organization',
+        ]);
+
+        this.service.saveConfiguration();
+
+        assert.deepEqual(keysOf(this.service.selectedColumns), [
+          'title',
+          'description',
+          'created',
+        ]);
+      });
+
+      test('selectedColumns only follows a reorder once it is saved', function (assert) {
+        this.service.reorderColumns(['organization', 'title']);
+
+        assert.deepEqual(keysOf(this.service.selectedColumns), [
+          'title',
+          'description',
+          'organization',
+        ]);
+
+        this.service.saveConfiguration();
+
+        assert.deepEqual(keysOf(this.service.selectedColumns), [
+          'organization',
+          'description',
+          'title',
+        ]);
+      });
+
+      test('isSelected reports the saved selection, not the draft', function (assert) {
+        this.service.deselectColumn('organization');
+
+        assert.true(this.service.isSelected('organization'));
+
+        this.service.saveConfiguration();
+
+        assert.false(this.service.isSelected('organization'));
+      });
+
+      test('areAllColumnsSelected is true only when every draft column is selected', function (assert) {
         assert.false(this.service.areAllColumnsSelected);
 
         this.service.selectAllColumns();
@@ -120,7 +192,7 @@ module(
         this.service.initialize(FIELDS, CONTEXT);
       });
 
-      test('maps the selected keys back onto the field definitions, excluding attached fields', function (assert) {
+      test('maps the saved keys back onto the field definitions, excluding attached fields', function (assert) {
         const columns = this.service.columns;
 
         assert.deepEqual(keysOf(columns), ['title', 'organization']);
@@ -128,17 +200,27 @@ module(
         assert.strictEqual(columns[1].label, 'Opgeladen door');
       });
 
-      test('exposes selected attached fields on their host column, and omits unselected ones', function (assert) {
+      test('exposes saved attached fields on their host column, and omits unselected ones', function (assert) {
         assert.deepEqual(this.service.columns[0].attachedFields, {
           description: true,
         });
 
         this.service.setSelectedColumns(['organization', 'blueprint']);
+        this.service.saveConfiguration();
 
         assert.deepEqual(this.service.columns[0].attachedFields, {
           description: true,
           blueprint: true,
         });
+      });
+
+      test('ignores an unsaved draft', function (assert) {
+        this.service.setSelectedColumns(['created']);
+
+        assert.deepEqual(keysOf(this.service.columns), [
+          'title',
+          'organization',
+        ]);
       });
     });
 
@@ -147,16 +229,16 @@ module(
         this.service.initialize(FIELDS, CONTEXT);
       });
 
-      test('selectAllColumns selects every column', function (assert) {
+      test('selectAllColumns selects every column in the draft', function (assert) {
         this.service.selectAllColumns();
 
-        assert.deepEqual(keysOf(this.service.selectedColumns), keysOf(FIELDS));
+        assert.deepEqual(draftSelection(this.service), keysOf(FIELDS));
       });
 
-      test('deselectAllColumns keeps the fixed columns selected', function (assert) {
+      test('deselectAllColumns keeps the fixed columns selected in the draft', function (assert) {
         this.service.deselectAllColumns();
 
-        assert.deepEqual(keysOf(this.service.selectedColumns), [
+        assert.deepEqual(draftSelection(this.service), [
           'title',
           'description',
         ]);
@@ -165,11 +247,11 @@ module(
       test('toggleAllColumns flips between selecting and deselecting everything', function (assert) {
         this.service.toggleAllColumns();
 
-        assert.deepEqual(keysOf(this.service.selectedColumns), keysOf(FIELDS));
+        assert.deepEqual(draftSelection(this.service), keysOf(FIELDS));
 
         this.service.toggleAllColumns();
 
-        assert.deepEqual(keysOf(this.service.selectedColumns), [
+        assert.deepEqual(draftSelection(this.service), [
           'title',
           'description',
         ]);
@@ -178,7 +260,7 @@ module(
       test('setSelectedColumns selects exactly the given keys plus the fixed ones', function (assert) {
         this.service.setSelectedColumns(['created']);
 
-        assert.deepEqual(keysOf(this.service.selectedColumns), [
+        assert.deepEqual(draftSelection(this.service), [
           'title',
           'description',
           'created',
@@ -188,11 +270,11 @@ module(
       test('deselectColumn deselects the given key but ignores a fixed column', function (assert) {
         this.service.deselectColumn('organization');
 
-        assert.false(isSelected(this.service, 'organization'));
+        assert.false(draftSelection(this.service).includes('organization'));
 
         this.service.deselectColumn('title');
 
-        assert.true(isSelected(this.service, 'title'));
+        assert.true(draftSelection(this.service).includes('title'));
       });
     });
 
@@ -255,19 +337,37 @@ module(
         );
       });
 
-      test('revertConfiguration restores the last saved configuration', function (assert) {
+      test('saveConfiguration promotes the draft to the saved configuration', function (assert) {
         this.service.deselectColumn('organization');
         this.service.saveConfiguration();
-        this.service.selectAllColumns();
-        this.service.revertConfiguration();
 
+        assert.deepEqual(
+          this.service.savedConfiguration,
+          this.service.configuration,
+        );
         assert.deepEqual(keysOf(this.service.selectedColumns), [
           'title',
           'description',
         ]);
       });
 
-      test('resetConfiguration restores the default configuration, ignoring localStorage', function (assert) {
+      test('revertConfiguration restores the draft to the last saved configuration', function (assert) {
+        this.service.deselectColumn('organization');
+        this.service.saveConfiguration();
+        this.service.selectAllColumns();
+        this.service.revertConfiguration();
+
+        assert.deepEqual(draftSelection(this.service), [
+          'title',
+          'description',
+        ]);
+        assert.deepEqual(keysOf(this.service.selectedColumns), [
+          'title',
+          'description',
+        ]);
+      });
+
+      test('resetConfiguration restores the default draft, ignoring localStorage', function (assert) {
         this.service.deselectColumn('organization');
         this.service.saveConfiguration();
         this.service.resetConfiguration();
@@ -276,7 +376,19 @@ module(
           this.service.configuration,
           this.service.defaultConfiguration,
         );
-        assert.true(isSelected(this.service, 'organization'));
+        assert.true(draftSelection(this.service).includes('organization'));
+      });
+
+      test('resetConfiguration leaves the saved configuration untouched until saved', function (assert) {
+        this.service.deselectColumn('organization');
+        this.service.saveConfiguration();
+        this.service.resetConfiguration();
+
+        assert.false(this.service.isSelected('organization'));
+
+        this.service.saveConfiguration();
+
+        assert.true(this.service.isSelected('organization'));
       });
 
       test('falls back to the default configuration when the stored value is unusable', function (assert) {
