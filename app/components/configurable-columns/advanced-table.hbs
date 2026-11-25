@@ -11,10 +11,10 @@
   >
     <t.content class="au-c-data-table__table--small" as |c|>
       <c.header>
-        {{#each this.columns as |column|}}
+        {{#each this.columns key="key" as |column|}}
           {{#if column.isSortable}}
             <AuDataTableThSortable
-              @field={{column.key}}
+              @field={{or column.resourcesSortPath column.key}}
               @label={{column.label}}
               @currentSorting={{this.sort}}
             />
@@ -23,15 +23,19 @@
           {{/if}}
         {{/each}}
       </c.header>
-      <c.body as |row|>
-        {{#each this.columns as |column index|}}
-          {{#if (eq index 0)}}
-            <th scope="row">{{yield row column to="cell"}}</th>
-          {{else}}
-            <td>{{yield row column to="cell"}}</td>
-          {{/if}}
-        {{/each}}
-      </c.body>
+      {{#if this.hasMessage}}
+        {{yield to="message"}}
+      {{else}}
+        <c.body as |row|>
+          {{#each this.columns key="key" as |column index|}}
+            {{#if (eq index 0)}}
+              <th scope="row">{{yield row column to="cell"}}</th>
+            {{else}}
+              <td>{{yield row column to="cell"}}</td>
+            {{/if}}
+          {{/each}}
+        </c.body>
+      {{/if}}
     </t.content>
   </AuDataTable>
 </div>

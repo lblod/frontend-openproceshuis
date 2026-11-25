@@ -1,0 +1,23 @@
+{{#if this.process.isRunning}}
+  <AuLoader @inline={{false}} @hideMessage={{true}} />
+{{else}}
+  <ul>
+    {{#each this.blueprints as |blueprint|}}
+      <li>
+        <AuLink
+          @model={{blueprint.id}}
+          @route={{@route}}
+          @icon="external-link"
+          @iconAlignment="right"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          -
+          {{blueprint.title}}
+        </AuLink>
+      </li>
+    {{else}}
+      <li>/</li>
+    {{/each}}
+  </ul>
+{{/if}}

@@ -1,8 +1,12 @@
 import Controller from '@ember/controller';
+
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { service } from '@ember/service';
 
 export default class ProcessesIndexController extends Controller {
+  @service('column-configuration') columnConfigurationService;
+
   filters = [
     'blueprint',
     'title',
@@ -12,7 +16,6 @@ export default class ProcessesIndexController extends Controller {
     'creator',
     'ipdc',
   ];
-  columns = ['title', 'modified', 'classification', 'organization', 'creator'];
 
   queryParams = [
     'page',
@@ -41,6 +44,10 @@ export default class ProcessesIndexController extends Controller {
   @tracked blueprint = false;
 
   @tracked isConfigureColumnsOpen = false;
+
+  get columns() {
+    return this.columnConfigurationService.columns;
+  }
 
   get query() {
     return {

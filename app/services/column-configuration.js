@@ -3,16 +3,35 @@ import Service from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
+import { isAttachedField } from 'frontend-openproceshuis/services/field';
+
 const STORAGE_KEY = 'COLUMN_CONFIGURATION';
 
 export default class ColumnConfigurationService extends Service {
   @tracked configuration = [];
+  @tracked savedConfiguration = [];
 
   fields = [];
+  context = null;
 
-  initialize(fields) {
+  initialize(fields, context) {
+    const isInitialized =
+      this.context === context && this.savedConfiguration.length > 0;
+
     this.fields = fields;
-    this.revertConfiguration();
+    this.context = context;
+
+    if (isInitialized) {
+      return;
+    }
+
+    this.savedConfiguration =
+      this.loadConfiguration() ?? this.defaultConfiguration;
+    this.configuration = this.savedConfiguration;
+  }
+
+  get storageKey() {
+    return `${STORAGE_KEY}_${this.context}`;
   }
 
   @action
@@ -41,13 +60,38 @@ export default class ColumnConfigurationService extends Service {
   }
 
   get selectedColumns() {
-    return this.sortedConfiguration.filter((column) => column.isSelected);
+    return [...this.savedConfiguration]
+      .sort((a, b) => a.position - b.position)
+      .filter((column) => column.isSelected);
+  }
+
+  get columns() {
+    const fields = this.selectedColumns
+      .map((column) => this.fields.find((field) => field.key === column.key))
+      .filter(Boolean);
+
+    return fields
+      .filter((field) => !isAttachedField(field))
+      .map((field) => {
+        return {
+          ...field,
+          attachedFields: Object.fromEntries(
+            fields
+              .filter(
+                (attached) =>
+                  attached.tooltipFor === field.key ||
+                  attached.iconFor === field.key,
+              )
+              .map((attached) => [attached.key, true]),
+          ),
+        };
+      });
   }
 
   isSelected(key) {
     return (
-      this.configuration.find((column) => column.key === key)?.isSelected ??
-      false
+      this.savedConfiguration.find((column) => column.key === key)
+        ?.isSelected ?? false
     );
   }
 
@@ -124,7 +168,7 @@ export default class ColumnConfigurationService extends Service {
     let storedConfiguration;
 
     try {
-      storedConfiguration = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      storedConfiguration = JSON.parse(localStorage.getItem(this.storageKey));
     } catch {
       return null;
     }
@@ -164,6 +208,8 @@ export default class ColumnConfigurationService extends Service {
       return { ...column, position: index };
     });
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.configuration));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.configuration));
+
+    this.savedConfiguration = this.configuration;
   }
 }
