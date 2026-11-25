@@ -1,0 +1,20 @@
+{{#if this.process.isRunning}}
+  <AuLoader @inline={{false}} @hideMessage={{true}} />
+{{else}}
+  <ul>
+    {{#each this.ipdcProducts as |product|}}
+      <li>
+        <AuLinkExternal
+          href={{product.url}}
+          @icon="external-link"
+          @iconAlignment="right"
+        >
+          -
+          {{language-string-set-nl product.name}}
+        </AuLinkExternal>
+      </li>
+    {{else}}
+      <li>/</li>
+    {{/each}}
+  </ul>
+{{/if}}

@@ -25,7 +25,7 @@ export default class ReportingRoute extends Route {
   async model(params) {
     return {
       loadReportsTaskInstance: this.loadReportsTask.perform(params),
-      loadedReports: this.loadReportsTask.lastSuccesful?.value,
+      loadedReports: this.loadReportsTask.lastSuccessful?.value,
     };
   }
 

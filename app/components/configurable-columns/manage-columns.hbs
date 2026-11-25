@@ -1,0 +1,86 @@
+<AuHeading @level="3" @skin="6">Geselecteerde kolommen</AuHeading>
+<p class="au-u-muted">Versleep de kolommen om de volgorde aan te passen.</p>
+<div class="au-u-flex au-u-flex--end au-u-margin-top-small">
+  <AuButton
+    @skin="link"
+    @icon="undo"
+    {{on "click" this.resetConfiguration}}
+  >Kolommen herstellen</AuButton>
+</div>
+<AuAlert
+  @title={{null}}
+  @skin="warning"
+  @icon="alert-triangle"
+  @size="small"
+  @closable={{false}}
+>
+  <p>Veel kolommen selecteren kan er voor zorgen dat sommige kolommen uit beeld
+    vallen.</p>
+</AuAlert>
+
+<AuHeading @level="3" @skin="6">Vaste kolommen</AuHeading>
+<p class="au-u-muted au-u-margin-bottom-tiny">Vaste kolommen kunnen niet
+  aangepast worden.</p>
+{{#each this.fixedFields as |field|}}
+  <div
+    class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny au-u-padding-tiny au-u-padding-left au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+  >
+    <p>{{field.label}}</p>
+    {{#if field.hintText}}
+      <AuTooltip @placement="right" as |tooltip|>
+        <AuButton
+          @icon="circle-info"
+          @hideText={{true}}
+          @skin="link"
+          class="color--gray"
+          {{tooltip.target}}
+        />
+        <tooltip.Content>
+          <p>{{field.hintText}}</p>
+        </tooltip.Content>
+      </AuTooltip>
+    {{/if}}
+  </div>
+{{/each}}
+<AuHeading
+  @level="3"
+  @skin="6"
+  class="au-u-margin-bottom-tiny au-u-margin-top"
+>Meescrollende kolommen</AuHeading>
+<div class="cc-scrollable-list">
+  <DragSortList
+    @items={{this.selectedColumns}}
+    @dragEndAction={{this.updateColumnOrder}}
+    as |column|
+  >
+    <div
+      class="au-u-flex au-u-flex--vertical-center au-u-flex--between au-u-padding-tiny au-u-margin-bottom-tiny au-u-background-gray-200 cc-draggable-field-container"
+    >
+      <div class="au-u-flex au-u-flex--vertical-center au-u-flex--spaced-tiny">
+        <AuIcon @icon="drag" @size="large" />
+        <p>{{column.label}}</p>
+        {{#if column.hintText}}
+          <AuTooltip @placement="right" as |tooltip|>
+            <AuButton
+              @icon="circle-info"
+              @hideText={{true}}
+              @skin="link"
+              class="color--gray"
+              {{tooltip.target}}
+            />
+            <tooltip.Content>
+              <p>{{column.hintText}}</p>
+            </tooltip.Content>
+          </AuTooltip>
+        {{/if}}
+      </div>
+      <AuButton
+        @icon="cross"
+        @hideText={{true}}
+        @skin="link"
+        class="color--gray"
+        {{on "click" (fn this.removeColumn column.key)}}
+      >Kolom verwijderen</AuButton>
+    </div>
+  </DragSortList>
+</div>

@@ -6,6 +6,8 @@ import ENV from 'frontend-openproceshuis/config/environment';
 export default class ProcessesIndexRoute extends Route {
   @service session;
   @service store;
+  @service('field') fieldService;
+  @service('column-configuration') columnConfigurationService;
 
   queryParams = {
     page: { refreshModel: true },
@@ -19,6 +21,15 @@ export default class ProcessesIndexRoute extends Route {
     ipdcProducts: { refreshModel: true, replace: true },
   };
 
+  setupController(controller, model, transition) {
+    super.setupController(controller, model, transition);
+
+    this.columnConfigurationService.initialize(
+      this.fieldService.availableFieldsFor('processes'),
+      'processes',
+    );
+  }
+
   beforeModel(transition) {
     this.session.requireAuthentication(transition, 'auth.login');
   }
@@ -26,7 +37,7 @@ export default class ProcessesIndexRoute extends Route {
   async model(params) {
     return {
       loadProcessesTaskInstance: this.loadProcessesTask.perform(params),
-      loadedProcesses: this.loadProcessesTask.lastSuccesful?.value,
+      loadedProcesses: this.loadProcessesTask.lastSuccessful?.value,
     };
   }
 
@@ -44,6 +55,7 @@ export default class ProcessesIndexRoute extends Route {
           'users',
           'publisher.classification',
           'relevant-administrative-units',
+          'linked-concept',
         ].join(','),
       };
 

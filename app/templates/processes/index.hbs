@@ -1,9 +1,53 @@
-<ProcessOverview
-  @pageTitle="Processen"
-  @processRoute="processes.process"
-  @model={{this.model}}
-  @filters={{this.filters}}
-  @columns={{this.columns}}
-  @query={{this.query}}
-  @onQueryChange={{this.updateQuery}}
-/>
+<SidebarContainer>
+  <:sidebar>
+    <div class="au-c-sidebar">
+      <div class="au-c-sidebar__content">
+        <Processes::Filters
+          @filters={{this.filters}}
+          @query={{this.query}}
+          @onQueryChange={{this.updateQuery}}
+        />
+      </div>
+    </div>
+  </:sidebar>
+  <:content>
+    <AuToolbar @size="medium" @nowrap={{true}} as |Group|>
+      <Group>
+        <AuHeading>Processen</AuHeading>
+      </Group>
+      <Group class="au-u-flex au-u-flex--vertical-center">
+        <AuLinkExternal
+          @icon="book"
+          href="https://abb-vlaanderen.gitbook.io/informatie-oph"
+        >
+          Handleiding
+        </AuLinkExternal>
+      </Group>
+    </AuToolbar>
+    <AuToolbar @size="small" @nowrap={{true}} @reverse={{true}} as |Group|>
+      <Group>
+        <AuButton
+          @skin="link"
+          @icon="gear"
+          {{on "click" (fn (mut this.isConfigureColumnsOpen) true)}}
+        >Kolommen aanpassen</AuButton>
+      </Group>
+    </AuToolbar>
+    <Processes::Table
+      @model={{this.model}}
+      @columns={{this.columns}}
+      @hasStickyFirstColumn={{true}}
+      @query={{this.query}}
+      @onQueryChange={{this.updateQuery}}
+      @processRoute="processes.process"
+    />
+  </:content>
+</SidebarContainer>
+
+{{#if this.isConfigureColumnsOpen}}
+  <ConfigurableColumns::Modal
+    @context="processes"
+    @isModalOpen={{this.isConfigureColumnsOpen}}
+    @closeModal={{fn (mut this.isConfigureColumnsOpen) false}}
+  />
+{{/if}}
